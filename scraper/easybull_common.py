@@ -16,6 +16,7 @@ from datetime import date
 from playwright.sync_api import sync_playwright
 
 # spe_* Rohfeld -> unser normalisierter Feldname. Gilt für alle EasyBull-Stationen.
+# "ho"-Präfix = deutsche Zuchtwertschätzung (RZ-Skala).
 FIELD_MAP = {
     "spe_intnr": "spe_intnr", "spe_name": "name", "spe_hbnr": "hb_nr",
     "spe_abst_e_v_na": "vater", "spe_abst_g_mv_na": "mv",
@@ -32,11 +33,26 @@ FIELD_MAP = {
     "spe_ho_dat_zw": "zws_datum", "spe_vk_preis_il": "preis_konv_eur",
     "spe_vk_preis_gesext_il": "preis_gesext_eur",
 }
+# "um"-Präfix = US-Importbullen ohne deutsche ZWS (bei CRI Genetics unter
+# "Holstein USA" gelistet) - eigenes Schema, US-Skala (TPI, NM$, DPR, SCS …).
+# Ohne dieses Mapping bleiben diese Bullen praktisch leer (nur Name/Preis)!
+UM_FIELD_MAP = {
+    "spe_um_tpi": "tpi", "spe_um_nmdollar": "nm_usd",
+    "spe_um_prod_milk": "milch_lbs", "spe_um_prod_fat": "fett_lbs",
+    "spe_um_prod_fatp": "fett_pct", "spe_um_prod_prot": "eiweiss_lbs",
+    "spe_um_prod_protp": "eiweiss_pct", "spe_um_ptat": "ptat",
+    "spe_um_scs": "scs", "spe_um_dpr": "dpr", "spe_um_pl": "pl", "spe_um_sce": "sce",
+    "spe_um_udc": "udc", "spe_um_flc": "flc",
+    "spe_um_exzw_sta": "staerke_us", "spe_um_exzw_tl": "strichlaenge_us",
+    "spe_um_dat_zw": "zws_datum",
+}
 NUMERIC_FIELDS = {
     "rzg", "rzeuro", "rzoeko", "rzm", "tpi", "nm_usd", "milch_kg", "fett_pct",
     "eiweiss_pct", "rzgesund", "rze", "rzkd", "rzrobot", "rzs", "rzn", "rzd", "rzr",
     "rzeuterfit", "rzklaue", "rzddc", "milchtyp", "koerper", "fundament", "euter",
     "strichlaenge_de", "staerke_de", "preis_konv_eur", "preis_gesext_eur",
+    "milch_lbs", "fett_lbs", "eiweiss_lbs", "ptat", "scs", "dpr", "pl", "sce",
+    "udc", "flc", "staerke_us", "strichlaenge_us",
 }
 
 
@@ -45,7 +61,7 @@ def normalize(raw: dict, firma: str, quelle_url: str, kategorie: str, farbe: str
     if not name:
         return None
     rec = {"kategorie": kategorie, "farbe": farbe}
-    for src, dst in FIELD_MAP.items():
+    for src, dst in {**FIELD_MAP, **UM_FIELD_MAP}.items():
         val = raw.get(src)
         if val in (None, ""):
             continue
