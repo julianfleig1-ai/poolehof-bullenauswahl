@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poolehof Bullenauswahl</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐄</text></svg>">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#EFEEE6; --surface:#FFFFFF; --surface-2:#F7F5EC; --ink:#1F2A3C; --ink-dim:#5B6472;
+  --border:#DCD8CB; --border-strong:#C7C2B2;
+  --accent:#3F7059; --accent-ink:#FFFFFF; --accent-soft:#E1EBE3;
+  --gold:#A67A20; --gold-soft:#F1E3C2;
+  --oxblood:#8B3A3A; --oxblood-soft:#F1DEDD;
+  --teal:#2E6E77; --teal-soft:#DCEBEC;
+  --indigo:#4A4E86; --indigo-soft:#E2E2F0;
+  --moss:#5B7A3A; --moss-soft:#E4EBD8;
+  --warn:#A85234; --warn-soft:#F1E0D8;
+  --chip:#E7E4D6; --focus:#2F6FED;
+  --shadow: 0 1px 2px rgba(31,42,60,.06), 0 6px 20px rgba(31,42,60,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#181B16; --surface:#20241E; --surface-2:#252A21; --ink:#ECEAE0; --ink-dim:#A7A493;
+    --border:#3A3D33; --border-strong:#4C4F41;
+    --accent:#74AC8C; --accent-ink:#0F1710; --accent-soft:#243329;
+    --gold:#D8AC5A; --gold-soft:#3A3222;
+    --oxblood:#D07C7C; --oxblood-soft:#3A2626;
+    --teal:#7FC2CB; --teal-soft:#1E3538;
+    --indigo:#A6A9E0; --indigo-soft:#2B2C42;
+    --moss:#9FBE7C; --moss-soft:#2A331F;
+    --warn:#D98F6C; --warn-soft:#3A2A20;
+    --chip:#2C2F26; --focus:#6FA0FF;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5}
+h1,h2,h3{font-family:"Newsreader",Georgia,serif;text-wrap:balance;margin:0}
+.mono, .num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+button, select, input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.wrap{max-width:1320px;margin:0 auto;padding:24px 20px 60px}
+header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:18px}
+header.top .brand{display:flex;align-items:center;gap:14px}
+header.top .brand-icon{font-size:40px;line-height:1}
+header.top h1{font-size:30px;font-weight:700}
+header.top .kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px}
+header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:56ch}
+.top-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.source-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:500;background:var(--chip);border:1px solid var(--border)}
+.chip.wws{background:var(--gold-soft);color:var(--gold);border-color:transparent}
+.chip.rbw{background:var(--oxblood-soft);color:var(--oxblood);border-color:transparent}
+.chip.prismagen{background:var(--teal-soft);color:var(--teal);border-color:transparent}
+.chip.semex{background:var(--indigo-soft);color:var(--indigo);border-color:transparent}
+.chip.cri{background:var(--moss-soft);color:var(--moss);border-color:transparent}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.refresh-line{font-size:12.5px;color:var(--ink-dim)}
+.refresh-line a{color:var(--ink-dim);text-decoration:underline}
+
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.stat .n{font-family:"Newsreader",serif;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--ink-dim);margin-top:2px}
+.stat.pass{background:var(--accent-soft)}
+.stat.pass .n{color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border)}
+.panel-head h2{font-size:17px;font-weight:600}
+.btn{cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);border-radius:9px;padding:9px 15px;font-size:14px;font-weight:500;transition:background .12s}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.small{padding:6px 11px;font-size:13px}
+.btn.danger{color:var(--warn)}
+
+.crit-list{padding:12px 16px 18px;display:flex;flex-direction:column;gap:12px}
+.crit-row{border:1px solid var(--border);border-radius:11px;padding:12px 14px;background:var(--surface-2)}
+.crit-row .label{font-weight:600;font-size:14.5px;margin-bottom:4px}
+.crit-row .help{font-size:12px;color:var(--ink-dim);margin-bottom:6px}
+.crit-row .scales{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--ink-dim)}
+.crit-row .scales b{color:var(--ink);font-weight:600}
+.crit-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.crit-edit-grid label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:2px}
+.crit-edit-grid .scale-block{border:1px dashed var(--border-strong);border-radius:8px;padding:8px}
+.crit-edit-grid input, .crit-edit-grid select{width:100%;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:13px}
+.crit-row input.label-input{width:100%;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:14.5px;font-weight:600;margin-bottom:8px}
+.crit-row-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
+.panel-foot{padding:12px 16px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.criteria-intro{padding:0 16px 4px;font-size:12.5px;color:var(--ink-dim)}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
+.toolbar input[type=search]{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);font-size:14px}
+.firma-filter{display:flex;gap:6px;flex-wrap:wrap}
+.firma-btn{padding:7px 13px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);font-size:13px;cursor:pointer}
+.firma-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.toggle-only{display:flex;align-items:center;gap:7px;font-size:14px;white-space:nowrap;cursor:pointer}
+.toggle-only input{width:17px;height:17px}
+
+.table-scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+thead th{position:sticky;top:0;background:var(--surface);text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-strong);white-space:nowrap;cursor:pointer;user-select:none;font-weight:600}
+thead th:hover{color:var(--accent)}
+thead th .arrow{opacity:.4;margin-left:3px}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.pass td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.name-cell{font-weight:600}
+.name-cell a{color:inherit;text-decoration:none}
+.name-cell a:hover{text-decoration:underline}
+.badge-firma{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11.5px;font-weight:600}
+.badge-firma.wws{background:var(--gold-soft);color:var(--gold)}
+.badge-firma.rbw{background:var(--oxblood-soft);color:var(--oxblood)}
+.badge-firma.prismagen{background:var(--teal-soft);color:var(--teal)}
+.badge-firma.semex{background:var(--indigo-soft);color:var(--indigo)}
+.badge-firma.cri{background:var(--moss-soft);color:var(--moss)}
+.val-cell{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.val-cell.pass{color:var(--accent);font-weight:600}
+.val-cell.fail{color:var(--warn)}
+.val-cell.na{color:var(--ink-dim);opacity:.6}
+.scale-tag{font-size:9.5px;color:var(--ink-dim);margin-left:3px}
+.pill-erfuellt{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12.5px;font-weight:600}
+.pill-erfuellt.full{background:var(--accent-soft);color:var(--accent)}
+.pill-erfuellt.partial{background:var(--chip);color:var(--ink-dim)}
+.src-link{color:var(--ink-dim);font-size:12.5px}
+
+footer.notes{margin-top:30px;padding-top:18px;border-top:1px solid var(--border);font-size:13px;color:var(--ink-dim)}
+footer.notes h3{font-size:15px;color:var(--ink);margin-bottom:10px;font-weight:600}
+footer.notes .src-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:16px}
+footer.notes .src-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:13px 15px}
+footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
+.empty-state{padding:48px 20px;text-align:center;color:var(--ink-dim);font-size:15px}
+.load-note{padding:16px;color:var(--ink-dim);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-icon">🐄</div>
+      <div>
+        <div class="kicker">Poolehof · Zuchtplanung</div>
+        <h1>Bullenauswahl</h1>
+        <p class="sub">Bullenkataloge von WWS, RBW, Prismagen, Semex und CRI Genetics an einem Ort – gefiltert nach Julians Zuchtkriterien, deutsche (RZ-Skala) und amerikanische (TPI-Skala) Werte nebeneinander.</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="source-chips" id="sourceChips"></div>
+      <div class="refresh-line" id="refreshLine"></div>
+    </div>
+  </header>
+
+  <section class="summary" id="summary"></section>
+
+  <section class="layout">
+    <aside class="panel" id="criteriaPanel">
+      <div class="panel-head">
+        <h2>Kriterien</h2>
+        <button class="btn" id="editCritBtn">Bearbeiten</button>
+      </div>
+      <p class="criteria-intro">Bei jedem Kriterium: deutscher Wert (RZ-Skala, meist &gt;100 = überdurchschnittlich) und amerikanischer Wert (TPI-Skala) getrennt – je nachdem, was die Quelle liefert.</p>
+      <div class="crit-list" id="critList"></div>
+      <div class="panel-foot" id="critFoot" hidden>
+        <button class="btn primary" id="addCritBtn">+ Kriterium</button>
+        <button class="btn" id="saveCritBtn">Speichern</button>
+        <button class="btn ghost" id="cancelCritBtn">Abbrechen</button>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div class="toolbar">
+        <input type="search" id="searchBox" placeholder="Bulle oder Vater suchen …">
+        <div class="firma-filter" id="firmaFilter"></div>
+        <label class="toggle-only"><input type="checkbox" id="onlyPass"> nur passende Bullen</label>
+      </div>
+      <div class="table-scroll">
+        <table id="bullTable">
+          <thead><tr id="tableHead"></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="emptyState" hidden>Keine Bullen gefunden – Filter oder Suche anpassen.</div>
+      <div class="load-note" id="loadNote">Lade Bullendaten …</div>
+    </main>
+  </section>
+
+  <footer class="notes">
+    <h3>Datenquellen &amp; Stand</h3>
+    <div class="src-grid" id="srcGrid"></div>
+    <p><b>Automatik:</b> Ein GitHub-Workflow ruft WWS, RBW, Prismagen, Semex und CRI Genetics automatisch monatlich neu ab und aktualisiert die Daten hier – läuft komplett unabhängig, ohne Claude. Zwischendurch jederzeit manuell anstoßbar über den Link oben rechts ("Jetzt aktualisieren").</p>
+    <p><b>Wichtig zu Semex:</b> Der deutsche Semex-Katalog ist nur als gescanntes Bilder-Flipbook veröffentlicht (keine Tabelle). Die Semex-Bullen hier stammen vom internationalen semex.com Sire-Directory (US-Skala) – ob genau diese auch über Semex Deutschland bestellbar sind, im Zweifel dort nachfragen.</p>
+    <p><b>Strichlänge &amp; Stärke:</b> vollständig bei WWS (alle Bullen, US-Skala) und für einen Teil bei Prismagen/CRI Genetics (DE-Skala). Bei RBW und dem Rest von Prismagen/Semex liegt dieses Einzelmerkmal bei der Quelle nicht vor – zeigt dort „keine Daten“.</p>
+    <p style="margin-top:10px"><b>Kriterien werden nur in diesem Browser gespeichert</b> (nicht auf dem Server) – auf einem anderen Gerät siehst du wieder die Standard-Kriterien, bis du sie dort auch anpasst.</p>
+  </footer>
+</div>
+
+<script>
+// TODO nach dem Einrichten auf GitHub einmal anpassen (siehe README.md):
+const GITHUB_ACTIONS_URL = "https://github.com/DEIN-USERNAME/DEIN-REPO/actions/workflows/refresh.yml";
+
+const DATA_FILES = {
+  WWS: "data/wws_bulls.json",
+  RBW: "data/rbw_bulls.json",
+  Prismagen: "data/prismagen_bulls.json",
+  Semex: "data/semex_bulls.json",
+  CRI: "data/cri_bulls.json",
+};
+
+const DEFAULT_CRITERIA = [
+  {id:"gzw", label:"Gesamtzuchtwert", help:"Wichtigster Gesamtwert – wie gut vererbt der Bulle insgesamt.", de:{field:"rzg",op:">=",value:150,unit:""}, us:{field:"tpi",op:">=",value:3300,unit:""}},
+  {id:"milch", label:"Milchmenge", help:"Erwartete Mehr-/Minderleistung der Töchter.", de:{field:"milch_kg",op:">",value:1500,unit:"kg"}, us:{field:"milch_lbs",op:">",value:1500,unit:"lbs"}},
+  {id:"strichlaenge", label:"Strichlänge", help:"Für Melkroboter/-technik relevant.", de:{field:"strichlaenge_de",op:">",value:100,unit:""}, us:{field:"strichlaenge_us",op:">",value:0,unit:""}},
+  {id:"staerke", label:"Stärke", help:"Körperstärke/Rahmen der Töchter.", de:{field:"staerke_de",op:">",value:100,unit:""}, us:{field:"staerke_us",op:">",value:0,unit:""}},
+  {id:"melkbarkeit", label:"Melkbarkeit", help:"Wie schnell/leicht sich die Töchter melken lassen.", de:{field:"rzd",op:">",value:100,unit:""}, us:{field:"mbk",op:">",value:7.2,unit:""}},
+  {id:"fruchtbarkeit", label:"Töchterfruchtbarkeit", help:"Wie leicht die Töchter tragend werden.", de:{field:"rzr",op:">",value:100,unit:""}, us:{field:"dpr",op:">",value:0.5,unit:""}},
+  {id:"zellzahl", label:"Zellzahl / Eutergesundheit", help:"Niedrigere Zellzahl = gesündere Euter.", de:{field:"rzs",op:"<",value:100,unit:""}, us:{field:"scs",op:"<",value:2.8,unit:""}},
+];
+
+const FIRMA_META = {
+  WWS:{cls:"wws", label:"WWS"},
+  RBW:{cls:"rbw", label:"RBW"},
+  Prismagen:{cls:"prismagen", label:"Prismagen"},
+  Semex:{cls:"semex", label:"Semex"},
+  CRI:{cls:"cri", label:"CRI Genetics"},
+};
+
+const CRITERIA_STORAGE_KEY = "poolehof-bullenauswahl-kriterien-v1";
+
+let state = {
+  bulls: [],
+  criteria: loadStoredCriteria(),
+  editingCriteria: null,
+  search: "",
+  activeFirmen: new Set(Object.keys(FIRMA_META)),
+  onlyPass: false,
+  sortKey: "__erfuellt",
+  sortDir: -1,
+};
+
+function loadStoredCriteria(){
+  try {
+    const raw = localStorage.getItem(CRITERIA_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return DEFAULT_CRITERIA;
+}
+function saveStoredCriteria(){
+  try { localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(state.criteria)); }
+  catch(e) { console.error("Konnte Kriterien nicht lokal speichern", e); }
+}
+
+function cmp(v, op, t){
+  if (v === null || v === undefined || v === "") return null;
+  const n = Number(v);
+  if (Number.isNaN(n)) return null;
+  switch(op){
+    case ">": return n > t;
+    case ">=": return n >= t;
+    case "<": return n < t;
+    case "<=": return n <= t;
+    default: return null;
+  }
+}
+
+function evalCriterion(bull, c){
+  if (c.de && bull[c.de.field] !== undefined && bull[c.de.field] !== null && bull[c.de.field] !== "") {
+    const r = cmp(bull[c.de.field], c.de.op, c.de.value);
+    return {value: bull[c.de.field], unit: c.de.unit, scale:"DE", pass: r, na: r===null};
+  }
+  if (c.us && bull[c.us.field] !== undefined && bull[c.us.field] !== null && bull[c.us.field] !== "") {
+    const r = cmp(bull[c.us.field], c.us.op, c.us.value);
+    return {value: bull[c.us.field], unit: c.us.unit, scale:"US", pass: r, na: r===null};
+  }
+  return {value:null, na:true};
+}
+
+function bullPassesAll(bull){
+  const evals = state.criteria.map(c => evalCriterion(bull, c));
+  const applicable = evals.filter(e => !e.na);
+  const passed = applicable.filter(e => e.pass);
+  return {full: applicable.length>0 && passed.length===applicable.length, applicable: applicable.length, passed: passed.length};
+}
+
+function primaryScore(bull){
+  const c = state.criteria.find(c=>c.id==="gzw") || state.criteria[0];
+  if (!c) return -Infinity;
+  const e = evalCriterion(bull, c);
+  return e.value==null ? -Infinity : Number(e.value);
+}
+
+function fmtVal(v, unit){
+  if (v === null || v === undefined || v === "") return "–";
+  let n = Number(v);
+  let s = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.00$/,"").replace(/0$/,"").replace(/\.$/,"");
+  if (Math.abs(n) < 10 && !Number.isInteger(n)) s = n.toFixed(2);
+  return (n>0 && !s.startsWith("+") && !s.startsWith("-") ? "+" : "") + s + (unit? " "+unit : "");
+}
+
+function renderSourceChips(){
+  const el = document.getElementById("sourceChips");
+  el.innerHTML = Object.entries(FIRMA_META).map(([firma,m])=>{
+    const c = state.bulls.filter(b=>b.firma===firma).length;
+    return `<span class="chip ${m.cls}"><span class="dot"></span>${m.label}${c?` · ${c}`:""}</span>`;
+  }).join("");
+}
+
+function renderRefreshLine(){
+  const el = document.getElementById("refreshLine");
+  const dates = state.bulls.map(b=>b.stand).filter(Boolean).sort();
+  const newest = dates.length ? dates[dates.length-1] : "–";
+  el.innerHTML = `Stand: ${newest} · <a href="${GITHUB_ACTIONS_URL}" target="_blank" rel="noopener">Jetzt aktualisieren ↗</a>`;
+}
+
+function renderSummary(){
+  const total = state.bulls.length;
+  const passing = state.bulls.filter(b=>bullPassesAll(b).full).length;
+  const el = document.getElementById("summary");
+  const perFirma = Object.keys(FIRMA_META)
+    .map(firma => ({firma, n: state.bulls.filter(b=>b.firma===firma).length}))
+    .filter(f => f.n > 0)
+    .map(f => `<div class="stat"><div class="n">${f.n}</div><div class="l">von ${f.firma}</div></div>`)
+    .join("");
+  el.innerHTML = `
+    <div class="stat"><div class="n">${total}</div><div class="l">Bullen insgesamt</div></div>
+    <div class="stat pass"><div class="n">${passing}</div><div class="l">erfüllen alle prüfbaren Kriterien</div></div>
+    ${perFirma}
+  `;
+}
+
+function renderCriteria(){
+  const list = document.getElementById("critList");
+  const editing = state.editingCriteria;
+  const source = editing || state.criteria;
+  if (editing){
+    list.innerHTML = source.map((c,i)=>`
+      <div class="crit-row">
+        <input class="label-input" data-idx="${i}" data-k="label" value="${c.label}">
+        <div class="crit-edit-grid">
+          <div class="scale-block">
+            <label>DE-Feld (RZ-Skala)</label>
+            <input data-idx="${i}" data-k="de.field" value="${c.de?.field||''}" placeholder="z.B. rzg">
+            <label style="margin-top:5px">Operator / Schwelle</label>
+            <div style="display:flex;gap:4px">
+              <select data-idx="${i}" data-k="de.op" style="flex:0 0 62px">
+                ${["<","<=",">",">="].map(o=>`<option ${c.de?.op===o?'selected':''}>${o}</option>`).join("")}
+              </select>
+              <input data-idx="${i}" data-k="de.value" type="number" step="any" value="${c.de?.value ?? ''}">
+            </div>
+            <label style="margin-top:5px">Einheit</label>
+            <input data-idx="${i}" data-k="de.unit" value="${c.de?.unit||''}">
+          </div>
+          <div class="scale-block">
+            <label>US-Feld (TPI-Skala)</label>
+            <input data-idx="${i}" data-k="us.field" value="${c.us?.field||''}" placeholder="z.B. tpi">
+            <label style="margin-top:5px">Operator / Schwelle</label>
+            <div style="display:flex;gap:4px">
+              <select data-idx="${i}" data-k="us.op" style="flex:0 0 62px">
+                ${["<","<=",">",">="].map(o=>`<option ${c.us?.op===o?'selected':''}>${o}</option>`).join("")}
+              </select>
+              <input data-idx="${i}" data-k="us.value" type="number" step="any" value="${c.us?.value ?? ''}">
+            </div>
+            <label style="margin-top:5px">Einheit</label>
+            <input data-idx="${i}" data-k="us.unit" value="${c.us?.unit||''}">
+          </div>
+        </div>
+        <div class="crit-row-actions">
+          <button class="btn small danger" data-remove="${i}">Entfernen</button>
+        </div>
+      </div>
+    `).join("");
+    list.querySelectorAll("[data-idx]").forEach(inp=>{
+      inp.addEventListener("input", e=>{
+        const idx = +e.target.dataset.idx;
+        const key = e.target.dataset.k;
+        const val = e.target.type === "number" ? parseFloat(e.target.value) : e.target.value;
+        const [a,b] = key.split(".");
+        if (b){ state.editingCriteria[idx][a] = state.editingCriteria[idx][a] || {}; state.editingCriteria[idx][a][b] = val; }
+        else { state.editingCriteria[idx][a] = val; }
+      });
+    });
+    list.querySelectorAll("[data-remove]").forEach(btn=>{
+      btn.addEventListener("click", e=>{
+        state.editingCriteria.splice(+e.target.dataset.remove,1);
+        renderCriteria();
+      });
+    });
+  } else {
+    list.innerHTML = source.map(c=>{
+      const deTxt = c.de?.field ? `<b>DE</b> ${c.de.field} ${c.de.op} ${c.de.value}${c.de.unit? ' '+c.de.unit:''}` : "";
+      const usTxt = c.us?.field ? `<b>US</b> ${c.us.field} ${c.us.op} ${c.us.value}${c.us.unit? ' '+c.us.unit:''}` : "";
+      return `<div class="crit-row"><div class="label">${c.label}</div>${c.help?`<div class="help">${c.help}</div>`:""}<div class="scales">${deTxt?`<div>${deTxt}</div>`:""}${usTxt?`<div>${usTxt}</div>`:""}</div></div>`;
+    }).join("");
+  }
+  document.getElementById("critFoot").hidden = !editing;
+  document.getElementById("editCritBtn").hidden = !!editing;
+}
+
+function renderFirmaFilter(){
+  const el = document.getElementById("firmaFilter");
+  el.innerHTML = Object.entries(FIRMA_META).map(([firma,m])=>{
+    const has = state.bulls.some(b=>b.firma===firma);
+    const active = state.activeFirmen.has(firma);
+    return `<button class="firma-btn ${active?'active':''}" data-firma="${firma}" ${has?'':'style="opacity:.4" title="Keine Bullen geladen"'}>${firma}</button>`;
+  }).join("");
+  el.querySelectorAll(".firma-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const f = btn.dataset.firma;
+      if (state.activeFirmen.has(f)) state.activeFirmen.delete(f); else state.activeFirmen.add(f);
+      renderTable();
+      renderFirmaFilter();
+    });
+  });
+}
+
+function filteredSortedBulls(){
+  let list = state.bulls.filter(b => state.activeFirmen.has(b.firma));
+  if (state.search){
+    const q = state.search.toLowerCase();
+    list = list.filter(b => (b.name||"").toLowerCase().includes(q) || (b.vater||"").toLowerCase().includes(q));
+  }
+  if (state.onlyPass){
+    list = list.filter(b => bullPassesAll(b).full);
+  }
+  list = list.slice().sort((a,b)=>{
+    if (state.sortKey === "__name") return state.sortDir*a.name.localeCompare(b.name);
+    let va, vb;
+    if (state.sortKey === "__erfuellt"){
+      const ra = bullPassesAll(a), rb = bullPassesAll(b);
+      if (ra.full !== rb.full) return ra.full ? -1 : 1;
+      va = primaryScore(a); vb = primaryScore(b);
+    } else {
+      const c = state.criteria.find(c=>c.id===state.sortKey);
+      va = evalCriterion(a,c).value; vb = evalCriterion(b,c).value;
+    }
+    va = va===null||va===undefined ? -Infinity : Number(va);
+    vb = vb===null||vb===undefined ? -Infinity : Number(vb);
+    return state.sortDir*(vb-va)*-1 || 0;
+  });
+  // Hinweis: sortDir=-1 (Standard) soll "beste zuerst" heissen -> vb-va bei value-Sortierung
+  return list;
+}
+
+function setSort(key){
+  if (state.sortKey === key) state.sortDir *= -1;
+  else { state.sortKey = key; state.sortDir = -1; }
+  renderTable();
+}
+
+function renderTableHead(){
+  const head = document.getElementById("tableHead");
+  const arrow = k => state.sortKey===k ? `<span class="arrow">${state.sortDir>0?'▲':'▼'}</span>` : "";
+  let cols = [
+    `<th data-sort="__name">Name${arrow("__name")}</th>`,
+    `<th>Firma</th>`,
+    `<th>Kategorie</th>`,
+  ];
+  state.criteria.forEach(c=> cols.push(`<th data-sort="${c.id}">${c.label}${arrow(c.id)}</th>`));
+  cols.push(`<th data-sort="__erfuellt">Erfüllt${arrow("__erfuellt")}</th>`);
+  cols.push(`<th>Quelle</th>`);
+  head.innerHTML = cols.join("");
+  head.querySelectorAll("[data-sort]").forEach(th=>{
+    th.addEventListener("click", ()=> setSort(th.dataset.sort));
+  });
+}
+
+function renderTable(){
+  renderTableHead();
+  const body = document.getElementById("tableBody");
+  const list = filteredSortedBulls();
+  document.getElementById("emptyState").hidden = list.length>0 || state.bulls.length===0;
+  body.innerHTML = list.map(b=>{
+    const res = bullPassesAll(b);
+    const fm = FIRMA_META[b.firma] || {cls:"", label:b.firma};
+    const cells = state.criteria.map(c=>{
+      const e = evalCriterion(b,c);
+      if (e.na) return `<td class="val-cell na">–</td>`;
+      const cls = e.pass ? "pass" : "fail";
+      return `<td class="val-cell ${cls}">${fmtVal(e.value, e.unit)}<span class="scale-tag">${e.scale}</span></td>`;
+    }).join("");
+    const pill = res.applicable===0
+      ? `<span class="pill-erfuellt partial">keine Daten</span>`
+      : res.full
+        ? `<span class="pill-erfuellt full">✓ alle (${res.passed}/${res.applicable})</span>`
+        : `<span class="pill-erfuellt partial">${res.passed}/${res.applicable}</span>`;
+    return `<tr class="${res.full?'pass':''}">
+      <td class="name-cell">${b.detail_url? `<a href="${b.detail_url}" target="_blank" rel="noopener">${b.name}</a>` : b.name}</td>
+      <td><span class="badge-firma ${fm.cls}">${b.firma}</span></td>
+      <td>${b.kategorie||b.rasse||""}</td>
+      ${cells}
+      <td>${pill}</td>
+      <td><a class="src-link" href="${b.quelle_url}" target="_blank" rel="noopener">Quelle ↗</a></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderSourceFootnotes(){
+  const el = document.getElementById("srcGrid");
+  const wws = state.bulls.filter(b=>b.firma==="WWS");
+  const rbw = state.bulls.filter(b=>b.firma==="RBW");
+  const prismagen = state.bulls.filter(b=>b.firma==="Prismagen");
+  const semex = state.bulls.filter(b=>b.firma==="Semex");
+  const cri = state.bulls.filter(b=>b.firma==="CRI");
+  const stand = arr => arr.length ? arr.map(b=>b.stand).sort().reverse()[0] : "–";
+  const vollst = arr => arr.filter(b=>b.vollstaendig).length;
+  const strich = arr => arr.filter(b=>b.strichlaenge_de!=null || b.strichlaenge_us!=null).length;
+  el.innerHTML = `
+    <div class="src-card"><div class="t">WWS Deutschland</div>${wws.length} Bullen · Stand ${stand(wws)} · vollständige Kennzahlen inkl. Strichlänge/Stärke (${strich(wws)})<br><a href="https://www.wws-bullen.de/bullenangebot" target="_blank" rel="noopener">wws-bullen.de/bullenangebot ↗</a></div>
+    <div class="src-card"><div class="t">RBW (Rinderunion Baden-Württemberg)</div>${rbw.length} Bullen · Stand ${stand(rbw)} · vollständige Kennzahlen bei ${vollst(rbw)} Bullen<br><a href="https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html" target="_blank" rel="noopener">rind-bw.de ↗</a></div>
+    <div class="src-card"><div class="t">Prismagen (STG Germany)</div>${prismagen.length} Bullen · Stand ${stand(prismagen)} · Strichlänge/Stärke bei ${strich(prismagen)} Bullen<br><a href="https://stggermany.de/bullen/holstein/" target="_blank" rel="noopener">stggermany.de/bullen/holstein ↗</a></div>
+    <div class="src-card"><div class="t">Semex</div>${semex.length} Bullen (US-Skala) · Stand ${stand(semex)} · vom internationalen Sire-Directory<br><a href="https://www.semex.com/us/i?view=list&breed=HO" target="_blank" rel="noopener">semex.com/us ↗</a></div>
+    <div class="src-card"><div class="t">CRI Genetics</div>${cri.length} Bullen · Stand ${stand(cri)} · Strichlänge/Stärke bei ${strich(cri)} Bullen<br><a href="https://www.cri-genetics.de/bullenangebot/holstein-6.html" target="_blank" rel="noopener">cri-genetics.de ↗</a></div>
+  `;
+}
+
+function renderAll(){
+  renderSourceChips();
+  renderRefreshLine();
+  renderSummary();
+  renderCriteria();
+  renderFirmaFilter();
+  renderTable();
+  renderSourceFootnotes();
+}
+
+async function loadData(){
+  const results = await Promise.allSettled(
+    Object.entries(DATA_FILES).map(async ([firma, path]) => {
+      const res = await fetch(path, {cache: "no-store"});
+      if (!res.ok) throw new Error(`${path}: ${res.status}`);
+      return res.json();
+    })
+  );
+  const bulls = [];
+  const failed = [];
+  Object.keys(DATA_FILES).forEach((firma, i) => {
+    const r = results[i];
+    if (r.status === "fulfilled") bulls.push(...r.value);
+    else failed.push(firma);
+  });
+  state.bulls = bulls;
+  document.getElementById("loadNote").hidden = true;
+  if (failed.length) {
+    document.getElementById("loadNote").hidden = false;
+    document.getElementById("loadNote").textContent =
+      `Konnte Daten von ${failed.join(", ")} nicht laden – Rest wird trotzdem angezeigt.`;
+  }
+  renderAll();
+}
+
+document.getElementById("searchBox").addEventListener("input", e=>{ state.search = e.target.value; renderTable(); });
+document.getElementById("onlyPass").addEventListener("change", e=>{ state.onlyPass = e.target.checked; renderTable(); });
+
+document.getElementById("editCritBtn").addEventListener("click", ()=>{
+  state.editingCriteria = JSON.parse(JSON.stringify(state.criteria));
+  renderCriteria();
+});
+document.getElementById("cancelCritBtn").addEventListener("click", ()=>{
+  state.editingCriteria = null;
+  renderCriteria();
+});
+document.getElementById("addCritBtn").addEventListener("click", ()=>{
+  state.editingCriteria.push({id:"k"+Date.now(), label:"Neues Kriterium", de:{field:"",op:">",value:0,unit:""}, us:{field:"",op:">",value:0,unit:""}});
+  renderCriteria();
+});
+document.getElementById("saveCritBtn").addEventListener("click", ()=>{
+  state.criteria = state.editingCriteria;
+  state.editingCriteria = null;
+  saveStoredCriteria();
+  renderAll();
+});
+
+loadData();
+</script>
+</body>
+</html>

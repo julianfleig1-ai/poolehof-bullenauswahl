@@ -1,0 +1,67 @@
+name: Bullendaten aktualisieren
+
+on:
+  schedule:
+    # Am 1. jedes Monats, 06:00 UTC (Puffer für die ~quartalsweisen
+    # Zuchtwertschätzungen bei WWS/RBW/Prismagen/CRI)
+    - cron: "0 6 1 * *"
+  workflow_dispatch: {}  # manueller "Run workflow"-Knopf im Actions-Tab
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Python-Abhängigkeiten installieren
+        run: pip install beautifulsoup4 playwright
+
+      - name: Chromium für Playwright installieren
+        run: python -m playwright install --with-deps chromium
+
+      - name: WWS scrapen
+        run: python scraper/scrape_wws.py > data/wws_bulls.json
+        continue-on-error: true
+
+      - name: Prismagen scrapen
+        run: python scraper/scrape_prismagen.py > data/prismagen_bulls.json
+        continue-on-error: true
+
+      - name: Semex scrapen
+        run: python scraper/scrape_semex.py > data/semex_bulls.json
+        continue-on-error: true
+
+      - name: RBW scrapen (Playwright/AltCha)
+        run: python scraper/scrape_rbw.py > data/rbw_bulls.json
+        continue-on-error: true
+
+      - name: CRI Genetics scrapen (Playwright/AltCha)
+        run: python scraper/scrape_cri.py > data/cri_bulls.json
+        continue-on-error: true
+
+      - name: Daten in die Web-App kopieren
+        run: |
+          mkdir -p docs/data
+          for f in wws_bulls rbw_bulls prismagen_bulls semex_bulls cri_bulls; do
+            # nur überschreiben wenn die neue Datei nicht leer/kaputt ist
+            if [ -s "data/$f.json" ] && python -c "import json,sys; json.load(open('data/$f.json'))" 2>/dev/null; then
+              cp "data/$f.json" "docs/data/$f.json"
+            else
+              echo "::warning::$f.json fehlt oder ist ungültig - alte Version in docs/data bleibt stehen"
+            fi
+          done
+
+      - name: Änderungen committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ docs/data/
+          git diff --cached --quiet && echo "Keine Änderungen" || git commit -m "Automatischer Bullendaten-Abruf $(date -u +%Y-%m-%d)"
+          git push
