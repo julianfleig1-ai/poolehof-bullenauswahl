@@ -113,6 +113,7 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .firma-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .toggle-only{display:flex;align-items:center;gap:7px;font-size:14px;white-space:nowrap;cursor:pointer}
 .toggle-only input{width:17px;height:17px}
+.toggle-only select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);font-size:14px;cursor:pointer}
 
 .table-scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:13.5px}
@@ -136,7 +137,7 @@ tbody tr.pass td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
 .val-cell.fail{color:var(--warn)}
 .val-cell.na{color:var(--ink-dim);opacity:.6}
 .scale-tag{font-size:9.5px;color:var(--ink-dim);margin-left:3px}
-.pill-erfuellt{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12.5px;font-weight:600}
+.pill-erfuellt{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .pill-erfuellt.full{background:var(--accent-soft);color:var(--accent)}
 .pill-erfuellt.partial{background:var(--chip);color:var(--ink-dim)}
 .src-link{color:var(--ink-dim);font-size:12.5px}
@@ -148,6 +149,47 @@ footer.notes .src-card{background:var(--surface);border:1px solid var(--border);
 footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
 .empty-state{padding:48px 20px;text-align:center;color:var(--ink-dim);font-size:15px}
 .load-note{padding:16px;color:var(--ink-dim);font-size:14px;text-align:center}
+
+/* --- Detail-Dialog: welche Kriterien erfüllt der Bulle, welche nicht --- */
+tbody tr{cursor:pointer}
+tbody tr:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+dialog#bullDialog{border:none;padding:0;border-radius:16px;background:var(--surface);color:var(--ink);
+  width:min(560px,calc(100vw - 32px));max-height:min(86vh,780px);box-shadow:0 12px 48px rgba(31,42,60,.28)}
+dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2px)}
+.dlg-head{padding:20px 22px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);border-radius:16px 16px 0 0;z-index:1}
+.dlg-head .row1{display:flex;align-items:flex-start;gap:12px}
+.dlg-head h2{font-size:24px;font-weight:700;flex:1;line-height:1.2}
+.dlg-close{cursor:pointer;border:none;background:var(--surface-2);border-radius:8px;width:32px;height:32px;font-size:17px;color:var(--ink-dim);flex:none}
+.dlg-close:hover{background:var(--chip)}
+.dlg-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;font-size:12.5px;color:var(--ink-dim)}
+.dlg-meta .sep{opacity:.4}
+.dlg-score{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.score-box{flex:1;min-width:88px;border-radius:10px;padding:8px 11px;text-align:center;background:var(--surface-2);border:1px solid var(--border)}
+.score-box .n{font-family:"Newsreader",serif;font-size:22px;font-weight:700;line-height:1.1}
+.score-box .l{font-size:11px;color:var(--ink-dim);margin-top:1px}
+.score-box.ok{background:var(--accent-soft);border-color:transparent}.score-box.ok .n{color:var(--accent)}
+.score-box.bad{background:var(--warn-soft);border-color:transparent}.score-box.bad .n{color:var(--warn)}
+.dlg-body{padding:6px 22px 20px;overflow-y:auto}
+.dlg-section-title{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-dim);margin:16px 0 7px;font-weight:600}
+.crit-check{display:flex;gap:11px;align-items:flex-start;padding:10px 12px;border-radius:10px;border:1px solid var(--border);margin-bottom:7px;background:var(--surface)}
+.crit-check.fail{background:var(--warn-soft);border-color:transparent}
+.crit-check.ok{background:var(--accent-soft);border-color:transparent}
+.crit-check .mark{font-size:15px;line-height:1.35;flex:none;width:18px;text-align:center}
+.crit-check.ok .mark{color:var(--accent)}
+.crit-check.fail .mark{color:var(--warn)}
+.crit-check.na .mark{color:var(--ink-dim);opacity:.7}
+.crit-check .body{flex:1;min-width:0}
+.crit-check .t{font-weight:600;font-size:14px}
+.crit-check .d{font-size:12.5px;color:var(--ink-dim);margin-top:2px}
+.crit-check .d .ist{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.crit-check .miss{font-size:12.5px;font-weight:600;white-space:nowrap;flex:none;align-self:center}
+.crit-check.fail .miss{color:var(--warn)}
+.dlg-foot{display:flex;gap:8px;flex-wrap:wrap;padding:14px 22px 20px;border-top:1px solid var(--border)}
+.dlg-foot a{display:inline-block;padding:8px 14px;border:1px solid var(--border-strong);border-radius:9px;
+  font-size:13.5px;text-decoration:none;color:var(--ink)}
+.dlg-foot a:hover{background:var(--surface-2)}
+.dlg-hint{font-size:12px;color:var(--ink-dim);padding:0 22px 16px;line-height:1.45}
+@media (max-width:560px){.dlg-head{padding:16px 16px 13px}.dlg-body{padding:4px 16px 16px}.dlg-foot{padding:12px 16px 16px}.dlg-hint{padding:0 16px 12px}}
 </style>
 </head>
 <body>
@@ -158,7 +200,7 @@ footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
       <div>
         <div class="kicker">Poolehof · Zuchtplanung</div>
         <h1>Bullenauswahl</h1>
-        <p class="sub">Bullenkataloge von WWS, RBW, Prismagen, Semex und CRI Genetics an einem Ort – gefiltert nach Julians Zuchtkriterien, deutsche (RZ-Skala) und amerikanische (TPI-Skala) Werte nebeneinander.</p>
+        <p class="sub">Bullenkataloge von WWS, RBW, Prismagen, Semex und CRI Genetics an einem Ort – gefiltert nach den Zuchtkriterien vom Poolehof, deutsche (RZ-Skala) und amerikanische (TPI-Skala) Werte nebeneinander.</p>
       </div>
     </div>
     <div class="top-actions">
@@ -190,7 +232,14 @@ footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
       <div class="toolbar">
         <input type="search" id="searchBox" placeholder="Bulle oder Vater suchen …">
         <div class="firma-filter" id="firmaFilter"></div>
-        <label class="toggle-only"><input type="checkbox" id="onlyPass"> nur passende Bullen</label>
+        <label class="toggle-only">Zeigen:
+          <select id="abweichungFilter">
+            <option value="99">alle Bullen</option>
+            <option value="0">nur passende (kein Kriterium verfehlt)</option>
+            <option value="1">höchstens 1 verfehlt</option>
+            <option value="2">höchstens 2 verfehlt</option>
+          </select>
+        </label>
       </div>
       <div class="table-scroll">
         <table id="bullTable">
@@ -200,8 +249,11 @@ footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
       </div>
       <div class="empty-state" id="emptyState" hidden>Keine Bullen gefunden – Filter oder Suche anpassen.</div>
       <div class="load-note" id="loadNote">Lade Bullendaten …</div>
+      <p class="dlg-hint" style="padding:10px 16px 14px;margin:0">Tipp: Auf eine Zeile klicken – dann steht dort im Detail, welche Kriterien der Bulle erfüllt und welche nicht.</p>
     </main>
   </section>
+
+  <dialog id="bullDialog" aria-labelledby="dlgName"></dialog>
 
   <footer class="notes">
     <h3>Datenquellen &amp; Stand</h3>
@@ -251,7 +303,7 @@ let state = {
   editingCriteria: null,
   search: "",
   activeFirmen: new Set(Object.keys(FIRMA_META)),
-  onlyPass: false,
+  maxVerfehlt: 99,
   sortKey: "__erfuellt",
   sortDir: -1,
 };
@@ -282,22 +334,39 @@ function cmp(v, op, t){
 }
 
 function evalCriterion(bull, c){
-  if (c.de && bull[c.de.field] !== undefined && bull[c.de.field] !== null && bull[c.de.field] !== "") {
-    const r = cmp(bull[c.de.field], c.de.op, c.de.value);
-    return {value: bull[c.de.field], unit: c.de.unit, scale:"DE", pass: r, na: r===null};
-  }
-  if (c.us && bull[c.us.field] !== undefined && bull[c.us.field] !== null && bull[c.us.field] !== "") {
-    const r = cmp(bull[c.us.field], c.us.op, c.us.value);
-    return {value: bull[c.us.field], unit: c.us.unit, scale:"US", pass: r, na: r===null};
+  for (const [scale, s] of [["DE", c.de], ["US", c.us]]){
+    if (!s || !s.field) continue;
+    const v = bull[s.field];
+    if (v === undefined || v === null || v === "") continue;
+    const r = cmp(v, s.op, s.value);
+    return {value: v, unit: s.unit, scale, op: s.op, ziel: s.value,
+            field: s.field, pass: r, na: r===null};
   }
   return {value:null, na:true};
 }
 
-function bullPassesAll(bull){
+// Wie weit ist der Bulle vom Schwellenwert entfernt? (nur fuer verfehlte Kriterien)
+function abstand(e){
+  const n = Number(e.value), z = Number(e.ziel);
+  if (Number.isNaN(n) || Number.isNaN(z)) return null;
+  const d = (e.op === "<" || e.op === "<=") ? n - z : z - n;
+  return d > 0 ? d : null;
+}
+
+// Bewertet einen Bullen gegen alle Kriterien.
+//   erfuellt  = Kriterien, die er sicher erfüllt
+//   verfehlt  = Kriterien, die er sicher verfehlt
+//   unbekannt = Kriterien, zu denen die Quelle keinen Wert liefert
+// "passt" heisst: nichts verfehlt (unbekannte zählen weder dafür noch dagegen -
+// deshalb wird die Zahl der unbekannten immer mit angezeigt, damit ein
+// "passt" mit 3 Lücken nicht wie ein vollständig geprüfter Treffer aussieht).
+function bewerte(bull){
   const evals = state.criteria.map(c => evalCriterion(bull, c));
-  const applicable = evals.filter(e => !e.na);
-  const passed = applicable.filter(e => e.pass);
-  return {full: applicable.length>0 && passed.length===applicable.length, applicable: applicable.length, passed: passed.length};
+  const unbekannt = evals.filter(e => e.na).length;
+  const erfuellt = evals.filter(e => !e.na && e.pass).length;
+  const verfehlt = evals.filter(e => !e.na && !e.pass).length;
+  return {erfuellt, verfehlt, unbekannt, gesamt: evals.length,
+          passt: verfehlt === 0 && erfuellt > 0};
 }
 
 function primaryScore(bull){
@@ -313,6 +382,11 @@ function fmtVal(v, unit){
   let s = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.00$/,"").replace(/0$/,"").replace(/\.$/,"");
   if (Math.abs(n) < 10 && !Number.isInteger(n)) s = n.toFixed(2);
   return (n>0 && !s.startsWith("+") && !s.startsWith("-") ? "+" : "") + s + (unit? " "+unit : "");
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, ch =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 }
 
 function renderSourceChips(){
@@ -365,7 +439,7 @@ function renderStatusAlert(){
 
 function renderSummary(){
   const total = state.bulls.length;
-  const passing = state.bulls.filter(b=>bullPassesAll(b).full).length;
+  const passing = state.bulls.filter(b=>bewerte(b).passt).length;
   const el = document.getElementById("summary");
   const perFirma = Object.keys(FIRMA_META)
     .map(firma => ({firma, n: state.bulls.filter(b=>b.firma===firma).length}))
@@ -470,15 +544,18 @@ function filteredSortedBulls(){
     const q = state.search.toLowerCase();
     list = list.filter(b => (b.name||"").toLowerCase().includes(q) || (b.vater||"").toLowerCase().includes(q));
   }
-  if (state.onlyPass){
-    list = list.filter(b => bullPassesAll(b).full);
+  if (state.maxVerfehlt < 99){
+    list = list.filter(b => bewerte(b).verfehlt <= state.maxVerfehlt);
   }
   list = list.slice().sort((a,b)=>{
     if (state.sortKey === "__name") return state.sortDir*a.name.localeCompare(b.name);
     let va, vb;
     if (state.sortKey === "__erfuellt"){
-      const ra = bullPassesAll(a), rb = bullPassesAll(b);
-      if (ra.full !== rb.full) return ra.full ? -1 : 1;
+      const ra = bewerte(a), rb = bewerte(b);
+      // sortDir === -1 (Standard) heisst "beste zuerst":
+      // wenige verfehlte zuerst, bei Gleichstand viele erfuellte zuerst.
+      if (ra.verfehlt !== rb.verfehlt) return state.sortDir * (ra.verfehlt - rb.verfehlt) * -1;
+      if (ra.erfuellt !== rb.erfuellt) return state.sortDir * (ra.erfuellt - rb.erfuellt);
       va = primaryScore(a); vb = primaryScore(b);
     } else {
       const c = state.criteria.find(c=>c.id===state.sortKey);
@@ -521,7 +598,7 @@ function renderTable(){
   const list = filteredSortedBulls();
   document.getElementById("emptyState").hidden = list.length>0 || state.bulls.length===0;
   body.innerHTML = list.map(b=>{
-    const res = bullPassesAll(b);
+    const res = bewerte(b);
     const fm = FIRMA_META[b.firma] || {cls:"", label:b.firma};
     const cells = state.criteria.map(c=>{
       const e = evalCriterion(b,c);
@@ -529,12 +606,14 @@ function renderTable(){
       const cls = e.pass ? "pass" : "fail";
       return `<td class="val-cell ${cls}">${fmtVal(e.value, e.unit)}<span class="scale-tag">${e.scale}</span></td>`;
     }).join("");
-    const pill = res.applicable===0
+    const luecke = res.unbekannt ? ` <span style="opacity:.75;font-weight:400">· ${res.unbekannt} ohne Daten</span>` : "";
+    const pill = res.erfuellt === 0 && res.verfehlt === 0
       ? `<span class="pill-erfuellt partial">keine Daten</span>`
-      : res.full
-        ? `<span class="pill-erfuellt full">✓ alle (${res.passed}/${res.applicable})</span>`
-        : `<span class="pill-erfuellt partial">${res.passed}/${res.applicable}</span>`;
-    return `<tr class="${res.full?'pass':''}">
+      : res.passt
+        ? `<span class="pill-erfuellt full">✓ ${res.erfuellt} von ${res.gesamt}${luecke}</span>`
+        : `<span class="pill-erfuellt partial">${res.erfuellt} von ${res.gesamt} · ${res.verfehlt} verfehlt${luecke}</span>`;
+    return `<tr class="${res.passt?'pass':''}" data-idx="${b.__i}" tabindex="0" role="button"
+      aria-label="${esc(b.name)} – Kriterien im Detail anzeigen">
       <td class="name-cell">${b.detail_url? `<a href="${b.detail_url}" target="_blank" rel="noopener">${b.name}</a>` : b.name}</td>
       <td><span class="badge-firma ${fm.cls}">${b.firma}</span></td>
       <td>${b.kategorie||b.rasse||""}</td>
@@ -543,6 +622,99 @@ function renderTable(){
       <td><a class="src-link" href="${b.quelle_url}" target="_blank" rel="noopener">Quelle ↗</a></td>
     </tr>`;
   }).join("");
+}
+
+// Klick/Enter auf eine Zeile oeffnet den Detail-Dialog. Links in der Zeile
+// (Bullenname, "Quelle") sollen weiter normal funktionieren.
+function bullAusEvent(e){
+  if (e.target.closest("a")) return null;
+  const tr = e.target.closest("tr[data-idx]");
+  if (!tr) return null;
+  return state.bulls[+tr.dataset.idx] || null;
+}
+document.getElementById("tableBody").addEventListener("click", e=>{
+  const b = bullAusEvent(e);
+  if (b) openBullDialog(b);
+});
+document.getElementById("tableBody").addEventListener("keydown", e=>{
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const b = bullAusEvent(e);
+  if (b){ e.preventDefault(); openBullDialog(b); }
+});
+
+// --- Detail-Dialog -------------------------------------------------------
+// Zeigt pro Bulle jedes Kriterium einzeln: erfüllt, verfehlt (mit Abstand zum
+// Schwellenwert) oder "keine Daten" - sortiert, damit die Verfehlten oben stehen.
+const OP_TEXT = {">": "über", ">=": "mindestens", "<": "unter", "<=": "höchstens"};
+
+function critZeile(c, e){
+  const scaleTxt = e.scale === "DE" ? "deutsche RZ-Skala" : "US-Skala";
+  if (e.na){
+    const felder = [c.de?.field, c.us?.field].filter(Boolean).join(" / ");
+    return `<div class="crit-check na">
+      <div class="mark">?</div>
+      <div class="body"><div class="t">${esc(c.label)}</div>
+        <div class="d">Die Quelle liefert für diesen Bullen keinen Wert${felder?` (${esc(felder)})`:""} – weder dafür noch dagegen gewertet.</div></div>
+    </div>`;
+  }
+  // Schwellenwert ohne "+" - er ist eine Grenze, keine Abweichung ("unter 2.80")
+  const ziel = `${OP_TEXT[e.op] || e.op} ${fmtVal(e.ziel, e.unit).replace(/^\+/, "")}`;
+  const d = e.pass ? null : abstand(e);
+  const fehlt = d == null ? "" :
+    `<div class="miss">${(e.op === "<" || e.op === "<=") ? "" : "−"}${fmtVal(d, e.unit).replace(/^\+/,"")} ${(e.op === "<" || e.op === "<=") ? "zu hoch" : "zu wenig"}</div>`;
+  return `<div class="crit-check ${e.pass?"ok":"fail"}">
+    <div class="mark">${e.pass?"✓":"✗"}</div>
+    <div class="body"><div class="t">${esc(c.label)}</div>
+      <div class="d"><span class="ist">${fmtVal(e.value, e.unit)}</span> · gefordert: ${ziel} · ${scaleTxt}</div></div>
+    ${fehlt}
+  </div>`;
+}
+
+function openBullDialog(bull){
+  const dlg = document.getElementById("bullDialog");
+  const res = bewerte(bull);
+  const fm = FIRMA_META[bull.firma] || {cls:"", label:bull.firma};
+  const paare = state.criteria.map(c => [c, evalCriterion(bull, c)]);
+  const verfehlt = paare.filter(([,e]) => !e.na && !e.pass);
+  const erfuellt = paare.filter(([,e]) => !e.na && e.pass);
+  const offen    = paare.filter(([,e]) => e.na);
+
+  const meta = [
+    esc(bull.kategorie || bull.rasse || ""),
+    bull.hb_nr ? `HB ${esc(bull.hb_nr)}` : "",
+    bull.vater ? `V: ${esc(bull.vater)}` : "",
+    bull.mv ? `MV: ${esc(bull.mv)}` : "",
+    bull.stand ? `Stand ${esc(bull.stand)}` : "",
+  ].filter(Boolean).join('<span class="sep">·</span>');
+
+  const block = (titel, eintraege) => eintraege.length
+    ? `<div class="dlg-section-title">${titel}</div>` + eintraege.map(([c,e]) => critZeile(c,e)).join("")
+    : "";
+
+  dlg.innerHTML = `
+    <div class="dlg-head">
+      <div class="row1">
+        <h2 id="dlgName">${esc(bull.name)}</h2>
+        <button class="dlg-close" type="button" aria-label="Schließen">✕</button>
+      </div>
+      <div class="dlg-meta"><span class="badge-firma ${fm.cls}">${esc(bull.firma)}</span>${meta}</div>
+      <div class="dlg-score">
+        <div class="score-box ok"><div class="n">${res.erfuellt}</div><div class="l">erfüllt</div></div>
+        <div class="score-box ${res.verfehlt?"bad":""}"><div class="n">${res.verfehlt}</div><div class="l">verfehlt</div></div>
+        <div class="score-box"><div class="n">${res.unbekannt}</div><div class="l">ohne Daten</div></div>
+      </div>
+    </div>
+    <div class="dlg-body">
+      ${block("Nicht erfüllt", verfehlt)}
+      ${block("Erfüllt", erfuellt)}
+      ${block("Keine Daten in der Quelle", offen)}
+    </div>
+    <div class="dlg-foot">
+      ${bull.detail_url ? `<a href="${esc(bull.detail_url)}" target="_blank" rel="noopener">Datenblatt des Bullen ↗</a>` : ""}
+      ${bull.quelle_url ? `<a href="${esc(bull.quelle_url)}" target="_blank" rel="noopener">${esc(fm.label)}-Katalog ↗</a>` : ""}
+    </div>`;
+  dlg.querySelector(".dlg-close").addEventListener("click", ()=> dlg.close());
+  dlg.showModal();
 }
 
 function renderSourceFootnotes(){
@@ -596,6 +768,7 @@ async function loadData(){
     if (r.status === "fulfilled") bulls.push(...r.value);
     else failed.push(firma);
   });
+  bulls.forEach((b,i)=> b.__i = i);  // stabile Referenz fuer den Detail-Dialog
   state.bulls = bulls;
   document.getElementById("loadNote").hidden = true;
   if (failed.length) {
@@ -607,7 +780,7 @@ async function loadData(){
 }
 
 document.getElementById("searchBox").addEventListener("input", e=>{ state.search = e.target.value; renderTable(); });
-document.getElementById("onlyPass").addEventListener("change", e=>{ state.onlyPass = e.target.checked; renderTable(); });
+document.getElementById("abweichungFilter").addEventListener("change", e=>{ state.maxVerfehlt = parseInt(e.target.value,10); renderTable(); });
 
 document.getElementById("editCritBtn").addEventListener("click", ()=>{
   state.editingCriteria = JSON.parse(JSON.stringify(state.criteria));
@@ -626,6 +799,11 @@ document.getElementById("saveCritBtn").addEventListener("click", ()=>{
   state.editingCriteria = null;
   saveStoredCriteria();
   renderAll();
+});
+
+// Klick neben den Dialog (auf den abgedunkelten Hintergrund) schliesst ihn.
+document.getElementById("bullDialog").addEventListener("click", e=>{
+  if (e.target.id === "bullDialog") e.target.close();
 });
 
 loadData();

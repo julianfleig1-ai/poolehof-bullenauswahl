@@ -130,7 +130,10 @@ def parse(html: str, kategorie: str) -> list[dict]:
 
 # Auf der Bull-Detailseite (Linear-Profil, US-Skala ca. -3..+3):
 #   <tr><td>&nbsp;Teat Length</td> … <td align=right><b>&nbsp;-0.54&nbsp;</td></tr>
-DETAIL_LABELS = {"Teat Length": "strichlaenge_us", "Strength": "staerke_us"}
+DETAIL_LABELS = {
+    "Teat Length": "strichlaenge_us", "Strength": "staerke_us",
+    "Milking Speed": "mbk", "Daughter Pregnancy Rate": "dpr",
+}
 DETAIL_URL = "https://www.semex.com/di/us/inc/bull/{code}&lang=en&data=tpi&print=n&mobile=1"
 
 
@@ -161,6 +164,9 @@ def enrich_with_details(bulls: list[dict], delay: float = 0.3) -> int:
         code = bull.get("semen_code")
         if not code:
             continue
+        # Dieselbe URL, die semex.com in der Liste selbst verlinkt - damit die
+        # App im Detail-Dialog direkt aufs Datenblatt des Bullen zeigen kann.
+        bull["detail_url"] = DETAIL_URL.format(code=code)
         traits = fetch_detail_traits(code)
         if traits:
             bull.update(traits)

@@ -64,6 +64,32 @@ NUMERIC_FIELDS = {
 # die Detailseite hat sie bei beiden (normales HTML, kein Playwright nötig).
 EXTERIEUR_LABELS = {"Strichlänge": "strichlaenge", "Stärke": "staerke"}
 
+# Merkmale aus der Kennzahlen-Tabelle der Detailseite (<table class="eb2-table">,
+# Zeilen der Form <td>Melkbarkeit (MS)</td><td>103</td>). Die Listen-API liefert
+# diese bei den US-Importbullen nicht mit.
+INDEX_LABELS = {
+    "Melkbarkeit": "melkbarkeit",
+    "Töchterfruchtb.": "fruchtbarkeit",
+    "Töchterfruchtbarkeit": "fruchtbarkeit",
+    "Fruchtbarkeit": "fruchtbarkeit",
+    "Zellzahl": "zellzahl",
+}
+# Welches Feld der Wert am Ende fuellt - haengt an der Skala, nicht am Label:
+# RZ-Werte liegen um 100, US-Werte (DPR, Milking Speed 1-9) darunter.
+SKALEN_FELD = {
+    ("melkbarkeit", "de"): "rzd",  ("melkbarkeit", "us"): "mbk",
+    ("fruchtbarkeit", "de"): "rzr", ("fruchtbarkeit", "us"): "dpr",
+    ("zellzahl", "de"): "rzs",      ("zellzahl", "us"): "scs",
+    ("strichlaenge", "de"): "strichlaenge_de", ("strichlaenge", "us"): "strichlaenge_us",
+    ("staerke", "de"): "staerke_de", ("staerke", "us"): "staerke_us",
+}
+
+
+def _skala(basis: str, wert: float) -> str:
+    """RZ-Skala (~100) oder US-Skala? Zellzahl ist der Sonderfall: RZS liegt
+    um 100, SCS zwischen 2 und 4 - deshalb reicht auch hier die Groesse."""
+    return "de" if abs(wert) >= 20 else "us"
+
 
 def normalize(raw: dict, firma: str, quelle_url: str, kategorie: str, farbe: str, today: str):
     name = (raw.get("spe_name") or "").strip()
@@ -119,19 +145,33 @@ def fetch_exterieur(detail_url: str) -> dict:
         return {}
     soup = BeautifulSoup(html, "html.parser")
     out = {}
-    for title in soup.select(".eb2-exterieur--title"):
-        label = title.get_text(strip=True)
-        base = EXTERIEUR_LABELS.get(label)
-        if not base:
-            continue
-        value_el = title.find_next_sibling(class_="eb2-exterieur--value")
-        if not value_el:
-            continue
+
+    def merke(basis, rohwert):
         try:
-            value = float(value_el.get_text(strip=True).replace(",", "."))
+            wert = float(str(rohwert).strip().replace(",", "."))
         except ValueError:
+            return
+        feld = SKALEN_FELD.get((basis, _skala(basis, wert)))
+        if feld:
+            out[feld] = wert
+
+    # Linearprofil (Strichlänge, Stärke)
+    for title in soup.select(".eb2-exterieur--title"):
+        base = EXTERIEUR_LABELS.get(title.get_text(strip=True))
+        value_el = title.find_next_sibling(class_="eb2-exterieur--value") if base else None
+        if value_el:
+            merke(base, value_el.get_text(strip=True))
+
+    # Kennzahlen-Tabelle (Melkbarkeit, Töchterfruchtbarkeit, Zellzahl)
+    for row in soup.select("table.eb2-table tr"):
+        zellen = row.find_all("td")
+        if len(zellen) != 2:
             continue
-        out[f"{base}_{'de' if abs(value) >= 20 else 'us'}"] = value
+        label = zellen[0].get_text(strip=True)
+        label = label.split("(")[0].strip()  # "Melkbarkeit (MS)" -> "Melkbarkeit"
+        base = INDEX_LABELS.get(label)
+        if base:
+            merke(base, zellen[1].get_text(strip=True))
     return out
 
 

@@ -39,12 +39,16 @@ WEB_DATA_DIR = ROOT / "docs" / "data"
 # Pro Quelle: Skript, Zieldatei, Mindestanzahl Bullen, Mindestanteil Bullen
 # mit Gesamtzuchtwert. Die Mindestwerte liegen deutlich unter dem heutigen
 # Stand - sie sollen "Website kaputt" erkennen, nicht normale Schwankung.
+# Zeitlimits grosszuegig: seit die Einzelmerkmale (Strichlänge, Stärke,
+# Melkbarkeit, Fruchtbarkeit) von den Bull-Detailseiten geholt werden, macht
+# jeder Scraper ein bis zwei HTTP-Abrufe PRO BULLE - Prismagen z.B. rund 240.
+# Lieber langsam durchlaufen als wegen Zeitüberschreitung fälschlich "kaputt".
 SOURCES = [
-    {"name": "WWS",       "script": "scrape_wws.py",       "file": "wws_bulls.json",       "min_bulls": 50, "min_scored": 0.8, "timeout": 900},
-    {"name": "Prismagen", "script": "scrape_prismagen.py", "file": "prismagen_bulls.json", "min_bulls": 50, "min_scored": 0.8, "timeout": 900},
-    {"name": "Semex",     "script": "scrape_semex.py",     "file": "semex_bulls.json",     "min_bulls": 20, "min_scored": 0.8, "timeout": 900},
-    {"name": "RBW",       "script": "scrape_rbw.py",       "file": "rbw_bulls.json",       "min_bulls": 50, "min_scored": 0.8, "timeout": 1200},
-    {"name": "CRI",       "script": "scrape_cri.py",       "file": "cri_bulls.json",       "min_bulls": 40, "min_scored": 0.8, "timeout": 1200},
+    {"name": "WWS",       "script": "scrape_wws.py",       "file": "wws_bulls.json",       "min_bulls": 50, "min_scored": 0.8, "timeout": 1800},
+    {"name": "Prismagen", "script": "scrape_prismagen.py", "file": "prismagen_bulls.json", "min_bulls": 50, "min_scored": 0.8, "timeout": 2400},
+    {"name": "Semex",     "script": "scrape_semex.py",     "file": "semex_bulls.json",     "min_bulls": 20, "min_scored": 0.8, "timeout": 1800},
+    {"name": "RBW",       "script": "scrape_rbw.py",       "file": "rbw_bulls.json",       "min_bulls": 50, "min_scored": 0.8, "timeout": 2400},
+    {"name": "CRI",       "script": "scrape_cri.py",       "file": "cri_bulls.json",       "min_bulls": 40, "min_scored": 0.8, "timeout": 2400},
 ]
 
 # Ein Bulle "hat Zuchtwerte", wenn eines dieser Gesamtzuchtwert-Felder da ist.

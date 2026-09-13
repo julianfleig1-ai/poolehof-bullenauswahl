@@ -102,44 +102,71 @@ def parse_table(html: str, colmap: dict, scale: str) -> list[dict]:
     return out
 
 
-# Labels auf der Detailseite bleiben IMMER deutsch (auch bei ?zuchtwerte=us) -
-# aber die WERTE wechseln je nach Query-Parameter die Skala (RZ- vs. US-Linear).
-# Deshalb: welches Feld (…_de/…_us) befüllt wird, hängt davon ab, welche
-# Detailseiten-Variante wir gerade abgerufen haben - nicht vom Label selbst.
-DETAIL_FIELD_MAP = {"Strichlänge": "strichlaenge", "Stärke": "staerke"}
+# Labels auf der Detailseite bleiben IMMER deutsch (auch bei ?zuchtwerte=us),
+# die WERTE wechseln aber die Skala. Ausserdem ist es nicht einheitlich:
+# "Strichlänge" ist auf der US-Seite ein Linearwert (0,4), "Melkbarkeit" dagegen
+# auch dort ein Index um 100 (Milking Speed 106). Deshalb entscheidet der BETRAG
+# ueber das Zielfeld, nicht die aufgerufene Seitenvariante.
+DETAIL_LABELS = {
+    "Strichlänge": "strichlaenge", "Stärke": "staerke",
+    "Melkbarkeit": "melkbarkeit", "Fruchtbarkeit": "fruchtbarkeit",
+    "Töchterfruchtbarkeit": "fruchtbarkeit",
+    # So heisst die Töchterfruchtbarkeit auf der US-Seite (= DPR). Ohne diese
+    # Zeile fehlt das Kriterium bei allen Bullen ohne deutsche Zuchtwertschätzung.
+    "Fruchtbarkeitsindex": "fruchtbarkeit",
+    "Zellzahl": "zellzahl",
+}
+SKALEN_FELD = {
+    ("strichlaenge", "de"): "strichlaenge_de", ("strichlaenge", "us"): "strichlaenge_us",
+    ("staerke", "de"): "staerke_de",           ("staerke", "us"): "staerke_us",
+    ("melkbarkeit", "de"): "rzd",              ("melkbarkeit", "us"): "mbk",
+    ("fruchtbarkeit", "de"): "rzr",            ("fruchtbarkeit", "us"): "dpr",
+    ("zellzahl", "de"): "rzs",                 ("zellzahl", "us"): "scs",
+}
 
 
-def fetch_detail_traits(detail_url: str, scale: str) -> dict:
-    """Holt Strichlänge/Stärke von der Bull-Detailseite - statisches HTML,
-    <tr><th>Label</th><td>CODE</td><td><span class="w-post-elm-value">WERT</span></td></tr>."""
+def fetch_detail_traits(detail_url: str) -> dict:
+    """Liest Merkmale aus der Bull-Detailseite:
+    <tr><th>Label</th><td>Code</td><td><span class="w-post-elm-value">Wert</span></td></tr>"""
     try:
         html = fetch(detail_url)
     except Exception:
         return {}
     soup = BeautifulSoup(html, "html.parser")
     out = {}
-    for label, base_field in DETAIL_FIELD_MAP.items():
-        th = soup.find("th", string=label)
-        if not th:
+    for th in soup.find_all("th"):
+        basis = DETAIL_LABELS.get(th.get_text(strip=True))
+        if not basis:
             continue
         row = th.find_parent("tr")
         span = row.select_one(".w-post-elm-value") if row else None
-        if span:
-            try:
-                out[f"{base_field}_{scale}"] = float(span.get_text(strip=True))
-            except ValueError:
-                pass
+        if not span:
+            continue
+        try:
+            wert = float(span.get_text(strip=True).replace(",", "."))
+        except ValueError:
+            continue
+        feld = SKALEN_FELD.get((basis, "de" if abs(wert) >= 20 else "us"))
+        if feld:
+            out[feld] = wert
     return out
 
 
 def enrich_with_details(bulls: list[dict], delay: float = 0.3) -> None:
+    """Immer erst die deutsche, dann die amerikanische Detailseite - und dabei
+    nie einen schon vorhandenen Wert überschreiben. Das ist wichtig, weil
+    "Melkbarkeit" auf beiden Seiten so heisst und in beiden Fällen um 100 liegt
+    (RZD bzw. US-Milking-Speed): ohne diese Regel würde der US-Index den
+    deutschen RZD überschreiben."""
     for b in bulls:
         for scale in ("de", "us"):
             url = b.pop(f"detail_url_{scale}", None)
             if not url:
                 continue
             b.setdefault("detail_url", url)  # zum Verlinken auf der Bull-Übersicht
-            b.update(fetch_detail_traits(url, scale))
+            for feld, wert in fetch_detail_traits(url).items():
+                if b.get(feld) is None:
+                    b[feld] = wert
             if delay:
                 time.sleep(delay)
 

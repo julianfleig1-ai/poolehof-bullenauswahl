@@ -82,6 +82,8 @@ def parse(html: str) -> list[dict]:
     for pane in soup.select(".w-tab-pane"):
         tab_id = pane.get("data-w-tab")
         kategorie = tab_labels.get(tab_id, tab_id or "Unbekannt")
+        if not _ist_holstein(kategorie):
+            continue
         header = pane.select_one(".table-header")
         if not header:
             continue
@@ -160,15 +162,18 @@ def enrich_with_details(bulls: list[dict], delay: float = 0.3) -> None:
             time.sleep(delay)
 
 
+# Nur Holstein wird gebraucht - Braunvieh und Jersey fliegen raus.
+# NxGen ist das WWS-Programm fuer genomische Holstein-Jungvererber.
+NICHT_HOLSTEIN = ("braunvieh", "jersey")
+
+
 def _rasse_aus_kategorie(kategorie: str) -> str:
+    return "Holstein"
+
+
+def _ist_holstein(kategorie: str) -> bool:
     k = kategorie.lower()
-    if "holstein" in k:
-        return "Holstein"
-    if "braunvieh" in k:
-        return "Braunvieh"
-    if "jersey" in k:
-        return "Jersey"
-    return kategorie
+    return not any(x in k for x in NICHT_HOLSTEIN)
 
 
 def main():
