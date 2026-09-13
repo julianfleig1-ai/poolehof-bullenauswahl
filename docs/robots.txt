@@ -1,0 +1,4 @@
+# Diese Seite ist nur fuer den Poolehof gedacht.
+# Nicht in Suchmaschinen aufnehmen.
+User-agent: *
+Disallow: /
