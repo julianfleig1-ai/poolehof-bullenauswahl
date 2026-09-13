@@ -13,6 +13,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -26,42 +27,34 @@ jobs:
       - name: Chromium für Playwright installieren
         run: python -m playwright install --with-deps chromium
 
-      - name: WWS scrapen
-        run: python scraper/scrape_wws.py > data/wws_bulls.json
+      # refresh.py holt alle 5 Quellen, prüft jedes Ergebnis auf
+      # Plausibilität und schreibt nur geprüfte Daten. Kaputte Quellen
+      # behalten ihren alten Stand. Exit-Code 1, wenn etwas kaputt ist -
+      # dieser Schritt wird trotzdem nicht abgebrochen, damit die heilen
+      # Quellen noch committet werden.
+      - name: Alle Kataloge abrufen und prüfen
+        id: refresh
         continue-on-error: true
-
-      - name: Prismagen scrapen
-        run: python scraper/scrape_prismagen.py > data/prismagen_bulls.json
-        continue-on-error: true
-
-      - name: Semex scrapen
-        run: python scraper/scrape_semex.py > data/semex_bulls.json
-        continue-on-error: true
-
-      - name: RBW scrapen (Playwright/AltCha)
-        run: python scraper/scrape_rbw.py > data/rbw_bulls.json
-        continue-on-error: true
-
-      - name: CRI Genetics scrapen (Playwright/AltCha)
-        run: python scraper/scrape_cri.py > data/cri_bulls.json
-        continue-on-error: true
-
-      - name: Daten in die Web-App kopieren
-        run: |
-          mkdir -p docs/data
-          for f in wws_bulls rbw_bulls prismagen_bulls semex_bulls cri_bulls; do
-            # nur überschreiben wenn die neue Datei nicht leer/kaputt ist
-            if [ -s "data/$f.json" ] && python -c "import json,sys; json.load(open('data/$f.json'))" 2>/dev/null; then
-              cp "data/$f.json" "docs/data/$f.json"
-            else
-              echo "::warning::$f.json fehlt oder ist ungültig - alte Version in docs/data bleibt stehen"
-            fi
-          done
+        run: python scraper/refresh.py
 
       - name: Änderungen committen
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ docs/data/
-          git diff --cached --quiet && echo "Keine Änderungen" || git commit -m "Automatischer Bullendaten-Abruf $(date -u +%Y-%m-%d)"
-          git push
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen"
+          else
+            git commit -m "Bullendaten-Abruf $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      # Lässt den Lauf rot werden, wenn eine Quelle kaputt war.
+      # GitHub schickt dem Repo-Besitzer dann automatisch eine E-Mail.
+      - name: Bei kaputter Quelle Alarm schlagen
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo "::error::Mindestens eine Bullen-Quelle konnte nicht abgerufen werden."
+          echo "Details stehen im Schritt 'Alle Kataloge abrufen und prüfen'"
+          echo "und in docs/data/status.json (wird auch in der Web-App angezeigt)."
+          exit 1

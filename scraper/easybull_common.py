@@ -11,6 +11,7 @@ einem echten Browser gelöst wird – deshalb Playwright statt curl/requests.
 from __future__ import annotations
 
 import re
+import time
 from datetime import date
 
 from playwright.sync_api import sync_playwright
@@ -43,7 +44,10 @@ UM_FIELD_MAP = {
     "spe_um_prod_protp": "eiweiss_pct", "spe_um_ptat": "ptat",
     "spe_um_scs": "scs", "spe_um_dpr": "dpr", "spe_um_pl": "pl", "spe_um_sce": "sce",
     "spe_um_udc": "udc", "spe_um_flc": "flc",
-    "spe_um_exzw_sta": "staerke_us", "spe_um_exzw_tl": "strichlaenge_us",
+    # Achtung: "_sta" ist Stature (Größe), "_str" ist Strength (Stärke) -
+    # per Detailseite gegengeprüft. "_tl" = Teat Length (Strichlänge).
+    "spe_um_exzw_sta": "groesse_us", "spe_um_exzw_str": "staerke_us",
+    "spe_um_exzw_tl": "strichlaenge_us",
     "spe_um_dat_zw": "zws_datum",
 }
 NUMERIC_FIELDS = {
@@ -52,8 +56,13 @@ NUMERIC_FIELDS = {
     "rzeuterfit", "rzklaue", "rzddc", "milchtyp", "koerper", "fundament", "euter",
     "strichlaenge_de", "staerke_de", "preis_konv_eur", "preis_gesext_eur",
     "milch_lbs", "fett_lbs", "eiweiss_lbs", "ptat", "scs", "dpr", "pl", "sce",
-    "udc", "flc", "staerke_us", "strichlaenge_us",
+    "udc", "flc", "staerke_us", "strichlaenge_us", "groesse_us",
 }
+
+# Einzelmerkmale aus der Exterieur-Tabelle der Bull-DETAILSEITE.
+# Die Listen-API liefert diese bei RBW gar nicht und bei CRI nur teilweise -
+# die Detailseite hat sie bei beiden (normales HTML, kein Playwright nötig).
+EXTERIEUR_LABELS = {"Strichlänge": "strichlaenge", "Stärke": "staerke"}
 
 
 def normalize(raw: dict, firma: str, quelle_url: str, kategorie: str, farbe: str, today: str):
@@ -72,6 +81,9 @@ def normalize(raw: dict, firma: str, quelle_url: str, kategorie: str, farbe: str
                 pass
         else:
             rec[dst] = val
+    detail = raw.get("detailUrl")
+    if detail:
+        rec["detail_url"] = detail  # wird in enrich_with_exterieur absolut gemacht
     rec["firma"] = firma
     rec["rasse"] = "Holstein"
     rec["quelle_url"] = quelle_url
@@ -80,6 +92,69 @@ def normalize(raw: dict, firma: str, quelle_url: str, kategorie: str, farbe: str
     slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
     rec["id"] = f"{firma.lower()}-{slug}"
     return rec
+
+
+def _fetch(url: str) -> str:
+    import urllib.request
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return resp.read().decode("utf-8", errors="replace")
+
+
+def fetch_exterieur(detail_url: str) -> dict:
+    """Liest Strichlänge/Stärke aus der Exterieur-Tabelle der Bull-Detailseite.
+
+    Struktur (EasyBull, serverseitig gerendert):
+      <td class="eb2-exterieur--title">Strichlänge</td>
+      <td class="eb2-exterieur--value">92</td>
+
+    Die Skala erkennen wir am Betrag: RZ-Werte liegen um 100 herum,
+    US-Linearwerte zwischen etwa -5 und +5. Dadurch landen deutsche und
+    amerikanische Bullen automatisch im richtigen Feld (…_de bzw. …_us).
+    """
+    from bs4 import BeautifulSoup
+    try:
+        html = _fetch(detail_url)
+    except Exception:
+        return {}
+    soup = BeautifulSoup(html, "html.parser")
+    out = {}
+    for title in soup.select(".eb2-exterieur--title"):
+        label = title.get_text(strip=True)
+        base = EXTERIEUR_LABELS.get(label)
+        if not base:
+            continue
+        value_el = title.find_next_sibling(class_="eb2-exterieur--value")
+        if not value_el:
+            continue
+        try:
+            value = float(value_el.get_text(strip=True).replace(",", "."))
+        except ValueError:
+            continue
+        out[f"{base}_{'de' if abs(value) >= 20 else 'us'}"] = value
+    return out
+
+
+def enrich_with_exterieur(bulls: list[dict], base_url: str, delay: float = 0.3) -> int:
+    """Holt Strichlänge/Stärke für jeden Bullen mit detail_url. Gibt zurück,
+    wie viele Bullen tatsächlich angereichert wurden (für die Plausi-Prüfung)."""
+    import sys
+    enriched = 0
+    for bull in bulls:
+        url = bull.get("detail_url")
+        if not url:
+            continue
+        if url.startswith("/"):
+            url = base_url.rstrip("/") + url
+            bull["detail_url"] = url
+        traits = fetch_exterieur(url)
+        if traits:
+            bull.update(traits)
+            enriched += 1
+        if delay:
+            time.sleep(delay)
+    print(f"# Exterieur-Merkmale für {enriched}/{len(bulls)} Bullen geholt", file=sys.stderr)
+    return enriched
 
 
 def scrape_pages(pages: list[tuple[str, str]]) -> dict[str, dict]:

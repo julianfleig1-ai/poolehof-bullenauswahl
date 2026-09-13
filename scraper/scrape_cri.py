@@ -16,9 +16,10 @@ import json
 import sys
 from datetime import date
 
-from easybull_common import normalize, scrape_pages
+from easybull_common import enrich_with_exterieur, normalize, scrape_pages
 
 FIRMA = "CRI"
+BASE_URL = "https://www.cri-genetics.de"
 QUELLE_URL = "https://www.cri-genetics.de/bullenangebot/holstein-6.html"
 PAGES = [
     ("https://www.cri-genetics.de/bullenangebot/holstein-6.html", "Holstein"),
@@ -36,6 +37,9 @@ def main():
         rec = normalize(raw, FIRMA, QUELLE_URL, "CRI-Katalog", farbe, today)
         if rec:
             bulls.append(rec)
+
+    if "--no-details" not in sys.argv:
+        enrich_with_exterieur(bulls, BASE_URL)
 
     json.dump(bulls, sys.stdout, ensure_ascii=False, indent=2)
     print(f"\n# {len(bulls)} CRI-Bullen per Playwright erfasst", file=sys.stderr)

@@ -10,8 +10,33 @@ die Web-Seite liegt kostenlos auf GitHub Pages.
 
 ## Aufbau
 
+## Aktualisieren
+
+Ein Befehl, egal ob lokal oder in der GitHub Action:
+
+```bash
+python3 scraper/refresh.py            # alle Quellen
+python3 scraper/refresh.py WWS RBW    # nur einzelne
+```
+
+`refresh.py` prüft jedes Ergebnis, bevor es die alten Daten ersetzt:
+
+| Prüfung | Wogegen sie schützt |
+|---|---|
+| Gültiges JSON, Bullen haben Namen | Scraper läuft, liefert aber Müll |
+| Mindestanzahl Bullen pro Quelle | Website umgebaut, Tabelle nicht mehr gefunden |
+| ≥80 % der Bullen haben einen Gesamtzuchtwert | Website antwortet, aber Felder heißen anders (genau dieser Fall ist bei CRI schon einmal aufgetreten) |
+| Kein Einbruch auf <50 % des letzten Standes | Halbe Liste abgeschnitten / Teilausfall |
+
+Fällt eine Quelle durch, bleiben **ihre alten Daten unverändert stehen**
+(lieber leicht veraltet als leer), die anderen werden trotzdem
+aktualisiert. Der Fehler landet in `docs/data/status.json`, wird in der
+Web-App oben als Warnung angezeigt, und die GitHub Action wird rot –
+GitHub schickt dann automatisch eine E-Mail an den Repo-Besitzer.
+
 ```
 scraper/           Python-Skripte, ein Skript pro Firma
+  refresh.py            ruft alle Quellen ab + Plausibilitätsprüfung
   scrape_wws.py         curl/requests – kein Login, kein Anti-Bot
   scrape_prismagen.py   curl/requests – holt zusätzlich Strichlänge/Stärke
                         pro Bulle von der Detailseite (DE- und US-Skala)
@@ -63,6 +88,24 @@ Der "Bearbeiten"-Knopf in der App speichert Änderungen nur lokal im
 Browser (localStorage) – auf einem anderen Gerät erscheinen wieder die
 Standardkriterien, bis sie dort auch angepasst werden.
 
+## Strichlänge & Stärke
+
+Diese beiden Einzelmerkmale stehen bei **keiner** Quelle in der
+Übersichtsliste – nur auf der jeweiligen Bull-Detailseite. Deshalb holt
+jeder Scraper zusätzlich die Detailseite pro Bulle (ein Aufruf je Bulle,
+deshalb dauert ein Durchlauf ein paar Minuten).
+
+| Quelle | Skala | Woher |
+|---|---|---|
+| RBW | RZ (>100) | Detailseite, Exterieur-Tabelle |
+| CRI Genetics | RZ bzw. US, je nach Bulle | Detailseite, Exterieur-Tabelle |
+| Prismagen | RZ + US (beide Ansichten) | Detailseite je `?zuchtwerte=de/us` |
+| WWS | US-Linear (>0,0) | Detailseite, Linearprofil |
+| Semex | US-Linear (>0,0) | Detailseite, "Teat Length" / "Strength" |
+
+Die Skala wird am Betrag erkannt (RZ-Werte liegen um 100, US-Linearwerte
+zwischen etwa -5 und +5) und landet im passenden Feld `…_de` bzw. `…_us`.
+
 ## Bekannte Lücken
 
 - **Semex:** Der deutsche Katalog ist nur ein gescanntes Bilder-Flipbook
@@ -70,5 +113,5 @@ Standardkriterien, bis sie dort auch angepasst werden.
   hier kommen stattdessen vom internationalen semex.com Sire-Directory –
   im Zweifel bei Semex Deutschland nachfragen, ob genau diese Bullen auch
   dort bestellbar sind.
-- **Strichlänge/Stärke bei RBW:** RBWs eigene Bullen-API liefert diese
-  beiden Einzelmerkmale nicht (bei WWS, Prismagen und CRI Genetics schon).
+- Bei Semex haben 4 von 54 Bullen (ganz junge genomische) noch kein
+  Linearprofil auf der Detailseite – dort steht in der Spalte „–“.

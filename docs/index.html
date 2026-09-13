@@ -64,6 +64,11 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
 .refresh-line{font-size:12.5px;color:var(--ink-dim)}
 .refresh-line a{color:var(--ink-dim);text-decoration:underline}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:18px;font-size:14px;line-height:1.5}
+.alert.warn{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.alert.ok{background:var(--accent-soft);color:var(--accent);border:1px solid transparent}
+.alert .alert-icon{font-size:18px;line-height:1.2}
+.alert b{font-weight:600}
 
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:22px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
@@ -162,6 +167,8 @@ footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
     </div>
   </header>
 
+  <div id="statusAlert"></div>
+
   <section class="summary" id="summary"></section>
 
   <section class="layout">
@@ -199,9 +206,9 @@ footer.notes .src-card .t{font-weight:600;color:var(--ink);margin-bottom:4px}
   <footer class="notes">
     <h3>Datenquellen &amp; Stand</h3>
     <div class="src-grid" id="srcGrid"></div>
-    <p><b>Automatik:</b> Ein GitHub-Workflow ruft WWS, RBW, Prismagen, Semex und CRI Genetics automatisch monatlich neu ab und aktualisiert die Daten hier – läuft komplett unabhängig, ohne Claude. Zwischendurch jederzeit manuell anstoßbar über den Link oben rechts ("Jetzt aktualisieren").</p>
+    <p><b>Automatik:</b> Ein GitHub-Workflow ruft alle fünf Quellen automatisch monatlich neu ab – komplett unabhängig, ohne Claude. Zwischendurch jederzeit manuell anstoßbar über „Jetzt aktualisieren“ oben rechts. Jedes Ergebnis wird vor der Übernahme geprüft (genug Bullen? haben sie Zuchtwerte? kein plötzlicher Einbruch?). Fällt eine Quelle aus, bleiben deren alte Daten stehen, hier oben erscheint eine Warnung und GitHub schickt eine Fehlermail – ein stiller Ausfall kann also nicht passieren.</p>
     <p><b>Wichtig zu Semex:</b> Der deutsche Semex-Katalog ist nur als gescanntes Bilder-Flipbook veröffentlicht (keine Tabelle). Die Semex-Bullen hier stammen vom internationalen semex.com Sire-Directory (US-Skala) – ob genau diese auch über Semex Deutschland bestellbar sind, im Zweifel dort nachfragen.</p>
-    <p><b>Strichlänge &amp; Stärke:</b> vollständig bei WWS (alle Bullen, US-Skala) und für einen Teil bei Prismagen/CRI Genetics (DE-Skala). Bei RBW und dem Rest von Prismagen/Semex liegt dieses Einzelmerkmal bei der Quelle nicht vor – zeigt dort „keine Daten“.</p>
+    <p><b>Strichlänge &amp; Stärke:</b> bei allen fünf Quellen vorhanden – diese Einzelmerkmale stehen nicht in den Übersichtslisten, sondern nur auf der jeweiligen Bull-Detailseite, die pro Bulle mit abgerufen wird. RBW, Prismagen (deutsche Bullen) und CRI liefern sie auf RZ-Skala (&gt;100 = überdurchschnittlich), WWS, Semex und die US-Bullen auf der amerikanischen Linearskala (&gt;0,0). Die Spalte zeigt jeweils mit „DE“/„US“ an, welche Skala gilt.</p>
     <p style="margin-top:10px"><b>Kriterien werden nur in diesem Browser gespeichert</b> (nicht auf dem Server) – auf einem anderen Gerät siehst du wieder die Standard-Kriterien, bis du sie dort auch anpasst.</p>
   </footer>
 </div>
@@ -240,6 +247,7 @@ const CRITERIA_STORAGE_KEY = "poolehof-bullenauswahl-kriterien-v1";
 
 let state = {
   bulls: [],
+  status: null,
   criteria: loadStoredCriteria(),
   editingCriteria: null,
   search: "",
@@ -321,6 +329,39 @@ function renderRefreshLine(){
   const dates = state.bulls.map(b=>b.stand).filter(Boolean).sort();
   const newest = dates.length ? dates[dates.length-1] : "–";
   el.innerHTML = `Stand: ${newest} · <a href="${GITHUB_ACTIONS_URL}" target="_blank" rel="noopener">Jetzt aktualisieren ↗</a>`;
+}
+
+// Zeigt oben eine Warnung, wenn der letzte automatische Abruf eine Quelle
+// nicht holen konnte oder wenn überhaupt lange nichts mehr aktualisiert wurde.
+// So fällt ein stiller Ausfall auf, auch ohne in GitHub zu schauen.
+const MAX_ALTER_TAGE = 75;
+
+function renderStatusAlert(){
+  const el = document.getElementById("statusAlert");
+  const s = state.status;
+  const meldungen = [];
+
+  if (s && Array.isArray(s.kaputte_quellen) && s.kaputte_quellen.length){
+    const details = s.kaputte_quellen
+      .map(n => `${n}: ${s.quellen?.[n]?.meldung || "unbekannter Fehler"}`)
+      .join(" · ");
+    meldungen.push(`<b>Letzter Abruf am ${s.datum}: ${s.kaputte_quellen.join(", ")} konnte nicht geholt werden.</b> ` +
+      `Die angezeigten Zahlen dieser Quelle sind der letzte funktionierende Stand. ${details}`);
+  }
+
+  const dates = state.bulls.map(b=>b.stand).filter(Boolean).sort();
+  const newest = dates.length ? dates[dates.length-1] : null;
+  if (newest){
+    const alter = Math.floor((Date.now() - new Date(newest).getTime()) / 86400000);
+    if (alter > MAX_ALTER_TAGE){
+      meldungen.push(`<b>Die Daten sind ${alter} Tage alt.</b> Der automatische Abruf läuft normalerweise monatlich – ` +
+        `bitte über „Jetzt aktualisieren“ prüfen, ob der Workflow noch läuft.`);
+    }
+  }
+
+  if (!meldungen.length){ el.innerHTML = ""; return; }
+  el.innerHTML = meldungen.map(m =>
+    `<div class="alert warn"><span class="alert-icon">⚠</span><div>${m}</div></div>`).join("");
 }
 
 function renderSummary(){
@@ -527,6 +568,7 @@ function renderSourceFootnotes(){
 function renderAll(){
   renderSourceChips();
   renderRefreshLine();
+  renderStatusAlert();
   renderSummary();
   renderCriteria();
   renderFirmaFilter();
@@ -535,6 +577,12 @@ function renderAll(){
 }
 
 async function loadData(){
+  // Status des letzten automatischen Abrufs (von scraper/refresh.py geschrieben)
+  try {
+    const res = await fetch("data/status.json", {cache: "no-store"});
+    if (res.ok) state.status = await res.json();
+  } catch(e) { /* status.json fehlt noch -> keine Warnung anzeigen */ }
+
   const results = await Promise.allSettled(
     Object.entries(DATA_FILES).map(async ([firma, path]) => {
       const res = await fetch(path, {cache: "no-store"});

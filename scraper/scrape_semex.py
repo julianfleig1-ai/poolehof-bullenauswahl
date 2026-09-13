@@ -24,6 +24,7 @@ Aufruf:
 import json
 import re
 import sys
+import time
 import urllib.request
 from datetime import date
 
@@ -50,11 +51,14 @@ NUMERIC_FIELDS = {
 }
 
 
-def fetch(breed: str) -> str:
-    url = f"{BASE}?lang=en&view=list&breed={breed}&data=lpi&sort=&sortmethod=&print=n"
+def fetch_url(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         return resp.read().decode("utf-8", errors="replace")
+
+
+def fetch(breed: str) -> str:
+    return fetch_url(f"{BASE}?lang=en&view=list&breed={breed}&data=lpi&sort=&sortmethod=&print=n")
 
 
 def find_data_table(soup: BeautifulSoup):
@@ -124,6 +128,49 @@ def parse(html: str, kategorie: str) -> list[dict]:
     return bulls
 
 
+# Auf der Bull-Detailseite (Linear-Profil, US-Skala ca. -3..+3):
+#   <tr><td>&nbsp;Teat Length</td> … <td align=right><b>&nbsp;-0.54&nbsp;</td></tr>
+DETAIL_LABELS = {"Teat Length": "strichlaenge_us", "Strength": "staerke_us"}
+DETAIL_URL = "https://www.semex.com/di/us/inc/bull/{code}&lang=en&data=tpi&print=n&mobile=1"
+
+
+def fetch_detail_traits(semen_code: str) -> dict:
+    try:
+        html = fetch_url(DETAIL_URL.format(code=semen_code))
+    except Exception:
+        return {}
+    soup = BeautifulSoup(html, "html.parser")
+    out = {}
+    for row in soup.find_all("tr"):
+        cells = [c.get_text(strip=True).replace("\xa0", "") for c in row.find_all("td")]
+        if len(cells) < 2:
+            continue
+        field = DETAIL_LABELS.get(cells[0])
+        if not field:
+            continue
+        try:
+            out[field] = float(cells[-1].replace("+", ""))
+        except ValueError:
+            continue
+    return out
+
+
+def enrich_with_details(bulls: list[dict], delay: float = 0.3) -> int:
+    enriched = 0
+    for bull in bulls:
+        code = bull.get("semen_code")
+        if not code:
+            continue
+        traits = fetch_detail_traits(code)
+        if traits:
+            bull.update(traits)
+            enriched += 1
+        if delay:
+            time.sleep(delay)
+    print(f"# Strichlänge/Stärke für {enriched}/{len(bulls)} Semex-Bullen geholt", file=sys.stderr)
+    return enriched
+
+
 def main():
     all_bulls: dict[str, dict] = {}
     for code, kategorie in BREEDS:
@@ -136,6 +183,8 @@ def main():
             all_bulls[b["id"]] = b
 
     bulls = list(all_bulls.values())
+    if "--no-details" not in sys.argv:
+        enrich_with_details(bulls)
     json.dump(bulls, sys.stdout, ensure_ascii=False, indent=2)
     print(f"\n# {len(bulls)} Semex-Bullen (US-Skala, semex.com Sire Directory)", file=sys.stderr)
 

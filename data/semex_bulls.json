@@ -30,7 +30,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-powerstar99-i"
+    "id": "semex-powerstar99-i",
+    "staerke_us": 0.88,
+    "strichlaenge_us": -0.54
   },
   {
     "semen_code": "0200HO12456",
@@ -63,7 +65,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-mister99-i"
+    "id": "semex-mister99-i",
+    "staerke_us": 0.21,
+    "strichlaenge_us": -0.21
   },
   {
     "semen_code": "0200HO12145",
@@ -96,7 +100,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-event99-i"
+    "id": "semex-event99-i",
+    "staerke_us": 0.28,
+    "strichlaenge_us": 0.64
   },
   {
     "semen_code": "0200HO12123",
@@ -129,7 +135,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-monteverdi99-i"
+    "id": "semex-monteverdi99-i",
+    "staerke_us": -0.67,
+    "strichlaenge_us": -1.5
   },
   {
     "semen_code": "0200HO12090",
@@ -162,7 +170,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-sugarhigh99-i"
+    "id": "semex-sugarhigh99-i",
+    "staerke_us": 0.5,
+    "strichlaenge_us": 0.08
   },
   {
     "semen_code": "0200HO12546",
@@ -195,7 +205,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-perky99-i"
+    "id": "semex-perky99-i",
+    "staerke_us": -0.08,
+    "strichlaenge_us": -0.71
   },
   {
     "semen_code": "0200HO12458",
@@ -228,7 +240,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-total99-i"
+    "id": "semex-total99-i",
+    "staerke_us": -0.59,
+    "strichlaenge_us": -1.03
   },
   {
     "semen_code": "0200HO12321",
@@ -261,7 +275,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-pattern99-i"
+    "id": "semex-pattern99-i",
+    "staerke_us": -0.44,
+    "strichlaenge_us": 0.38
   },
   {
     "semen_code": "0200HO11586",
@@ -294,7 +310,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-einstein99-i"
+    "id": "semex-einstein99-i",
+    "staerke_us": 0.97,
+    "strichlaenge_us": 0.66
   },
   {
     "semen_code": "0200HO12275",
@@ -327,7 +345,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-ballgame99-i"
+    "id": "semex-ballgame99-i",
+    "staerke_us": 0.82,
+    "strichlaenge_us": -0.02
   },
   {
     "semen_code": "0200HO12343",
@@ -360,7 +380,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-novelty99-i"
+    "id": "semex-novelty99-i",
+    "staerke_us": -0.61,
+    "strichlaenge_us": -1.01
   },
   {
     "semen_code": "0200HO12528",
@@ -393,7 +415,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-out-there99-i"
+    "id": "semex-out-there99-i",
+    "staerke_us": 0.17,
+    "strichlaenge_us": -1.37
   },
   {
     "semen_code": "0200HO12363",
@@ -426,7 +450,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-maastricht99-i"
+    "id": "semex-maastricht99-i",
+    "staerke_us": -0.28,
+    "strichlaenge_us": 1.07
   },
   {
     "semen_code": "0200HO12399",
@@ -459,7 +485,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-dropbox99-i"
+    "id": "semex-dropbox99-i",
+    "staerke_us": 0.97,
+    "strichlaenge_us": -0.89
   },
   {
     "semen_code": "0200HO12156",
@@ -492,7 +520,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-earlybird99-i"
+    "id": "semex-earlybird99-i",
+    "staerke_us": -0.03,
+    "strichlaenge_us": -0.36
   },
   {
     "semen_code": "0200HO12276",
@@ -525,7 +555,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-roztac"
+    "id": "semex-roztac",
+    "staerke_us": 0.63,
+    "strichlaenge_us": -0.6
   },
   {
     "semen_code": "0200HO12220",
@@ -558,7 +590,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-steinbeck99-i"
+    "id": "semex-steinbeck99-i",
+    "staerke_us": 0.52,
+    "strichlaenge_us": -0.4
   },
   {
     "semen_code": "0200HO11000",
@@ -591,7 +625,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-alcove99-i"
+    "id": "semex-alcove99-i",
+    "staerke_us": 1.59,
+    "strichlaenge_us": 1.07
   },
   {
     "semen_code": "0200HO12529",
@@ -624,7 +660,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-havenofear99-i"
+    "id": "semex-havenofear99-i",
+    "staerke_us": 1.42,
+    "strichlaenge_us": -0.24
   },
   {
     "semen_code": "0200HO12580",
@@ -657,7 +695,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-ambrose-rc99-i"
+    "id": "semex-ambrose-rc99-i",
+    "staerke_us": 1.1,
+    "strichlaenge_us": 0.63
   },
   {
     "semen_code": "0200HO12374",
@@ -690,7 +730,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-claro99-i"
+    "id": "semex-claro99-i",
+    "staerke_us": 0.79,
+    "strichlaenge_us": -0.67
   },
   {
     "semen_code": "0200HO12376",
@@ -723,7 +765,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-bullseye99-i"
+    "id": "semex-bullseye99-i",
+    "staerke_us": 1.43,
+    "strichlaenge_us": -0.34
   },
   {
     "semen_code": "0200HO11822",
@@ -756,7 +800,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-alleyoop99-i"
+    "id": "semex-alleyoop99-i",
+    "staerke_us": 1.33,
+    "strichlaenge_us": -0.01
   },
   {
     "semen_code": "0777HO03913",
@@ -822,7 +868,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-superfreak99-i"
+    "id": "semex-superfreak99-i",
+    "staerke_us": 0.21,
+    "strichlaenge_us": -0.26
   },
   {
     "semen_code": "0200HO13678",
@@ -855,7 +903,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-timetraveler99-i"
+    "id": "semex-timetraveler99-i",
+    "staerke_us": -0.08,
+    "strichlaenge_us": -0.72
   },
   {
     "semen_code": "0200HO13641",
@@ -888,7 +938,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-hooray99-i"
+    "id": "semex-hooray99-i",
+    "staerke_us": 0.73,
+    "strichlaenge_us": 0.58
   },
   {
     "semen_code": "0200HO13726",
@@ -921,7 +973,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-aurelius99-i"
+    "id": "semex-aurelius99-i",
+    "staerke_us": 0.09,
+    "strichlaenge_us": 0.1
   },
   {
     "semen_code": "0200HO13681",
@@ -954,7 +1008,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-tapas99-i"
+    "id": "semex-tapas99-i",
+    "staerke_us": -0.1,
+    "strichlaenge_us": -0.68
   },
   {
     "semen_code": "0777HO13661",
@@ -1020,7 +1076,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-fitzgerald99-i"
+    "id": "semex-fitzgerald99-i",
+    "staerke_us": 0.99,
+    "strichlaenge_us": 0.57
   },
   {
     "semen_code": "0200HO13640",
@@ -1053,7 +1111,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-heyman99-i"
+    "id": "semex-heyman99-i",
+    "staerke_us": 1.37,
+    "strichlaenge_us": 0.22
   },
   {
     "semen_code": "0200HO13095",
@@ -1086,7 +1146,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-heavenly99-i"
+    "id": "semex-heavenly99-i",
+    "staerke_us": -0.71,
+    "strichlaenge_us": -0.51
   },
   {
     "semen_code": "0200HO13176",
@@ -1119,7 +1181,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-hi-pace99-i"
+    "id": "semex-hi-pace99-i",
+    "staerke_us": 0.66,
+    "strichlaenge_us": 0.37
   },
   {
     "semen_code": "0200HO13690",
@@ -1152,7 +1216,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-wildfire99-i"
+    "id": "semex-wildfire99-i",
+    "staerke_us": -0.41,
+    "strichlaenge_us": -0.51
   },
   {
     "semen_code": "0200HO13729",
@@ -1185,7 +1251,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-monstertruck99-i"
+    "id": "semex-monstertruck99-i",
+    "staerke_us": 0.1,
+    "strichlaenge_us": -0.67
   },
   {
     "semen_code": "0200HO13696",
@@ -1218,7 +1286,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-malakai99-i"
+    "id": "semex-malakai99-i",
+    "staerke_us": -0.02,
+    "strichlaenge_us": 0.42
   },
   {
     "semen_code": "0200HO13659",
@@ -1251,7 +1321,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-dinatron99-i"
+    "id": "semex-dinatron99-i",
+    "staerke_us": -0.03,
+    "strichlaenge_us": -0.72
   },
   {
     "semen_code": "0200HO13713",
@@ -1284,7 +1356,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-olivier99-i"
+    "id": "semex-olivier99-i",
+    "staerke_us": 0.42,
+    "strichlaenge_us": -0.68
   },
   {
     "semen_code": "0200HO13632",
@@ -1317,7 +1391,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-flaminghot99-i"
+    "id": "semex-flaminghot99-i",
+    "staerke_us": -0.43,
+    "strichlaenge_us": -1.61
   },
   {
     "semen_code": "0200HO12872",
@@ -1350,7 +1426,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-hi-note99-i"
+    "id": "semex-hi-note99-i",
+    "staerke_us": 0.71,
+    "strichlaenge_us": 0.1
   },
   {
     "semen_code": "0200HO13752",
@@ -1383,7 +1461,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-ruffalo99-i"
+    "id": "semex-ruffalo99-i",
+    "staerke_us": 0.1,
+    "strichlaenge_us": -0.27
   },
   {
     "semen_code": "0200HO13269",
@@ -1416,7 +1496,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-minesweeper99-i"
+    "id": "semex-minesweeper99-i",
+    "staerke_us": 0.08,
+    "strichlaenge_us": 0.09
   },
   {
     "semen_code": "0200HO13700",
@@ -1449,7 +1531,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-malfoy99-i"
+    "id": "semex-malfoy99-i",
+    "staerke_us": -0.2,
+    "strichlaenge_us": -0.06
   },
   {
     "semen_code": "0200HO13586",
@@ -1482,7 +1566,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-hinte99-i"
+    "id": "semex-hinte99-i",
+    "staerke_us": 0.47,
+    "strichlaenge_us": 0.61
   },
   {
     "semen_code": "0200HO13790",
@@ -1514,7 +1600,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-mkebrewer99-i"
+    "id": "semex-mkebrewer99-i",
+    "staerke_us": 0.3,
+    "strichlaenge_us": -0.85
   },
   {
     "semen_code": "0200HO13676",
@@ -1547,7 +1635,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-flynt99-i"
+    "id": "semex-flynt99-i",
+    "staerke_us": -0.86,
+    "strichlaenge_us": -1.29
   },
   {
     "semen_code": "0200HO13550",
@@ -1580,7 +1670,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-hi-end99-i"
+    "id": "semex-hi-end99-i",
+    "staerke_us": -0.13,
+    "strichlaenge_us": -0.5
   },
   {
     "semen_code": "0777HO13739",
@@ -1646,7 +1738,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-dinatop99-i"
+    "id": "semex-dinatop99-i",
+    "staerke_us": -0.78,
+    "strichlaenge_us": -0.69
   },
   {
     "semen_code": "0777HO13719",
@@ -1712,7 +1806,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-upl99-i"
+    "id": "semex-upl99-i",
+    "staerke_us": 0.38,
+    "strichlaenge_us": -0.66
   },
   {
     "semen_code": "0200HO13745",
@@ -1745,7 +1841,9 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-meriad99-i"
+    "id": "semex-meriad99-i",
+    "staerke_us": -0.01,
+    "strichlaenge_us": 0.17
   },
   {
     "semen_code": "0200HO13656",
@@ -1778,6 +1876,8 @@
     "quelle_url": "https://www.semex.com/us/i?view=list&breed=HO",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "semex-dinaplex99-i"
+    "id": "semex-dinaplex99-i",
+    "staerke_us": 0.6,
+    "strichlaenge_us": -0.73
   }
 ]

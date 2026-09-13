@@ -1,0 +1,48 @@
+{
+  "lauf": "2026-09-13T09:11:34+00:00",
+  "datum": "2026-09-13",
+  "quellen": {
+    "WWS": {
+      "ok": true,
+      "meldung": "114 Bullen, 85% mit Gesamtzuchtwert",
+      "anzahl": 114,
+      "vorher": 114,
+      "stand": "2026-09-13",
+      "mit_strichlaenge": 114
+    },
+    "Prismagen": {
+      "ok": true,
+      "meldung": "120 Bullen, 100% mit Gesamtzuchtwert",
+      "anzahl": 120,
+      "vorher": 120,
+      "stand": "2026-09-13",
+      "mit_strichlaenge": 120
+    },
+    "Semex": {
+      "ok": true,
+      "meldung": "54 Bullen, 100% mit Gesamtzuchtwert",
+      "anzahl": 54,
+      "vorher": 54,
+      "stand": "2026-09-13",
+      "mit_strichlaenge": 50
+    },
+    "RBW": {
+      "ok": true,
+      "meldung": "120 Bullen, 100% mit Gesamtzuchtwert",
+      "anzahl": 120,
+      "vorher": 120,
+      "stand": "2026-09-13",
+      "mit_strichlaenge": 120
+    },
+    "CRI": {
+      "ok": true,
+      "meldung": "101 Bullen, 100% mit Gesamtzuchtwert",
+      "anzahl": 101,
+      "vorher": 101,
+      "stand": "2026-09-13",
+      "mit_strichlaenge": 101
+    }
+  },
+  "alles_ok": true,
+  "kaputte_quellen": []
+}

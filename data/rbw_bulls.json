@@ -28,12 +28,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 35.0,
     "preis_gesext_eur": 49.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/harmonic-p-12.html?id=204611&contentId=4588&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-harmonic-p"
+    "id": "rbw-harmonic-p",
+    "staerke_de": 87.0,
+    "strichlaenge_de": 92.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -64,12 +67,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
     "preis_gesext_eur": 34.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/sheridan-12.html?id=194287&contentId=4588&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-sheridan"
+    "id": "rbw-sheridan",
+    "staerke_de": 116.0,
+    "strichlaenge_de": 96.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -100,12 +106,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/handsome-p-12.html?id=204612&contentId=4588&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-handsome-p"
+    "id": "rbw-handsome-p",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 107.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -136,12 +145,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 50.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/fastrun-p-12.html?id=202396&contentId=4588&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-fastrun-p"
+    "id": "rbw-fastrun-p",
+    "staerke_de": 104.0,
+    "strichlaenge_de": 114.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -172,12 +184,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/mex-red-pp-12.html?id=202394&contentId=4588&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-mex-red-pp"
+    "id": "rbw-mex-red-pp",
+    "staerke_de": 106.0,
+    "strichlaenge_de": 105.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -207,12 +222,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 8.0,
     "preis_gesext_eur": 22.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/keegan-pp-12.html?id=183928&contentId=4588&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-keegan-pp"
+    "id": "rbw-keegan-pp",
+    "staerke_de": 112.0,
+    "strichlaenge_de": 116.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -242,12 +260,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/sotu-p-12.html?id=214995&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-sotu-p"
+    "id": "rbw-sotu-p",
+    "staerke_de": 94.0,
+    "strichlaenge_de": 120.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -278,12 +299,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/monami-12.html?id=204610&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-monami"
+    "id": "rbw-monami",
+    "staerke_de": 95.0,
+    "strichlaenge_de": 112.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -313,12 +337,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/callbox-12.html?id=208777&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-callbox"
+    "id": "rbw-callbox",
+    "staerke_de": 102.0,
+    "strichlaenge_de": 99.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -348,12 +375,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 50.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/slim-rdc-12.html?id=214998&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-slim-rdc"
+    "id": "rbw-slim-rdc",
+    "staerke_de": 87.0,
+    "strichlaenge_de": 91.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -384,12 +414,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/chanello-12.html?id=194192&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-chanello"
+    "id": "rbw-chanello",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 125.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -420,12 +453,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 50.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/return-12.html?id=196001&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-return"
+    "id": "rbw-return",
+    "staerke_de": 103.0,
+    "strichlaenge_de": 95.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -456,12 +492,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 50.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/rockabilly-12.html?id=215000&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rockabilly"
+    "id": "rbw-rockabilly",
+    "staerke_de": 95.0,
+    "strichlaenge_de": 102.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -492,12 +531,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
     "preis_gesext_eur": 34.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/connor-12.html?id=196781&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-connor"
+    "id": "rbw-connor",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 114.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -528,12 +570,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 44.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/nextlevel-12.html?id=215919&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-nextlevel"
+    "id": "rbw-nextlevel",
+    "staerke_de": 92.0,
+    "strichlaenge_de": 101.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -564,12 +609,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/major-tom-12.html?id=208781&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-major-tom"
+    "id": "rbw-major-tom",
+    "staerke_de": 95.0,
+    "strichlaenge_de": 99.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -600,12 +648,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
     "preis_gesext_eur": 34.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/enforcer-p-12.html?id=183511&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-enforcer-p"
+    "id": "rbw-enforcer-p",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 97.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -636,12 +687,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
     "preis_gesext_eur": 27.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/midland-12.html?id=179291&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-midland"
+    "id": "rbw-midland",
+    "staerke_de": 91.0,
+    "strichlaenge_de": 110.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -672,12 +726,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
     "preis_gesext_eur": 30.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/rhapsody-12.html?id=205224&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rhapsody"
+    "id": "rbw-rhapsody",
+    "staerke_de": 102.0,
+    "strichlaenge_de": 105.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -708,12 +765,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/ravello-p-12.html?id=196782&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-ravello-p"
+    "id": "rbw-ravello-p",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 110.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -744,12 +804,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 44.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/supa-p-rdc-12.html?id=215994&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-supa-p-rdc"
+    "id": "rbw-supa-p-rdc",
+    "staerke_de": 112.0,
+    "strichlaenge_de": 107.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -780,12 +843,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 26.0,
     "preis_gesext_eur": 40.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/rax-pp-rdc-12.html?id=208784&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rax-pp-rdc"
+    "id": "rbw-rax-pp-rdc",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 89.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -816,12 +882,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 8.0,
     "preis_gesext_eur": 22.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/myline-12.html?id=148426&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-myline"
+    "id": "rbw-myline",
+    "staerke_de": 112.0,
+    "strichlaenge_de": 97.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -852,12 +921,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/coros-pp-rdc-12.html?id=208763&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-coros-pp-rdc"
+    "id": "rbw-coros-pp-rdc",
+    "staerke_de": 95.0,
+    "strichlaenge_de": 105.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -888,12 +960,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/temptation-12.html?id=183506&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-temptation"
+    "id": "rbw-temptation",
+    "staerke_de": 103.0,
+    "strichlaenge_de": 105.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -923,12 +998,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/subito-pp-12.html?id=202538&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-subito-pp"
+    "id": "rbw-subito-pp",
+    "staerke_de": 92.0,
+    "strichlaenge_de": 113.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -959,12 +1037,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/melville-12.html?id=70300&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-melville"
+    "id": "rbw-melville",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 110.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -994,12 +1075,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
     "preis_gesext_eur": 43.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/brandy-pp-12.html?id=143703&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-brandy-pp"
+    "id": "rbw-brandy-pp",
+    "staerke_de": 107.0,
+    "strichlaenge_de": 91.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1029,12 +1113,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
     "preis_gesext_eur": 27.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/canitz-12.html?id=109154&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-canitz"
+    "id": "rbw-canitz",
+    "staerke_de": 97.0,
+    "strichlaenge_de": 92.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1065,12 +1152,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
     "preis_gesext_eur": 30.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/bullenempfehlung/garfield-ex92-12.html?id=54905&contentId=4586&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-garfield-ex92"
+    "id": "rbw-garfield-ex92",
+    "staerke_de": 106.0,
+    "strichlaenge_de": 101.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1099,12 +1189,15 @@
     "euter": 110.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/daktari-pp-14.html?id=170514&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-daktari-pp"
+    "id": "rbw-daktari-pp",
+    "staerke_de": 112.0,
+    "strichlaenge_de": 130.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1134,12 +1227,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/skill-red-14.html?id=162227&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-skill-red"
+    "id": "rbw-skill-red",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 82.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1170,12 +1266,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/handout-p-14.html?id=170507&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-handout-p"
+    "id": "rbw-handout-p",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 90.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1205,12 +1304,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 25.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/mega-red-p-14.html?id=184002&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-mega-red-p"
+    "id": "rbw-mega-red-p",
+    "staerke_de": 108.0,
+    "strichlaenge_de": 115.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1239,12 +1341,15 @@
     "euter": 120.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/soda-pp-14.html?id=208770&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-soda-pp"
+    "id": "rbw-soda-pp",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 100.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1273,12 +1378,15 @@
     "euter": 119.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/mascardi-pp-14.html?id=173009&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-mascardi-pp"
+    "id": "rbw-mascardi-pp",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 118.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1308,12 +1416,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/redford-vg89-14.html?id=142008&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-redford-vg89"
+    "id": "rbw-redford-vg89",
+    "staerke_de": 92.0,
+    "strichlaenge_de": 103.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1343,12 +1454,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/fun-red-pp-14.html?id=183505&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-fun-red-pp"
+    "id": "rbw-fun-red-pp",
+    "staerke_de": 107.0,
+    "strichlaenge_de": 95.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1378,12 +1492,15 @@
     "euter": 130.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/homage-pp-14.html?id=204614&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-homage-pp"
+    "id": "rbw-homage-pp",
+    "staerke_de": 93.0,
+    "strichlaenge_de": 98.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1414,12 +1531,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
     "preis_gesext_eur": 27.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/freesole-14.html?id=134089&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-freesole"
+    "id": "rbw-freesole",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 108.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1450,12 +1570,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 27.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/do-it-pp-14.html?id=191626&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-do-it-pp"
+    "id": "rbw-do-it-pp",
+    "staerke_de": 104.0,
+    "strichlaenge_de": 93.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1485,12 +1608,15 @@
     "euter": 108.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/keane-pp-14.html?id=143706&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-keane-pp"
+    "id": "rbw-keane-pp",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 134.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1521,12 +1647,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/siney-pp-14.html?id=173010&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-siney-pp"
+    "id": "rbw-siney-pp",
+    "staerke_de": 105.0,
+    "strichlaenge_de": 126.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1556,12 +1685,15 @@
     "euter": 120.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/spread-p-14.html?id=129001&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-spread-p"
+    "id": "rbw-spread-p",
+    "staerke_de": 89.0,
+    "strichlaenge_de": 88.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1591,12 +1723,15 @@
     "euter": 114.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 8.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/carus-p-14.html?id=138957&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-carus-p"
+    "id": "rbw-carus-p",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 115.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1626,12 +1761,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
     "preis_gesext_eur": 34.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/menlo-pp-14.html?id=168967&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-menlo-pp"
+    "id": "rbw-menlo-pp",
+    "staerke_de": 93.0,
+    "strichlaenge_de": 101.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1662,12 +1800,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 26.0,
     "preis_gesext_eur": 44.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/malito-pp-14.html?id=143705&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-malito-pp"
+    "id": "rbw-malito-pp",
+    "staerke_de": 108.0,
+    "strichlaenge_de": 101.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1696,12 +1837,15 @@
     "euter": 114.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 15.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/mayson-p-14.html?id=127455&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-mayson-p"
+    "id": "rbw-mayson-p",
+    "staerke_de": 107.0,
+    "strichlaenge_de": 126.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1730,12 +1874,15 @@
     "euter": 111.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/stellar-p-14.html?id=55795&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-stellar-p"
+    "id": "rbw-stellar-p",
+    "staerke_de": 103.0,
+    "strichlaenge_de": 97.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1764,12 +1911,15 @@
     "euter": 112.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 12.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/eyck-14.html?id=109156&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-eyck"
+    "id": "rbw-eyck",
+    "staerke_de": 93.0,
+    "strichlaenge_de": 114.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1798,12 +1948,15 @@
     "euter": 121.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 25.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/astra-red-14.html?id=111512&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-astra-red"
+    "id": "rbw-astra-red",
+    "staerke_de": 102.0,
+    "strichlaenge_de": 87.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1832,12 +1985,15 @@
     "euter": 101.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 18.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/soli-red-p-14.html?id=70896&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-soli-red-p"
+    "id": "rbw-soli-red-p",
+    "staerke_de": 81.0,
+    "strichlaenge_de": 80.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1867,12 +2023,15 @@
     "euter": 108.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/groovy-p-14.html?id=55796&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-groovy-p"
+    "id": "rbw-groovy-p",
+    "staerke_de": 84.0,
+    "strichlaenge_de": 100.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1902,12 +2061,15 @@
     "euter": 109.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/stanford-p-14.html?id=26845&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-stanford-p"
+    "id": "rbw-stanford-p",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 109.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1937,12 +2099,15 @@
     "euter": 118.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/sharif-14.html?id=54910&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-sharif"
+    "id": "rbw-sharif",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 102.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -1971,12 +2136,15 @@
     "euter": 104.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 10.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/stone-14.html?id=26640&contentId=4590&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-stone"
+    "id": "rbw-stone",
+    "staerke_de": 104.0,
+    "strichlaenge_de": 76.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2006,12 +2174,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/agent-14.html?id=207615&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-agent"
+    "id": "rbw-agent",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 101.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2042,12 +2213,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 35.0,
     "preis_gesext_eur": 48.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/alaska-14.html?id=192545&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-alaska"
+    "id": "rbw-alaska",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 106.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2076,12 +2250,15 @@
     "euter": 115.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 35.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/contador-14.html?id=191623&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-contador"
+    "id": "rbw-contador",
+    "staerke_de": 110.0,
+    "strichlaenge_de": 112.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2111,12 +2288,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 49.0,
     "preis_gesext_eur": 66.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/capio-14.html?id=208768&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-capio"
+    "id": "rbw-capio",
+    "staerke_de": 110.0,
+    "strichlaenge_de": 92.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2146,12 +2326,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
     "preis_gesext_eur": 30.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/cosmos-14.html?id=183494&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-cosmos"
+    "id": "rbw-cosmos",
+    "staerke_de": 95.0,
+    "strichlaenge_de": 82.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2182,12 +2365,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 32.0,
     "preis_gesext_eur": 45.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/amarant-14.html?id=191625&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-amarant"
+    "id": "rbw-amarant",
+    "staerke_de": 115.0,
+    "strichlaenge_de": 117.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2218,12 +2404,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
     "preis_gesext_eur": 47.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/mindset-14.html?id=191627&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-mindset"
+    "id": "rbw-mindset",
+    "staerke_de": 95.0,
+    "strichlaenge_de": 92.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2254,12 +2443,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 39.0,
     "preis_gesext_eur": 50.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/setlur-rdc-14.html?id=183507&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-setlur-rdc"
+    "id": "rbw-setlur-rdc",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 116.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2290,12 +2482,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 27.0,
     "preis_gesext_eur": 44.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/patchwork-14.html?id=183817&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-patchwork"
+    "id": "rbw-patchwork",
+    "staerke_de": 102.0,
+    "strichlaenge_de": 115.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2326,12 +2521,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 25.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/smartie-p-14.html?id=202397&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-smartie-p"
+    "id": "rbw-smartie-p",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 94.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2361,12 +2559,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/vivaldi-14.html?id=183927&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-vivaldi"
+    "id": "rbw-vivaldi",
+    "staerke_de": 104.0,
+    "strichlaenge_de": 108.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2397,12 +2598,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 41.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/crocodile-14.html?id=191624&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-crocodile"
+    "id": "rbw-crocodile",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 98.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2432,12 +2636,15 @@
     "euter": 117.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/camiro-14.html?id=165484&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-camiro"
+    "id": "rbw-camiro",
+    "staerke_de": 82.0,
+    "strichlaenge_de": 100.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2468,12 +2675,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/saverio-14.html?id=202393&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-saverio"
+    "id": "rbw-saverio",
+    "staerke_de": 105.0,
+    "strichlaenge_de": 92.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2502,12 +2712,15 @@
     "euter": 117.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 35.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/cataldo-14.html?id=176959&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-cataldo"
+    "id": "rbw-cataldo",
+    "staerke_de": 106.0,
+    "strichlaenge_de": 96.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2538,12 +2751,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
     "preis_gesext_eur": 30.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/novalis-14.html?id=183510&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-novalis"
+    "id": "rbw-novalis",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 96.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2573,12 +2789,15 @@
     "euter": 105.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/glendon-14.html?id=168968&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-glendon"
+    "id": "rbw-glendon",
+    "staerke_de": 92.0,
+    "strichlaenge_de": 100.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2609,12 +2828,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/cojack-14.html?id=157163&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-cojack"
+    "id": "rbw-cojack",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 100.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2645,12 +2867,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/caspian-pp-14.html?id=183509&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-caspian-pp"
+    "id": "rbw-caspian-pp",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 111.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2680,12 +2905,15 @@
     "euter": 114.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/pugetbay-14.html?id=170509&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-pugetbay"
+    "id": "rbw-pugetbay",
+    "staerke_de": 111.0,
+    "strichlaenge_de": 99.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2716,12 +2944,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/comeback-14.html?id=136001&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-comeback"
+    "id": "rbw-comeback",
+    "staerke_de": 104.0,
+    "strichlaenge_de": 97.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2750,12 +2981,15 @@
     "euter": 109.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/caping-14.html?id=173011&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-caping"
+    "id": "rbw-caping",
+    "staerke_de": 100.0,
+    "strichlaenge_de": 96.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2786,12 +3020,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 40.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/mirco-14.html?id=71096&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-mirco"
+    "id": "rbw-mirco",
+    "staerke_de": 108.0,
+    "strichlaenge_de": 117.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2821,12 +3058,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
     "preis_gesext_eur": 34.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/midway-pp-14.html?id=168966&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-midway-pp"
+    "id": "rbw-midway-pp",
+    "staerke_de": 106.0,
+    "strichlaenge_de": 86.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2857,12 +3097,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 35.0,
     "preis_gesext_eur": 44.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/greytop-14.html?id=170512&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-greytop"
+    "id": "rbw-greytop",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 94.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2892,12 +3135,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 53.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/raiton-14.html?id=144042&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-raiton"
+    "id": "rbw-raiton",
+    "staerke_de": 116.0,
+    "strichlaenge_de": 101.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2927,12 +3173,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
     "preis_gesext_eur": 34.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/seaport-14.html?id=154275&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-seaport"
+    "id": "rbw-seaport",
+    "staerke_de": 108.0,
+    "strichlaenge_de": 89.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2962,12 +3211,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 26.0,
     "preis_gesext_eur": 44.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/gladius-14.html?id=70234&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-gladius"
+    "id": "rbw-gladius",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 85.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -2997,12 +3249,15 @@
     "euter": 118.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/rochester-14.html?id=148425&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rochester"
+    "id": "rbw-rochester",
+    "staerke_de": 96.0,
+    "strichlaenge_de": 105.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3033,12 +3288,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/montague-14.html?id=170511&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-montague"
+    "id": "rbw-montague",
+    "staerke_de": 81.0,
+    "strichlaenge_de": 110.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3067,12 +3325,15 @@
     "euter": 111.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/winston-14.html?id=157164&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-winston"
+    "id": "rbw-winston",
+    "staerke_de": 97.0,
+    "strichlaenge_de": 118.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3102,12 +3363,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
     "preis_gesext_eur": 36.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/day-pp-rdc-14.html?id=183508&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-day-pp-rdc"
+    "id": "rbw-day-pp-rdc",
+    "staerke_de": 92.0,
+    "strichlaenge_de": 90.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3137,12 +3401,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 12.0,
     "preis_gesext_eur": 26.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/graham-14.html?id=121246&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-graham"
+    "id": "rbw-graham",
+    "staerke_de": 106.0,
+    "strichlaenge_de": 81.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3172,12 +3439,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 8.0,
     "preis_gesext_eur": 22.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/camp-14.html?id=154274&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-camp"
+    "id": "rbw-camp",
+    "staerke_de": 107.0,
+    "strichlaenge_de": 89.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3207,12 +3477,15 @@
     "euter": 115.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/rowling-14.html?id=148427&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rowling"
+    "id": "rbw-rowling",
+    "staerke_de": 88.0,
+    "strichlaenge_de": 93.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3243,12 +3516,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 42.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/nexo-14.html?id=150616&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-nexo"
+    "id": "rbw-nexo",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 86.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3278,12 +3554,15 @@
     "euter": 103.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/rango-14.html?id=157161&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rango"
+    "id": "rbw-rango",
+    "staerke_de": 108.0,
+    "strichlaenge_de": 96.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3313,12 +3592,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/adeo-14.html?id=176960&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-adeo"
+    "id": "rbw-adeo",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 99.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3348,12 +3630,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 8.0,
     "preis_gesext_eur": 22.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/balzac-14.html?id=132917&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-balzac"
+    "id": "rbw-balzac",
+    "staerke_de": 105.0,
+    "strichlaenge_de": 84.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3382,12 +3667,15 @@
     "euter": 106.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 20.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/goal-p-rdc-14.html?id=138956&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-goal-p-rdc"
+    "id": "rbw-goal-p-rdc",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 109.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3417,12 +3705,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/genius-14.html?id=111509&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-genius"
+    "id": "rbw-genius",
+    "staerke_de": 112.0,
+    "strichlaenge_de": 110.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3453,12 +3744,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 35.0,
     "preis_gesext_eur": 53.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/clay-14.html?id=170513&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-clay"
+    "id": "rbw-clay",
+    "staerke_de": 104.0,
+    "strichlaenge_de": 95.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3487,12 +3781,15 @@
     "euter": 106.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 10.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/cohen-rdc-14.html?id=115130&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-cohen-rdc"
+    "id": "rbw-cohen-rdc",
+    "staerke_de": 108.0,
+    "strichlaenge_de": 111.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3522,12 +3819,15 @@
     "euter": 115.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/freedom-p-14.html?id=142009&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-freedom-p"
+    "id": "rbw-freedom-p",
+    "staerke_de": 105.0,
+    "strichlaenge_de": 90.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3558,12 +3858,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 29.0,
     "preis_gesext_eur": 43.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/garantie-14.html?id=150643&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-garantie"
+    "id": "rbw-garantie",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 108.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3592,12 +3895,15 @@
     "euter": 106.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/resistance-14.html?id=170508&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-resistance"
+    "id": "rbw-resistance",
+    "staerke_de": 103.0,
+    "strichlaenge_de": 88.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3627,12 +3933,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/revolution-14.html?id=129178&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-revolution"
+    "id": "rbw-revolution",
+    "staerke_de": 99.0,
+    "strichlaenge_de": 82.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3662,12 +3971,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 12.0,
     "preis_gesext_eur": 26.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/oldfield-14.html?id=108455&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-oldfield"
+    "id": "rbw-oldfield",
+    "staerke_de": 90.0,
+    "strichlaenge_de": 96.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3698,12 +4010,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
     "preis_gesext_eur": 30.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/smokey-p-14.html?id=149884&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-smokey-p"
+    "id": "rbw-smokey-p",
+    "staerke_de": 100.0,
+    "strichlaenge_de": 99.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3732,12 +4047,15 @@
     "euter": 124.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 16.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/skywalk-rdc-14.html?id=159538&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-skywalk-rdc"
+    "id": "rbw-skywalk-rdc",
+    "staerke_de": 101.0,
+    "strichlaenge_de": 95.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3767,12 +4085,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
     "preis_gesext_eur": 46.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/bombastic-14.html?id=143702&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-bombastic"
+    "id": "rbw-bombastic",
+    "staerke_de": 88.0,
+    "strichlaenge_de": 104.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3802,12 +4123,15 @@
     "euter": 111.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 25.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/matty-p-rdc-14.html?id=101816&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-matty-p-rdc"
+    "id": "rbw-matty-p-rdc",
+    "staerke_de": 102.0,
+    "strichlaenge_de": 119.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3838,12 +4162,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 10.0,
     "preis_gesext_eur": 24.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/greyhound-14.html?id=55793&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-greyhound"
+    "id": "rbw-greyhound",
+    "staerke_de": 94.0,
+    "strichlaenge_de": 111.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3873,12 +4200,15 @@
     "euter": 130.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 25.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/kant-rdc-14.html?id=136697&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-kant-rdc"
+    "id": "rbw-kant-rdc",
+    "staerke_de": 96.0,
+    "strichlaenge_de": 110.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3908,12 +4238,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 23.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/collin-14.html?id=192546&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-collin"
+    "id": "rbw-collin",
+    "staerke_de": 102.0,
+    "strichlaenge_de": 112.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3943,12 +4276,15 @@
     "euter": 105.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 12.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/combino-14.html?id=70721&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-combino"
+    "id": "rbw-combino",
+    "staerke_de": 89.0,
+    "strichlaenge_de": 85.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -3978,12 +4314,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
     "preis_gesext_eur": 27.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/sartre-rdc-14.html?id=67832&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-sartre-rdc"
+    "id": "rbw-sartre-rdc",
+    "staerke_de": 91.0,
+    "strichlaenge_de": 93.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4013,12 +4352,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 25.0,
     "preis_gesext_eur": 43.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/brise-pp-14.html?id=136000&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-brise-pp"
+    "id": "rbw-brise-pp",
+    "staerke_de": 110.0,
+    "strichlaenge_de": 99.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4047,12 +4389,15 @@
     "euter": 115.0,
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 28.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/capone-14.html?id=150682&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-capone"
+    "id": "rbw-capone",
+    "staerke_de": 94.0,
+    "strichlaenge_de": 107.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4082,12 +4427,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 13.0,
     "preis_gesext_eur": 27.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/puschkin-14.html?id=115153&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-puschkin"
+    "id": "rbw-puschkin",
+    "staerke_de": 97.0,
+    "strichlaenge_de": 113.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4117,12 +4465,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 18.0,
     "preis_gesext_eur": 36.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/yearwood-14.html?id=31206&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-yearwood"
+    "id": "rbw-yearwood",
+    "staerke_de": 97.0,
+    "strichlaenge_de": 104.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4152,12 +4503,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 15.0,
     "preis_gesext_eur": 29.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/erweiterte-spermaliste/corelli-14.html?id=71347&contentId=4589&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-corelli"
+    "id": "rbw-corelli",
+    "staerke_de": 93.0,
+    "strichlaenge_de": 81.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4187,12 +4541,15 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 24.0,
     "preis_gesext_eur": 38.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/gesextes-sperma/rambo-pp-15.html?id=164370&contentId=4591&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-rambo-pp"
+    "id": "rbw-rambo-pp",
+    "staerke_de": 110.0,
+    "strichlaenge_de": 107.0
   },
   {
     "kategorie": "RBW-Katalog",
@@ -4222,11 +4579,14 @@
     "zws_datum": "2026-08-11",
     "preis_konv_eur": 19.0,
     "preis_gesext_eur": 28.0,
+    "detail_url": "https://www.rind-bw.de/bullen/holsteins/gesextes-sperma/barrett-15.html?id=30017&contentId=4591&type=easybull&lng=deu",
     "firma": "RBW",
     "rasse": "Holstein",
     "quelle_url": "https://rind-bw.de/bullen/holsteins/bullenempfehlung-12.html",
     "stand": "2026-09-13",
     "vollstaendig": true,
-    "id": "rbw-barrett"
+    "id": "rbw-barrett",
+    "staerke_de": 98.0,
+    "strichlaenge_de": 106.0
   }
 ]
