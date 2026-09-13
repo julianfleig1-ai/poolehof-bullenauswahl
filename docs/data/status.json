@@ -1,10 +1,10 @@
 {
-  "lauf": "2026-09-13T09:11:34+00:00",
+  "lauf": "2026-09-13T09:47:20+00:00",
   "datum": "2026-09-13",
   "quellen": {
     "WWS": {
       "ok": true,
-      "meldung": "114 Bullen, 85% mit Gesamtzuchtwert",
+      "meldung": "114 Bullen, 100% mit Gesamtzuchtwert",
       "anzahl": 114,
       "vorher": 114,
       "stand": "2026-09-13",
