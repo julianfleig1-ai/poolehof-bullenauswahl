@@ -82,6 +82,10 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .stat.pass .n{color:var(--accent)}
 
 .layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+/* min-width:0 verhindert, dass breiter Inhalt (Tabelle, lange Zahlenfelder)
+   die Grid-Spalten aufsprengt - ohne das schiebt sich auf dem Handy die
+   gesamte Seite in die Breite statt intern zu scrollen ("Grid-Blowout"). */
+.layout > *{min-width:0}
 @media (max-width:900px){.layout{grid-template-columns:1fr}}
 
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
@@ -101,11 +105,13 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .crit-row .help{font-size:12px;color:var(--ink-dim);margin-bottom:6px}
 .crit-row .scales{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--ink-dim)}
 .crit-row .scales b{color:var(--ink);font-weight:600}
-.crit-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.crit-edit-grid label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:2px}
-.crit-edit-grid .scale-block{border:1px dashed var(--border-strong);border-radius:8px;padding:8px}
-.crit-edit-grid input, .crit-edit-grid select{width:100%;min-width:0;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:13px}
-.crit-edit-grid input[type=number]{flex:1 1 0}
+/* Kriterien-Editor: pro Skala eine Zeile - Feldname fest, Bedingung als Wort,
+   Zahlenfeld grosszuegig breit statt in einer engen zweispaltigen Box. */
+.crit-scale-edit{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px}
+.scale-pill{flex:none;font-size:10px;font-weight:700;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:var(--chip);color:var(--ink-dim)}
+.scale-field{flex:none;font-weight:600;font-size:13.5px;min-width:70px}
+.crit-scale-edit select{flex:1 1 118px;min-width:100px;padding:8px 8px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);font-size:13.5px}
+.crit-scale-edit .val-input{flex:1 1 90px;min-width:80px;padding:8px 9px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);font-size:15px;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
 .crit-row input.label-input{width:100%;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:14.5px;font-weight:600;margin-bottom:8px}
 .crit-row-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
 .panel-foot{padding:12px 16px 16px;display:flex;gap:8px;flex-wrap:wrap}
@@ -116,9 +122,9 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .firma-filter{display:flex;gap:6px;flex-wrap:wrap}
 .firma-btn{padding:7px 13px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);font-size:13px;cursor:pointer}
 .firma-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.toggle-only{display:flex;align-items:center;gap:7px;font-size:14px;white-space:nowrap;cursor:pointer}
+.toggle-only{display:flex;align-items:center;gap:7px;font-size:14px;white-space:nowrap;cursor:pointer;min-width:0;flex:1 1 auto}
 .toggle-only input{width:17px;height:17px}
-.toggle-only select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);font-size:14px;cursor:pointer}
+.toggle-only select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);font-size:14px;cursor:pointer;min-width:0;flex:1 1 auto;max-width:100%}
 
 .table-scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:13.5px}
@@ -301,6 +307,17 @@ const FIRMA_META = {
 };
 
 const CRITERIA_STORAGE_KEY = "poolehof-bullenauswahl-kriterien-v1";
+
+// Textform statt Symbolen für den Kriterien-Editor - "mindestens 150" statt ">= 150".
+const OP_WORTE = {">=": "mindestens", "<=": "höchstens", ">": "über", "<": "unter"};
+// Menschenlesbare Feldnamen für die Skalen-Badges im Editor (z.B. "RZG" statt "rzg").
+const FIELD_LABELS = {
+  rzg:"RZG", tpi:"TPI", milch_kg:"Milch (kg)", milch_lbs:"Milch (lbs)",
+  strichlaenge_de:"Strichlänge", strichlaenge_us:"Strichlänge",
+  staerke_de:"Stärke", staerke_us:"Stärke",
+  rzd:"RZD", mbk:"MBK (Melkbk.)", rzr:"RZR", dpr:"DPR", rzs:"RZS", scs:"SCS",
+};
+function feldLabel(feld){ return FIELD_LABELS[feld] || (feld||"").toUpperCase(); }
 
 let state = {
   bulls: [],
@@ -489,37 +506,26 @@ function renderCriteria(){
   const editing = state.editingCriteria;
   const source = editing || state.criteria;
   if (editing){
+    // Vereinfachter Editor: pro Skala nur noch EIN Zeile mit Feldname (fest),
+    // Bedingung als Wort statt Symbol ("mindestens" statt ">=") und einem
+    // grosszuegigen Zahlenfeld - keine Feldcodes/Einheiten mehr zum Eintippen.
+    const opOptions = c => Object.entries(OP_WORTE).map(([op,wort]) =>
+      `<option value="${op}" ${c===op?'selected':''}>${wort}</option>`).join("");
+    const skalaZeile = (c, i, skala, badgeCls) => {
+      const s = c[skala];
+      if (!s || !s.field) return "";
+      return `<div class="crit-scale-edit">
+        <span class="scale-pill ${badgeCls}">${skala.toUpperCase()}</span>
+        <span class="scale-field">${esc(feldLabel(s.field))}</span>
+        <select data-idx="${i}" data-k="${skala}.op">${opOptions(s.op)}</select>
+        <input data-idx="${i}" data-k="${skala}.value" class="val-input" type="number" step="any" inputmode="decimal" value="${s.value ?? ''}">
+      </div>`;
+    };
     list.innerHTML = source.map((c,i)=>`
       <div class="crit-row">
-        <input class="label-input" data-idx="${i}" data-k="label" value="${c.label}">
-        <div class="crit-edit-grid">
-          <div class="scale-block">
-            <label>DE-Feld (RZ-Skala)</label>
-            <input data-idx="${i}" data-k="de.field" value="${c.de?.field||''}" placeholder="z.B. rzg">
-            <label style="margin-top:5px">Operator / Schwelle</label>
-            <div style="display:flex;gap:4px">
-              <select data-idx="${i}" data-k="de.op" style="flex:0 0 62px">
-                ${["<","<=",">",">="].map(o=>`<option ${c.de?.op===o?'selected':''}>${o}</option>`).join("")}
-              </select>
-              <input data-idx="${i}" data-k="de.value" type="number" step="any" value="${c.de?.value ?? ''}">
-            </div>
-            <label style="margin-top:5px">Einheit</label>
-            <input data-idx="${i}" data-k="de.unit" value="${c.de?.unit||''}">
-          </div>
-          <div class="scale-block">
-            <label>US-Feld (TPI-Skala)</label>
-            <input data-idx="${i}" data-k="us.field" value="${c.us?.field||''}" placeholder="z.B. tpi">
-            <label style="margin-top:5px">Operator / Schwelle</label>
-            <div style="display:flex;gap:4px">
-              <select data-idx="${i}" data-k="us.op" style="flex:0 0 62px">
-                ${["<","<=",">",">="].map(o=>`<option ${c.us?.op===o?'selected':''}>${o}</option>`).join("")}
-              </select>
-              <input data-idx="${i}" data-k="us.value" type="number" step="any" value="${c.us?.value ?? ''}">
-            </div>
-            <label style="margin-top:5px">Einheit</label>
-            <input data-idx="${i}" data-k="us.unit" value="${c.us?.unit||''}">
-          </div>
-        </div>
+        <input class="label-input" data-idx="${i}" data-k="label" value="${esc(c.label)}">
+        ${skalaZeile(c,i,"de","de")}
+        ${skalaZeile(c,i,"us","us")}
         <div class="crit-row-actions">
           <button class="btn small danger" data-remove="${i}">Entfernen</button>
         </div>
@@ -542,10 +548,11 @@ function renderCriteria(){
       });
     });
   } else {
+    const txt = s => s?.field ? `${feldLabel(s.field)} ${OP_WORTE[s.op]||s.op} ${fmtVal(s.value, s.unit).replace(/^\+/,"")}` : "";
     list.innerHTML = source.map(c=>{
-      const deTxt = c.de?.field ? `<b>DE</b> ${c.de.field} ${c.de.op} ${c.de.value}${c.de.unit? ' '+c.de.unit:''}` : "";
-      const usTxt = c.us?.field ? `<b>US</b> ${c.us.field} ${c.us.op} ${c.us.value}${c.us.unit? ' '+c.us.unit:''}` : "";
-      return `<div class="crit-row"><div class="label">${c.label}</div>${c.help?`<div class="help">${c.help}</div>`:""}<div class="scales">${deTxt?`<div>${deTxt}</div>`:""}${usTxt?`<div>${usTxt}</div>`:""}</div></div>`;
+      const deTxt = c.de?.field ? `<b>DE</b> ${esc(txt(c.de))}` : "";
+      const usTxt = c.us?.field ? `<b>US</b> ${esc(txt(c.us))}` : "";
+      return `<div class="crit-row"><div class="label">${esc(c.label)}</div>${c.help?`<div class="help">${esc(c.help)}</div>`:""}<div class="scales">${deTxt?`<div>${deTxt}</div>`:""}${usTxt?`<div>${usTxt}</div>`:""}</div></div>`;
     }).join("");
   }
   document.getElementById("critFoot").hidden = !editing;
@@ -676,8 +683,6 @@ document.getElementById("tableBody").addEventListener("keydown", e=>{
 // --- Detail-Dialog -------------------------------------------------------
 // Zeigt pro Bulle jedes Kriterium einzeln: erfüllt, verfehlt (mit Abstand zum
 // Schwellenwert) oder "keine Daten" - sortiert, damit die Verfehlten oben stehen.
-const OP_TEXT = {">": "über", ">=": "mindestens", "<": "unter", "<=": "höchstens"};
-
 function critZeile(c, e){
   const scaleTxt = e.scale === "DE" ? "deutsche RZ-Skala" : "US-Skala";
   if (e.na){
@@ -689,7 +694,7 @@ function critZeile(c, e){
     </div>`;
   }
   // Schwellenwert ohne "+" - er ist eine Grenze, keine Abweichung ("unter 2.80")
-  const ziel = `${OP_TEXT[e.op] || e.op} ${fmtVal(e.ziel, e.unit).replace(/^\+/, "")}`;
+  const ziel = `${OP_WORTE[e.op] || e.op} ${fmtVal(e.ziel, e.unit).replace(/^\+/, "")}`;
   const d = e.pass ? null : abstand(e);
   const fehlt = d == null ? "" :
     `<div class="miss">${(e.op === "<" || e.op === "<=") ? "" : "−"}${fmtVal(d, e.unit).replace(/^\+/,"")} ${(e.op === "<" || e.op === "<=") ? "zu hoch" : "zu wenig"}</div>`;
