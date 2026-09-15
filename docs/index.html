@@ -62,8 +62,12 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .chip.semex{background:var(--indigo-soft);color:var(--indigo);border-color:transparent}
 .chip.cri{background:var(--moss-soft);color:var(--moss);border-color:transparent}
 .chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-.refresh-line{font-size:12.5px;color:var(--ink-dim)}
+.refresh-line{font-size:12.5px;color:var(--ink-dim);display:flex;align-items:center;gap:10px}
 .refresh-line a{color:var(--ink-dim);text-decoration:underline}
+.refresh-line .btn.small{padding:5px 11px;font-size:12.5px}
+.refresh-line .btn.small.spinning{opacity:.6;pointer-events:none}
+.manual-trigger{font-size:11.5px;color:var(--ink-dim);margin-top:2px}
+.manual-trigger a{color:var(--ink-dim)}
 .alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:18px;font-size:14px;line-height:1.5}
 .alert.warn{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
 .alert.ok{background:var(--accent-soft);color:var(--accent);border:1px solid transparent}
@@ -100,7 +104,8 @@ header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:5
 .crit-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .crit-edit-grid label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:2px}
 .crit-edit-grid .scale-block{border:1px dashed var(--border-strong);border-radius:8px;padding:8px}
-.crit-edit-grid input, .crit-edit-grid select{width:100%;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:13px}
+.crit-edit-grid input, .crit-edit-grid select{width:100%;min-width:0;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:13px}
+.crit-edit-grid input[type=number]{flex:1 1 0}
 .crit-row input.label-input{width:100%;padding:7px 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);font-size:14.5px;font-weight:600;margin-bottom:8px}
 .crit-row-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
 .panel-foot{padding:12px 16px 16px;display:flex;gap:8px;flex-wrap:wrap}
@@ -205,7 +210,10 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
     </div>
     <div class="top-actions">
       <div class="source-chips" id="sourceChips"></div>
-      <div class="refresh-line" id="refreshLine"></div>
+      <div class="refresh-line">
+        <span id="refreshLine"></span>
+        <button class="btn small" id="refreshBtn" type="button">↻ Jetzt aktualisieren</button>
+      </div>
     </div>
   </header>
 
@@ -222,9 +230,9 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
       <p class="criteria-intro">Bei jedem Kriterium: deutscher Wert (RZ-Skala, meist &gt;100 = überdurchschnittlich) und amerikanischer Wert (TPI-Skala) getrennt – je nachdem, was die Quelle liefert.</p>
       <div class="crit-list" id="critList"></div>
       <div class="panel-foot" id="critFoot" hidden>
-        <button class="btn primary" id="addCritBtn">+ Kriterium</button>
-        <button class="btn" id="saveCritBtn">Speichern</button>
+        <button class="btn primary" id="saveCritBtn">Speichern</button>
         <button class="btn ghost" id="cancelCritBtn">Abbrechen</button>
+        <button class="btn ghost" id="resetCritBtn" title="Setzt alle Kriterien auf die Standardwerte zurück">Zurücksetzen</button>
       </div>
     </aside>
 
@@ -258,7 +266,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
   <footer class="notes">
     <h3>Datenquellen &amp; Stand</h3>
     <div class="src-grid" id="srcGrid"></div>
-    <p><b>Automatik:</b> Ein GitHub-Workflow ruft alle fünf Quellen automatisch monatlich neu ab – komplett unabhängig, ohne Claude. Zwischendurch jederzeit manuell anstoßbar über „Jetzt aktualisieren“ oben rechts. Jedes Ergebnis wird vor der Übernahme geprüft (genug Bullen? haben sie Zuchtwerte? kein plötzlicher Einbruch?). Fällt eine Quelle aus, bleiben deren alte Daten stehen, hier oben erscheint eine Warnung und GitHub schickt eine Fehlermail – ein stiller Ausfall kann also nicht passieren.</p>
+    <p><b>Automatik:</b> Ein GitHub-Workflow ruft alle fünf Quellen automatisch monatlich neu ab – komplett unabhängig, ohne Claude. Der Button „Jetzt aktualisieren“ oben rechts lädt zuverlässig den aktuell veröffentlichten Stand neu. Jedes Ergebnis wird vor der Übernahme geprüft (genug Bullen? haben sie Zuchtwerte? kein plötzlicher Einbruch?). Fällt eine Quelle aus, bleiben deren alte Daten stehen, hier oben erscheint eine Warnung und GitHub schickt eine Fehlermail – ein stiller Ausfall kann also nicht passieren. <a href="https://github.com/julianfleig1-ai/poolehof-bullenauswahl/actions/workflows/refresh.yml" target="_blank" rel="noopener">Neuen Abruf manuell auf GitHub anstoßen ↗</a> (Login nötig, normalerweise nicht erforderlich).</p>
     <p><b>Wichtig zu Semex:</b> Der deutsche Semex-Katalog ist nur als gescanntes Bilder-Flipbook veröffentlicht (keine Tabelle). Die Semex-Bullen hier stammen vom internationalen semex.com Sire-Directory (US-Skala) – ob genau diese auch über Semex Deutschland bestellbar sind, im Zweifel dort nachfragen.</p>
     <p><b>Strichlänge &amp; Stärke:</b> bei allen fünf Quellen vorhanden – diese Einzelmerkmale stehen nicht in den Übersichtslisten, sondern nur auf der jeweiligen Bull-Detailseite, die pro Bulle mit abgerufen wird. RBW, Prismagen (deutsche Bullen) und CRI liefern sie auf RZ-Skala (&gt;100 = überdurchschnittlich), WWS, Semex und die US-Bullen auf der amerikanischen Linearskala (&gt;0,0). Die Spalte zeigt jeweils mit „DE“/„US“ an, welche Skala gilt.</p>
     <p style="margin-top:10px"><b>Kriterien werden nur in diesem Browser gespeichert</b> (nicht auf dem Server) – auf einem anderen Gerät siehst du wieder die Standard-Kriterien, bis du sie dort auch anpasst.</p>
@@ -266,8 +274,6 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 </div>
 
 <script>
-const GITHUB_ACTIONS_URL = "https://github.com/julianfleig1-ai/poolehof-bullenauswahl/actions/workflows/refresh.yml";
-
 const DATA_FILES = {
   WWS: "data/wws_bulls.json",
   RBW: "data/rbw_bulls.json",
@@ -401,7 +407,32 @@ function renderRefreshLine(){
   const el = document.getElementById("refreshLine");
   const dates = state.bulls.map(b=>b.stand).filter(Boolean).sort();
   const newest = dates.length ? dates[dates.length-1] : "–";
-  el.innerHTML = `Stand: ${newest} · <a href="${GITHUB_ACTIONS_URL}" target="_blank" rel="noopener">Jetzt aktualisieren ↗</a>`;
+  el.textContent = `Stand: ${newest}`;
+}
+
+// "Jetzt aktualisieren" leitet NICHT mehr zu GitHub weiter (das hat Julian als
+// unzuverlässig empfunden - man landet auf einer fremden Seite und weiss nicht,
+// ob's geklappt hat). Stattdessen lädt der Button zuverlässig genau das neu,
+// was gerade auf GitHub Pages veröffentlicht ist - das klappt IMMER, weil es
+// kein externer Redirect ist, sondern ein simpler Re-Fetch der JSON-Dateien.
+// Eine wirklich neue Erfassung von den Bullenkatalog-Websites läuft nur über
+// den GitHub-Workflow (monatlich automatisch, oder manuell über den kleinen
+// Link unten - der bleibt bewusst unauffällig, weil er GitHub-Login braucht).
+async function onRefreshClick(){
+  const btn = document.getElementById("refreshBtn");
+  const line = document.getElementById("refreshLine");
+  btn.classList.add("spinning");
+  btn.textContent = "↻ Lade …";
+  try {
+    await loadData();
+    const jetzt = new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
+    line.textContent += ` · geprüft um ${jetzt} Uhr`;
+  } catch(e) {
+    line.textContent += " · Aktualisierung fehlgeschlagen (keine Verbindung?)";
+  } finally {
+    btn.classList.remove("spinning");
+    btn.textContent = "↻ Jetzt aktualisieren";
+  }
 }
 
 // Zeigt oben eine Warnung, wenn der letzte automatische Abruf eine Quelle
@@ -790,21 +821,24 @@ document.getElementById("cancelCritBtn").addEventListener("click", ()=>{
   state.editingCriteria = null;
   renderCriteria();
 });
-document.getElementById("addCritBtn").addEventListener("click", ()=>{
-  state.editingCriteria.push({id:"k"+Date.now(), label:"Neues Kriterium", de:{field:"",op:">",value:0,unit:""}, us:{field:"",op:">",value:0,unit:""}});
-  renderCriteria();
-});
 document.getElementById("saveCritBtn").addEventListener("click", ()=>{
   state.criteria = state.editingCriteria;
   state.editingCriteria = null;
   saveStoredCriteria();
   renderAll();
 });
+document.getElementById("resetCritBtn").addEventListener("click", ()=>{
+  if (!confirm("Alle Kriterien auf die Standardwerte zurücksetzen?")) return;
+  state.editingCriteria = JSON.parse(JSON.stringify(DEFAULT_CRITERIA));
+  renderCriteria();
+});
 
 // Klick neben den Dialog (auf den abgedunkelten Hintergrund) schliesst ihn.
 document.getElementById("bullDialog").addEventListener("click", e=>{
   if (e.target.id === "bullDialog") e.target.close();
 });
+
+document.getElementById("refreshBtn").addEventListener("click", onRefreshClick);
 
 loadData();
 </script>

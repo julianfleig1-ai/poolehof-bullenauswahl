@@ -1076,7 +1076,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-accord"
+    "id": "cri-accord",
+    "rzd": 103.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1110,7 +1111,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-ambassador"
+    "id": "cri-ambassador",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1146,7 +1148,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-axel"
+    "id": "cri-axel",
+    "rzd": 98.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1182,7 +1185,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-axford"
+    "id": "cri-axford",
+    "rzd": 102.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1218,7 +1222,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-backup"
+    "id": "cri-backup",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1254,7 +1259,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-badker"
+    "id": "cri-badker",
+    "rzd": 94.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1290,7 +1296,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-barrichello"
+    "id": "cri-barrichello",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1326,7 +1333,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-bellissimo"
+    "id": "cri-bellissimo",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1361,7 +1369,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-bestseller"
+    "id": "cri-bestseller",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1397,7 +1406,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-black-rum-pp"
+    "id": "cri-black-rum-pp",
+    "rzd": 106.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1433,7 +1443,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-conquer-pp"
+    "id": "cri-conquer-pp",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1469,7 +1480,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-dexter"
+    "id": "cri-dexter",
+    "rzd": 97.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1505,7 +1517,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-dimension"
+    "id": "cri-dimension",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1541,7 +1554,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-east-mav"
+    "id": "cri-east-mav",
+    "rzd": 102.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1577,7 +1591,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-edward"
+    "id": "cri-edward",
+    "rzd": 111.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1613,7 +1628,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-emphasis"
+    "id": "cri-emphasis",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1649,7 +1665,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-enamel-red"
+    "id": "cri-enamel-red",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1684,7 +1701,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-excitement"
+    "id": "cri-excitement",
+    "rzd": 103.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1720,7 +1738,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-expedia"
+    "id": "cri-expedia",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1756,7 +1775,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-faraon-pp"
+    "id": "cri-faraon-pp",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1792,7 +1812,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-fontaine"
+    "id": "cri-fontaine",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1828,7 +1849,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-fore"
+    "id": "cri-fore",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1864,7 +1886,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-forest-pp"
+    "id": "cri-forest-pp",
+    "rzd": 107.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1900,7 +1923,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-gambit"
+    "id": "cri-gambit",
+    "rzd": 95.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -1935,7 +1959,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-gameready"
+    "id": "cri-gameready",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2006,7 +2031,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-globetrotter-pp"
+    "id": "cri-globetrotter-pp",
+    "rzd": 105.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2042,7 +2068,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-glowup"
+    "id": "cri-glowup",
+    "rzd": 98.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2078,7 +2105,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-grandmarshal"
+    "id": "cri-grandmarshal",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2113,7 +2141,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-hambitious-pp-rdc"
+    "id": "cri-hambitious-pp-rdc",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2149,7 +2178,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-hardball"
+    "id": "cri-hardball",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2184,7 +2214,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-hefner-red"
+    "id": "cri-hefner-red",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2220,7 +2251,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-hendrick"
+    "id": "cri-hendrick",
+    "rzd": 94.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2256,7 +2288,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-heroic"
+    "id": "cri-heroic",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2292,7 +2325,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-highview"
+    "id": "cri-highview",
+    "rzd": 96.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2328,7 +2362,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-hochi"
+    "id": "cri-hochi",
+    "rzd": 97.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2364,7 +2399,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-hugo-pp"
+    "id": "cri-hugo-pp",
+    "rzd": 102.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2400,7 +2436,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-humphrey-p"
+    "id": "cri-humphrey-p",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2436,7 +2473,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-lazlo"
+    "id": "cri-lazlo",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2471,7 +2509,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-longmire"
+    "id": "cri-longmire",
+    "rzd": 98.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2507,7 +2546,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-lorax"
+    "id": "cri-lorax",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2543,7 +2583,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-lucrative"
+    "id": "cri-lucrative",
+    "rzd": 105.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2579,7 +2620,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-lustop-pp-rdc"
+    "id": "cri-lustop-pp-rdc",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2614,7 +2656,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-magenta-pp-red"
+    "id": "cri-magenta-pp-red",
+    "rzd": 96.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2650,7 +2693,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-masino"
+    "id": "cri-masino",
+    "rzd": 106.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2686,7 +2730,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-never-again"
+    "id": "cri-never-again",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2722,7 +2767,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-no-deal"
+    "id": "cri-no-deal",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2758,7 +2804,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-on-time"
+    "id": "cri-on-time",
+    "rzd": 95.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2793,7 +2840,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-pairing"
+    "id": "cri-pairing",
+    "rzd": 106.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2829,7 +2877,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-passport"
+    "id": "cri-passport",
+    "rzd": 98.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2865,7 +2914,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-picksix"
+    "id": "cri-picksix",
+    "rzd": 105.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2901,7 +2951,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-pixystix-pp"
+    "id": "cri-pixystix-pp",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2937,7 +2988,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-powerhouse"
+    "id": "cri-powerhouse",
+    "rzd": 98.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -2973,7 +3025,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-primero"
+    "id": "cri-primero",
+    "rzd": 96.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3009,7 +3062,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-prowd"
+    "id": "cri-prowd",
+    "rzd": 94.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3045,7 +3099,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-pulsar"
+    "id": "cri-pulsar",
+    "rzd": 96.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3080,7 +3135,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-quicksilver"
+    "id": "cri-quicksilver",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3116,7 +3172,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-rae-ban-red"
+    "id": "cri-rae-ban-red",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3151,7 +3208,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-recordbreak"
+    "id": "cri-recordbreak",
+    "rzd": 105.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3187,7 +3245,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-rembrandt"
+    "id": "cri-rembrandt",
+    "rzd": 102.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3223,7 +3282,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-rescue-red"
+    "id": "cri-rescue-red",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3259,7 +3319,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-roger-red"
+    "id": "cri-roger-red",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3295,7 +3356,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-rolex"
+    "id": "cri-rolex",
+    "rzd": 101.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3331,7 +3393,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-sandino-pp"
+    "id": "cri-sandino-pp",
+    "rzd": 103.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3367,7 +3430,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-silencio"
+    "id": "cri-silencio",
+    "rzd": 105.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3403,7 +3467,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-sixty"
+    "id": "cri-sixty",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3438,7 +3503,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-star-red"
+    "id": "cri-star-red",
+    "rzd": 89.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3474,7 +3540,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-streetmagician"
+    "id": "cri-streetmagician",
+    "rzd": 109.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3510,7 +3577,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-subliem"
+    "id": "cri-subliem",
+    "rzd": 99.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3546,7 +3614,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-sun-red"
+    "id": "cri-sun-red",
+    "rzd": 103.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3581,7 +3650,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-topline-pp"
+    "id": "cri-topline-pp",
+    "rzd": 104.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3616,7 +3686,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-tricksy-red"
+    "id": "cri-tricksy-red",
+    "rzd": 96.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3652,7 +3723,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-unbeatabull"
+    "id": "cri-unbeatabull",
+    "rzd": 102.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3688,7 +3760,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-unspoken"
+    "id": "cri-unspoken",
+    "rzd": 100.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3724,7 +3797,8 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-zimmer"
+    "id": "cri-zimmer",
+    "rzd": 96.0
   },
   {
     "kategorie": "CRI-Katalog",
@@ -3760,6 +3834,7 @@
     "quelle_url": "https://www.cri-genetics.de/bullenangebot/holstein-6.html",
     "stand": "2026-09-13",
     "vollstaendig": false,
-    "id": "cri-zowie"
+    "id": "cri-zowie",
+    "rzd": 97.0
   }
 ]

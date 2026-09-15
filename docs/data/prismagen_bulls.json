@@ -50,10 +50,11 @@
     "vollstaendig": true,
     "id": "prismagen-alonso",
     "detail_url": "https://stggermany.de/holstein/2711/?zuchtwerte=de",
-    "strichlaenge_de": 104.0,
     "staerke_de": 107.0,
-    "strichlaenge_us": 0.4,
-    "staerke_us": -0.11
+    "strichlaenge_de": 104.0,
+    "dpr": 1.9,
+    "staerke_us": -0.11,
+    "strichlaenge_us": 0.4
   },
   {
     "name": "Antek",
@@ -106,10 +107,11 @@
     "vollstaendig": true,
     "id": "prismagen-antek",
     "detail_url": "https://stggermany.de/holstein/4467/?zuchtwerte=de",
-    "strichlaenge_de": 88.0,
     "staerke_de": 113.0,
-    "strichlaenge_us": -0.34,
-    "staerke_us": 0.91
+    "strichlaenge_de": 88.0,
+    "dpr": 1.5,
+    "staerke_us": 0.91,
+    "strichlaenge_us": -0.34
   },
   {
     "name": "Augustus-P-Red",
@@ -162,10 +164,11 @@
     "vollstaendig": true,
     "id": "prismagen-augustus-p-red",
     "detail_url": "https://stggermany.de/holstein/2713/?zuchtwerte=de",
-    "strichlaenge_de": 109.0,
     "staerke_de": 100.0,
-    "strichlaenge_us": 1.58,
-    "staerke_us": 0.39
+    "strichlaenge_de": 109.0,
+    "dpr": 1.0,
+    "staerke_us": 0.39,
+    "strichlaenge_us": 1.58
   },
   {
     "name": "Austin",
@@ -201,8 +204,8 @@
     "vollstaendig": false,
     "id": "prismagen-austin",
     "detail_url": "https://stggermany.de/holstein/2714/?zuchtwerte=de",
-    "strichlaenge_de": 95.0,
-    "staerke_de": 116.0
+    "staerke_de": 116.0,
+    "strichlaenge_de": 95.0
   },
   {
     "name": "Brummel",
@@ -255,10 +258,11 @@
     "vollstaendig": true,
     "id": "prismagen-brummel",
     "detail_url": "https://stggermany.de/holstein/3865/?zuchtwerte=de",
-    "strichlaenge_de": 89.0,
     "staerke_de": 108.0,
-    "strichlaenge_us": 0.45,
-    "staerke_us": 1.41
+    "strichlaenge_de": 89.0,
+    "dpr": 0.7,
+    "staerke_us": 1.41,
+    "strichlaenge_us": 0.45
   },
   {
     "name": "Captain",
@@ -311,10 +315,11 @@
     "vollstaendig": true,
     "id": "prismagen-captain",
     "detail_url": "https://stggermany.de/holstein/2721/?zuchtwerte=de",
-    "strichlaenge_de": 85.0,
     "staerke_de": 72.0,
-    "strichlaenge_us": -0.53,
-    "staerke_us": -1.69
+    "strichlaenge_de": 85.0,
+    "dpr": 1.1,
+    "staerke_us": -1.69,
+    "strichlaenge_us": -0.53
   },
   {
     "name": "Chief",
@@ -367,10 +372,11 @@
     "vollstaendig": true,
     "id": "prismagen-chief",
     "detail_url": "https://stggermany.de/holstein/2723/?zuchtwerte=de",
-    "strichlaenge_de": 90.0,
     "staerke_de": 117.0,
-    "strichlaenge_us": 0.29,
-    "staerke_us": 1.17
+    "strichlaenge_de": 90.0,
+    "dpr": -0.7,
+    "staerke_us": 1.17,
+    "strichlaenge_us": 0.29
   },
   {
     "name": "Diggy Dex",
@@ -423,10 +429,11 @@
     "vollstaendig": true,
     "id": "prismagen-diggy-dex",
     "detail_url": "https://stggermany.de/holstein/2727/?zuchtwerte=de",
-    "strichlaenge_de": 95.0,
     "staerke_de": 112.0,
-    "strichlaenge_us": 0.47,
-    "staerke_us": 0.48
+    "strichlaenge_de": 95.0,
+    "dpr": 1.6,
+    "staerke_us": 0.48,
+    "strichlaenge_us": 0.47
   },
   {
     "name": "Goldapple-Red",
@@ -462,8 +469,8 @@
     "vollstaendig": false,
     "id": "prismagen-goldapple-red",
     "detail_url": "https://stggermany.de/holstein/2863/?zuchtwerte=de",
-    "strichlaenge_de": 84.0,
-    "staerke_de": 121.0
+    "staerke_de": 121.0,
+    "strichlaenge_de": 84.0
   },
   {
     "name": "Gone-P-Red",
@@ -499,8 +506,8 @@
     "vollstaendig": false,
     "id": "prismagen-gone-p-red",
     "detail_url": "https://stggermany.de/holstein/4466/?zuchtwerte=de",
-    "strichlaenge_de": 93.0,
-    "staerke_de": 106.0
+    "staerke_de": 106.0,
+    "strichlaenge_de": 93.0
   },
   {
     "name": "Gotti",
@@ -553,10 +560,11 @@
     "vollstaendig": true,
     "id": "prismagen-gotti",
     "detail_url": "https://stggermany.de/holstein/2739/?zuchtwerte=de",
-    "strichlaenge_de": 88.0,
     "staerke_de": 88.0,
-    "strichlaenge_us": -0.19,
-    "staerke_us": -0.43
+    "strichlaenge_de": 88.0,
+    "dpr": 0.1,
+    "staerke_us": -0.43,
+    "strichlaenge_us": -0.19
   },
   {
     "name": "Great Fat",
@@ -609,10 +617,11 @@
     "vollstaendig": true,
     "id": "prismagen-great-fat",
     "detail_url": "https://stggermany.de/holstein/2811/?zuchtwerte=de",
-    "strichlaenge_de": 113.0,
     "staerke_de": 106.0,
-    "strichlaenge_us": 1.07,
-    "staerke_us": 0.74
+    "strichlaenge_de": 113.0,
+    "dpr": 1.2,
+    "staerke_us": 0.74,
+    "strichlaenge_us": 1.07
   },
   {
     "name": "Ike",
@@ -665,10 +674,11 @@
     "vollstaendig": true,
     "id": "prismagen-ike",
     "detail_url": "https://stggermany.de/holstein/2797/?zuchtwerte=de",
-    "strichlaenge_de": 99.0,
     "staerke_de": 100.0,
-    "strichlaenge_us": 0.54,
-    "staerke_us": 0.62
+    "strichlaenge_de": 99.0,
+    "dpr": 2.2,
+    "staerke_us": 0.62,
+    "strichlaenge_us": 0.54
   },
   {
     "name": "Johnboy",
@@ -721,10 +731,11 @@
     "vollstaendig": true,
     "id": "prismagen-johnboy",
     "detail_url": "https://stggermany.de/holstein/2745/?zuchtwerte=de",
-    "strichlaenge_de": 95.0,
     "staerke_de": 108.0,
-    "strichlaenge_us": 0.49,
-    "staerke_us": 1.05
+    "strichlaenge_de": 95.0,
+    "dpr": -0.9,
+    "staerke_us": 1.05,
+    "strichlaenge_us": 0.49
   },
   {
     "name": "Juventus",
@@ -777,10 +788,11 @@
     "vollstaendig": true,
     "id": "prismagen-juventus",
     "detail_url": "https://stggermany.de/holstein/2748/?zuchtwerte=de",
-    "strichlaenge_de": 101.0,
     "staerke_de": 97.0,
-    "strichlaenge_us": 0.18,
-    "staerke_us": -0.34
+    "strichlaenge_de": 101.0,
+    "dpr": 4.0,
+    "staerke_us": -0.34,
+    "strichlaenge_us": 0.18
   },
   {
     "name": "Kaas-P-Red",
@@ -816,8 +828,8 @@
     "vollstaendig": false,
     "id": "prismagen-kaas-p-red",
     "detail_url": "https://stggermany.de/holstein/2749/?zuchtwerte=de",
-    "strichlaenge_de": 88.0,
-    "staerke_de": 117.0
+    "staerke_de": 117.0,
+    "strichlaenge_de": 88.0
   },
   {
     "name": "Longdrink-RF",
@@ -870,10 +882,11 @@
     "vollstaendig": true,
     "id": "prismagen-longdrink-rf",
     "detail_url": "https://stggermany.de/holstein/3876/?zuchtwerte=de",
-    "strichlaenge_de": 100.0,
     "staerke_de": 96.0,
-    "strichlaenge_us": -0.25,
-    "staerke_us": -0.66
+    "strichlaenge_de": 100.0,
+    "dpr": 2.7,
+    "staerke_us": -0.66,
+    "strichlaenge_us": -0.25
   },
   {
     "name": "Lopez-P-RF",
@@ -909,8 +922,8 @@
     "vollstaendig": false,
     "id": "prismagen-lopez-p-rf",
     "detail_url": "https://stggermany.de/holstein/4465/?zuchtwerte=de",
-    "strichlaenge_de": 101.0,
-    "staerke_de": 105.0
+    "staerke_de": 105.0,
+    "strichlaenge_de": 101.0
   },
   {
     "name": "Merryguy",
@@ -963,10 +976,11 @@
     "vollstaendig": true,
     "id": "prismagen-merryguy",
     "detail_url": "https://stggermany.de/holstein/2753/?zuchtwerte=de",
-    "strichlaenge_de": 99.0,
     "staerke_de": 91.0,
-    "strichlaenge_us": 0.26,
-    "staerke_us": -1.24
+    "strichlaenge_de": 99.0,
+    "dpr": -0.8,
+    "staerke_us": -1.24,
+    "strichlaenge_us": 0.26
   },
   {
     "name": "Mike",
@@ -1002,8 +1016,8 @@
     "vollstaendig": false,
     "id": "prismagen-mike",
     "detail_url": "https://stggermany.de/holstein/2822/?zuchtwerte=de",
-    "strichlaenge_de": 91.0,
-    "staerke_de": 100.0
+    "staerke_de": 100.0,
+    "strichlaenge_de": 91.0
   },
   {
     "name": "Moojo",
@@ -1056,10 +1070,11 @@
     "vollstaendig": true,
     "id": "prismagen-moojo",
     "detail_url": "https://stggermany.de/holstein/2757/?zuchtwerte=de",
-    "strichlaenge_de": 91.0,
     "staerke_de": 103.0,
-    "strichlaenge_us": 0.05,
-    "staerke_us": -0.3
+    "strichlaenge_de": 91.0,
+    "dpr": 1.6,
+    "staerke_us": -0.3,
+    "strichlaenge_us": 0.05
   },
   {
     "name": "On-Duty",
@@ -1112,10 +1127,11 @@
     "vollstaendig": true,
     "id": "prismagen-on-duty",
     "detail_url": "https://stggermany.de/holstein/2759/?zuchtwerte=de",
-    "strichlaenge_de": 89.0,
     "staerke_de": 96.0,
-    "strichlaenge_us": 0.01,
-    "staerke_us": 0.02
+    "strichlaenge_de": 89.0,
+    "dpr": 4.4,
+    "staerke_us": 0.02,
+    "strichlaenge_us": 0.01
   },
   {
     "name": "Rammstein-Red",
@@ -1168,10 +1184,11 @@
     "vollstaendig": true,
     "id": "prismagen-rammstein-red",
     "detail_url": "https://stggermany.de/holstein/2767/?zuchtwerte=de",
-    "strichlaenge_de": 96.0,
     "staerke_de": 83.0,
-    "strichlaenge_us": 0.41,
-    "staerke_us": -1.02
+    "strichlaenge_de": 96.0,
+    "dpr": -0.6,
+    "staerke_us": -1.02,
+    "strichlaenge_us": 0.41
   },
   {
     "name": "Redbull-Red",
@@ -1224,10 +1241,11 @@
     "vollstaendig": true,
     "id": "prismagen-redbull-red",
     "detail_url": "https://stggermany.de/holstein/2768/?zuchtwerte=de",
-    "strichlaenge_de": 99.0,
     "staerke_de": 96.0,
-    "strichlaenge_us": 0.24,
-    "staerke_us": -0.73
+    "strichlaenge_de": 99.0,
+    "dpr": 1.6,
+    "staerke_us": -0.73,
+    "strichlaenge_us": 0.24
   },
   {
     "name": "Redfever-PP-Red",
@@ -1263,8 +1281,8 @@
     "vollstaendig": false,
     "id": "prismagen-redfever-pp-red",
     "detail_url": "https://stggermany.de/holstein/2769/?zuchtwerte=de",
-    "strichlaenge_de": 86.0,
-    "staerke_de": 100.0
+    "staerke_de": 100.0,
+    "strichlaenge_de": 86.0
   },
   {
     "name": "Rico",
@@ -1317,10 +1335,11 @@
     "vollstaendig": true,
     "id": "prismagen-rico",
     "detail_url": "https://stggermany.de/holstein/2800/?zuchtwerte=de",
-    "strichlaenge_de": 105.0,
     "staerke_de": 95.0,
-    "strichlaenge_us": 0.85,
-    "staerke_us": 0.02
+    "strichlaenge_de": 105.0,
+    "dpr": 2.2,
+    "staerke_us": 0.02,
+    "strichlaenge_us": 0.85
   },
   {
     "name": "Robin-Red",
@@ -1373,10 +1392,11 @@
     "vollstaendig": true,
     "id": "prismagen-robin-red",
     "detail_url": "https://stggermany.de/holstein/2775/?zuchtwerte=de",
-    "strichlaenge_de": 109.0,
     "staerke_de": 111.0,
-    "strichlaenge_us": 0.95,
-    "staerke_us": 0.85
+    "strichlaenge_de": 109.0,
+    "dpr": -0.7,
+    "staerke_us": 0.85,
+    "strichlaenge_us": 0.95
   },
   {
     "name": "Rooney",
@@ -1429,10 +1449,11 @@
     "vollstaendig": true,
     "id": "prismagen-rooney",
     "detail_url": "https://stggermany.de/holstein/2779/?zuchtwerte=de",
-    "strichlaenge_de": 101.0,
     "staerke_de": 99.0,
-    "strichlaenge_us": 0.0,
-    "staerke_us": 0.12
+    "strichlaenge_de": 101.0,
+    "dpr": 0.5,
+    "staerke_us": 0.12,
+    "strichlaenge_us": 0.0
   },
   {
     "name": "Rubicon",
@@ -1485,10 +1506,11 @@
     "vollstaendig": true,
     "id": "prismagen-rubicon",
     "detail_url": "https://stggermany.de/holstein/2780/?zuchtwerte=de",
-    "strichlaenge_de": 98.0,
     "staerke_de": 110.0,
-    "strichlaenge_us": 0.56,
-    "staerke_us": 0.47
+    "strichlaenge_de": 98.0,
+    "dpr": -1.8,
+    "staerke_us": 0.47,
+    "strichlaenge_us": 0.56
   },
   {
     "name": "Sadio-Red",
@@ -1541,10 +1563,11 @@
     "vollstaendig": true,
     "id": "prismagen-sadio-red",
     "detail_url": "https://stggermany.de/holstein/2781/?zuchtwerte=de",
-    "strichlaenge_de": 86.0,
     "staerke_de": 100.0,
-    "strichlaenge_us": -0.59,
-    "staerke_us": 0.39
+    "strichlaenge_de": 86.0,
+    "dpr": 2.6,
+    "staerke_us": 0.39,
+    "strichlaenge_us": -0.59
   },
   {
     "name": "Skyliner-Red",
@@ -1580,8 +1603,8 @@
     "vollstaendig": false,
     "id": "prismagen-skyliner-red",
     "detail_url": "https://stggermany.de/holstein/2784/?zuchtwerte=de",
-    "strichlaenge_de": 107.0,
-    "staerke_de": 90.0
+    "staerke_de": 90.0,
+    "strichlaenge_de": 107.0
   },
   {
     "name": "Smiley",
@@ -1617,8 +1640,8 @@
     "vollstaendig": false,
     "id": "prismagen-smiley",
     "detail_url": "https://stggermany.de/holstein/2812/?zuchtwerte=de",
-    "strichlaenge_de": 97.0,
-    "staerke_de": 100.0
+    "staerke_de": 100.0,
+    "strichlaenge_de": 97.0
   },
   {
     "name": "Sonni-Red",
@@ -1654,8 +1677,8 @@
     "vollstaendig": false,
     "id": "prismagen-sonni-red",
     "detail_url": "https://stggermany.de/holstein/2785/?zuchtwerte=de",
-    "strichlaenge_de": 95.0,
-    "staerke_de": 97.0
+    "staerke_de": 97.0,
+    "strichlaenge_de": 95.0
   },
   {
     "name": "Surfside",
@@ -1691,8 +1714,8 @@
     "vollstaendig": false,
     "id": "prismagen-surfside",
     "detail_url": "https://stggermany.de/holstein/2821/?zuchtwerte=de",
-    "strichlaenge_de": 91.0,
-    "staerke_de": 94.0
+    "staerke_de": 94.0,
+    "strichlaenge_de": 91.0
   },
   {
     "name": "Tinder",
@@ -1728,8 +1751,8 @@
     "vollstaendig": false,
     "id": "prismagen-tinder",
     "detail_url": "https://stggermany.de/holstein/4464/?zuchtwerte=de",
-    "strichlaenge_de": 87.0,
-    "staerke_de": 97.0
+    "staerke_de": 97.0,
+    "strichlaenge_de": 87.0
   },
   {
     "name": "William CV",
@@ -1765,8 +1788,8 @@
     "vollstaendig": false,
     "id": "prismagen-william-cv",
     "detail_url": "https://stggermany.de/holstein/2791/?zuchtwerte=de",
-    "strichlaenge_de": 101.0,
-    "staerke_de": 103.0
+    "staerke_de": 103.0,
+    "strichlaenge_de": 101.0
   },
   {
     "name": "ACDC",
@@ -1803,8 +1826,10 @@
     "vollstaendig": false,
     "id": "prismagen-acdc",
     "detail_url": "https://stggermany.de/holstein/2819/?zuchtwerte=us",
-    "strichlaenge_us": 0.84,
-    "staerke_us": -0.02
+    "dpr": 2.9,
+    "rzd": 106.0,
+    "staerke_us": -0.02,
+    "strichlaenge_us": 0.84
   },
   {
     "name": "Airdrop",
@@ -1841,8 +1866,10 @@
     "vollstaendig": false,
     "id": "prismagen-airdrop",
     "detail_url": "https://stggermany.de/holstein/2710/?zuchtwerte=us",
-    "strichlaenge_us": 0.39,
-    "staerke_us": 1.98
+    "dpr": -0.5,
+    "rzd": 96.0,
+    "staerke_us": 1.98,
+    "strichlaenge_us": 0.39
   },
   {
     "name": "Ashton-RF",
@@ -1879,8 +1906,10 @@
     "vollstaendig": false,
     "id": "prismagen-ashton-rf",
     "detail_url": "https://stggermany.de/holstein/2813/?zuchtwerte=us",
-    "strichlaenge_us": -0.92,
-    "staerke_us": -0.77
+    "dpr": 0.5,
+    "rzd": 100.0,
+    "staerke_us": -0.77,
+    "strichlaenge_us": -0.92
   },
   {
     "name": "Audacious-Red",
@@ -1917,8 +1946,10 @@
     "vollstaendig": false,
     "id": "prismagen-audacious-red",
     "detail_url": "https://stggermany.de/holstein/2851/?zuchtwerte=us",
-    "strichlaenge_us": 0.35,
-    "staerke_us": 0.73
+    "dpr": -1.6,
+    "rzd": 97.0,
+    "staerke_us": 0.73,
+    "strichlaenge_us": 0.35
   },
   {
     "name": "Bigwig",
@@ -1955,8 +1986,10 @@
     "vollstaendig": false,
     "id": "prismagen-bigwig",
     "detail_url": "https://stggermany.de/holstein/2716/?zuchtwerte=us",
-    "strichlaenge_us": -0.21,
-    "staerke_us": 0.77
+    "dpr": 1.4,
+    "rzd": 95.0,
+    "staerke_us": 0.77,
+    "strichlaenge_us": -0.21
   },
   {
     "name": "Bonjour",
@@ -1993,8 +2026,10 @@
     "vollstaendig": false,
     "id": "prismagen-bonjour",
     "detail_url": "https://stggermany.de/holstein/2848/?zuchtwerte=us",
-    "strichlaenge_us": -0.97,
-    "staerke_us": -0.81
+    "dpr": 1.3,
+    "rzd": 102.0,
+    "staerke_us": -0.81,
+    "strichlaenge_us": -0.97
   },
   {
     "name": "Bonn-P-Red",
@@ -2031,8 +2066,10 @@
     "vollstaendig": false,
     "id": "prismagen-bonn-p-red",
     "detail_url": "https://stggermany.de/holstein/2798/?zuchtwerte=us",
-    "strichlaenge_us": 0.4,
-    "staerke_us": -0.4
+    "dpr": 1.1,
+    "rzd": 101.0,
+    "staerke_us": -0.4,
+    "strichlaenge_us": 0.4
   },
   {
     "name": "Breakage",
@@ -2069,8 +2106,10 @@
     "vollstaendig": false,
     "id": "prismagen-breakage",
     "detail_url": "https://stggermany.de/holstein/2843/?zuchtwerte=us",
-    "strichlaenge_us": -1.11,
-    "staerke_us": -0.93
+    "dpr": 1.0,
+    "rzd": 107.0,
+    "staerke_us": -0.93,
+    "strichlaenge_us": -1.11
   },
   {
     "name": "Breakaway",
@@ -2107,8 +2146,10 @@
     "vollstaendig": false,
     "id": "prismagen-breakaway",
     "detail_url": "https://stggermany.de/holstein/4521/?zuchtwerte=us",
-    "strichlaenge_us": -0.67,
-    "staerke_us": -0.59
+    "dpr": 0.8,
+    "rzd": 105.0,
+    "staerke_us": -0.59,
+    "strichlaenge_us": -0.67
   },
   {
     "name": "Breezer",
@@ -2145,8 +2186,10 @@
     "vollstaendig": false,
     "id": "prismagen-breezer",
     "detail_url": "https://stggermany.de/holstein/2842/?zuchtwerte=us",
-    "strichlaenge_us": -0.24,
-    "staerke_us": 0.04
+    "dpr": -0.1,
+    "rzd": 104.0,
+    "staerke_us": 0.04,
+    "strichlaenge_us": -0.24
   },
   {
     "name": "Brigade",
@@ -2183,8 +2226,10 @@
     "vollstaendig": false,
     "id": "prismagen-brigade",
     "detail_url": "https://stggermany.de/holstein/2717/?zuchtwerte=us",
-    "strichlaenge_us": -0.64,
-    "staerke_us": -0.03
+    "dpr": 1.9,
+    "rzd": 105.0,
+    "staerke_us": -0.03,
+    "strichlaenge_us": -0.64
   },
   {
     "name": "Bronco",
@@ -2221,8 +2266,10 @@
     "vollstaendig": false,
     "id": "prismagen-bronco",
     "detail_url": "https://stggermany.de/holstein/2718/?zuchtwerte=us",
-    "strichlaenge_us": 0.15,
-    "staerke_us": -0.65
+    "dpr": 0.2,
+    "rzd": 105.0,
+    "staerke_us": -0.65,
+    "strichlaenge_us": 0.15
   },
   {
     "name": "Calibre",
@@ -2259,8 +2306,10 @@
     "vollstaendig": false,
     "id": "prismagen-calibre",
     "detail_url": "https://stggermany.de/holstein/2720/?zuchtwerte=us",
-    "strichlaenge_us": 0.55,
-    "staerke_us": 0.16
+    "dpr": 2.8,
+    "rzd": 101.0,
+    "staerke_us": 0.16,
+    "strichlaenge_us": 0.55
   },
   {
     "name": "Cybex-P-RF",
@@ -2297,8 +2346,10 @@
     "vollstaendig": false,
     "id": "prismagen-cybex-p-rf",
     "detail_url": "https://stggermany.de/holstein/2840/?zuchtwerte=us",
-    "strichlaenge_us": -0.45,
-    "staerke_us": 0.84
+    "dpr": 0.0,
+    "rzd": 103.0,
+    "staerke_us": 0.84,
+    "strichlaenge_us": -0.45
   },
   {
     "name": "Damascus",
@@ -2335,8 +2386,10 @@
     "vollstaendig": false,
     "id": "prismagen-damascus",
     "detail_url": "https://stggermany.de/holstein/4522/?zuchtwerte=us",
-    "strichlaenge_us": -0.42,
-    "staerke_us": -0.38
+    "dpr": 1.8,
+    "rzd": 104.0,
+    "staerke_us": -0.38,
+    "strichlaenge_us": -0.42
   },
   {
     "name": "Dekko",
@@ -2373,8 +2426,10 @@
     "vollstaendig": false,
     "id": "prismagen-dekko",
     "detail_url": "https://stggermany.de/holstein/2834/?zuchtwerte=us",
-    "strichlaenge_us": -0.6,
-    "staerke_us": -0.18
+    "dpr": 2.2,
+    "rzd": 99.0,
+    "staerke_us": -0.18,
+    "strichlaenge_us": -0.6
   },
   {
     "name": "Delta-Lambda",
@@ -2411,8 +2466,10 @@
     "vollstaendig": false,
     "id": "prismagen-delta-lambda",
     "detail_url": "https://stggermany.de/holstein/2726/?zuchtwerte=us",
-    "strichlaenge_us": -0.43,
-    "staerke_us": 0.48
+    "dpr": 0.8,
+    "rzd": 102.0,
+    "staerke_us": 0.48,
+    "strichlaenge_us": -0.43
   },
   {
     "name": "Deluxe",
@@ -2449,8 +2506,10 @@
     "vollstaendig": false,
     "id": "prismagen-deluxe",
     "detail_url": "https://stggermany.de/holstein/2817/?zuchtwerte=us",
-    "strichlaenge_us": -1.18,
-    "staerke_us": 1.24
+    "dpr": -0.2,
+    "rzd": 105.0,
+    "staerke_us": 1.24,
+    "strichlaenge_us": -1.18
   },
   {
     "name": "Divergence",
@@ -2487,8 +2546,10 @@
     "vollstaendig": false,
     "id": "prismagen-divergence",
     "detail_url": "https://stggermany.de/holstein/2835/?zuchtwerte=us",
-    "strichlaenge_us": -0.4,
-    "staerke_us": -1.32
+    "dpr": 0.7,
+    "rzd": 100.0,
+    "staerke_us": -1.32,
+    "strichlaenge_us": -0.4
   },
   {
     "name": "Dominant",
@@ -2525,8 +2586,10 @@
     "vollstaendig": false,
     "id": "prismagen-dominant",
     "detail_url": "https://stggermany.de/holstein/2728/?zuchtwerte=us",
-    "strichlaenge_us": -0.34,
-    "staerke_us": 0.9
+    "dpr": 0.1,
+    "rzd": 105.0,
+    "staerke_us": 0.9,
+    "strichlaenge_us": -0.34
   },
   {
     "name": "Doral-Red",
@@ -2563,8 +2626,10 @@
     "vollstaendig": false,
     "id": "prismagen-doral-red",
     "detail_url": "https://stggermany.de/holstein/2856/?zuchtwerte=us",
-    "strichlaenge_us": -1.59,
-    "staerke_us": 0.28
+    "dpr": -2.6,
+    "rzd": 106.0,
+    "staerke_us": 0.28,
+    "strichlaenge_us": -1.59
   },
   {
     "name": "Dream Chaser",
@@ -2601,8 +2666,10 @@
     "vollstaendig": false,
     "id": "prismagen-dream-chaser",
     "detail_url": "https://stggermany.de/holstein/2729/?zuchtwerte=us",
-    "strichlaenge_us": -0.41,
-    "staerke_us": -0.34
+    "dpr": 2.0,
+    "rzd": 97.0,
+    "staerke_us": -0.34,
+    "strichlaenge_us": -0.41
   },
   {
     "name": "Dromedary",
@@ -2639,8 +2706,10 @@
     "vollstaendig": false,
     "id": "prismagen-dromedary",
     "detail_url": "https://stggermany.de/holstein/2730/?zuchtwerte=us",
-    "strichlaenge_us": -0.48,
-    "staerke_us": 0.51
+    "dpr": 0.3,
+    "rzd": 98.0,
+    "staerke_us": 0.51,
+    "strichlaenge_us": -0.48
   },
   {
     "name": "Drumroll",
@@ -2677,8 +2746,10 @@
     "vollstaendig": false,
     "id": "prismagen-drumroll",
     "detail_url": "https://stggermany.de/holstein/2731/?zuchtwerte=us",
-    "strichlaenge_us": -0.53,
-    "staerke_us": -0.3
+    "dpr": -1.3,
+    "rzd": 103.0,
+    "staerke_us": -0.3,
+    "strichlaenge_us": -0.53
   },
   {
     "name": "ECO-PP",
@@ -2715,8 +2786,10 @@
     "vollstaendig": false,
     "id": "prismagen-eco-pp",
     "detail_url": "https://stggermany.de/holstein/2732/?zuchtwerte=us",
-    "strichlaenge_us": -0.69,
-    "staerke_us": -0.55
+    "dpr": 2.6,
+    "rzd": 101.0,
+    "staerke_us": -0.55,
+    "strichlaenge_us": -0.69
   },
   {
     "name": "El Grande",
@@ -2753,8 +2826,10 @@
     "vollstaendig": false,
     "id": "prismagen-el-grande",
     "detail_url": "https://stggermany.de/holstein/2733/?zuchtwerte=us",
-    "strichlaenge_us": -0.33,
-    "staerke_us": 0.47
+    "dpr": 1.3,
+    "rzd": 108.0,
+    "staerke_us": 0.47,
+    "strichlaenge_us": -0.33
   },
   {
     "name": "Eppy",
@@ -2791,8 +2866,10 @@
     "vollstaendig": false,
     "id": "prismagen-eppy",
     "detail_url": "https://stggermany.de/holstein/2734/?zuchtwerte=us",
-    "strichlaenge_us": -0.03,
-    "staerke_us": -0.11
+    "dpr": 1.7,
+    "rzd": 98.0,
+    "staerke_us": -0.11,
+    "strichlaenge_us": -0.03
   },
   {
     "name": "Evict",
@@ -2829,8 +2906,10 @@
     "vollstaendig": false,
     "id": "prismagen-evict",
     "detail_url": "https://stggermany.de/holstein/2736/?zuchtwerte=us",
-    "strichlaenge_us": 0.79,
-    "staerke_us": 0.04
+    "dpr": 2.4,
+    "rzd": 106.0,
+    "staerke_us": 0.04,
+    "strichlaenge_us": 0.79
   },
   {
     "name": "Fondy-SLH",
@@ -2867,8 +2946,10 @@
     "vollstaendig": false,
     "id": "prismagen-fondy-slh",
     "detail_url": "https://stggermany.de/holstein/2841/?zuchtwerte=us",
-    "strichlaenge_us": 0.26,
-    "staerke_us": 0.21
+    "dpr": 0.7,
+    "rzd": 106.0,
+    "staerke_us": 0.21,
+    "strichlaenge_us": 0.26
   },
   {
     "name": "Gallant-P",
@@ -2905,8 +2986,10 @@
     "vollstaendig": false,
     "id": "prismagen-gallant-p",
     "detail_url": "https://stggermany.de/holstein/2849/?zuchtwerte=us",
-    "strichlaenge_us": -0.08,
-    "staerke_us": -0.52
+    "dpr": 0.8,
+    "rzd": 103.0,
+    "staerke_us": -0.52,
+    "strichlaenge_us": -0.08
   },
   {
     "name": "Garza",
@@ -2943,8 +3026,10 @@
     "vollstaendig": false,
     "id": "prismagen-garza",
     "detail_url": "https://stggermany.de/holstein/2836/?zuchtwerte=us",
-    "strichlaenge_us": -1.44,
-    "staerke_us": -1.24
+    "dpr": -0.1,
+    "rzd": 104.0,
+    "staerke_us": -1.24,
+    "strichlaenge_us": -1.44
   },
   {
     "name": "Gateway",
@@ -2981,8 +3066,10 @@
     "vollstaendig": false,
     "id": "prismagen-gateway",
     "detail_url": "https://stggermany.de/holstein/2738/?zuchtwerte=us",
-    "strichlaenge_us": -0.18,
-    "staerke_us": 0.69
+    "dpr": -1.1,
+    "rzd": 106.0,
+    "staerke_us": 0.69,
+    "strichlaenge_us": -0.18
   },
   {
     "name": "Guthrie",
@@ -3019,8 +3106,10 @@
     "vollstaendig": false,
     "id": "prismagen-guthrie",
     "detail_url": "https://stggermany.de/holstein/2740/?zuchtwerte=us",
-    "strichlaenge_us": -0.31,
-    "staerke_us": -0.41
+    "dpr": 3.0,
+    "rzd": 101.0,
+    "staerke_us": -0.41,
+    "strichlaenge_us": -0.31
   },
   {
     "name": "Hayward",
@@ -3057,8 +3146,10 @@
     "vollstaendig": false,
     "id": "prismagen-hayward",
     "detail_url": "https://stggermany.de/holstein/4525/?zuchtwerte=us",
-    "strichlaenge_us": -0.81,
-    "staerke_us": -0.61
+    "dpr": 3.7,
+    "rzd": 100.0,
+    "staerke_us": -0.61,
+    "strichlaenge_us": -0.81
   },
   {
     "name": "Hedge Fund",
@@ -3095,8 +3186,10 @@
     "vollstaendig": false,
     "id": "prismagen-hedge-fund",
     "detail_url": "https://stggermany.de/holstein/4520/?zuchtwerte=us",
-    "strichlaenge_us": -0.73,
-    "staerke_us": -0.9
+    "dpr": 2.7,
+    "rzd": 105.0,
+    "staerke_us": -0.9,
+    "strichlaenge_us": -0.73
   },
   {
     "name": "Highwayman-P",
@@ -3133,8 +3226,10 @@
     "vollstaendig": false,
     "id": "prismagen-highwayman-p",
     "detail_url": "https://stggermany.de/holstein/2839/?zuchtwerte=us",
-    "strichlaenge_us": 0.67,
-    "staerke_us": 1.42
+    "dpr": -1.1,
+    "rzd": 101.0,
+    "staerke_us": 1.42,
+    "strichlaenge_us": 0.67
   },
   {
     "name": "Hoa-P",
@@ -3171,8 +3266,10 @@
     "vollstaendig": false,
     "id": "prismagen-hoa-p",
     "detail_url": "https://stggermany.de/holstein/2742/?zuchtwerte=us",
-    "strichlaenge_us": 0.25,
-    "staerke_us": 0.98
+    "dpr": 1.0,
+    "rzd": 99.0,
+    "staerke_us": 0.98,
+    "strichlaenge_us": 0.25
   },
   {
     "name": "Ingram-PP",
@@ -3209,8 +3306,10 @@
     "vollstaendig": false,
     "id": "prismagen-ingram-pp",
     "detail_url": "https://stggermany.de/holstein/2831/?zuchtwerte=us",
-    "strichlaenge_us": -0.83,
-    "staerke_us": -0.46
+    "dpr": 0.9,
+    "rzd": 104.0,
+    "staerke_us": -0.46,
+    "strichlaenge_us": -0.83
   },
   {
     "name": "Jaco",
@@ -3247,8 +3346,10 @@
     "vollstaendig": false,
     "id": "prismagen-jaco",
     "detail_url": "https://stggermany.de/holstein/2816/?zuchtwerte=us",
-    "strichlaenge_us": -0.96,
-    "staerke_us": -0.74
+    "dpr": 2.8,
+    "rzd": 100.0,
+    "staerke_us": -0.74,
+    "strichlaenge_us": -0.96
   },
   {
     "name": "Jampacked",
@@ -3285,8 +3386,10 @@
     "vollstaendig": false,
     "id": "prismagen-jampacked",
     "detail_url": "https://stggermany.de/holstein/2844/?zuchtwerte=us",
-    "strichlaenge_us": -0.38,
-    "staerke_us": -0.39
+    "dpr": -0.2,
+    "rzd": 100.0,
+    "staerke_us": -0.39,
+    "strichlaenge_us": -0.38
   },
   {
     "name": "Jaywalk",
@@ -3323,8 +3426,10 @@
     "vollstaendig": false,
     "id": "prismagen-jaywalk",
     "detail_url": "https://stggermany.de/holstein/2846/?zuchtwerte=us",
-    "strichlaenge_us": -0.63,
-    "staerke_us": -0.25
+    "dpr": -1.4,
+    "rzd": 105.0,
+    "staerke_us": -0.25,
+    "strichlaenge_us": -0.63
   },
   {
     "name": "Jerry Lewis",
@@ -3361,8 +3466,10 @@
     "vollstaendig": false,
     "id": "prismagen-jerry-lewis",
     "detail_url": "https://stggermany.de/holstein/2744/?zuchtwerte=us",
-    "strichlaenge_us": -0.15,
-    "staerke_us": 1.36
+    "dpr": 0.4,
+    "rzd": 99.0,
+    "staerke_us": 1.36,
+    "strichlaenge_us": -0.15
   },
   {
     "name": "Josh Allen",
@@ -3399,8 +3506,10 @@
     "vollstaendig": false,
     "id": "prismagen-josh-allen",
     "detail_url": "https://stggermany.de/holstein/2838/?zuchtwerte=us",
-    "strichlaenge_us": -0.46,
-    "staerke_us": -0.36
+    "dpr": 1.7,
+    "rzd": 105.0,
+    "staerke_us": -0.36,
+    "strichlaenge_us": -0.46
   },
   {
     "name": "Jugular",
@@ -3437,8 +3546,10 @@
     "vollstaendig": false,
     "id": "prismagen-jugular",
     "detail_url": "https://stggermany.de/holstein/2837/?zuchtwerte=us",
-    "strichlaenge_us": 0.49,
-    "staerke_us": 0.18
+    "dpr": 0.0,
+    "rzd": 103.0,
+    "staerke_us": 0.18,
+    "strichlaenge_us": 0.49
   },
   {
     "name": "Jujitsu",
@@ -3475,8 +3586,10 @@
     "vollstaendig": false,
     "id": "prismagen-jujitsu",
     "detail_url": "https://stggermany.de/holstein/2746/?zuchtwerte=us",
-    "strichlaenge_us": -0.58,
-    "staerke_us": -0.29
+    "dpr": 1.9,
+    "rzd": 99.0,
+    "staerke_us": -0.29,
+    "strichlaenge_us": -0.58
   },
   {
     "name": "Keystone-PP",
@@ -3513,8 +3626,10 @@
     "vollstaendig": false,
     "id": "prismagen-keystone-pp",
     "detail_url": "https://stggermany.de/holstein/2799/?zuchtwerte=us",
-    "strichlaenge_us": 0.45,
-    "staerke_us": 0.8
+    "dpr": -0.8,
+    "rzd": 101.0,
+    "staerke_us": 0.8,
+    "strichlaenge_us": 0.45
   },
   {
     "name": "Laurent",
@@ -3551,8 +3666,10 @@
     "vollstaendig": false,
     "id": "prismagen-laurent",
     "detail_url": "https://stggermany.de/holstein/2795/?zuchtwerte=us",
-    "strichlaenge_us": 0.73,
-    "staerke_us": 1.38
+    "dpr": 1.5,
+    "rzd": 102.0,
+    "staerke_us": 1.38,
+    "strichlaenge_us": 0.73
   },
   {
     "name": "Legend",
@@ -3589,8 +3706,10 @@
     "vollstaendig": false,
     "id": "prismagen-legend",
     "detail_url": "https://stggermany.de/holstein/2828/?zuchtwerte=us",
-    "strichlaenge_us": -0.25,
-    "staerke_us": 0.21
+    "dpr": 2.3,
+    "rzd": 103.0,
+    "staerke_us": 0.21,
+    "strichlaenge_us": -0.25
   },
   {
     "name": "Liege-P",
@@ -3627,8 +3746,10 @@
     "vollstaendig": false,
     "id": "prismagen-liege-p",
     "detail_url": "https://stggermany.de/holstein/2859/?zuchtwerte=us",
-    "strichlaenge_us": 0.95,
-    "staerke_us": 0.26
+    "dpr": 0.7,
+    "rzd": 101.0,
+    "staerke_us": 0.26,
+    "strichlaenge_us": 0.95
   },
   {
     "name": "Loaded-PP",
@@ -3665,8 +3786,10 @@
     "vollstaendig": false,
     "id": "prismagen-loaded-pp",
     "detail_url": "https://stggermany.de/holstein/2818/?zuchtwerte=us",
-    "strichlaenge_us": 1.23,
-    "staerke_us": 0.2
+    "dpr": -0.6,
+    "rzd": 105.0,
+    "staerke_us": 0.2,
+    "strichlaenge_us": 1.23
   },
   {
     "name": "Major",
@@ -3703,8 +3826,10 @@
     "vollstaendig": false,
     "id": "prismagen-major",
     "detail_url": "https://stggermany.de/holstein/4524/?zuchtwerte=us",
-    "strichlaenge_us": -1.03,
-    "staerke_us": -1.51
+    "dpr": 2.3,
+    "rzd": 97.0,
+    "staerke_us": -1.51,
+    "strichlaenge_us": -1.03
   },
   {
     "name": "Manhunt",
@@ -3741,8 +3866,10 @@
     "vollstaendig": false,
     "id": "prismagen-manhunt",
     "detail_url": "https://stggermany.de/holstein/4523/?zuchtwerte=us",
-    "strichlaenge_us": -0.47,
-    "staerke_us": -0.75
+    "dpr": 0.1,
+    "rzd": 108.0,
+    "staerke_us": -0.75,
+    "strichlaenge_us": -0.47
   },
   {
     "name": "Marcel",
@@ -3779,8 +3906,10 @@
     "vollstaendig": false,
     "id": "prismagen-marcel",
     "detail_url": "https://stggermany.de/holstein/2829/?zuchtwerte=us",
-    "strichlaenge_us": 0.13,
-    "staerke_us": 0.63
+    "dpr": 2.2,
+    "rzd": 100.0,
+    "staerke_us": 0.63,
+    "strichlaenge_us": 0.13
   },
   {
     "name": "Maxim",
@@ -3817,8 +3946,10 @@
     "vollstaendig": false,
     "id": "prismagen-maxim",
     "detail_url": "https://stggermany.de/holstein/2752/?zuchtwerte=us",
-    "strichlaenge_us": -0.4,
-    "staerke_us": -0.65
+    "dpr": 1.2,
+    "rzd": 104.0,
+    "staerke_us": -0.65,
+    "strichlaenge_us": -0.4
   },
   {
     "name": "Mitchell",
@@ -3855,8 +3986,10 @@
     "vollstaendig": false,
     "id": "prismagen-mitchell",
     "detail_url": "https://stggermany.de/holstein/2754/?zuchtwerte=us",
-    "strichlaenge_us": 0.21,
-    "staerke_us": 0.72
+    "dpr": 1.0,
+    "rzd": 98.0,
+    "staerke_us": 0.72,
+    "strichlaenge_us": 0.21
   },
   {
     "name": "Moloko",
@@ -3893,8 +4026,10 @@
     "vollstaendig": false,
     "id": "prismagen-moloko",
     "detail_url": "https://stggermany.de/holstein/2755/?zuchtwerte=us",
-    "strichlaenge_us": 0.27,
-    "staerke_us": -0.07
+    "dpr": 0.8,
+    "rzd": 102.0,
+    "staerke_us": -0.07,
+    "strichlaenge_us": 0.27
   },
   {
     "name": "Money 4 Nothing",
@@ -3931,8 +4066,10 @@
     "vollstaendig": false,
     "id": "prismagen-money-4-nothing",
     "detail_url": "https://stggermany.de/holstein/2756/?zuchtwerte=us",
-    "strichlaenge_us": -0.3,
-    "staerke_us": 0.04
+    "dpr": 1.2,
+    "rzd": 101.0,
+    "staerke_us": 0.04,
+    "strichlaenge_us": -0.3
   },
   {
     "name": "Moonshine",
@@ -3969,8 +4106,10 @@
     "vollstaendig": false,
     "id": "prismagen-moonshine",
     "detail_url": "https://stggermany.de/holstein/2847/?zuchtwerte=us",
-    "strichlaenge_us": -0.16,
-    "staerke_us": -0.59
+    "dpr": -0.2,
+    "rzd": 107.0,
+    "staerke_us": -0.59,
+    "strichlaenge_us": -0.16
   },
   {
     "name": "Motivation",
@@ -4007,8 +4146,10 @@
     "vollstaendig": false,
     "id": "prismagen-motivation",
     "detail_url": "https://stggermany.de/holstein/2805/?zuchtwerte=us",
-    "strichlaenge_us": -0.92,
-    "staerke_us": -0.49
+    "dpr": 0.3,
+    "rzd": 102.0,
+    "staerke_us": -0.49,
+    "strichlaenge_us": -0.92
   },
   {
     "name": "Onward-PP",
@@ -4045,8 +4186,10 @@
     "vollstaendig": false,
     "id": "prismagen-onward-pp",
     "detail_url": "https://stggermany.de/holstein/3816/?zuchtwerte=us",
-    "strichlaenge_us": -0.48,
-    "staerke_us": 0.01
+    "dpr": 2.4,
+    "rzd": 104.0,
+    "staerke_us": 0.01,
+    "strichlaenge_us": -0.48
   },
   {
     "name": "Opulent-P",
@@ -4083,8 +4226,10 @@
     "vollstaendig": false,
     "id": "prismagen-opulent-p",
     "detail_url": "https://stggermany.de/holstein/2830/?zuchtwerte=us",
-    "strichlaenge_us": 0.06,
-    "staerke_us": -0.03
+    "dpr": 0.4,
+    "rzd": 106.0,
+    "staerke_us": -0.03,
+    "strichlaenge_us": 0.06
   },
   {
     "name": "Prada",
@@ -4121,8 +4266,10 @@
     "vollstaendig": false,
     "id": "prismagen-prada",
     "detail_url": "https://stggermany.de/holstein/2764/?zuchtwerte=us",
-    "strichlaenge_us": 0.64,
-    "staerke_us": 0.93
+    "dpr": 2.2,
+    "rzd": 101.0,
+    "staerke_us": 0.93,
+    "strichlaenge_us": 0.64
   },
   {
     "name": "Quality",
@@ -4159,8 +4306,10 @@
     "vollstaendig": false,
     "id": "prismagen-quality",
     "detail_url": "https://stggermany.de/holstein/2802/?zuchtwerte=us",
-    "strichlaenge_us": 0.36,
-    "staerke_us": -0.46
+    "dpr": 1.0,
+    "rzd": 98.0,
+    "staerke_us": -0.46,
+    "strichlaenge_us": 0.36
   },
   {
     "name": "Rad",
@@ -4197,8 +4346,10 @@
     "vollstaendig": false,
     "id": "prismagen-rad",
     "detail_url": "https://stggermany.de/holstein/2765/?zuchtwerte=us",
-    "strichlaenge_us": -0.6,
-    "staerke_us": -0.89
+    "dpr": 1.1,
+    "rzd": 106.0,
+    "staerke_us": -0.89,
+    "strichlaenge_us": -0.6
   },
   {
     "name": "Rally-P",
@@ -4235,8 +4386,10 @@
     "vollstaendig": false,
     "id": "prismagen-rally-p",
     "detail_url": "https://stggermany.de/holstein/2766/?zuchtwerte=us",
-    "strichlaenge_us": -0.45,
-    "staerke_us": 1.19
+    "dpr": -0.3,
+    "rzd": 96.0,
+    "staerke_us": 1.19,
+    "strichlaenge_us": -0.45
   },
   {
     "name": "Redwood-P-Red",
@@ -4273,8 +4426,10 @@
     "vollstaendig": false,
     "id": "prismagen-redwood-p-red",
     "detail_url": "https://stggermany.de/holstein/2832/?zuchtwerte=us",
-    "strichlaenge_us": -0.59,
-    "staerke_us": -0.99
+    "dpr": 0.1,
+    "rzd": 104.0,
+    "staerke_us": -0.99,
+    "strichlaenge_us": -0.59
   },
   {
     "name": "Remington-Red",
@@ -4311,8 +4466,10 @@
     "vollstaendig": false,
     "id": "prismagen-remington-red",
     "detail_url": "https://stggermany.de/holstein/3854/?zuchtwerte=us",
-    "strichlaenge_us": -0.37,
-    "staerke_us": 0.14
+    "dpr": 0.0,
+    "rzd": 94.0,
+    "staerke_us": 0.14,
+    "strichlaenge_us": -0.37
   },
   {
     "name": "Remover-PP",
@@ -4349,8 +4506,10 @@
     "vollstaendig": false,
     "id": "prismagen-remover-pp",
     "detail_url": "https://stggermany.de/holstein/2772/?zuchtwerte=us",
-    "strichlaenge_us": 1.78,
-    "staerke_us": 1.14
+    "dpr": -2.2,
+    "rzd": 101.0,
+    "staerke_us": 1.14,
+    "strichlaenge_us": 1.78
   },
   {
     "name": "Rescuer",
@@ -4387,8 +4546,10 @@
     "vollstaendig": false,
     "id": "prismagen-rescuer",
     "detail_url": "https://stggermany.de/holstein/2796/?zuchtwerte=us",
-    "strichlaenge_us": -1.34,
-    "staerke_us": 0.11
+    "dpr": 0.7,
+    "rzd": 99.0,
+    "staerke_us": 0.11,
+    "strichlaenge_us": -1.34
   },
   {
     "name": "Rhett",
@@ -4425,8 +4586,10 @@
     "vollstaendig": false,
     "id": "prismagen-rhett",
     "detail_url": "https://stggermany.de/holstein/4500/?zuchtwerte=us",
-    "strichlaenge_us": -0.71,
-    "staerke_us": 0.05
+    "dpr": 1.2,
+    "rzd": 105.0,
+    "staerke_us": 0.05,
+    "strichlaenge_us": -0.71
   },
   {
     "name": "Robo",
@@ -4463,8 +4626,10 @@
     "vollstaendig": false,
     "id": "prismagen-robo",
     "detail_url": "https://stggermany.de/holstein/2804/?zuchtwerte=us",
-    "strichlaenge_us": 1.41,
-    "staerke_us": 0.9
+    "dpr": 0.8,
+    "rzd": 101.0,
+    "staerke_us": 0.9,
+    "strichlaenge_us": 1.41
   },
   {
     "name": "Rochester",
@@ -4501,8 +4666,10 @@
     "vollstaendig": false,
     "id": "prismagen-rochester",
     "detail_url": "https://stggermany.de/holstein/2776/?zuchtwerte=us",
-    "strichlaenge_us": -0.41,
-    "staerke_us": -0.09
+    "dpr": 2.1,
+    "rzd": 100.0,
+    "staerke_us": -0.09,
+    "strichlaenge_us": -0.41
   },
   {
     "name": "Rock-Red",
@@ -4539,8 +4706,10 @@
     "vollstaendig": false,
     "id": "prismagen-rock-red",
     "detail_url": "https://stggermany.de/holstein/2777/?zuchtwerte=us",
-    "strichlaenge_us": 0.3,
-    "staerke_us": -0.57
+    "dpr": 0.6,
+    "rzd": 94.0,
+    "staerke_us": -0.57,
+    "strichlaenge_us": 0.3
   },
   {
     "name": "Roddie-PP-RF",
@@ -4577,8 +4746,10 @@
     "vollstaendig": false,
     "id": "prismagen-roddie-pp-rf",
     "detail_url": "https://stggermany.de/holstein/2778/?zuchtwerte=us",
-    "strichlaenge_us": 0.49,
-    "staerke_us": -0.28
+    "dpr": -0.6,
+    "rzd": 102.0,
+    "staerke_us": -0.28,
+    "strichlaenge_us": 0.49
   },
   {
     "name": "Sharpshooter-RF",
@@ -4615,8 +4786,10 @@
     "vollstaendig": false,
     "id": "prismagen-sharpshooter-rf",
     "detail_url": "https://stggermany.de/holstein/2783/?zuchtwerte=us",
-    "strichlaenge_us": -0.76,
-    "staerke_us": 0.99
+    "dpr": 0.2,
+    "rzd": 99.0,
+    "staerke_us": 0.99,
+    "strichlaenge_us": -0.76
   },
   {
     "name": "Sisco",
@@ -4653,8 +4826,10 @@
     "vollstaendig": false,
     "id": "prismagen-sisco",
     "detail_url": "https://stggermany.de/holstein/2809/?zuchtwerte=us",
-    "strichlaenge_us": -0.87,
-    "staerke_us": -0.55
+    "dpr": 1.4,
+    "rzd": 100.0,
+    "staerke_us": -0.55,
+    "strichlaenge_us": -0.87
   },
   {
     "name": "Thorson",
@@ -4691,8 +4866,10 @@
     "vollstaendig": false,
     "id": "prismagen-thorson",
     "detail_url": "https://stggermany.de/holstein/2786/?zuchtwerte=us",
-    "strichlaenge_us": -0.77,
-    "staerke_us": -0.89
+    "dpr": 2.1,
+    "rzd": 101.0,
+    "staerke_us": -0.89,
+    "strichlaenge_us": -0.77
   },
   {
     "name": "Tidalwave-Red",
@@ -4729,8 +4906,10 @@
     "vollstaendig": false,
     "id": "prismagen-tidalwave-red",
     "detail_url": "https://stggermany.de/holstein/2787/?zuchtwerte=us",
-    "strichlaenge_us": 0.01,
-    "staerke_us": -0.26
+    "dpr": 0.3,
+    "rzd": 100.0,
+    "staerke_us": -0.26,
+    "strichlaenge_us": 0.01
   },
   {
     "name": "Torque",
@@ -4767,8 +4946,10 @@
     "vollstaendig": false,
     "id": "prismagen-torque",
     "detail_url": "https://stggermany.de/holstein/2826/?zuchtwerte=us",
-    "strichlaenge_us": -0.69,
-    "staerke_us": -1.4
+    "dpr": 3.0,
+    "rzd": 101.0,
+    "staerke_us": -1.4,
+    "strichlaenge_us": -0.69
   },
   {
     "name": "Unanime-P",
@@ -4805,8 +4986,10 @@
     "vollstaendig": false,
     "id": "prismagen-unanime-p",
     "detail_url": "https://stggermany.de/holstein/2789/?zuchtwerte=us",
-    "strichlaenge_us": 1.01,
-    "staerke_us": 0.16
+    "dpr": 1.0,
+    "rzd": 100.0,
+    "staerke_us": 0.16,
+    "strichlaenge_us": 1.01
   },
   {
     "name": "Unique",
@@ -4843,8 +5026,10 @@
     "vollstaendig": false,
     "id": "prismagen-unique",
     "detail_url": "https://stggermany.de/holstein/2803/?zuchtwerte=us",
-    "strichlaenge_us": -0.47,
-    "staerke_us": -1.15
+    "dpr": 1.3,
+    "rzd": 106.0,
+    "staerke_us": -1.15,
+    "strichlaenge_us": -0.47
   },
   {
     "name": "Ying Yang",
@@ -4881,8 +5066,10 @@
     "vollstaendig": false,
     "id": "prismagen-ying-yang",
     "detail_url": "https://stggermany.de/holstein/2793/?zuchtwerte=us",
-    "strichlaenge_us": 0.71,
-    "staerke_us": 1.56
+    "dpr": 1.5,
+    "rzd": 98.0,
+    "staerke_us": 1.56,
+    "strichlaenge_us": 0.71
   },
   {
     "name": "Youdontsay",
@@ -4919,8 +5106,10 @@
     "vollstaendig": false,
     "id": "prismagen-youdontsay",
     "detail_url": "https://stggermany.de/holstein/2794/?zuchtwerte=us",
-    "strichlaenge_us": -1.01,
-    "staerke_us": -1.1
+    "dpr": 1.7,
+    "rzd": 105.0,
+    "staerke_us": -1.1,
+    "strichlaenge_us": -1.01
   },
   {
     "name": "Youwish",
@@ -4957,7 +5146,9 @@
     "vollstaendig": false,
     "id": "prismagen-youwish",
     "detail_url": "https://stggermany.de/holstein/2814/?zuchtwerte=us",
-    "strichlaenge_us": -0.1,
-    "staerke_us": -1.07
+    "dpr": 2.3,
+    "rzd": 96.0,
+    "staerke_us": -1.07,
+    "strichlaenge_us": -0.1
   }
 ]

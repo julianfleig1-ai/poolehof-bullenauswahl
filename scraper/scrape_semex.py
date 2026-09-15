@@ -137,6 +137,13 @@ DETAIL_LABELS = {
 DETAIL_URL = "https://www.semex.com/di/us/inc/bull/{code}&lang=en&data=tpi&print=n&mobile=1"
 
 
+# "Milking Speed" (unsere Melkbarkeit) steht NICHT wie Strength/Teat Length in
+# einer sauberen <tr><td>Label</td><td>Wert</td></tr>-Zeile, sondern nur
+# zusammengeklebt als Fliesstext irgendwo auf der Seite ("...Milking Speed6.70
+# Daughter Average..."). Dafür Regex-Fallback auf den Seitentext statt Tabellenzellen.
+TEXT_FALLBACK_LABELS = {"Milking Speed": "mbk"}
+
+
 def fetch_detail_traits(semen_code: str) -> dict:
     try:
         html = fetch_url(DETAIL_URL.format(code=semen_code))
@@ -155,6 +162,17 @@ def fetch_detail_traits(semen_code: str) -> dict:
             out[field] = float(cells[-1].replace("+", ""))
         except ValueError:
             continue
+
+    text = soup.get_text()
+    for label, field in TEXT_FALLBACK_LABELS.items():
+        if field in out:
+            continue
+        m = re.search(re.escape(label) + r"(-?\d+\.?\d*)", text)
+        if m:
+            try:
+                out[field] = float(m.group(1))
+            except ValueError:
+                pass
     return out
 
 

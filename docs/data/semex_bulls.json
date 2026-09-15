@@ -33,7 +33,8 @@
     "id": "semex-powerstar99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12489&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.88,
-    "strichlaenge_us": -0.54
+    "strichlaenge_us": -0.54,
+    "mbk": 6.7
   },
   {
     "semen_code": "0200HO12456",
@@ -69,7 +70,8 @@
     "id": "semex-mister99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12456&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.21,
-    "strichlaenge_us": -0.21
+    "strichlaenge_us": -0.21,
+    "mbk": 7.36
   },
   {
     "semen_code": "0200HO12145",
@@ -105,7 +107,8 @@
     "id": "semex-event99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12145&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.28,
-    "strichlaenge_us": 0.64
+    "strichlaenge_us": 0.64,
+    "mbk": 7.01
   },
   {
     "semen_code": "0200HO12123",
@@ -141,7 +144,8 @@
     "id": "semex-monteverdi99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12123&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.67,
-    "strichlaenge_us": -1.5
+    "strichlaenge_us": -1.5,
+    "mbk": 7.24
   },
   {
     "semen_code": "0200HO12090",
@@ -177,7 +181,8 @@
     "id": "semex-sugarhigh99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12090&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.5,
-    "strichlaenge_us": 0.08
+    "strichlaenge_us": 0.08,
+    "mbk": 7.1
   },
   {
     "semen_code": "0200HO12546",
@@ -213,7 +218,8 @@
     "id": "semex-perky99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12546&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.08,
-    "strichlaenge_us": -0.71
+    "strichlaenge_us": -0.71,
+    "mbk": 6.94
   },
   {
     "semen_code": "0200HO12458",
@@ -249,7 +255,8 @@
     "id": "semex-total99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12458&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.59,
-    "strichlaenge_us": -1.03
+    "strichlaenge_us": -1.03,
+    "mbk": 6.78
   },
   {
     "semen_code": "0200HO12321",
@@ -285,7 +292,8 @@
     "id": "semex-pattern99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12321&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.44,
-    "strichlaenge_us": 0.38
+    "strichlaenge_us": 0.38,
+    "mbk": 7.32
   },
   {
     "semen_code": "0200HO11586",
@@ -321,7 +329,8 @@
     "id": "semex-einstein99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO11586&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.97,
-    "strichlaenge_us": 0.66
+    "strichlaenge_us": 0.66,
+    "mbk": 6.78
   },
   {
     "semen_code": "0200HO12275",
@@ -357,7 +366,8 @@
     "id": "semex-ballgame99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12275&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.82,
-    "strichlaenge_us": -0.02
+    "strichlaenge_us": -0.02,
+    "mbk": 7.26
   },
   {
     "semen_code": "0200HO12343",
@@ -393,7 +403,8 @@
     "id": "semex-novelty99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12343&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.61,
-    "strichlaenge_us": -1.01
+    "strichlaenge_us": -1.01,
+    "mbk": 7.25
   },
   {
     "semen_code": "0200HO12528",
@@ -429,7 +440,8 @@
     "id": "semex-out-there99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12528&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.17,
-    "strichlaenge_us": -1.37
+    "strichlaenge_us": -1.37,
+    "mbk": 7.1
   },
   {
     "semen_code": "0200HO12363",
@@ -465,7 +477,8 @@
     "id": "semex-maastricht99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12363&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.28,
-    "strichlaenge_us": 1.07
+    "strichlaenge_us": 1.07,
+    "mbk": 6.8
   },
   {
     "semen_code": "0200HO12399",
@@ -501,7 +514,8 @@
     "id": "semex-dropbox99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12399&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.97,
-    "strichlaenge_us": -0.89
+    "strichlaenge_us": -0.89,
+    "mbk": 6.78
   },
   {
     "semen_code": "0200HO12156",
@@ -537,7 +551,8 @@
     "id": "semex-earlybird99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12156&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.03,
-    "strichlaenge_us": -0.36
+    "strichlaenge_us": -0.36,
+    "mbk": 7.1
   },
   {
     "semen_code": "0200HO12276",
@@ -573,7 +588,8 @@
     "id": "semex-roztac",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12276&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.63,
-    "strichlaenge_us": -0.6
+    "strichlaenge_us": -0.6,
+    "mbk": 7.16
   },
   {
     "semen_code": "0200HO12220",
@@ -609,7 +625,8 @@
     "id": "semex-steinbeck99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12220&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.52,
-    "strichlaenge_us": -0.4
+    "strichlaenge_us": -0.4,
+    "mbk": 6.5
   },
   {
     "semen_code": "0200HO11000",
@@ -645,7 +662,8 @@
     "id": "semex-alcove99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO11000&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 1.59,
-    "strichlaenge_us": 1.07
+    "strichlaenge_us": 1.07,
+    "mbk": 6.61
   },
   {
     "semen_code": "0200HO12529",
@@ -681,7 +699,8 @@
     "id": "semex-havenofear99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12529&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 1.42,
-    "strichlaenge_us": -0.24
+    "strichlaenge_us": -0.24,
+    "mbk": 7.02
   },
   {
     "semen_code": "0200HO12580",
@@ -717,7 +736,8 @@
     "id": "semex-ambrose-rc99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12580&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 1.1,
-    "strichlaenge_us": 0.63
+    "strichlaenge_us": 0.63,
+    "mbk": 6.12
   },
   {
     "semen_code": "0200HO12374",
@@ -753,7 +773,8 @@
     "id": "semex-claro99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12374&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.79,
-    "strichlaenge_us": -0.67
+    "strichlaenge_us": -0.67,
+    "mbk": 7.42
   },
   {
     "semen_code": "0200HO12376",
@@ -789,7 +810,8 @@
     "id": "semex-bullseye99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12376&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 1.43,
-    "strichlaenge_us": -0.34
+    "strichlaenge_us": -0.34,
+    "mbk": 6.97
   },
   {
     "semen_code": "0200HO11822",
@@ -825,7 +847,8 @@
     "id": "semex-alleyoop99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO11822&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 1.33,
-    "strichlaenge_us": -0.01
+    "strichlaenge_us": -0.01,
+    "mbk": 7.06
   },
   {
     "semen_code": "0777HO03913",
@@ -895,7 +918,8 @@
     "id": "semex-superfreak99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13701&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.21,
-    "strichlaenge_us": -0.26
+    "strichlaenge_us": -0.26,
+    "mbk": 7.28
   },
   {
     "semen_code": "0200HO13678",
@@ -931,7 +955,8 @@
     "id": "semex-timetraveler99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13678&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.08,
-    "strichlaenge_us": -0.72
+    "strichlaenge_us": -0.72,
+    "mbk": 7.45
   },
   {
     "semen_code": "0200HO13641",
@@ -967,7 +992,8 @@
     "id": "semex-hooray99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13641&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.73,
-    "strichlaenge_us": 0.58
+    "strichlaenge_us": 0.58,
+    "mbk": 6.57
   },
   {
     "semen_code": "0200HO13726",
@@ -1003,7 +1029,8 @@
     "id": "semex-aurelius99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13726&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.09,
-    "strichlaenge_us": 0.1
+    "strichlaenge_us": 0.1,
+    "mbk": 7.05
   },
   {
     "semen_code": "0200HO13681",
@@ -1039,7 +1066,8 @@
     "id": "semex-tapas99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13681&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.1,
-    "strichlaenge_us": -0.68
+    "strichlaenge_us": -0.68,
+    "mbk": 7.29
   },
   {
     "semen_code": "0777HO13661",
@@ -1109,7 +1137,8 @@
     "id": "semex-fitzgerald99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13597&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.99,
-    "strichlaenge_us": 0.57
+    "strichlaenge_us": 0.57,
+    "mbk": 7.19
   },
   {
     "semen_code": "0200HO13640",
@@ -1145,7 +1174,8 @@
     "id": "semex-heyman99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13640&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 1.37,
-    "strichlaenge_us": 0.22
+    "strichlaenge_us": 0.22,
+    "mbk": 7.17
   },
   {
     "semen_code": "0200HO13095",
@@ -1181,7 +1211,8 @@
     "id": "semex-heavenly99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13095&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.71,
-    "strichlaenge_us": -0.51
+    "strichlaenge_us": -0.51,
+    "mbk": 7.31
   },
   {
     "semen_code": "0200HO13176",
@@ -1217,7 +1248,8 @@
     "id": "semex-hi-pace99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13176&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.66,
-    "strichlaenge_us": 0.37
+    "strichlaenge_us": 0.37,
+    "mbk": 7.24
   },
   {
     "semen_code": "0200HO13690",
@@ -1253,7 +1285,8 @@
     "id": "semex-wildfire99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13690&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.41,
-    "strichlaenge_us": -0.51
+    "strichlaenge_us": -0.51,
+    "mbk": 7.4
   },
   {
     "semen_code": "0200HO13729",
@@ -1289,7 +1322,8 @@
     "id": "semex-monstertruck99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13729&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.1,
-    "strichlaenge_us": -0.67
+    "strichlaenge_us": -0.67,
+    "mbk": 7.58
   },
   {
     "semen_code": "0200HO13696",
@@ -1325,7 +1359,8 @@
     "id": "semex-malakai99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13696&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.02,
-    "strichlaenge_us": 0.42
+    "strichlaenge_us": 0.42,
+    "mbk": 7.64
   },
   {
     "semen_code": "0200HO13659",
@@ -1361,7 +1396,8 @@
     "id": "semex-dinatron99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13659&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.03,
-    "strichlaenge_us": -0.72
+    "strichlaenge_us": -0.72,
+    "mbk": 7.38
   },
   {
     "semen_code": "0200HO13713",
@@ -1397,7 +1433,8 @@
     "id": "semex-olivier99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13713&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.42,
-    "strichlaenge_us": -0.68
+    "strichlaenge_us": -0.68,
+    "mbk": 7.01
   },
   {
     "semen_code": "0200HO13632",
@@ -1433,7 +1470,8 @@
     "id": "semex-flaminghot99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13632&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.43,
-    "strichlaenge_us": -1.61
+    "strichlaenge_us": -1.61,
+    "mbk": 6.96
   },
   {
     "semen_code": "0200HO12872",
@@ -1469,7 +1507,8 @@
     "id": "semex-hi-note99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO12872&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.71,
-    "strichlaenge_us": 0.1
+    "strichlaenge_us": 0.1,
+    "mbk": 7.37
   },
   {
     "semen_code": "0200HO13752",
@@ -1505,7 +1544,8 @@
     "id": "semex-ruffalo99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13752&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.1,
-    "strichlaenge_us": -0.27
+    "strichlaenge_us": -0.27,
+    "mbk": 7.56
   },
   {
     "semen_code": "0200HO13269",
@@ -1541,7 +1581,8 @@
     "id": "semex-minesweeper99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13269&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.08,
-    "strichlaenge_us": 0.09
+    "strichlaenge_us": 0.09,
+    "mbk": 7.31
   },
   {
     "semen_code": "0200HO13700",
@@ -1577,7 +1618,8 @@
     "id": "semex-malfoy99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13700&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.2,
-    "strichlaenge_us": -0.06
+    "strichlaenge_us": -0.06,
+    "mbk": 7.39
   },
   {
     "semen_code": "0200HO13586",
@@ -1613,7 +1655,8 @@
     "id": "semex-hinte99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13586&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.47,
-    "strichlaenge_us": 0.61
+    "strichlaenge_us": 0.61,
+    "mbk": 7.13
   },
   {
     "semen_code": "0200HO13790",
@@ -1648,7 +1691,8 @@
     "id": "semex-mkebrewer99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13790&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.3,
-    "strichlaenge_us": -0.85
+    "strichlaenge_us": -0.85,
+    "mbk": 6.97
   },
   {
     "semen_code": "0200HO13676",
@@ -1684,7 +1728,8 @@
     "id": "semex-flynt99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13676&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.86,
-    "strichlaenge_us": -1.29
+    "strichlaenge_us": -1.29,
+    "mbk": 7.33
   },
   {
     "semen_code": "0200HO13550",
@@ -1720,7 +1765,8 @@
     "id": "semex-hi-end99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13550&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.13,
-    "strichlaenge_us": -0.5
+    "strichlaenge_us": -0.5,
+    "mbk": 7.01
   },
   {
     "semen_code": "0777HO13739",
@@ -1790,7 +1836,8 @@
     "id": "semex-dinatop99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13698&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.78,
-    "strichlaenge_us": -0.69
+    "strichlaenge_us": -0.69,
+    "mbk": 7.29
   },
   {
     "semen_code": "0777HO13719",
@@ -1860,7 +1907,8 @@
     "id": "semex-upl99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13510&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.38,
-    "strichlaenge_us": -0.66
+    "strichlaenge_us": -0.66,
+    "mbk": 7.03
   },
   {
     "semen_code": "0200HO13745",
@@ -1896,7 +1944,8 @@
     "id": "semex-meriad99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13745&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": -0.01,
-    "strichlaenge_us": 0.17
+    "strichlaenge_us": 0.17,
+    "mbk": 7.19
   },
   {
     "semen_code": "0200HO13656",
@@ -1932,6 +1981,7 @@
     "id": "semex-dinaplex99-i",
     "detail_url": "https://www.semex.com/di/us/inc/bull/0200HO13656&lang=en&data=tpi&print=n&mobile=1",
     "staerke_us": 0.6,
-    "strichlaenge_us": -0.73
+    "strichlaenge_us": -0.73,
+    "mbk": 7.03
   }
 ]
