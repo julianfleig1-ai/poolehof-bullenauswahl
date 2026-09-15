@@ -620,9 +620,9 @@ function renderTableHead(){
     `<th data-sort="__name">Name${arrow("__name")}</th>`,
     `<th>Firma</th>`,
     `<th>Kategorie</th>`,
+    `<th data-sort="__erfuellt">Erfüllt${arrow("__erfuellt")}</th>`,
   ];
   state.criteria.forEach(c=> cols.push(`<th data-sort="${c.id}">${c.label}${arrow(c.id)}</th>`));
-  cols.push(`<th data-sort="__erfuellt">Erfüllt${arrow("__erfuellt")}</th>`);
   cols.push(`<th>Quelle</th>`);
   head.innerHTML = cols.join("");
   head.querySelectorAll("[data-sort]").forEach(th=>{
@@ -655,8 +655,8 @@ function renderTable(){
       <td class="name-cell">${b.detail_url? `<a href="${b.detail_url}" target="_blank" rel="noopener">${b.name}</a>` : b.name}</td>
       <td><span class="badge-firma ${fm.cls}">${b.firma}</span></td>
       <td>${b.kategorie||b.rasse||""}</td>
-      ${cells}
       <td>${pill}</td>
+      ${cells}
       <td><a class="src-link" href="${b.quelle_url}" target="_blank" rel="noopener">Quelle ↗</a></td>
     </tr>`;
   }).join("");
