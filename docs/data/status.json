@@ -1,17 +1,17 @@
 {
-  "lauf": "2026-10-01T11:58:59+00:00",
-  "datum": "2026-10-01",
+  "lauf": "2026-10-08T16:20:23+00:00",
+  "datum": "2026-10-08",
   "quellen": {
     "WWS": {
       "ok": false,
-      "meldung": "Scraper-Fehler (Exit 1): s_open\n    return self.do_open(http.client.HTTPSConnection, req,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/urllib/request.py\", line 1351, in do_open\n    raise URLError(err)\nurllib.error.URLError: <urlopen error timed out>"
+      "meldung": "Scraper-Fehler (Exit 1): s_open\n    return self.do_open(http.client.HTTPSConnection, req,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/urllib/request.py\", line 1364, in do_open\n    raise URLError(err)\nurllib.error.URLError: <urlopen error timed out>"
     },
     "Prismagen": {
       "ok": true,
       "meldung": "122 Bullen, 100% mit Gesamtzuchtwert",
       "anzahl": 122,
-      "vorher": 120,
-      "stand": "2026-10-01",
+      "vorher": 122,
+      "stand": "2026-10-08",
       "mit_strichlaenge": 122
     },
     "Semex": {
@@ -19,7 +19,7 @@
       "meldung": "54 Bullen, 100% mit Gesamtzuchtwert",
       "anzahl": 54,
       "vorher": 54,
-      "stand": "2026-10-01",
+      "stand": "2026-10-08",
       "mit_strichlaenge": 50
     },
     "RBW": {
@@ -27,7 +27,7 @@
       "meldung": "120 Bullen, 100% mit Gesamtzuchtwert",
       "anzahl": 120,
       "vorher": 120,
-      "stand": "2026-10-01",
+      "stand": "2026-10-08",
       "mit_strichlaenge": 120
     },
     "CRI": {
@@ -35,7 +35,7 @@
       "meldung": "101 Bullen, 100% mit Gesamtzuchtwert",
       "anzahl": 101,
       "vorher": 101,
-      "stand": "2026-10-01",
+      "stand": "2026-10-08",
       "mit_strichlaenge": 101
     }
   },
