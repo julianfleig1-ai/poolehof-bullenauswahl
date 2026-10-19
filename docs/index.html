@@ -251,6 +251,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .bs-hof-titel{font-weight:600;font-size:13.5px}
 .bs-hof-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .bs-hof-form input{flex:1 1 150px;min-width:0;padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:15px}
+.nur-fuer-browser{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
 .bs-hof-meldung{font-size:12.5px;margin-top:6px;color:var(--warn)}
 .bs-oder{display:flex;align-items:center;gap:10px;margin:12px 0 8px;font-size:12.5px;color:var(--ink-dim)}
 .bs-oder::before,.bs-oder::after{content:"";flex:1;height:1px;background:var(--border)}
@@ -1979,7 +1980,7 @@ document.getElementById("gewichtReset").addEventListener("click", () => {
 // ======================================================================
 const HOF_SPEICHER_URL =
   (/^(127\.0\.0\.1|localhost)$/.test(location.hostname) && new URLSearchParams(location.search).get("hofspeicher"))  // nur zum lokalen Testen
-  || "";
+  || "https://poolehof-hofspeicher.vercel.app/api/herde";
 const HS_KEY = "poolehof-hofspeicher-v1";
 const HS_SALZ = "poolehof-hofspeicher-v1";
 let hsZugang = hsLadeZugang();               // {auth, aes} oder null
@@ -2101,10 +2102,13 @@ function renderHofSpeicher(){
     el.innerHTML = `<div class="bs-hof-titel">☁ Auf allen Geräten dieselbe Liste</div>
       <div class="bs-help">${hsStatus.zustand === "getrennt" && hsStatus.text ? esc(hsStatus.text)
         : "Hof-Passwort einmal eingeben – dann ist die Netrind-Liste auf Handy, Stall-PC usw. automatisch gleich, hochladen muss man sie nur an einem Gerät."}</div>
-      <form id="hsForm" class="bs-hof-form">
-        <input type="password" id="hsPasswort" autocomplete="current-password" inputmode="numeric" placeholder="Hof-Passwort" required>
+      <form id="hsForm" class="bs-hof-form" method="post" action="#">
+        <!-- Benutzername nur für den Passwort-Speicher des Browsers (unsichtbar, fest "Poolehof") -->
+        <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
+        <input type="password" name="password" id="hsPasswort" autocomplete="current-password" placeholder="Hof-Passwort" required>
         <button class="btn primary small" type="submit">Verbinden</button>
       </form>
+      <div class="bs-help" style="margin-top:4px">Tipp: Wenn der Browser fragt, ob er das Passwort speichern soll – „Speichern“ wählen, dann wird es künftig automatisch ausgefüllt.</div>
       <div id="hsMeldung" class="bs-hof-meldung" aria-live="polite"></div>`;
     document.getElementById("hsForm").addEventListener("submit", hsVerbinden);
     return;
