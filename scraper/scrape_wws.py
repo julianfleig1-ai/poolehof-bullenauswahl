@@ -63,10 +63,21 @@ COLUMN_MAP = {
 }
 
 
-def fetch_html(url: str) -> str:
+def fetch_html(url: str, versuche: int = 3) -> str:
+    """Bis zu 3 Versuche mit wachsender Pause - ein kurzer Aussetzer des
+    WWS-Servers soll nicht gleich den ganzen Monatsabruf als kaputt melden.
+    (Eine dauerhafte IP-Sperre fängt das natürlich nicht ab - siehe
+    runs-on in .github/workflows/refresh.yml.)"""
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    for versuch in range(1, versuche + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return resp.read().decode("utf-8", errors="replace")
+        except Exception as e:
+            if versuch == versuche:
+                raise
+            print(f"# WWS-Abruf Versuch {versuch} fehlgeschlagen ({e}), neuer Versuch …", file=sys.stderr)
+            time.sleep(10 * versuch)
 
 
 def parse(html: str) -> list[dict]:
@@ -132,7 +143,9 @@ def fetch_detail_traits(detail_url: str) -> dict:
     """Holt Strichlänge/Stärke etc. von der Bull-Detailseite (statisches HTML,
     kein Login/JS nötig - die Werte stehen direkt in <span data-bind="text: value">)."""
     try:
-        html = fetch_html(detail_url)
+        # nur 1 Versuch: bei ~100 Detailseiten würden Wiederholungen die
+        # Laufzeit im Störungsfall vervielfachen
+        html = fetch_html(detail_url, versuche=1)
     except Exception:
         return {}
     soup = BeautifulSoup(html, "html.parser")

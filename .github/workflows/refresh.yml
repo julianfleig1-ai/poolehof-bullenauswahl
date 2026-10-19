@@ -12,7 +12,12 @@ permissions:
 
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    # macOS statt Ubuntu: WWS (Hoster Pixel X) sperrt seit Okt. 2026 die
+    # IP-Bereiche der Ubuntu-/Windows-Runner (Azure 20.x/40.x) - schon der
+    # TCP-Verbindungsaufbau läuft ins Timeout. Die macOS-Runner haben andere
+    # IPs (13.105.x) und kommen durch (per Diagnose-Lauf am 19.10.2026 geprüft).
+    # Für öffentliche Repos ist auch macOS kostenlos.
+    runs-on: macos-latest
     timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +30,7 @@ jobs:
         run: pip install beautifulsoup4 playwright
 
       - name: Chromium für Playwright installieren
-        run: python -m playwright install --with-deps chromium
+        run: python -m playwright install chromium  # --with-deps nur unter Linux nötig
 
       # refresh.py holt alle 5 Quellen, prüft jedes Ergebnis auf
       # Plausibilität und schreibt nur geprüfte Daten. Kaputte Quellen
