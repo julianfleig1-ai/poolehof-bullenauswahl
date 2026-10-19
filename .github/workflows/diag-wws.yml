@@ -1,0 +1,21 @@
+name: Diagnose WWS (temporär)
+on: workflow_dispatch
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Eigene IP / Herkunft des Runners
+        run: curl -s --max-time 15 https://ipinfo.io/json || true
+      - name: WWS per curl (normal)
+        run: curl -sS -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" -A "Mozilla/5.0" --max-time 40 https://www.wws-bullen.de/bullenangebot || echo "FEHLER exit $?"
+      - name: WWS per curl (Browser-Header komplett)
+        run: |
+          curl -sS -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" --max-time 40 \
+            -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36" \
+            -H "Accept: text/html,application/xhtml+xml" -H "Accept-Language: de-DE,de;q=0.9" \
+            https://www.wws-bullen.de/bullenangebot || echo "FEHLER exit $?"
+      - name: WWS nur TCP-Connect Port 443
+        run: timeout 20 bash -c '</dev/tcp/81.209.248.224/443' && echo "TCP 443 offen" || echo "TCP 443 BLOCKIERT/TIMEOUT"
+      - name: WWS Port 80
+        run: curl -sS -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" --max-time 20 http://www.wws-bullen.de/ || echo "FEHLER exit $?"
