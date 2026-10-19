@@ -242,6 +242,10 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .bs-drop b{display:block;font-size:14.5px;font-weight:600;color:var(--accent)}
 .bs-drop-sub{display:block;font-size:12.5px;color:var(--ink-dim);margin-top:2px}
 #herdeErsetzt{margin:10px 0 0}
+.bs-oder{display:flex;align-items:center;gap:10px;margin:12px 0 8px;font-size:12.5px;color:var(--ink-dim)}
+.bs-oder::before,.bs-oder::after{content:"";flex:1;height:1px;background:var(--border)}
+#herdePaste{width:100%;min-height:64px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;
+  background:var(--surface);font-size:13px;line-height:1.45}
 .bs-anleitung{margin-top:12px;font-size:13.5px;border:1px solid var(--border);border-radius:10px;padding:10px 13px;background:var(--surface)}
 .bs-anleitung summary{cursor:pointer;font-weight:600}
 .bs-anleitung ol{margin:10px 0 2px;padding-left:20px;display:grid;gap:6px}
@@ -401,15 +405,18 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
             <span class="bs-drop-sub">oder klicken und Datei auswählen · Excel oder CSV · die alte Liste wird automatisch ersetzt</span>
           </span>
         </label>
+        <div class="bs-oder"><span>oder einfach kopieren</span></div>
+        <textarea id="herdePaste" rows="3" placeholder="In Netrind die Stall-Liste „Zuchtwerte wbl“ öffnen, alles markieren (⌘A / Strg+A), kopieren (⌘C / Strg+C) und hier einfügen (⌘V / Strg+V)."></textarea>
         <div id="herdeErsetzt" class="bs-status ok" hidden></div>
         <details class="bs-anleitung" id="herdeAnleitung">
-          <summary>Anleitung: Liste aus Netrind holen (ca. 2 Minuten)</summary>
+          <summary>Anleitung: Liste aus Netrind holen (ca. 1 Minute)</summary>
           <ol>
             <li><a href="https://www.netrind.de/" target="_blank" rel="noopener">netrind.de ↗</a> öffnen und mit Betriebsnummer + PIN anmelden.</li>
-            <li>Die Tierliste öffnen, in der <b>RZG</b> und <b>Milch kg</b> stehen. Kälber dürfen mit drin sein.</li>
-            <li>Die Liste als <b>Excel</b> oder <b>CSV</b> exportieren bzw. herunterladen.</li>
-            <li>Die Datei oben in das Feld ziehen (oder anklicken und auswählen) – fertig. Die alte Liste wird dabei automatisch gelöscht und durch die neue ersetzt.</li>
+            <li>Die Stall-Liste <b>„Zuchtwerte wbl“</b> öffnen – die Liste mit Ohrmarke, <b>RZG</b> und <b>M-kg</b>. Kälber dürfen mit drin sein.</li>
+            <li>Irgendwo in die Seite klicken, <b>alles markieren</b> (⌘A bzw. Strg+A) und <b>kopieren</b> (⌘C bzw. Strg+C).</li>
+            <li>Hier oben ins Feld „oder einfach kopieren“ klicken und <b>einfügen</b> (⌘V bzw. Strg+V) – fertig. Die alte Liste wird dabei automatisch gelöscht und ersetzt.</li>
           </ol>
+          <p class="bs-help" style="margin:8px 0 0">Kommt die Liste als Excel- oder CSV-Datei aus Netrind, kann man stattdessen die Datei ins Feld oben ziehen.</p>
         </details>
         <div class="bs-actions">
           <button class="btn ghost small" id="herdeLoeschen" type="button" hidden>Gespeicherte Liste entfernen</button>
@@ -1158,17 +1165,29 @@ function dekodiere(buf){
   catch(e) { return new TextDecoder("windows-1252").decode(buf); }
 }
 
-function parseCSV(text){
+// eingefuegt = Text aus der Zwischenablage (Webseite kopiert): Zellen sind
+// dort immer per Tab getrennt, und Anführungszeichen sind normaler Text.
+function parseCSV(text, eingefuegt = false){
   text = text.replace(/^﻿/, "");
-  const probe = text.split(/\r?\n/).slice(0, 25).join("\n");
-  let trenn = ";", best = -1;
-  for (const k of [";", "\t", ","]){
-    const n = probe.split(k).length;
-    if (n > best){ best = n; trenn = k; }
+  let trenn = ";";
+  if (eingefuegt && text.includes("\t")) trenn = "\t";
+  else {
+    const probe = text.split(/\r?\n/).slice(0, 25).join("\n");
+    let best = -1;
+    for (const k of [";", "\t", ","]){
+      const n = probe.split(k).length;
+      if (n > best){ best = n; trenn = k; }
+    }
   }
   const rows = []; let row = [], feld = "", inQ = false;
   for (let i = 0; i < text.length; i++){
     const ch = text[i];
+    if (eingefuegt){
+      if (ch === trenn){ row.push(feld); feld = ""; }
+      else if (ch === "\n"){ row.push(feld); rows.push(row); row = []; feld = ""; }
+      else if (ch !== "\r") feld += ch;
+      continue;
+    }
     if (inQ){
       if (ch === '"'){ if (text[i+1] === '"'){ feld += '"'; i++; } else inQ = false; }
       else feld += ch;
@@ -1220,7 +1239,9 @@ function zahl(v){
 const RX_OHR = /ohrmarke|lebens-?n(umme)?r|\blom\b|ohrm|tier-?n(umme)?r/i;
 
 function findeKopfzeile(rows){
-  for (let i = 0; i < Math.min(rows.length, 20); i++){
+  // Bis Zeile 300 suchen: beim Einfügen der ganzen Netrind-Seite steht vor der
+  // Tabelle noch Menütext (Startseite, Hilfe, Abmelden …)
+  for (let i = 0; i < Math.min(rows.length, 300); i++){
     if (rows[i].some(c => RX_OHR.test(c))) return i;
   }
   // sonst: Zeile mit den meisten gefüllten Zellen unter den ersten 20
@@ -1252,8 +1273,10 @@ function erkenneSpalten(header, rows){
     return s;
   });
   const milch = besteSpalte((h, i) => {
-    if (!/milch/i.test(h)) return 0;
-    let s = 1;
+    // Netrind (Stall-Liste "Zuchtwerte") nennt die Spalte "M-kg"
+    const mkg = /^\s*m[\s.\-]*kg\s*$/i.test(h);
+    if (!mkg && !/milch/i.test(h)) return 0;
+    let s = mkg ? 3 : 1;
     if (/kg/i.test(h)) s += 1;
     if (/zw|zucht/i.test(h)) s += 1;
     if (/fett|eiw|%|sich/i.test(h)) s -= 2;
@@ -1338,8 +1361,8 @@ function renderZwsHinweis(){
     Die gespeicherte Liste ist vom ${fmtDatum(herde.hochgeladen)} und enthält die neuen Zuchtwerte noch nicht. Die Auswertung läuft solange mit den alten Werten weiter.
     <ol>
       <li><a href="https://www.netrind.de/" target="_blank" rel="noopener">netrind.de ↗</a> öffnen und anmelden</li>
-      <li>Tierliste mit RZG und Milch kg als Excel oder CSV exportieren</li>
-      <li>Datei hier hochladen – die alte Liste wird automatisch ersetzt</li>
+      <li>Stall-Liste „Zuchtwerte wbl“ öffnen, alles markieren (⌘A / Strg+A) und kopieren</li>
+      <li>Unten in Schritt 1 ins Feld „oder einfach kopieren“ einfügen – die alte Liste wird automatisch ersetzt</li>
     </ol>
     <button class="btn primary small" type="button" id="zwsUploadBtn">Neue Liste jetzt hochladen</button>
   </div></div>`;
@@ -1474,44 +1497,89 @@ function renderGewichtText(){
 // Zusammenmischen alter und neuer Werte). Eine unlesbare Datei lässt die alte
 // Liste unangetastet. Hat die neue Datei denselben Aufbau wie die alte, wird
 // die Spaltenzuordnung vom letzten Mal übernommen – dann muss nichts geprüft werden.
+// Kopfzeile + Datenzeilen aus den Rohzeilen bauen. Sonderfall Netrind-Seite
+// per Kopieren: Die Tabelle hat fixierte Spalten (Ohrmarke … Status) und einen
+// waagerecht scrollbaren Teil (Kalbedatum, RZG, M-kg …). Beim Kopieren kommen
+// die oft als ZWEI Blöcke nacheinander an – erst alle Tiere mit den fixen
+// Spalten, dann alle Tiere mit dem Rest, jeweils mit eigener Kopfzeile. Die
+// werden hier Zeile für Zeile wieder zusammengesetzt.
+function baueTabelle(rows){
+  const k = findeKopfzeile(rows);
+  let header = rows[k];
+  let daten = rows.slice(k + 1).filter(r => r.length > 1);
+  if (!header.some(h => /rzg/i.test(h))){
+    const k2 = rows.findIndex((r, i) => i > k && r.some(c => /^\s*g?rzg\s*$/i.test(c)));
+    if (k2 > 0){
+      const links = rows.slice(k + 1, k2).filter(r => r.some(c => ohrKey(c) !== null));
+      const rechts = rows.slice(k2 + 1).filter(r => r.length > 1).slice(0, links.length);
+      if (links.length && rechts.length === links.length){
+        const breite = Math.max(header.length, ...links.map(r => r.length));
+        const auffuellen = r => r.concat(Array(breite - r.length).fill(""));
+        header = [...auffuellen(header), ...rows[k2]];
+        daten = links.map((r, i) => [...auffuellen(r), ...rechts[i]]);
+      }
+    }
+  }
+  return {header, daten};
+}
+
 async function uebernehmeDatei(file){
   const drop = document.getElementById("herdeDrop");
-  const meldung = document.getElementById("herdeErsetzt");
   drop.classList.add("busy");
   try {
-    const rows = await leseTabelle(file);
-    if (rows.length < 2) throw new Error("Die Datei enthält keine Tabelle.");
-    const k = findeKopfzeile(rows);
-    const header = rows[k];
-    const daten = rows.slice(k + 1).filter(r => r.length > 1);
-    const gleicherAufbau = herde && JSON.stringify(herde.header) === JSON.stringify(header);
-    const mapping = gleicherAufbau ? {...herde.mapping} : erkenneSpalten(header, daten);
-    if (mapping.ohr < 0) throw new Error("In der Datei wurde keine Spalte mit Ohrmarken gefunden. Ist es der richtige Export aus Netrind?");
-
-    const alt = herde ? {datum: herde.hochgeladen, anzahl: herdenTiere().length} : null;
-    herde = {datei: file.name, hochgeladen: new Date().toISOString(), header, rows: daten, mapping};
-    speichereHerde();
-    const neu = herdenTiere().length;
-
-    meldung.hidden = false;
-    meldung.innerHTML = alt
-      ? `✓ <b>Neue Liste übernommen: ${neu} Tiere.</b> Die alte Liste vom ${fmtDatum(alt.datum)} (${alt.anzahl} Tiere) wurde gelöscht und ersetzt.`
-      : `✓ <b>Liste übernommen: ${neu} Tiere.</b>`;
-
-    renderHerdeStatus();
-    // Spalten nur dann zum Prüfen aufklappen, wenn sich der Aufbau geändert hat
-    // oder etwas nicht erkannt wurde
-    const box = document.getElementById("herdeMapping");
-    box.hidden = gleicherAufbau && mapping.rzg >= 0 && mapping.milch >= 0;
-    if (!box.hidden) renderMapping();
-    werteAus();
+    uebernehmeTabelle(await leseTabelle(file), file.name);
   } catch(err) {
-    meldung.hidden = true;
+    document.getElementById("herdeErsetzt").hidden = true;
     alert("Die Datei konnte nicht gelesen werden – die bisherige Liste bleibt unverändert.\n\n" + err.message);
   } finally {
     drop.classList.remove("busy");
   }
 }
+
+// Gemeinsamer Weg für hochgeladene Datei und eingefügten Text
+function uebernehmeTabelle(rows, quelle){
+  const meldung = document.getElementById("herdeErsetzt");
+  if (rows.length < 2) throw new Error("Es wurde keine Tabelle gefunden.");
+  const {header, daten} = baueTabelle(rows);
+  const gleicherAufbau = herde && JSON.stringify(herde.header) === JSON.stringify(header);
+  const mapping = gleicherAufbau ? {...herde.mapping} : erkenneSpalten(header, daten);
+  if (mapping.ohr < 0) throw new Error("Es wurde keine Spalte mit Ohrmarken gefunden. Ist es die Zuchtwert-Liste aus Netrind?");
+  if (!daten.some(r => ohrKey(r[mapping.ohr]) !== null)) throw new Error("Es wurden keine Tiere mit Ohrmarke gefunden.");
+
+  const alt = herde ? {datum: herde.hochgeladen, anzahl: herdenTiere().length} : null;
+  herde = {datei: quelle, hochgeladen: new Date().toISOString(), header, rows: daten, mapping};
+  speichereHerde();
+  const neu = herdenTiere().length;
+
+  meldung.hidden = false;
+  meldung.innerHTML = alt
+    ? `✓ <b>Neue Liste übernommen: ${neu} Tiere.</b> Die alte Liste vom ${fmtDatum(alt.datum)} (${alt.anzahl} Tiere) wurde gelöscht und ersetzt.`
+    : `✓ <b>Liste übernommen: ${neu} Tiere.</b>`;
+
+  renderHerdeStatus();
+  // Spalten nur dann zum Prüfen aufklappen, wenn sich der Aufbau geändert hat
+  // oder etwas nicht erkannt wurde
+  const box = document.getElementById("herdeMapping");
+  box.hidden = gleicherAufbau && mapping.rzg >= 0 && mapping.milch >= 0;
+  if (!box.hidden) renderMapping();
+  werteAus();
+}
+
+// Netrind-Liste einfach kopieren und einfügen (statt Datei-Export)
+document.getElementById("herdePaste").addEventListener("paste", () => {
+  setTimeout(() => {
+    const feld = document.getElementById("herdePaste");
+    const text = feld.value;
+    if (!text.trim()) return;
+    try {
+      uebernehmeTabelle(parseCSV(text, true), "aus Netrind eingefügt");
+      feld.value = "";                // großer Text muss nicht stehen bleiben
+    } catch(err) {
+      document.getElementById("herdeErsetzt").hidden = true;
+      alert("Der eingefügte Text konnte nicht gelesen werden – die bisherige Liste bleibt unverändert.\n\n" + err.message);
+    }
+  }, 50);
+});
 
 document.getElementById("herdeFile").addEventListener("change", e => {
   const file = e.target.files[0];
