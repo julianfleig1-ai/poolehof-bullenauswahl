@@ -401,7 +401,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
         <details class="bs-settings">
           <summary>Einstellungen (Holstein-Anteil, Gewichtung)</summary>
           <div class="bs-settings-grid">
-            <label>Holstein-Anteil der Herde
+            <label>Holstein-Anteil (pro eingefügter Liste)
               <span class="bs-inline"><input type="number" id="quoteInput" min="5" max="95" step="1" value="25"> %</span>
             </label>
             <label>Gewichtung RZG ↔ Milch
@@ -424,7 +424,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
         <table class="bs-table">
           <thead><tr>
             <th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th><th>RZG</th><th>Milch kg</th>
-            <th>Platz in der Herde</th>
+            <th>Platz in Netrind-Liste</th>
           </tr></thead>
           <tbody id="bsBody"></tbody>
         </table>
@@ -1045,7 +1045,7 @@ window.addEventListener("hashchange", () => {
 const HERDE_KEY = "poolehof-herde-v1";
 const BS_SETTINGS_KEY = "poolehof-besamung-einstellungen-v1";
 const HERDE_MAX_ALTER_TAGE = 150;   // Zuchtwertschätzung 3×/Jahr -> nach ~5 Monaten gibt es neue Werte
-const GRENZ_BAND = 0.05;            // ±5 Prozentpunkte um die Quote = "Grenzfall, im Lely prüfen"
+const GRENZ_ANTEIL = 0.10;          // die nächsten ~10 % unter der Holstein-Grenze = "Grenzfall, im Lely prüfen"
 
 let herde = ladeHerde();            // {datei, hochgeladen, header, rows, mapping:{ohr,rzg,milch,name}}
 let bsSettings = ladeBsSettings();  // {quote, gewichtMilch}
@@ -1250,11 +1250,15 @@ function bewerteHerde(tiere){
   return new Map(bewertet.map(t => [t.key, t])).set("__n", bewertet.length);
 }
 
-function empfehlung(anteil){
-  const q = bsSettings.quote / 100;
-  if (anteil <= q - GRENZ_BAND) return "ho";
-  if (anteil <= q + GRENZ_BAND) return "grenz";
-  return "bb";
+// Die Quote gilt INNERHALB der eingefügten Lely-Liste (z.B. 5 von 20), nicht
+// gegen die ganze Netrind-Liste: so ist egal, ob der Export auch Kälber oder
+// Jungrinder enthält (die genomisch oft höher stehen und sonst die Grenze
+// verschieben würden). Über viele Runden ergibt das ebenfalls ~25 % Holstein.
+function verteileEmpfehlung(gefunden){
+  const nHO = Math.max(1, Math.round(gefunden.length * bsSettings.quote / 100));
+  const nGrenz = Math.max(1, Math.round(gefunden.length * GRENZ_ANTEIL));
+  gefunden.forEach((z, i) => { z.rec = i < nHO ? "ho" : (i < nHO + nGrenz ? "grenz" : "bb"); });
+  return {nHO, nGrenz};
 }
 const REC_TEXT = {ho: "Holstein", grenz: "Grenzfall", bb: "British Blue", nf: "nicht in Liste", nz: "keine Zuchtwerte"};
 
@@ -1270,7 +1274,7 @@ function renderHerdeStatus(){
   document.getElementById("herdeLoeschen").hidden = !herde;
   if (!herde){
     el.className = "bs-status";
-    el.innerHTML = "Noch keine Netrind-Liste geladen. In Netrind die Liste der Kühe und Färsen mit Zuchtwerten als CSV oder Excel exportieren und hier hochladen.";
+    el.innerHTML = "Noch keine Netrind-Liste geladen. In Netrind die Tierliste mit Zuchtwerten als CSV oder Excel exportieren und hier hochladen – Kälber dürfen mit drin sein.";
     document.getElementById("herdeMapping").hidden = true;
     return;
   }
@@ -1346,11 +1350,13 @@ function werteAus(){
   const alleKeys = new Set(herdenTiere().map(t => t.key));
   const zeilen = keys.map(key => {
     const t = bewertung.get(key);
-    if (t) return {key, t, rec: empfehlung(t.anteil)};
+    if (t) return {key, t, rec: null};
     return {key, t: null, rec: alleKeys.has(key) ? "nz" : "nf"};
   });
   // Beste zuerst, nicht gefundene ans Ende
   zeilen.sort((a, b) => (b.t ? b.t.index : -Infinity) - (a.t ? a.t.index : -Infinity));
+  const gefunden = zeilen.filter(z => z.t);
+  const {nHO} = gefunden.length ? verteileEmpfehlung(gefunden) : {nHO: 0};
 
   const zaehle = r => zeilen.filter(z => z.rec === r).length;
   const chip = (cls, anzahl, text) => anzahl ? `<span class="rec ${cls}">${anzahl} × ${text}</span>` : "";
@@ -1359,7 +1365,7 @@ function werteAus(){
     chip("grenz", zaehle("grenz"), "Grenzfall") +
     chip("bb", zaehle("bb"), "British Blue") +
     chip("nf", zaehle("nf") + zaehle("nz"), "ohne Zuchtwert") +
-    `<span class="bs-erkannt" style="flex-basis:100%">Eingestuft gegen ${n} Tiere der Netrind-Liste vom ${fmtDatum(herde.hochgeladen)} · Holstein = beste ${bsSettings.quote} % der Herde, Grenzfall = ±${GRENZ_BAND * 100} Prozentpunkte darum</span>`;
+    `<span class="bs-erkannt" style="flex-basis:100%">Holstein = die besten ${bsSettings.quote} % dieser Liste (${nHO} von ${gefunden.length} Kühen mit Zuchtwert) · Grenzfall = knapp darunter, im Lely prüfen · Zuchtwerte aus der Netrind-Liste vom ${fmtDatum(herde.hochgeladen)}</span>`;
 
   let nr = 0;
   body.innerHTML = zeilen.map(z => {
