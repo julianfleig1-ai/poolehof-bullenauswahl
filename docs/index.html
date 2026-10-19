@@ -233,6 +233,23 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .bs-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .bs-upload{display:inline-flex;align-items:center}
 .bs-privacy{font-size:12px;color:var(--ink-dim);margin:12px 0 0}
+.bs-drop{display:flex;align-items:center;gap:14px;cursor:pointer;padding:16px;border:2px dashed var(--border-strong);
+  border-radius:12px;background:var(--surface-2);transition:border-color .12s,background .12s}
+.bs-drop:hover,.bs-drop:focus-within{border-color:var(--accent)}
+.bs-drop.drag{border-color:var(--accent);background:var(--accent-soft)}
+.bs-drop.busy{opacity:.6;pointer-events:none}
+.bs-drop-icon{font-size:28px;line-height:1;flex:none}
+.bs-drop b{display:block;font-size:14.5px;font-weight:600;color:var(--accent)}
+.bs-drop-sub{display:block;font-size:12.5px;color:var(--ink-dim);margin-top:2px}
+#herdeErsetzt{margin:10px 0 0}
+.bs-anleitung{margin-top:12px;font-size:13.5px;border:1px solid var(--border);border-radius:10px;padding:10px 13px;background:var(--surface)}
+.bs-anleitung summary{cursor:pointer;font-weight:600}
+.bs-anleitung ol{margin:10px 0 2px;padding-left:20px;display:grid;gap:6px}
+.tab-badge{display:inline-block;vertical-align:middle;margin-left:4px;padding:2px 7px;border-radius:999px;font-size:10.5px;
+  font-weight:700;letter-spacing:.02em;background:var(--warn);color:var(--surface)}
+.zws-hinweis{margin-bottom:16px}
+.zws-hinweis ol{margin:8px 0 10px;padding-left:20px;display:grid;gap:4px}
+.zws-hinweis .btn{margin-top:2px}
 #lelyInput{width:100%;min-height:120px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;
   background:var(--surface);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.5}
 .bs-erkannt{font-size:13px;color:var(--ink-dim)}
@@ -299,7 +316,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
       <span class="tab-icon">🐂</span><span><b>Bullensuche</b><small>Bullen aus 5 Katalogen filtern</small></span>
     </button>
     <button class="tab" role="tab" data-tab="besamung" id="tabBtnBesamung" aria-controls="tabBesamung">
-      <span class="tab-icon">🐄</span><span><b>Holstein oder British Blue</b><small>Welche Kühe bekommen Holstein?</small></span>
+      <span class="tab-icon">🐄</span><span><b>Holstein oder British Blue <span class="tab-badge" id="tabBadge" hidden>Update fällig</span></b><small>Welche Kühe bekommen Holstein?</small></span>
     </button>
   </nav>
 
@@ -362,23 +379,40 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 
   <!-- ===================== Holstein oder British Blue ===================== -->
   <div id="tabBesamung" role="tabpanel" aria-labelledby="tabBtnBesamung" hidden>
+    <!-- Erinnerung nach jeder neuen Zuchtwertschätzung (April/August/Dezember) -->
+    <div id="zwsHinweis" hidden></div>
+
     <div class="bs-steps">
       <!-- Schritt 1: Herdenliste aus Netrind -->
-      <section class="panel bs-card">
+      <section class="panel bs-card" id="herdeKarte">
         <div class="bs-step-head">
           <span class="bs-num">1</span>
           <div>
             <h2>Herdenliste aus Netrind</h2>
-            <p class="bs-help">Nur nötig nach jeder Zuchtwertschätzung (3× im Jahr: April, August, Dezember). Die Liste bleibt danach hier gespeichert.</p>
+            <p class="bs-help">Nur nötig nach jeder Zuchtwertschätzung (3× im Jahr: April, August, Dezember) – die Seite erinnert dich dann automatisch. Bis dahin bleibt die Liste hier gespeichert.</p>
           </div>
         </div>
         <div id="herdeStatus" class="bs-status"></div>
+        <label class="bs-drop" id="herdeDrop">
+          <input type="file" id="herdeFile" accept=".csv,.txt,.xlsx,.xls" hidden>
+          <span class="bs-drop-icon">📄</span>
+          <span>
+            <b id="herdeDropTitel">Netrind-Liste hier hineinziehen</b>
+            <span class="bs-drop-sub">oder klicken und Datei auswählen · Excel oder CSV · die alte Liste wird automatisch ersetzt</span>
+          </span>
+        </label>
+        <div id="herdeErsetzt" class="bs-status ok" hidden></div>
+        <details class="bs-anleitung" id="herdeAnleitung">
+          <summary>Anleitung: Liste aus Netrind holen (ca. 2 Minuten)</summary>
+          <ol>
+            <li><a href="https://www.netrind.de/" target="_blank" rel="noopener">netrind.de ↗</a> öffnen und mit Betriebsnummer + PIN anmelden.</li>
+            <li>Die Tierliste öffnen, in der <b>RZG</b> und <b>Milch kg</b> stehen. Kälber dürfen mit drin sein.</li>
+            <li>Die Liste als <b>Excel</b> oder <b>CSV</b> exportieren bzw. herunterladen.</li>
+            <li>Die Datei oben in das Feld ziehen (oder anklicken und auswählen) – fertig. Die alte Liste wird dabei automatisch gelöscht und durch die neue ersetzt.</li>
+          </ol>
+        </details>
         <div class="bs-actions">
-          <label class="btn primary bs-upload">
-            Netrind-Liste hochladen (CSV oder Excel)
-            <input type="file" id="herdeFile" accept=".csv,.txt,.xlsx,.xls" hidden>
-          </label>
-          <button class="btn ghost" id="herdeLoeschen" type="button" hidden>Gespeicherte Liste entfernen</button>
+          <button class="btn ghost small" id="herdeLoeschen" type="button" hidden>Gespeicherte Liste entfernen</button>
         </div>
         <div id="herdeMapping" hidden></div>
         <p class="bs-privacy">🔒 Die Kuhdaten bleiben nur in diesem Browser auf diesem Gerät – sie werden nirgendwohin hochgeladen.</p>
@@ -1044,7 +1078,27 @@ window.addEventListener("hashchange", () => {
 // ======================================================================
 const HERDE_KEY = "poolehof-herde-v1";
 const BS_SETTINGS_KEY = "poolehof-besamung-einstellungen-v1";
-const HERDE_MAX_ALTER_TAGE = 150;   // Zuchtwertschätzung 3×/Jahr -> nach ~5 Monaten gibt es neue Werte
+// Die Holstein-Zuchtwertschätzung des vit erscheint 3× im Jahr, jeweils Anfang
+// April, August und Dezember (2026 z.B. die April-Schätzung am 08.04.). Ab dem
+// 10. dieser Monate gilt eine VORHER hochgeladene Netrind-Liste als veraltet –
+// dann erscheint die Erinnerung mit Anleitung. Wer am/nach dem Stichtag
+// hochlädt, hat die neuen Werte und wird bis zur nächsten Schätzung in Ruhe gelassen.
+const ZWS_MONATE = [3, 7, 11];      // April, August, Dezember (JS-Monate zählen ab 0)
+const ZWS_TAG = 10;
+const MONATSNAMEN = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+
+function zwsStichtage(jahr){ return ZWS_MONATE.map(m => new Date(jahr, m, ZWS_TAG)); }
+function letzterZwsStichtag(jetzt = new Date()){
+  const kandidaten = [...zwsStichtage(jetzt.getFullYear() - 1), ...zwsStichtage(jetzt.getFullYear())];
+  return kandidaten.filter(d => d <= jetzt).pop();
+}
+function naechsterZwsStichtag(jetzt = new Date()){
+  return [...zwsStichtage(jetzt.getFullYear()), ...zwsStichtage(jetzt.getFullYear() + 1)].find(d => d > jetzt);
+}
+function zwsName(d){ return `${MONATSNAMEN[d.getMonth()]} ${d.getFullYear()}`; }
+function herdeVeraltet(){
+  return !!herde && new Date(herde.hochgeladen) < letzterZwsStichtag();
+}
 const GRENZ_ANTEIL = 0.10;          // die nächsten ~10 % unter der Holstein-Grenze = "Grenzfall, im Lely prüfen"
 
 let herde = ladeHerde();            // {datei, hochgeladen, header, rows, mapping:{ohr,rzg,milch,name}}
@@ -1269,9 +1323,35 @@ function fmtDatum(iso){
 }
 function vorzeichen(n){ return n === null ? "–" : (n > 0 ? "+" : "") + n.toLocaleString("de-DE"); }
 
+// Erinnerung, sobald eine neue Zuchtwertschätzung da ist: Banner oben im
+// Holstein/British-Blue-Bereich + Abzeichen am Tab (sieht man auch aus der
+// Bullensuche heraus). Verschwindet von selbst, sobald neu hochgeladen wurde.
+function renderZwsHinweis(){
+  const el = document.getElementById("zwsHinweis");
+  const alt = herdeVeraltet();
+  document.getElementById("tabBadge").hidden = !alt;
+  el.hidden = !alt;
+  if (!alt){ el.innerHTML = ""; return; }
+  const zws = zwsName(letzterZwsStichtag());
+  el.innerHTML = `<div class="alert warn zws-hinweis"><span class="alert-icon">⚠</span><div>
+    <b>Neue Zuchtwertschätzung (${zws}) – bitte die Netrind-Liste aktualisieren.</b><br>
+    Die gespeicherte Liste ist vom ${fmtDatum(herde.hochgeladen)} und enthält die neuen Zuchtwerte noch nicht. Die Auswertung läuft solange mit den alten Werten weiter.
+    <ol>
+      <li><a href="https://www.netrind.de/" target="_blank" rel="noopener">netrind.de ↗</a> öffnen und anmelden</li>
+      <li>Tierliste mit RZG und Milch kg als Excel oder CSV exportieren</li>
+      <li>Datei hier hochladen – die alte Liste wird automatisch ersetzt</li>
+    </ol>
+    <button class="btn primary small" type="button" id="zwsUploadBtn">Neue Liste jetzt hochladen</button>
+  </div></div>`;
+  document.getElementById("zwsUploadBtn").addEventListener("click", () => document.getElementById("herdeFile").click());
+}
+
 function renderHerdeStatus(){
+  renderZwsHinweis();
   const el = document.getElementById("herdeStatus");
   document.getElementById("herdeLoeschen").hidden = !herde;
+  document.getElementById("herdeDropTitel").textContent = herde ? "Neue Netrind-Liste hier hineinziehen" : "Netrind-Liste hier hineinziehen";
+  document.getElementById("herdeAnleitung").open = !herde || herdeVeraltet();
   if (!herde){
     el.className = "bs-status";
     el.innerHTML = "Noch keine Netrind-Liste geladen. In Netrind die Tierliste mit Zuchtwerten als CSV oder Excel exportieren und hier hochladen – Kälber dürfen mit drin sein.";
@@ -1281,13 +1361,14 @@ function renderHerdeStatus(){
   const tiere = herdenTiere();
   const mitRzg = tiere.filter(t => t.rzg !== null).length;
   const mitMilch = tiere.filter(t => t.milch !== null).length;
-  const alter = Math.floor((Date.now() - new Date(herde.hochgeladen).getTime()) / 86400000);
-  const alt = alter > HERDE_MAX_ALTER_TAGE;
+  const alt = herdeVeraltet();
   el.className = "bs-status " + (alt || !mitRzg ? "warn" : "ok");
   el.innerHTML =
-    `<b>${tiere.length} Tiere geladen</b> · ${mitRzg} mit RZG · ${mitMilch} mit Milch<br>` +
-    `Datei „${esc(herde.datei)}“, hochgeladen am ${fmtDatum(herde.hochgeladen)}` +
-    (alt ? `<br><b>Die Liste ist ${alter} Tage alt.</b> Nach der letzten Zuchtwertschätzung bitte neu hochladen – die Auswertung funktioniert aber auch mit der alten Liste.` : "") +
+    `<b>${alt ? "⚠ Veraltet" : "✓ Aktuell"}: ${tiere.length} Tiere</b> · ${mitRzg} mit RZG · ${mitMilch} mit Milch<br>` +
+    `Hochgeladen am ${fmtDatum(herde.hochgeladen)} („${esc(herde.datei)}“)` +
+    (alt
+      ? `<br>Enthält die Zuchtwertschätzung ${zwsName(letzterZwsStichtag())} noch nicht.`
+      : `<br>Nächstes Update fällig ab ${fmtDatum(naechsterZwsStichtag().toISOString())} (Zuchtwertschätzung ${zwsName(naechsterZwsStichtag())}).`) +
     (!mitRzg ? `<br><b>Keine RZG-Werte erkannt</b> – unten die richtige Spalte auswählen.` : "") +
     ` · <a href="#" id="spaltenLink">Spalten prüfen</a>`;
   document.getElementById("spaltenLink").addEventListener("click", e => {
@@ -1389,33 +1470,74 @@ function renderGewichtText(){
 }
 
 // --- Ereignisse --------------------------------------------------------
-document.getElementById("herdeFile").addEventListener("change", async e => {
-  const file = e.target.files[0];
-  e.target.value = "";            // gleiche Datei nochmal wählbar
-  if (!file) return;
+// Neue Netrind-Liste übernehmen. Die alte wird dabei KOMPLETT ersetzt (kein
+// Zusammenmischen alter und neuer Werte). Eine unlesbare Datei lässt die alte
+// Liste unangetastet. Hat die neue Datei denselben Aufbau wie die alte, wird
+// die Spaltenzuordnung vom letzten Mal übernommen – dann muss nichts geprüft werden.
+async function uebernehmeDatei(file){
+  const drop = document.getElementById("herdeDrop");
+  const meldung = document.getElementById("herdeErsetzt");
+  drop.classList.add("busy");
   try {
     const rows = await leseTabelle(file);
     if (rows.length < 2) throw new Error("Die Datei enthält keine Tabelle.");
     const k = findeKopfzeile(rows);
     const header = rows[k];
     const daten = rows.slice(k + 1).filter(r => r.length > 1);
-    const mapping = erkenneSpalten(header, daten);
-    if (mapping.ohr < 0) throw new Error("In der Datei wurde keine Spalte mit Ohrmarken gefunden. Ist es der richtige Export?");
+    const gleicherAufbau = herde && JSON.stringify(herde.header) === JSON.stringify(header);
+    const mapping = gleicherAufbau ? {...herde.mapping} : erkenneSpalten(header, daten);
+    if (mapping.ohr < 0) throw new Error("In der Datei wurde keine Spalte mit Ohrmarken gefunden. Ist es der richtige Export aus Netrind?");
+
+    const alt = herde ? {datum: herde.hochgeladen, anzahl: herdenTiere().length} : null;
     herde = {datei: file.name, hochgeladen: new Date().toISOString(), header, rows: daten, mapping};
     speichereHerde();
+    const neu = herdenTiere().length;
+
+    meldung.hidden = false;
+    meldung.innerHTML = alt
+      ? `✓ <b>Neue Liste übernommen: ${neu} Tiere.</b> Die alte Liste vom ${fmtDatum(alt.datum)} (${alt.anzahl} Tiere) wurde gelöscht und ersetzt.`
+      : `✓ <b>Liste übernommen: ${neu} Tiere.</b>`;
+
     renderHerdeStatus();
+    // Spalten nur dann zum Prüfen aufklappen, wenn sich der Aufbau geändert hat
+    // oder etwas nicht erkannt wurde
     const box = document.getElementById("herdeMapping");
-    box.hidden = false;           // nach dem Hochladen einmal zeigen, was erkannt wurde
-    renderMapping();
+    box.hidden = gleicherAufbau && mapping.rzg >= 0 && mapping.milch >= 0;
+    if (!box.hidden) renderMapping();
     werteAus();
   } catch(err) {
-    alert("Die Datei konnte nicht gelesen werden:\n" + err.message);
+    meldung.hidden = true;
+    alert("Die Datei konnte nicht gelesen werden – die bisherige Liste bleibt unverändert.\n\n" + err.message);
+  } finally {
+    drop.classList.remove("busy");
   }
+}
+
+document.getElementById("herdeFile").addEventListener("change", e => {
+  const file = e.target.files[0];
+  e.target.value = "";            // gleiche Datei nochmal wählbar
+  if (file) uebernehmeDatei(file);
 });
+
+// Datei einfach auf das Feld ziehen
+(function(){
+  const drop = document.getElementById("herdeDrop");
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+  ["dragleave", "dragend"].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove("drag")));
+  drop.addEventListener("drop", e => {
+    e.preventDefault();
+    drop.classList.remove("drag");
+    const file = e.dataTransfer.files[0];
+    if (file) uebernehmeDatei(file);
+  });
+  // Daneben fallen gelassene Dateien sollen nicht den Browser-Tab "öffnen"
+  ["dragover", "drop"].forEach(ev => window.addEventListener(ev, e => e.preventDefault()));
+})();
 
 document.getElementById("herdeLoeschen").addEventListener("click", () => {
   if (!confirm("Die gespeicherte Netrind-Liste von diesem Gerät entfernen?")) return;
   herde = null;
+  document.getElementById("herdeErsetzt").hidden = true;
   speichereHerde();
   renderHerdeStatus();
   werteAus();
