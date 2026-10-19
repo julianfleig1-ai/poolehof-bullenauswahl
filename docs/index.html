@@ -244,6 +244,14 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .bs-drop b{display:block;font-size:14.5px;font-weight:600;color:var(--accent)}
 .bs-drop-sub{display:block;font-size:12.5px;color:var(--ink-dim);margin-top:2px}
 #herdeErsetzt{margin:10px 0 0}
+.bs-hof{margin:-4px 0 12px;padding:10px 13px;border-radius:10px;font-size:13px;border:1px dashed var(--border-strong);background:var(--surface)}
+.bs-hof.ok{border-style:solid;border-color:transparent;background:var(--accent-soft);color:var(--accent)}
+.bs-hof.warn{border-style:solid;border-color:transparent;background:var(--warn-soft);color:var(--warn)}
+.bs-hof a{color:inherit;margin-left:6px}
+.bs-hof-titel{font-weight:600;font-size:13.5px}
+.bs-hof-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.bs-hof-form input{flex:1 1 150px;min-width:0;padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:15px}
+.bs-hof-meldung{font-size:12.5px;margin-top:6px;color:var(--warn)}
 .bs-oder{display:flex;align-items:center;gap:10px;margin:12px 0 8px;font-size:12.5px;color:var(--ink-dim)}
 .bs-oder::before,.bs-oder::after{content:"";flex:1;height:1px;background:var(--border)}
 #herdePaste{width:100%;min-height:64px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;
@@ -418,6 +426,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
           </div>
         </div>
         <div id="herdeStatus" class="bs-status"></div>
+        <div id="hofSpeicher" class="bs-hof" hidden></div>
         <label class="bs-drop" id="herdeDrop">
           <input type="file" id="herdeFile" accept=".pdf,.csv,.txt,.xlsx,.xls" hidden>
           <span class="bs-drop-icon">📄</span>
@@ -1648,6 +1657,7 @@ function renderZwsHinweis(){
 
 function renderHerdeStatus(){
   renderZwsHinweis();
+  renderHofSpeicher();          // Abgleich-Status (alle Geräte)
   renderGewichte();             // zeigt pro Kriterium, welche Netrind-Spalte zählt
   const el = document.getElementById("herdeStatus");
   document.getElementById("herdeLoeschen").hidden = !herde;
@@ -1887,6 +1897,7 @@ function uebernehmeTabelle(rows, quelle){
   box.hidden = gleicherAufbau && mapping.rzg >= 0 && mapping.milch >= 0;
   if (!box.hidden) renderMapping();
   werteAus();
+  hsSpeichern();                 // neue Liste auch für alle anderen Geräte sichern
 }
 
 // Netrind-Liste einfach kopieren und einfügen (statt Datei-Export)
@@ -1954,11 +1965,166 @@ document.getElementById("gewichtReset").addEventListener("click", () => {
   speichereBsSettings(); renderGewichte(); werteAus();
 });
 
+// ======================================================================
+// Hof-Speicher: dieselbe Netrind-Liste auf allen Geräten
+//
+// Die Liste wird im Browser mit dem Hof-Passwort verschlüsselt (AES-GCM,
+// Schlüssel per PBKDF2 aus dem Passwort) und erst dann an den kleinen
+// Speicher bei Vercel geschickt (Code: hofspeicher/api/herde.js). Der Server
+// sieht nie Klartext. Jedes Gerät gibt das Passwort einmal ein und merkt sich
+// nur die daraus abgeleiteten Schlüssel, nicht das Passwort selbst.
+// Lädt ein Gerät eine neue PDF hoch, holen sich alle anderen sie beim
+// nächsten Öffnen automatisch. Ist der Speicher nicht erreichbar, rechnet
+// jedes Gerät mit seiner eigenen letzten Kopie weiter.
+// ======================================================================
+const HOF_SPEICHER_URL =
+  (/^(127\.0\.0\.1|localhost)$/.test(location.hostname) && new URLSearchParams(location.search).get("hofspeicher"))  // nur zum lokalen Testen
+  || "";
+const HS_KEY = "poolehof-hofspeicher-v1";
+const HS_SALZ = "poolehof-hofspeicher-v1";
+let hsZugang = hsLadeZugang();               // {auth, aes} oder null
+let hsStatus = {zustand: "start"};           // start | verbinde | ok | fehler | getrennt
+
+function hsLadeZugang(){ try { return JSON.parse(localStorage.getItem(HS_KEY) || "null"); } catch(e) { return null; } }
+function hsSpeichereZugang(){
+  try { if (hsZugang) localStorage.setItem(HS_KEY, JSON.stringify(hsZugang)); else localStorage.removeItem(HS_KEY); } catch(e) {}
+}
+// Base64 in Stücken – String.fromCharCode(...riesigesArray) würde abstürzen
+function b64aus(buf){
+  const b = new Uint8Array(buf); let s = "";
+  for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+function b64ein(t){ const s = atob(t); const b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; }
+async function sha256hex(text){
+  const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+
+async function hsZugangAusPasswort(pw){
+  const enc = new TextEncoder();
+  const auth = await sha256hex(HS_SALZ + ":auth:" + pw);
+  const basis = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const aes = await crypto.subtle.deriveKey(
+    {name: "PBKDF2", salt: enc.encode(HS_SALZ + ":aes"), iterations: 600000, hash: "SHA-256"},
+    basis, {name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
+  return {auth, aes: b64aus(await crypto.subtle.exportKey("raw", aes))};
+}
+function hsAesKey(){ return crypto.subtle.importKey("raw", b64ein(hsZugang.aes), "AES-GCM", false, ["encrypt", "decrypt"]); }
+
+async function hsVerschluesseln(obj){
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({name: "AES-GCM", iv}, await hsAesKey(), new TextEncoder().encode(JSON.stringify(obj)));
+  return {v: 1, iv: b64aus(iv), daten: b64aus(ct), hochgeladen: obj.hochgeladen};
+}
+async function hsEntschluesseln(umschlag){
+  const klar = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64ein(umschlag.iv)}, await hsAesKey(), b64ein(umschlag.daten));
+  return JSON.parse(new TextDecoder().decode(klar));
+}
+
+// Text-Body ohne eigene Header = "einfache" Anfrage, der Browser braucht keine CORS-Vorabfrage
+async function hsAnfrage(nutzlast){
+  const r = await fetch(HOF_SPEICHER_URL, {method: "POST", body: JSON.stringify(nutzlast), cache: "no-store"});
+  let j = null;
+  try { j = await r.json(); } catch(e) {}
+  if (!j) throw new Error("keine gültige Antwort (HTTP " + r.status + ")");
+  return j;
+}
+
+async function hsSpeichern(){
+  if (!HOF_SPEICHER_URL || !hsZugang || !herde) return;
+  hsStatus = {zustand: "verbinde", text: "Speichere die Liste für alle Geräte …"}; renderHofSpeicher();
+  try {
+    const j = await hsAnfrage({aktion: "speichern", schluessel: hsZugang.auth, daten: await hsVerschluesseln(herde)});
+    if (!j.ok) throw new Error(j.fehler || "Fehler");
+    hsStatus = {zustand: "ok", text: `Für alle Geräte gespeichert (Liste vom ${fmtDatum(herde.hochgeladen)})`};
+  } catch(e) {
+    hsStatus = {zustand: "fehler", text: `Konnte nicht für alle Geräte speichern (${e.message}) – die Liste gilt vorerst nur auf diesem Gerät.`};
+  }
+  renderHofSpeicher();
+}
+
+async function hsAbgleichen(){
+  if (!HOF_SPEICHER_URL || !hsZugang) return;
+  hsStatus = {zustand: "verbinde", text: "Gleiche mit dem Hof-Speicher ab …"}; renderHofSpeicher();
+  try {
+    const j = await hsAnfrage({aktion: "laden", schluessel: hsZugang.auth});
+    if (!j.ok){
+      if (/passwort/i.test(j.fehler || "")){
+        hsZugang = null; hsSpeichereZugang();
+        hsStatus = {zustand: "getrennt", text: "Das Hof-Passwort wurde geändert – bitte einmal neu eingeben."};
+        renderHofSpeicher(); return;
+      }
+      throw new Error(j.fehler || "Fehler");
+    }
+    const fern = j.daten;
+    const lokalZeit = herde ? new Date(herde.hochgeladen).getTime() : 0;
+    const fernZeit = fern ? new Date(fern.hochgeladen).getTime() : 0;
+    if (fern && fernZeit > lokalZeit){
+      herde = await hsEntschluesseln(fern);       // neuere Liste von einem anderen Gerät
+      ergaenzeMapping(herde); speichereHerde();
+      hsStatus = {zustand: "ok", text: `Neueste Liste geladen (vom ${fmtDatum(herde.hochgeladen)}) – auf allen Geräten gleich`};
+      renderHerdeStatus(); werteAus();
+      return;
+    }
+    if (herde && lokalZeit > fernZeit){ await hsSpeichern(); return; }   // dieses Gerät hat die neuere
+    hsStatus = fern
+      ? {zustand: "ok", text: `Verbunden – alle Geräte haben die Liste vom ${fmtDatum(fern.hochgeladen)}`}
+      : {zustand: "ok", text: "Verbunden – noch keine Liste gespeichert. Einfach die PDF hochladen, dann gilt sie für alle Geräte."};
+  } catch(e) {
+    hsStatus = {zustand: "fehler", text: "Hof-Speicher gerade nicht erreichbar – es wird mit der Liste auf diesem Gerät gerechnet."};
+  }
+  renderHofSpeicher();
+}
+
+async function hsVerbinden(e){
+  e.preventDefault();
+  const meldung = document.getElementById("hsMeldung");
+  meldung.textContent = "Verbinde …";
+  try {
+    const zugang = await hsZugangAusPasswort(document.getElementById("hsPasswort").value);
+    const j = await hsAnfrage({aktion: "laden", schluessel: zugang.auth});
+    if (!j.ok){ meldung.textContent = /passwort/i.test(j.fehler || "") ? "Passwort falsch." : (j.fehler || "Fehler"); return; }
+    hsZugang = zugang; hsSpeichereZugang();
+    await hsAbgleichen();
+  } catch(err) {
+    meldung.textContent = "Hof-Speicher nicht erreichbar: " + err.message;
+  }
+}
+
+function renderHofSpeicher(){
+  const el = document.getElementById("hofSpeicher");
+  if (!HOF_SPEICHER_URL){ el.hidden = true; return; }
+  el.hidden = false;
+  if (!hsZugang){
+    el.className = "bs-hof";
+    el.innerHTML = `<div class="bs-hof-titel">☁ Auf allen Geräten dieselbe Liste</div>
+      <div class="bs-help">${hsStatus.zustand === "getrennt" && hsStatus.text ? esc(hsStatus.text)
+        : "Hof-Passwort einmal eingeben – dann ist die Netrind-Liste auf Handy, Stall-PC usw. automatisch gleich, hochladen muss man sie nur an einem Gerät."}</div>
+      <form id="hsForm" class="bs-hof-form">
+        <input type="password" id="hsPasswort" autocomplete="current-password" inputmode="numeric" placeholder="Hof-Passwort" required>
+        <button class="btn primary small" type="submit">Verbinden</button>
+      </form>
+      <div id="hsMeldung" class="bs-hof-meldung" aria-live="polite"></div>`;
+    document.getElementById("hsForm").addEventListener("submit", hsVerbinden);
+    return;
+  }
+  el.className = "bs-hof " + (hsStatus.zustand === "fehler" ? "warn" : hsStatus.zustand === "ok" ? "ok" : "");
+  el.innerHTML = `<span>☁ ${esc(hsStatus.text || "Mit dem Hof-Speicher verbunden")}</span><a href="#" id="hsTrennen">Gerät trennen</a>`;
+  document.getElementById("hsTrennen").addEventListener("click", e => {
+    e.preventDefault();
+    if (!confirm("Dieses Gerät vom Hof-Speicher trennen? Die Liste bleibt hier, wird aber nicht mehr mit den anderen Geräten abgeglichen.")) return;
+    hsZugang = null; hsSpeichereZugang();
+    hsStatus = {zustand: "getrennt"}; renderHofSpeicher();
+  });
+}
+
 ergaenzeMapping(herde);   // ältere gespeicherte Listen um die neuen Kriterien-Spalten ergänzen
 // Sobald die Bullendaten da sind, kennt die Seite das echte Datum der letzten
 // Zuchtwertschätzung → Erinnerung neu prüfen
 document.addEventListener("bullen-geladen", renderHerdeStatus);
 renderHerdeStatus();
+hsAbgleichen();          // neuere Liste von einem anderen Gerät holen (falls verbunden)
 </script>
 </body>
 </html>

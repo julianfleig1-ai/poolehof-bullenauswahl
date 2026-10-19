@@ -1,0 +1,9 @@
+{
+  "name": "poolehof-hofspeicher",
+  "private": true,
+  "description": "Verschlüsselter Speicher für die Netrind-Herdenliste der Poolehof-Zuchtplanung",
+  "engines": { "node": "22.x" },
+  "dependencies": {
+    "@vercel/blob": "^1.0.0"
+  }
+}
