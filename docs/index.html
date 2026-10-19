@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poolehof Bullenauswahl</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐄</text></svg>">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -51,7 +52,8 @@ button, select, input{font:inherit;color:inherit}
 .wrap{max-width:1320px;margin:0 auto;padding:24px 20px 60px}
 header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:18px}
 header.top .brand{display:flex;align-items:center;gap:14px}
-header.top .brand-icon{font-size:40px;line-height:1}
+header.top .brand-logo{height:88px;width:auto;flex:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12))}
+@media (max-width:560px){header.top .brand-logo{height:60px}}
 header.top h1{font-size:30px;font-weight:700}
 header.top .kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px}
 header.top .sub{color:var(--ink-dim);font-size:14.5px;margin-top:6px;max-width:56ch}
@@ -311,7 +313,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="brand-icon">🐄</div>
+      <img class="brand-logo" src="img/logo.png" alt="Poolehof – Familie Fleig" width="127" height="88">
       <div>
         <div class="kicker">Poolehof</div>
         <h1>Zuchtplanung</h1>
