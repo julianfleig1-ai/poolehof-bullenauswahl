@@ -260,7 +260,13 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
   background:var(--surface);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.5}
 .bs-erkannt{font-size:13px;color:var(--ink-dim)}
 .bs-settings{margin-top:14px;font-size:13.5px}
-.bs-settings summary{cursor:pointer;color:var(--ink-dim)}
+/* Aufklapp-Knopf im selben Stil wie "Auswerten", damit man ihn findet */
+.bs-settings summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.bs-settings summary::-webkit-details-marker{display:none}
+.bs-settings-btn{display:inline-flex;align-items:center;gap:7px}
+.bs-settings-btn .pfeil{transition:transform .15s}
+.bs-settings[open] .bs-settings-btn .pfeil{transform:rotate(180deg)}
+.bs-gew-kurz{font-size:12.5px;color:var(--ink-dim);flex:1 1 200px}
 .bs-settings-grid{display:grid;gap:12px;margin-top:10px}
 .bs-settings-grid label{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px}
 .bs-settings-grid small{font-weight:400;color:var(--ink-dim)}
@@ -456,7 +462,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
           <span id="erkanntInfo" class="bs-erkannt"></span>
         </div>
         <details class="bs-settings" id="bsEinstellungen">
-          <summary>Einstellungen: <span id="gewichtKurz"></span></summary>
+          <summary><span class="btn primary bs-settings-btn">⚙ Kriterien &amp; Gewichtung <span class="pfeil">▾</span></span><span id="gewichtKurz" class="bs-gew-kurz"></span></summary>
           <div class="bs-settings-grid">
             <label>Holstein-Anteil (pro eingefügter Liste)
               <span class="bs-inline"><input type="number" id="quoteInput" min="5" max="95" step="1" value="25"> %</span>
