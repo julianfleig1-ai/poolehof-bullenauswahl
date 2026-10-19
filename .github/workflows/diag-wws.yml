@@ -11,7 +11,9 @@ jobs:
     steps:
       - name: Runner-IP
         shell: bash
-        run: curl -s --max-time 15 https://ipinfo.io/json | grep -E '"(ip|org|country)"' || true
+        run: |
+          curl -s --max-time 15 https://ipinfo.io/json | grep -E '"(ip|org|country)"' || true
       - name: WWS erreichbar?
         shell: bash
-        run: curl -sS -o /dev/null -w "WWS ${{ matrix.os }}: HTTP %{http_code} in %{time_total}s\n" -A "Mozilla/5.0" --max-time 25 https://www.wws-bullen.de/bullenangebot || echo "WWS ${{ matrix.os }}: BLOCKIERT exit $?"
+        run: |
+          curl -sS -o /dev/null -w "WWS ${{ matrix.os }} -> HTTP %{http_code} in %{time_total}s\n" -A "Mozilla/5.0" --max-time 25 https://www.wws-bullen.de/bullenangebot || echo "WWS ${{ matrix.os }} -> BLOCKIERT exit $?"
