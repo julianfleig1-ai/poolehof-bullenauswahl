@@ -465,7 +465,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
               <div id="gewichtListe" class="bs-gew-liste"></div>
               <div class="bs-gew-fuss">
                 <span id="gewichtSumme"></span>
-                <button class="btn ghost small" type="button" id="gewichtReset">Standard (Milch 40 · Zellzahl 20 · RZG 20 · Rest je 5)</button>
+                <button class="btn ghost small" type="button" id="gewichtReset">Standard (Milch 40 · Zellzahl 20 · RZG 20 · Strichlänge 7 · Melkbarkeit 7 · Fruchtbarkeit 6)</button>
               </div>
             </div>
           </div>
@@ -1183,13 +1183,12 @@ const KUH_KRITERIEN = [
    erkenne: h => /^\s*g?rzg\s*$/i.test(h) ? 3 : (/rzg/i.test(h) ? 1 : 0)},
   {id: "milch",   label: "Milchmenge",                 netrind: "M-kg",   standard: 40,
    erkenne: h => /^\s*m[\s.\-]*kg\s*$/i.test(h) ? 3 : (/milch/i.test(h) ? 1 : 0)},
-  {id: "stl",     label: "Strichlänge",                netrind: "stl",    standard: 5,
+  // Stärke gibt es in der Netrind-Zuchtwertliste nicht → hier bewusst weggelassen
+  {id: "stl",     label: "Strichlänge",                netrind: "stl",    standard: 7,
    erkenne: h => /^\s*stl\s*$/i.test(h) ? 3 : (/strichl/i.test(h) ? 2 : 0)},
-  {id: "staerke", label: "Stärke",                     netrind: "Stärke", standard: 5,
-   erkenne: h => /st(ä|ae)rke/i.test(h) ? 3 : 0},
-  {id: "rzd",     label: "Melkbarkeit",                netrind: "RZD",    standard: 5,
+  {id: "rzd",     label: "Melkbarkeit",                netrind: "RZD",    standard: 7,
    erkenne: h => /^\s*rzd\s*$/i.test(h) ? 3 : (/melkbar/i.test(h) ? 1 : 0)},
-  {id: "rzr",     label: "Töchterfruchtbarkeit",       netrind: "RZR",    standard: 5,
+  {id: "rzr",     label: "Töchterfruchtbarkeit",       netrind: "RZR",    standard: 6,
    erkenne: h => /^\s*rzr\s*$/i.test(h) ? 3 : (/fruchtb/i.test(h) ? 1 : 0)},
   {id: "rzs",     label: "Zellzahl / Eutergesundheit", netrind: "RZS",    standard: 20,
    erkenne: h => /^\s*rzs\s*$/i.test(h) ? 3 : (/zellz|euterges/i.test(h) ? 1 : 0)},
@@ -1803,7 +1802,7 @@ function renderGewichtSumme(){
   const ohneSpalte = herde ? KUH_KRITERIEN.filter(k => !(herde.mapping[k.id] >= 0) && bsSettings.gewichte[k.id] > 0) : [];
   document.getElementById("gewichtSumme").innerHTML =
     (summe === 100 ? `Summe: 100 %` : `<span class="warn">Summe: ${summe} %</span> – wird anteilig auf 100 % umgerechnet`) +
-    (ohneSpalte.length ? `<br>${ohneSpalte.map(k => k.label).join(", ")} fehlt in der Netrind-Liste – der Anteil verteilt sich auf die anderen.` : "");
+    (ohneSpalte.length ? `<br>${ohneSpalte.map(k => k.label).join(", ")} ${ohneSpalte.length > 1 ? "fehlen" : "fehlt"} in der Netrind-Liste – der Anteil verteilt sich auf die anderen.` : "");
   const kurz = KUH_KRITERIEN.filter(k => bsSettings.gewichte[k.id] > 0).sort((a, b) => bsSettings.gewichte[b.id] - bsSettings.gewichte[a.id]).slice(0, 3);
   document.getElementById("gewichtKurz").textContent =
     `Holstein ${bsSettings.quote} % · ${kurz.map(k => `${k.label} ${bsSettings.gewichte[k.id]} %`).join(" · ")} …`;
