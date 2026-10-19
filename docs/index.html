@@ -285,6 +285,19 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .rec.grenz{background:var(--gold-soft);color:var(--gold)}
 .rec.nf{background:var(--chip);color:var(--ink-dim)}
 .bs-note{font-size:12.5px;color:var(--ink-dim);padding:12px 18px 10px;margin:0}
+.bs-gew-titel{font-weight:600;font-size:13px}
+.bs-gew-liste{display:grid;gap:6px}
+.bs-settings-grid label.bs-gew-zeile{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;font-size:13px;font-weight:400;
+  padding:6px 0;border-bottom:1px solid var(--border)}
+.bs-gew-zeile b{font-weight:600}
+.bs-gew-zeile .sp{font-size:11.5px;color:var(--ink-dim)}
+.bs-gew-zeile .sp.fehlt{color:var(--warn)}
+.bs-gew-zeile input{width:64px;padding:6px 8px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);
+  font-size:14px;font-family:"IBM Plex Mono",monospace;text-align:right}
+.bs-gew-zeile.aus{opacity:.55}
+.bs-gew-fuss{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12.5px}
+.bs-gew-fuss .warn{color:var(--warn);font-weight:600}
+.bs-table th.krit,.bs-table td.krit{text-align:right}
 @media (max-width:560px){.bs-table{font-size:12.5px}.bs-table td,.bs-table th{padding:9px 7px}.bs-card{padding:15px 14px 13px}}
 
 @media print{
@@ -374,7 +387,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
   <footer class="notes">
     <h3>Datenquellen &amp; Stand</h3>
     <div class="src-grid" id="srcGrid"></div>
-    <p><b>Automatik:</b> Ein GitHub-Workflow ruft alle fünf Quellen automatisch monatlich neu ab – komplett unabhängig, ohne Claude. Der Button „Jetzt aktualisieren“ oben rechts lädt zuverlässig den aktuell veröffentlichten Stand neu. Jedes Ergebnis wird vor der Übernahme geprüft (genug Bullen? haben sie Zuchtwerte? kein plötzlicher Einbruch?). Fällt eine Quelle aus, bleiben deren alte Daten stehen, hier oben erscheint eine Warnung und GitHub schickt eine Fehlermail – ein stiller Ausfall kann also nicht passieren. <a href="https://github.com/julianfleig1-ai/poolehof-bullenauswahl/actions/workflows/refresh.yml" target="_blank" rel="noopener">Neuen Abruf manuell auf GitHub anstoßen ↗</a> (Login nötig, normalerweise nicht erforderlich).</p>
+    <p><b>Automatik:</b> Ein GitHub-Workflow ruft alle fünf Quellen automatisch jeden Montag neu ab – komplett unabhängig, ohne Claude. Der Button „Jetzt aktualisieren“ oben rechts lädt zuverlässig den aktuell veröffentlichten Stand neu. Jedes Ergebnis wird vor der Übernahme geprüft (genug Bullen? haben sie Zuchtwerte? kein plötzlicher Einbruch?). Fällt eine Quelle aus, bleiben deren alte Daten stehen, hier oben erscheint eine Warnung und GitHub schickt eine Fehlermail – ein stiller Ausfall kann also nicht passieren. <a href="https://github.com/julianfleig1-ai/poolehof-bullenauswahl/actions/workflows/refresh.yml" target="_blank" rel="noopener">Neuen Abruf manuell auf GitHub anstoßen ↗</a> (Login nötig, normalerweise nicht erforderlich).</p>
     <p><b>Wichtig zu Semex:</b> Der deutsche Semex-Katalog ist nur als gescanntes Bilder-Flipbook veröffentlicht (keine Tabelle). Die Semex-Bullen hier stammen vom internationalen semex.com Sire-Directory (US-Skala) – ob genau diese auch über Semex Deutschland bestellbar sind, im Zweifel dort nachfragen.</p>
     <p><b>Strichlänge &amp; Stärke:</b> bei allen fünf Quellen vorhanden – diese Einzelmerkmale stehen nicht in den Übersichtslisten, sondern nur auf der jeweiligen Bull-Detailseite, die pro Bulle mit abgerufen wird. RBW, Prismagen (deutsche Bullen) und CRI liefern sie auf RZ-Skala (&gt;100 = überdurchschnittlich), WWS, Semex und die US-Bullen auf der amerikanischen Linearskala (&gt;0,0). Die Spalte zeigt jeweils mit „DE“/„US“ an, welche Skala gilt.</p>
     <p style="margin-top:10px"><b>Kriterien werden nur in diesem Browser gespeichert</b> (nicht auf dem Server) – auf einem anderen Gerät siehst du wieder die Standard-Kriterien, bis du sie dort auch anpasst.</p>
@@ -398,11 +411,11 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
         </div>
         <div id="herdeStatus" class="bs-status"></div>
         <label class="bs-drop" id="herdeDrop">
-          <input type="file" id="herdeFile" accept=".csv,.txt,.xlsx,.xls" hidden>
+          <input type="file" id="herdeFile" accept=".pdf,.csv,.txt,.xlsx,.xls" hidden>
           <span class="bs-drop-icon">📄</span>
           <span>
             <b id="herdeDropTitel">Netrind-Liste hier hineinziehen</b>
-            <span class="bs-drop-sub">oder klicken und Datei auswählen · Excel oder CSV · die alte Liste wird automatisch ersetzt</span>
+            <span class="bs-drop-sub">oder klicken und Datei auswählen · PDF, Excel oder CSV aus Netrind · die alte Liste wird automatisch ersetzt</span>
           </span>
         </label>
         <div class="bs-oder"><span>oder einfach kopieren</span></div>
@@ -412,11 +425,12 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
           <summary>Anleitung: Liste aus Netrind holen (ca. 1 Minute)</summary>
           <ol>
             <li><a href="https://www.netrind.de/" target="_blank" rel="noopener">netrind.de ↗</a> öffnen und mit Betriebsnummer + PIN anmelden.</li>
-            <li>Die Stall-Liste <b>„Zuchtwerte wbl“</b> öffnen – die Liste mit Ohrmarke, <b>RZG</b> und <b>M-kg</b>. Kälber dürfen mit drin sein.</li>
-            <li>Irgendwo in die Seite klicken, <b>alles markieren</b> (⌘A bzw. Strg+A) und <b>kopieren</b> (⌘C bzw. Strg+C).</li>
-            <li>Hier oben ins Feld „oder einfach kopieren“ klicken und <b>einfügen</b> (⌘V bzw. Strg+V) – fertig. Die alte Liste wird dabei automatisch gelöscht und ersetzt.</li>
+            <li>Die Stall-Liste <b>„Zuchtwerte wbl“</b> bzw. <b>„Genomische Zuchtwerte wbl“</b> öffnen. Kälber dürfen mit drin sein.</li>
+            <li>Oben links in der Tabelle das Häkchen <b>„alle auswählen“</b> setzen.</li>
+            <li>Oben auf das <b>Drucker-Symbol</b> klicken – es sitzt neben „Buchen“, links von „ZWS“. Netrind erstellt eine <b>PDF</b> zum Herunterladen.</li>
+            <li>Die PDF hier oben ins Feld <b>hineinziehen</b> (oder anklicken und die Datei aus „Downloads“ wählen) – fertig. Die alte Liste wird automatisch gelöscht und ersetzt. Alle Spalten der PDF werden übernommen, nicht nur RZG und Milch.</li>
           </ol>
-          <p class="bs-help" style="margin:8px 0 0">Kommt die Liste als Excel- oder CSV-Datei aus Netrind, kann man stattdessen die Datei ins Feld oben ziehen.</p>
+          <p class="bs-help" style="margin:8px 0 0">Ohne Download geht es auch: auf der Netrind-Seite alles markieren (⌘A / Strg+A), kopieren und ins Feld „oder einfach kopieren“ einfügen.</p>
         </details>
         <div class="bs-actions">
           <button class="btn ghost small" id="herdeLoeschen" type="button" hidden>Gespeicherte Liste entfernen</button>
@@ -439,16 +453,21 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
           <button class="btn primary" id="auswertenBtn" type="button">Auswerten</button>
           <span id="erkanntInfo" class="bs-erkannt"></span>
         </div>
-        <details class="bs-settings">
-          <summary>Einstellungen (Holstein-Anteil, Gewichtung)</summary>
+        <details class="bs-settings" id="bsEinstellungen">
+          <summary>Einstellungen: <span id="gewichtKurz"></span></summary>
           <div class="bs-settings-grid">
             <label>Holstein-Anteil (pro eingefügter Liste)
               <span class="bs-inline"><input type="number" id="quoteInput" min="5" max="95" step="1" value="25"> %</span>
             </label>
-            <label>Gewichtung RZG ↔ Milch
-              <span class="bs-inline">RZG <input type="range" id="gewichtInput" min="0" max="100" step="5" value="50"> Milch</span>
-              <small id="gewichtText"></small>
-            </label>
+            <div>
+              <div class="bs-gew-titel">Wie viel zählt was?</div>
+              <p class="bs-help" style="margin:2px 0 8px">Dieselben Kriterien wie in der Bullensuche – hier aber als Anteil am Gesamturteil. Höhere Zuchtwerte sind immer besser (bei RZS heißt über 100: weniger Zellen).</p>
+              <div id="gewichtListe" class="bs-gew-liste"></div>
+              <div class="bs-gew-fuss">
+                <span id="gewichtSumme"></span>
+                <button class="btn ghost small" type="button" id="gewichtReset">Standard (Milch 40 · Zellzahl 20 · RZG 20 · Rest je 5)</button>
+              </div>
+            </div>
           </div>
         </details>
       </section>
@@ -463,9 +482,8 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
       <div id="bsSummary" class="bs-summary"></div>
       <div class="table-scroll">
         <table class="bs-table">
-          <thead><tr>
-            <th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th><th>RZG</th><th>Milch kg</th>
-            <th>Platz in Netrind-Liste</th>
+          <thead><tr id="bsKopf">
+            <th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th><th title="Gewichteter Gesamtwert aller Kriterien, relativ zur eigenen Herde: 100 = Herdendurchschnitt">Index</th>
           </tr></thead>
           <tbody id="bsBody"></tbody>
         </table>
@@ -491,7 +509,9 @@ const DEFAULT_CRITERIA = [
   {id:"staerke", label:"Stärke", help:"Körperstärke/Rahmen der Töchter.", de:{field:"staerke_de",op:">",value:100,unit:""}, us:{field:"staerke_us",op:">",value:0,unit:""}},
   {id:"melkbarkeit", label:"Melkbarkeit", help:"Wie schnell/leicht sich die Töchter melken lassen.", de:{field:"rzd",op:">",value:100,unit:""}, us:{field:"mbk",op:">",value:7.2,unit:""}},
   {id:"fruchtbarkeit", label:"Töchterfruchtbarkeit", help:"Wie leicht die Töchter tragend werden.", de:{field:"rzr",op:">",value:100,unit:""}, us:{field:"dpr",op:">",value:0.5,unit:""}},
-  {id:"zellzahl", label:"Zellzahl / Eutergesundheit", help:"Niedrigere Zellzahl = gesündere Euter.", de:{field:"rzs",op:"<",value:100,unit:""}, us:{field:"scs",op:"<",value:2.8,unit:""}},
+  // RZS ist wie alle RZ-Werte so gepolt, dass >100 besser ist (= WENIGER Zellen);
+  // beim US-SCS ist dagegen niedriger besser.
+  {id:"zellzahl", label:"Zellzahl / Eutergesundheit", help:"Gesündere Euter: RZS über 100 bzw. niedriger SCS.", de:{field:"rzs",op:">",value:100,unit:""}, us:{field:"scs",op:"<",value:2.8,unit:""}},
 ];
 
 const FIRMA_META = {
@@ -530,7 +550,19 @@ let state = {
 function loadStoredCriteria(){
   try {
     const raw = localStorage.getItem(CRITERIA_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw){
+      const krit = JSON.parse(raw);
+      // Korrektur (Okt. 2026): Die alte Standardeinstellung "RZS unter 100" war
+      // falsch herum – RZS über 100 bedeutet weniger Zellen. Gespeicherte
+      // Kriterien mit diesem alten Wert werden einmalig umgedreht.
+      const z = krit.find(c => c.id === "zellzahl");
+      if (z && z.de && z.de.field === "rzs" && z.de.op === "<"){
+        z.de.op = ">";
+        z.help = DEFAULT_CRITERIA.find(c => c.id === "zellzahl").help;
+        try { localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(krit)); } catch(e) {}
+      }
+      return krit;
+    }
   } catch(e) {}
   return DEFAULT_CRITERIA;
 }
@@ -629,7 +661,7 @@ function renderRefreshLine(){
 // was gerade auf GitHub Pages veröffentlicht ist - das klappt IMMER, weil es
 // kein externer Redirect ist, sondern ein simpler Re-Fetch der JSON-Dateien.
 // Eine wirklich neue Erfassung von den Bullenkatalog-Websites läuft nur über
-// den GitHub-Workflow (monatlich automatisch, oder manuell über den kleinen
+// den GitHub-Workflow (wöchentlich automatisch, oder manuell über den kleinen
 // Link unten - der bleibt bewusst unauffällig, weil er GitHub-Login braucht).
 async function onRefreshClick(){
   const btn = document.getElementById("refreshBtn");
@@ -651,7 +683,7 @@ async function onRefreshClick(){
 // Zeigt oben eine Warnung, wenn der letzte automatische Abruf eine Quelle
 // nicht holen konnte oder wenn überhaupt lange nichts mehr aktualisiert wurde.
 // So fällt ein stiller Ausfall auf, auch ohne in GitHub zu schauen.
-const MAX_ALTER_TAGE = 75;
+const MAX_ALTER_TAGE = 21;   // Abruf läuft wöchentlich – 3 Wochen ohne neue Daten = da stimmt was nicht
 
 function renderStatusAlert(){
   const el = document.getElementById("statusAlert");
@@ -671,7 +703,7 @@ function renderStatusAlert(){
   if (newest){
     const alter = Math.floor((Date.now() - new Date(newest).getTime()) / 86400000);
     if (alter > MAX_ALTER_TAGE){
-      meldungen.push(`<b>Die Daten sind ${alter} Tage alt.</b> Der automatische Abruf läuft normalerweise monatlich – ` +
+      meldungen.push(`<b>Die Daten sind ${alter} Tage alt.</b> Der automatische Abruf läuft normalerweise jeden Montag – ` +
         `bitte über „Jetzt aktualisieren“ prüfen, ob der Workflow noch läuft.`);
     }
   }
@@ -1009,6 +1041,9 @@ async function loadData(){
       `Konnte Daten von ${failed.join(", ")} nicht laden – Rest wird trotzdem angezeigt.`;
   }
   renderAll();
+  // Der Holstein/British-Blue-Teil liest aus den Bullendaten das Datum der
+  // letzten Zuchtwertschätzung (für die Update-Erinnerung)
+  document.dispatchEvent(new Event("bullen-geladen"));
 }
 
 document.getElementById("searchBox").addEventListener("input", e=>{ state.search = e.target.value; renderTable(); });
@@ -1095,9 +1130,39 @@ const ZWS_TAG = 10;
 const MONATSNAMEN = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 
 function zwsStichtage(jahr){ return ZWS_MONATE.map(m => new Date(jahr, m, ZWS_TAG)); }
-function letzterZwsStichtag(jetzt = new Date()){
+function letzterKalenderStichtag(jetzt = new Date()){
   const kandidaten = [...zwsStichtage(jetzt.getFullYear() - 1), ...zwsStichtage(jetzt.getFullYear())];
   return kandidaten.filter(d => d <= jetzt).pop();
+}
+
+// Das ECHTE Datum der letzten deutschen Zuchtwertschätzung steht in den
+// RBW-Bullendaten (jeder Bulle hat z.B. zws_datum "2026-08-11"). Die werden
+// jeden Montag neu abgerufen – so kommt die Erinnerung spätestens eine Woche
+// nach der tatsächlichen Schätzung statt nach einem festen Kalendertag.
+function zwsDatumAusBullen(){
+  if (typeof state === "undefined" || !state.bulls) return null;
+  const zaehler = {};
+  state.bulls.forEach(b => {
+    if (b.firma === "RBW" && b.rzg != null && /^\d{4}-\d{2}-\d{2}$/.test(b.zws_datum || ""))
+      zaehler[b.zws_datum] = (zaehler[b.zws_datum] || 0) + 1;
+  });
+  // Datum, das bei vielen Bullen steht (einzelne Ausreißer ignorieren)
+  const daten = Object.keys(zaehler).filter(d => zaehler[d] >= 5).sort();
+  if (!daten.length) return null;
+  const d = new Date(daten[daten.length - 1] + "T00:00:00");
+  return d <= new Date() ? d : null;
+}
+
+const TAG_MS = 86400000;
+function letzterZwsStichtag(jetzt = new Date()){
+  const kalender = letzterKalenderStichtag(jetzt);
+  const echt = zwsDatumAusBullen();
+  if (!echt) return kalender;                                   // keine Bullendaten → Kalender
+  if (echt >= kalender - 30 * TAG_MS) return echt;              // Bullendaten kennen die aktuelle Schätzung
+  // Bullendaten zeigen noch die vorige Schätzung: bis 14 Tage nach dem
+  // Kalendertermin auf den nächsten Abruf warten, danach (Abruf kaputt?)
+  // sicherheitshalber doch nach Kalender erinnern.
+  return (jetzt - kalender > 14 * TAG_MS) ? kalender : echt;
 }
 function naechsterZwsStichtag(jetzt = new Date()){
   return [...zwsStichtage(jetzt.getFullYear()), ...zwsStichtage(jetzt.getFullYear() + 1)].find(d => d > jetzt);
@@ -1109,7 +1174,29 @@ function herdeVeraltet(){
 const GRENZ_ANTEIL = 0.10;          // die nächsten ~10 % unter der Holstein-Grenze = "Grenzfall, im Lely prüfen"
 
 let herde = ladeHerde();            // {datei, hochgeladen, header, rows, mapping:{ohr,rzg,milch,name}}
-let bsSettings = ladeBsSettings();  // {quote, gewichtMilch}
+// Kriterien für die Kühe – dieselben wie in der Bullensuche, aber gewichtet
+// (Prozent am Gesamturteil) statt mit Mindestwerten. Alle Werte: höher = besser
+// (auch RZS: über 100 = weniger Zellen). "erkenne" bewertet, wie gut ein
+// Spaltenname der Netrind-Liste passt (0 = gar nicht).
+const KUH_KRITERIEN = [
+  {id: "rzg",     label: "Gesamtzuchtwert",            netrind: "RZG",    standard: 20,
+   erkenne: h => /^\s*g?rzg\s*$/i.test(h) ? 3 : (/rzg/i.test(h) ? 1 : 0)},
+  {id: "milch",   label: "Milchmenge",                 netrind: "M-kg",   standard: 40,
+   erkenne: h => /^\s*m[\s.\-]*kg\s*$/i.test(h) ? 3 : (/milch/i.test(h) ? 1 : 0)},
+  {id: "stl",     label: "Strichlänge",                netrind: "stl",    standard: 5,
+   erkenne: h => /^\s*stl\s*$/i.test(h) ? 3 : (/strichl/i.test(h) ? 2 : 0)},
+  {id: "staerke", label: "Stärke",                     netrind: "Stärke", standard: 5,
+   erkenne: h => /st(ä|ae)rke/i.test(h) ? 3 : 0},
+  {id: "rzd",     label: "Melkbarkeit",                netrind: "RZD",    standard: 5,
+   erkenne: h => /^\s*rzd\s*$/i.test(h) ? 3 : (/melkbar/i.test(h) ? 1 : 0)},
+  {id: "rzr",     label: "Töchterfruchtbarkeit",       netrind: "RZR",    standard: 5,
+   erkenne: h => /^\s*rzr\s*$/i.test(h) ? 3 : (/fruchtb/i.test(h) ? 1 : 0)},
+  {id: "rzs",     label: "Zellzahl / Eutergesundheit", netrind: "RZS",    standard: 20,
+   erkenne: h => /^\s*rzs\s*$/i.test(h) ? 3 : (/zellz|euterges/i.test(h) ? 1 : 0)},
+];
+const STANDARD_GEWICHTE = Object.fromEntries(KUH_KRITERIEN.map(k => [k.id, k.standard]));
+
+let bsSettings = ladeBsSettings();  // {quote, gewichte:{rzg, milch, …}}
 
 function ladeHerde(){
   try { const raw = localStorage.getItem(HERDE_KEY); return raw ? JSON.parse(raw) : null; }
@@ -1126,8 +1213,12 @@ function speichereHerde(){
   }
 }
 function ladeBsSettings(){
-  try { return Object.assign({quote:25, gewichtMilch:50}, JSON.parse(localStorage.getItem(BS_SETTINGS_KEY) || "{}")); }
-  catch(e) { return {quote:25, gewichtMilch:50}; }
+  let gespeichert = {};
+  try { gespeichert = JSON.parse(localStorage.getItem(BS_SETTINGS_KEY) || "{}"); } catch(e) {}
+  return {
+    quote: gespeichert.quote || 25,
+    gewichte: Object.assign({}, STANDARD_GEWICHTE, gespeichert.gewichte || {}),
+  };
 }
 function speichereBsSettings(){
   try { localStorage.setItem(BS_SETTINGS_KEY, JSON.stringify(bsSettings)); } catch(e) {}
@@ -1211,8 +1302,170 @@ function ladeSheetJS(){
   });
 }
 
+function ladePdfJs(){
+  const basis = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+  return new Promise((res, rej) => {
+    if (window.pdfjsLib) return res(window.pdfjsLib);
+    const s = document.createElement("script");
+    s.src = basis + "pdf.min.js";
+    s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = basis + "pdf.worker.min.js"; res(window.pdfjsLib); };
+    s.onerror = () => rej(new Error("Der PDF-Leser konnte nicht geladen werden – Internetverbindung prüfen."));
+    document.head.appendChild(s);
+  });
+}
+
+// Netrind-PDF (Stall-Liste → alle auswählen → Drucker-Symbol links von "ZWS"):
+// eine Tabelle über viele Querformat-Seiten, Kopfzeile auf jeder Seite.
+// Zu lange Zellen bricht Netrind auf eine zweite Zeile um – "DE 08 178" /
+// "56178", "+50" / "4" (= +504), "Kuhkal" / "b". Die Teile werden hier pro
+// Spalte wieder zusammengesetzt. Erkannt wird eine Tabellenzeile daran, dass
+// der Abstand zur nächsten Textzeile größer ist als innerhalb einer Zelle.
+const BUCHSTABE_ENDE = /[A-Za-zÄÖÜäöüß]$/, BUCHSTABE_ANFANG = /^[A-Za-zÄÖÜäöüß]/;
+
+function zelleZusammensetzen(teile, breite){
+  // teile: [{s, x, w, zeile}] einer Spalte, in Lesereihenfolge
+  let text = "", vorher = null;
+  for (const t of teile){
+    if (!vorher){ text = t.s; vorher = t; continue; }
+    let leer;
+    if (t.zeile === vorher.zeile){
+      leer = t.x - (vorher.x + vorher.w) > 1;            // Lücke in derselben Zeile = Leerzeichen
+    } else {
+      // Umbruch an einem Leerzeichen ("Kuh" / "aktiv") lässt rechts viel Platz,
+      // ein Umbruch mitten im Wort ("Kuhkal" / "b") füllt die Zelle fast ganz.
+      const zeichen = vorher.w / Math.max(1, vorher.s.length);
+      const platz = breite - vorher.w;
+      leer = (BUCHSTABE_ENDE.test(text) && BUCHSTABE_ANFANG.test(t.s) && platz > 2.5 * zeichen)
+        || (/\.$/.test(text) && /^[A-ZÄÖÜ]/.test(t.s))      // "Stall-Nr." + "Mutter"
+        || (BUCHSTABE_ENDE.test(text) && /^\d/.test(t.s));   // "Datum" + "1.ZW"
+    }
+    text += (leer ? " " : "") + t.s;
+    vorher = t;
+  }
+  return text;
+}
+
+// Textstücke einer PDF-Seite MIT Position, eins pro Schreibbefehl der PDF.
+// Bewusst nicht page.getTextContent(): das fasst nebeneinanderliegende Zellen
+// zu einem Stück zusammen ("1640 +12" = RZ€ und M-kg), bei der Netrind-PDF
+// sogar die ganze Tabelle zu einem einzigen Text ohne Zellgrenzen. Netrind
+// schreibt dagegen jede Zellzeile mit einem eigenen Befehl – die lesen wir hier
+// direkt aus der Operatorliste und rechnen ihre Position selbst aus.
+async function pdfStuecke(page, pdfjs){
+  const O = pdfjs.OPS, M = pdfjs.Util.transform;
+  const vp = page.getViewport({scale: 1});        // enthält die Drehung der Seite (Querformat)
+  const ol = await page.getOperatorList();
+  let ctm = [1, 0, 0, 1, 0, 0], stapel = [], tm = ctm.slice(), lm = ctm.slice();
+  let fs = 1, leading = 0, cs = 0, ws = 0, hs = 1;
+  const out = [];
+  for (let i = 0; i < ol.fnArray.length; i++){
+    const a = ol.argsArray[i];
+    switch (ol.fnArray[i]){
+      case O.save: stapel.push(ctm.slice()); break;
+      case O.restore: ctm = stapel.pop() || ctm; break;
+      case O.transform: ctm = M(ctm, a); break;
+      case O.beginText: tm = [1, 0, 0, 1, 0, 0]; lm = tm.slice(); break;
+      case O.setFont: fs = a[1]; break;
+      case O.setLeading: leading = a[0]; break;
+      case O.setCharSpacing: cs = a[0]; break;
+      case O.setWordSpacing: ws = a[0]; break;
+      case O.setHScale: hs = a[0] / 100; break;
+      case O.setTextMatrix: tm = a.slice(0, 6); lm = tm.slice(); break;
+      case O.moveText: lm = M(lm, [1, 0, 0, 1, a[0], a[1]]); tm = lm.slice(); break;
+      case O.setLeadingMoveText: leading = -a[1]; lm = M(lm, [1, 0, 0, 1, a[0], a[1]]); tm = lm.slice(); break;
+      case O.nextLine: lm = M(lm, [1, 0, 0, 1, 0, -leading]); tm = lm.slice(); break;
+      case O.showText: case O.showSpacedText: {
+        let s = "", w = 0;
+        for (const g of a[0]){
+          if (typeof g === "number"){ w -= g / 1000 * fs; continue; }
+          if (!g) continue;
+          s += g.unicode;
+          w += g.width / 1000 * fs + cs + (g.isSpace ? ws : 0);
+        }
+        w *= hs;
+        const p = M(vp.transform, M(ctm, tm));
+        if (s.trim()) out.push({x: p[4], y: p[5], w, s: s.trim()});
+        tm = M(tm, [1, 0, 0, 1, w, 0]);
+        break;
+      }
+    }
+  }
+  return {stuecke: out.sort((a, b) => a.y - b.y || a.x - b.x), breite: vp.width};
+}
+
+async function lesePDF(buf){
+  const pdfjs = await ladePdfJs();
+  const doc = await pdfjs.getDocument({data: new Uint8Array(buf)}).promise;
+  let kopf = null;                 // Spaltennamen von Seite 1
+  const daten = [];
+  for (let p = 1; p <= doc.numPages; p++){
+    const page = await doc.getPage(p);
+    const {stuecke, breite: seitenBreite} = await pdfStuecke(page, pdfjs);
+    const vp = {width: seitenBreite};
+
+    // Textzeilen (gleiche Höhe ±2)
+    const linien = [];
+    for (const st of stuecke){
+      const l = linien[linien.length - 1];
+      if (l && Math.abs(st.y - l.y) <= 2) l.teile.push(st); else linien.push({y: st.y, teile: [st]});
+    }
+    linien.forEach((l, i) => l.teile.forEach(t => t.zeile = i));
+    // Zeilenabstand INNERHALB einer umgebrochenen Zelle = kleinster Abstand, der
+    // häufig vorkommt. (Nicht einfach der kleinste: im Seitenkopf stehen z.B.
+    // Datum und Betriebsname nur 3 pt versetzt – das kommt aber nur einmal vor.)
+    const abstaende = linien.slice(1).map((l, i) => Math.round((l.y - linien[i].y) * 2) / 2).filter(d => d > 2);
+    if (!abstaende.length) continue;
+    const haeufigkeit = {};
+    abstaende.forEach(d => haeufigkeit[d] = (haeufigkeit[d] || 0) + 1);
+    const kandidaten = Object.keys(haeufigkeit).map(Number).sort((a, b) => a - b);
+    const zellAbstand = kandidaten.find(d => haeufigkeit[d] >= Math.max(3, abstaende.length * 0.1)) ?? kandidaten[0];
+
+    // Tabellenzeilen = Folgen von Textzeilen mit Zell-Zeilenabstand
+    const bloecke = [];
+    linien.forEach((l, i) => {
+      if (i && l.y - linien[i - 1].y <= zellAbstand * 1.3) bloecke[bloecke.length - 1].push(l);
+      else bloecke.push([l]);
+    });
+
+    // Kopfzeile dieser Seite → Spaltenanfänge
+    const kopfBlock = bloecke.find(b => b.some(l => l.teile.some(t => /^ohrmarke$/i.test(t.s))));
+    if (!kopfBlock) continue;
+    const anfaenge = kopfBlock[0].teile.map(t => t.x);
+    const breiten = anfaenge.map((x, i) => (i + 1 < anfaenge.length ? anfaenge[i + 1] : vp.width - 20) - x);
+    const spalteVon = x => {
+      let s = 0;
+      for (let i = 0; i < anfaenge.length; i++) if (anfaenge[i] <= x + 3) s = i;
+      return s;
+    };
+    const zerlege = block => {
+      const proSpalte = anfaenge.map(() => []);
+      block.flatMap(l => l.teile).forEach(t => proSpalte[spalteVon(t.x)].push(t));
+      return proSpalte.map((teile, i) => zelleZusammensetzen(teile, breiten[i]));
+    };
+    const seitenKopf = zerlege(kopfBlock);
+    if (!kopf) kopf = seitenKopf;
+    // Spalten dieser Seite den Spalten von Seite 1 zuordnen (über den Namen)
+    const ziel = seitenKopf.map(n => kopf.indexOf(n));
+
+    for (const block of bloecke){
+      if (block === kopfBlock) continue;
+      const zellen = zerlege(block);
+      const iNr = seitenKopf.indexOf("#"), iOhr = seitenKopf.findIndex(n => /^ohrmarke$/i.test(n));
+      const key = iOhr >= 0 ? ohrKey(zellen[iOhr]) : null;
+      if (!key || (iNr >= 0 && !/^\d+$/.test(zellen[iNr]))) continue;   // Titel, Seitenzahl, Durchschnittszeile
+      zellen[iOhr] = ohrAnzeige(key);
+      const zeile = kopf.map(() => "");
+      zellen.forEach((z, i) => { if (ziel[i] >= 0) zeile[ziel[i]] = z; });
+      daten.push(zeile);
+    }
+  }
+  if (!kopf) throw new Error("In der PDF wurde keine Tabelle mit einer Spalte „Ohrmarke“ gefunden.");
+  return [kopf, ...daten];
+}
+
 async function leseTabelle(file){
   const buf = await file.arrayBuffer();
+  if (/\.pdf$/i.test(file.name)) return lesePDF(buf);
   if (/\.xlsx?$/i.test(file.name)){
     const XLSX = await ladeSheetJS();
     const wb = XLSX.read(buf, {type: "array"});
@@ -1265,61 +1518,77 @@ function erkenneSpalten(header, rows){
     return bi;
   };
   const ohr = besteSpalte((h, i) => (RX_OHR.test(h) ? 2 : 0) + anteil(i, v => ohrKey(v) !== null));
-  const rzg = besteSpalte((h, i) => {
-    if (!/rzg/i.test(h)) return 0;
-    let s = /^\s*g?rzg\s*$/i.test(h) ? 3 : 1;
-    if (/sich|%|rang|b-?wert/i.test(h)) s -= 2;              // "RZG Sicherheit" o.ä. ist nicht der Wert selbst
-    s += anteil(i, v => { const n = zahl(v); return n !== null && n >= 50 && n <= 180; });
-    return s;
-  });
-  const milch = besteSpalte((h, i) => {
-    // Netrind (Stall-Liste "Zuchtwerte") nennt die Spalte "M-kg"
-    const mkg = /^\s*m[\s.\-]*kg\s*$/i.test(h);
-    if (!mkg && !/milch/i.test(h)) return 0;
-    let s = mkg ? 3 : 1;
-    if (/kg/i.test(h)) s += 1;
-    if (/zw|zucht/i.test(h)) s += 1;
-    if (/fett|eiw|%|sich/i.test(h)) s -= 2;
-    s += anteil(i, v => zahl(v) !== null);
-    return s;
-  });
   const name = besteSpalte(h => /^\s*(tier)?name\s*$/i.test(h) ? 2 : (/name/i.test(h) ? 1 : 0));
-  return {ohr, rzg, milch, name};
+  const mapping = {ohr, name};
+  for (const k of KUH_KRITERIEN){
+    mapping[k.id] = besteSpalte((h, i) => {
+      let s = k.erkenne(h);
+      if (!s) return 0;
+      // "RZG Sicherheit", "Milch Fett %" o.ä. sind nicht der Zuchtwert selbst
+      if (s < 3 && /sich|%|rang|b-?wert|fett|eiw/i.test(h)) s -= 2;
+      return s + anteil(i, v => zahl(v) !== null);
+    });
+  }
+  return mapping;
+}
+
+// Ältere gespeicherte Listen kannten nur RZG + Milch: fehlende Kriterien-
+// Spalten aus der gespeicherten Kopfzeile nachträglich erkennen.
+function ergaenzeMapping(h){
+  if (!h) return;
+  const fehlt = KUH_KRITERIEN.filter(k => !(k.id in h.mapping));
+  if (!fehlt.length) return;
+  const neu = erkenneSpalten(h.header, h.rows);
+  fehlt.forEach(k => h.mapping[k.id] = neu[k.id]);
 }
 
 // --- Herde: Index berechnen + Platz in der Herde -----------------------
 function herdenTiere(){
   if (!herde) return [];
   const m = herde.mapping;
-  const zelle = (r, i) => (i >= 0 ? r[i] : "");
+  const zelle = (r, i) => (i >= 0 && i !== undefined ? r[i] : "");
   return herde.rows.map(r => ({
     key: ohrKey(zelle(r, m.ohr)),
     name: zelle(r, m.name) || "",
-    rzg: m.rzg >= 0 ? zahl(zelle(r, m.rzg)) : null,
-    milch: m.milch >= 0 ? zahl(zelle(r, m.milch)) : null,
+    werte: Object.fromEntries(KUH_KRITERIEN.map(k => [k.id, m[k.id] >= 0 ? zahl(zelle(r, m[k.id])) : null])),
   })).filter(t => t.key);
 }
 
-// RZG und Milch-kg haben völlig verschiedene Skalen (≈100 vs. ≈±1000 kg).
-// Deshalb wird jeder Wert erst relativ zur eigenen Herde ausgedrückt
-// (Abstand vom Herdenmittel in Standardabweichungen) und dann gewichtet.
+// Kriterien, die gerade zählen: Spalte vorhanden UND Gewicht > 0
+function aktiveKriterien(){
+  if (!herde) return [];
+  return KUH_KRITERIEN.filter(k => herde.mapping[k.id] >= 0 && (bsSettings.gewichte[k.id] || 0) > 0);
+}
+
+// Die Zuchtwerte haben völlig verschiedene Skalen (RZ ≈100, M-kg ≈±1000 kg).
+// Deshalb wird jeder Wert erst relativ zur eigenen Herde ausgedrückt (Abstand
+// vom Herdenmittel in Standardabweichungen) und dann nach den Prozent-Anteilen
+// gewichtet. Fehlt einer Kuh ein Wert, zählen die übrigen anteilig mehr.
+// Index = 100 + 12 × Ergebnis, also wie ein RZ: 100 = Herdenschnitt,
+// 112 = eine Standardabweichung besser.
 function bewerteHerde(tiere){
-  const gM = bsSettings.gewichtMilch / 100, gR = 1 - gM;
-  const stat = feld => {
-    const v = tiere.map(t => t[feld]).filter(x => x !== null);
-    if (!v.length) return null;
+  const krit = aktiveKriterien();
+  const stat = {};
+  for (const k of krit){
+    const v = tiere.map(t => t.werte[k.id]).filter(x => x !== null);
+    if (!v.length) continue;
     const mw = v.reduce((a, b) => a + b, 0) / v.length;
     const sd = Math.sqrt(v.reduce((a, b) => a + (b - mw) ** 2, 0) / v.length) || 1;
-    return {mw, sd};
-  };
-  const sR = stat("rzg"), sM = stat("milch");
+    stat[k.id] = {mw, sd};
+  }
   const bewertet = [];
   for (const t of tiere){
-    const zR = (t.rzg !== null && sR) ? (t.rzg - sR.mw) / sR.sd : null;
-    const zM = (t.milch !== null && sM) ? (t.milch - sM.mw) / sM.sd : null;
-    if (zR === null && zM === null) continue;
-    // Fehlt einer der beiden Werte, zählt nur der vorhandene
-    t.index = (zR !== null && zM !== null) ? gR * zR + gM * zM : (zR !== null ? zR : zM);
+    let summe = 0, gewicht = 0;
+    for (const k of krit){
+      const v = t.werte[k.id];
+      if (v === null || !stat[k.id]) continue;
+      const g = bsSettings.gewichte[k.id];
+      summe += g * (v - stat[k.id].mw) / stat[k.id].sd;
+      gewicht += g;
+    }
+    if (!gewicht) continue;
+    t.index = summe / gewicht;
+    t.indexRZ = Math.round(100 + 12 * t.index);
     bewertet.push(t);
   }
   bewertet.sort((a, b) => b.index - a.index);
@@ -1361,8 +1630,9 @@ function renderZwsHinweis(){
     Die gespeicherte Liste ist vom ${fmtDatum(herde.hochgeladen)} und enthält die neuen Zuchtwerte noch nicht. Die Auswertung läuft solange mit den alten Werten weiter.
     <ol>
       <li><a href="https://www.netrind.de/" target="_blank" rel="noopener">netrind.de ↗</a> öffnen und anmelden</li>
-      <li>Stall-Liste „Zuchtwerte wbl“ öffnen, alles markieren (⌘A / Strg+A) und kopieren</li>
-      <li>Unten in Schritt 1 ins Feld „oder einfach kopieren“ einfügen – die alte Liste wird automatisch ersetzt</li>
+      <li>Stall-Liste „Zuchtwerte wbl“ öffnen, oben links „alle auswählen“ anhaken</li>
+      <li>Drucker-Symbol neben „Buchen“ (links von „ZWS“) klicken → PDF herunterladen</li>
+      <li>Die PDF unten in Schritt 1 ins Feld ziehen – die alte Liste wird automatisch ersetzt</li>
     </ol>
     <button class="btn primary small" type="button" id="zwsUploadBtn">Neue Liste jetzt hochladen</button>
   </div></div>`;
@@ -1371,27 +1641,31 @@ function renderZwsHinweis(){
 
 function renderHerdeStatus(){
   renderZwsHinweis();
+  renderGewichte();             // zeigt pro Kriterium, welche Netrind-Spalte zählt
   const el = document.getElementById("herdeStatus");
   document.getElementById("herdeLoeschen").hidden = !herde;
   document.getElementById("herdeDropTitel").textContent = herde ? "Neue Netrind-Liste hier hineinziehen" : "Netrind-Liste hier hineinziehen";
   document.getElementById("herdeAnleitung").open = !herde || herdeVeraltet();
   if (!herde){
     el.className = "bs-status";
-    el.innerHTML = "Noch keine Netrind-Liste geladen. In Netrind die Tierliste mit Zuchtwerten als CSV oder Excel exportieren und hier hochladen – Kälber dürfen mit drin sein.";
+    el.innerHTML = "Noch keine Netrind-Liste geladen. Am einfachsten: in Netrind die PDF herunterladen (Anleitung unten) und hier hineinziehen – Kälber dürfen mit drin sein.";
     document.getElementById("herdeMapping").hidden = true;
     return;
   }
   const tiere = herdenTiere();
-  const mitRzg = tiere.filter(t => t.rzg !== null).length;
-  const mitMilch = tiere.filter(t => t.milch !== null).length;
+  const mitRzg = tiere.filter(t => t.werte.rzg !== null).length;
+  const gefunden = KUH_KRITERIEN.filter(k => herde.mapping[k.id] >= 0);
+  const fehlend = KUH_KRITERIEN.filter(k => !(herde.mapping[k.id] >= 0));
   const alt = herdeVeraltet();
   el.className = "bs-status " + (alt || !mitRzg ? "warn" : "ok");
   el.innerHTML =
-    `<b>${alt ? "⚠ Veraltet" : "✓ Aktuell"}: ${tiere.length} Tiere</b> · ${mitRzg} mit RZG · ${mitMilch} mit Milch<br>` +
+    `<b>${alt ? "⚠ Veraltet" : "✓ Aktuell"}: ${tiere.length} Tiere, ${herde.header.filter(Boolean).length} Spalten</b> (alle gespeichert)<br>` +
+    `Kriterien gefunden: ${gefunden.map(k => esc(herde.header[herde.mapping[k.id]])).join(", ") || "keine"}` +
+    (fehlend.length ? ` · nicht in der Liste: ${fehlend.map(k => k.label).join(", ")}` : "") + `<br>` +
     `Hochgeladen am ${fmtDatum(herde.hochgeladen)} („${esc(herde.datei)}“)` +
     (alt
       ? `<br>Enthält die Zuchtwertschätzung ${zwsName(letzterZwsStichtag())} noch nicht.`
-      : `<br>Nächstes Update fällig ab ${fmtDatum(naechsterZwsStichtag().toISOString())} (Zuchtwertschätzung ${zwsName(naechsterZwsStichtag())}).`) +
+      : `<br>Nächste Zuchtwertschätzung voraussichtlich Anfang ${zwsName(naechsterZwsStichtag())} – die Seite erinnert dann automatisch.`) +
     (!mitRzg ? `<br><b>Keine RZG-Werte erkannt</b> – unten die richtige Spalte auswählen.` : "") +
     ` · <a href="#" id="spaltenLink">Spalten prüfen</a>`;
   document.getElementById("spaltenLink").addEventListener("click", e => {
@@ -1406,7 +1680,8 @@ function renderHerdeStatus(){
 // weil wir den genauen Aufbau des Netrind-Exports nicht garantieren können.
 function renderMapping(){
   const box = document.getElementById("herdeMapping");
-  const felder = [["ohr", "Ohrmarke", true], ["rzg", "RZG", true], ["milch", "Milch (kg)", true], ["name", "Name", false]];
+  const felder = [["ohr", "Ohrmarke", true], ["name", "Name", false],
+    ...KUH_KRITERIEN.map(k => [k.id, `${k.label} (${k.netrind})`, false])];
   const beispiel = i => {
     if (i < 0) return "";
     const v = herde.rows.map(r => r[i]).filter(x => x)[0];
@@ -1464,32 +1739,74 @@ function werteAus(){
 
   const zaehle = r => zeilen.filter(z => z.rec === r).length;
   const chip = (cls, anzahl, text) => anzahl ? `<span class="rec ${cls}">${anzahl} × ${text}</span>` : "";
+  const krit = aktiveKriterien();
+  const gesamt = krit.reduce((a, k) => a + bsSettings.gewichte[k.id], 0);
   summary.innerHTML =
     chip("ho", zaehle("ho"), "Holstein") +
     chip("grenz", zaehle("grenz"), "Grenzfall") +
     chip("bb", zaehle("bb"), "British Blue") +
     chip("nf", zaehle("nf") + zaehle("nz"), "ohne Zuchtwert") +
-    `<span class="bs-erkannt" style="flex-basis:100%">Holstein = die besten ${bsSettings.quote} % dieser Liste (${nHO} von ${gefunden.length} Kühen mit Zuchtwert) · Grenzfall = knapp darunter, im Lely prüfen · Zuchtwerte aus der Netrind-Liste vom ${fmtDatum(herde.hochgeladen)}</span>`;
+    `<span class="bs-erkannt" style="flex-basis:100%">Holstein = die besten ${bsSettings.quote} % dieser Liste (${nHO} von ${gefunden.length} Kühen mit Zuchtwert) · Grenzfall = knapp darunter, im Lely prüfen<br>` +
+    `Gewichtung: ${krit.map(k => `${k.label} ${Math.round(bsSettings.gewichte[k.id] / gesamt * 100)} %`).join(" · ")} · Zuchtwerte aus der Netrind-Liste vom ${fmtDatum(herde.hochgeladen)}</span>`;
+
+  // Spalten: feste + je ein aktives Kriterium (mit dem Spaltennamen aus Netrind)
+  document.getElementById("bsKopf").innerHTML =
+    `<th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th>` +
+    `<th class="krit" title="Gewichteter Gesamtwert, relativ zur eigenen Herde: 100 = Herdendurchschnitt">Index</th>` +
+    krit.map(k => `<th class="krit" title="${esc(k.label)} – zählt ${Math.round(bsSettings.gewichte[k.id] / gesamt * 100)} %">${esc(herde.header[herde.mapping[k.id]] || k.netrind)}</th>`).join("") +
+    `<th>Platz in Netrind-Liste</th>`;
 
   let nr = 0;
   body.innerHTML = zeilen.map(z => {
     const t = z.t;
     const top = t ? Math.max(1, Math.round(t.anteil * 100)) : null;
+    const wert = k => {
+      const v = t ? t.werte[k.id] : null;
+      return v === null ? "–" : (k.id === "milch" ? vorzeichen(v) : v.toLocaleString("de-DE"));
+    };
     return `<tr class="${z.rec}">
       <td class="num">${t ? ++nr : ""}</td>
       <td class="num">${ohrAnzeige(z.key)}</td>
       <td><span class="rec ${z.rec}">${REC_TEXT[z.rec]}</span></td>
       <td>${t ? esc(t.name) : ""}</td>
-      <td class="num">${t && t.rzg !== null ? t.rzg : "–"}</td>
-      <td class="num">${t ? vorzeichen(t.milch) : "–"}</td>
+      <td class="num krit"><b>${t ? t.indexRZ : "–"}</b></td>
+      ${krit.map(k => `<td class="num krit">${wert(k)}</td>`).join("")}
       <td class="num">${t ? `${t.platz} von ${n} <span class="bs-erkannt">(Top ${top} %)</span>` : ""}</td>
     </tr>`;
   }).join("");
 }
 
-function renderGewichtText(){
-  const m = bsSettings.gewichtMilch;
-  document.getElementById("gewichtText").textContent = `RZG ${100 - m} % · Milch ${m} %`;
+// Gewichtungs-Liste: pro Kriterium ein Prozentfeld. Summe muss nicht exakt 100
+// sein – gerechnet wird immer anteilig. Kriterien ohne Spalte in der
+// Netrind-Liste sind ausgegraut und zählen nicht (ihr Anteil verteilt sich).
+function renderGewichte(){
+  const liste = document.getElementById("gewichtListe");
+  const g = bsSettings.gewichte;
+  liste.innerHTML = KUH_KRITERIEN.map(k => {
+    const spalte = herde && herde.mapping[k.id] >= 0 ? herde.header[herde.mapping[k.id]] : null;
+    const info = !herde ? `Netrind: ${k.netrind}` : (spalte ? `Spalte: ${esc(spalte)}` : "nicht in der Netrind-Liste");
+    return `<label class="bs-gew-zeile ${herde && !spalte ? "aus" : ""}">
+      <span>${esc(k.label)}<br><span class="sp ${herde && !spalte ? "fehlt" : ""}">${info}</span></span>
+      <input type="number" min="0" max="100" step="1" inputmode="numeric" data-gewicht="${k.id}" value="${g[k.id] ?? 0}">
+      <span>%</span>
+    </label>`;
+  }).join("");
+  liste.querySelectorAll("[data-gewicht]").forEach(inp => inp.addEventListener("input", () => {
+    bsSettings.gewichte[inp.dataset.gewicht] = Math.max(0, Math.min(100, parseFloat(inp.value) || 0));
+    speichereBsSettings(); renderGewichtSumme(); werteAus();
+  }));
+  renderGewichtSumme();
+}
+
+function renderGewichtSumme(){
+  const summe = KUH_KRITERIEN.reduce((a, k) => a + (bsSettings.gewichte[k.id] || 0), 0);
+  const ohneSpalte = herde ? KUH_KRITERIEN.filter(k => !(herde.mapping[k.id] >= 0) && bsSettings.gewichte[k.id] > 0) : [];
+  document.getElementById("gewichtSumme").innerHTML =
+    (summe === 100 ? `Summe: 100 %` : `<span class="warn">Summe: ${summe} %</span> – wird anteilig auf 100 % umgerechnet`) +
+    (ohneSpalte.length ? `<br>${ohneSpalte.map(k => k.label).join(", ")} fehlt in der Netrind-Liste – der Anteil verteilt sich auf die anderen.` : "");
+  const kurz = KUH_KRITERIEN.filter(k => bsSettings.gewichte[k.id] > 0).sort((a, b) => bsSettings.gewichte[b.id] - bsSettings.gewichte[a.id]).slice(0, 3);
+  document.getElementById("gewichtKurz").textContent =
+    `Holstein ${bsSettings.quote} % · ${kurz.map(k => `${k.label} ${bsSettings.gewichte[k.id]} %`).join(" · ")} …`;
 }
 
 // --- Ereignisse --------------------------------------------------------
@@ -1619,20 +1936,21 @@ document.getElementById("lelyInput").addEventListener("input", () => {
 document.getElementById("auswertenBtn").addEventListener("click", werteAus);
 
 const quoteInput = document.getElementById("quoteInput");
-const gewichtInput = document.getElementById("gewichtInput");
 quoteInput.value = bsSettings.quote;
-gewichtInput.value = bsSettings.gewichtMilch;
 quoteInput.addEventListener("change", () => {
   const q = Math.min(95, Math.max(5, parseInt(quoteInput.value, 10) || 25));
   quoteInput.value = q;
-  bsSettings.quote = q; speichereBsSettings(); werteAus();
+  bsSettings.quote = q; speichereBsSettings(); renderGewichtSumme(); werteAus();
 });
-gewichtInput.addEventListener("input", () => {
-  bsSettings.gewichtMilch = parseInt(gewichtInput.value, 10);
-  speichereBsSettings(); renderGewichtText(); werteAus();
+document.getElementById("gewichtReset").addEventListener("click", () => {
+  bsSettings.gewichte = {...STANDARD_GEWICHTE};
+  speichereBsSettings(); renderGewichte(); werteAus();
 });
 
-renderGewichtText();
+ergaenzeMapping(herde);   // ältere gespeicherte Listen um die neuen Kriterien-Spalten ergänzen
+// Sobald die Bullendaten da sind, kennt die Seite das echte Datum der letzten
+// Zuchtwertschätzung → Erinnerung neu prüfen
+document.addEventListener("bullen-geladen", renderHerdeStatus);
 renderHerdeStatus();
 </script>
 </body>

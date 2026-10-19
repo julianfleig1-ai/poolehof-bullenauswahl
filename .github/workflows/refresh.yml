@@ -2,9 +2,11 @@ name: Bullendaten aktualisieren
 
 on:
   schedule:
-    # Am 1. jedes Monats, 06:00 UTC (Puffer für die ~quartalsweisen
-    # Zuchtwertschätzungen bei WWS/RBW/Prismagen/CRI)
-    - cron: "0 6 1 * *"
+    # Jeden Montag, 06:00 UTC. Wöchentlich statt monatlich, damit neue Bullen
+    # und vor allem eine neue Zuchtwertschätzung (Anfang April/August/Dezember)
+    # spätestens nach einer Woche in der App sind – die App erinnert dann
+    # automatisch daran, die Netrind-Liste der eigenen Kühe neu hochzuladen.
+    - cron: "0 6 * * 1"
   workflow_dispatch: {}  # manueller "Run workflow"-Knopf im Actions-Tab
 
 permissions:
