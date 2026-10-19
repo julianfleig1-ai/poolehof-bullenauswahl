@@ -38,6 +38,8 @@
   }
 }
 *{box-sizing:border-box}
+/* "hidden" muss auch gegen display:flex/grid aus den Klassen gewinnen */
+[hidden]{display:none!important}
 html{font-size:16px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5}
 h1,h2,h3{font-family:"Newsreader",Georgia,serif;text-wrap:balance;margin:0}
@@ -201,6 +203,74 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .dlg-foot a:hover{background:var(--surface-2)}
 .dlg-hint{font-size:12px;color:var(--ink-dim);padding:0 22px 16px;line-height:1.45}
 @media (max-width:560px){.dlg-head{padding:16px 16px 13px}.dlg-body{padding:4px 16px 16px}.dlg-foot{padding:12px 16px 16px}.dlg-hint{padding:0 16px 12px}}
+
+/* --- Tabs: zwei getrennte Werkzeuge --- */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 20px}
+.tab{display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;padding:14px 16px;border-radius:13px;
+  border:1px solid var(--border);background:var(--surface);color:var(--ink);transition:border-color .12s,background .12s}
+.tab:hover{border-color:var(--border-strong)}
+.tab .tab-icon{font-size:26px;line-height:1;flex:none}
+.tab b{display:block;font-size:15.5px;font-weight:600}
+.tab small{display:block;font-size:12.5px;color:var(--ink-dim);margin-top:1px}
+.tab[aria-selected="true"]{border:2px solid var(--accent);background:var(--accent-soft);padding:13px 15px}
+.tab[aria-selected="true"] b{color:var(--accent)}
+@media (max-width:560px){.tab{padding:11px 12px;gap:9px}.tab[aria-selected="true"]{padding:10px 11px}.tab .tab-icon{font-size:22px}.tab b{font-size:14px}.tab small{display:none}}
+
+/* --- Holstein oder British Blue --- */
+.bs-steps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;align-items:start}
+@media (max-width:900px){.bs-steps{grid-template-columns:1fr}}
+.bs-steps > *{min-width:0}
+.bs-card{padding:18px 18px 16px}
+.bs-step-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.bs-num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.bs-step-head h2{font-size:18px;font-weight:600}
+.bs-help{margin:3px 0 0;font-size:13px;color:var(--ink-dim)}
+.bs-status{border-radius:10px;padding:11px 13px;font-size:13.5px;margin-bottom:12px;background:var(--surface-2);border:1px solid var(--border)}
+.bs-status.ok{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.bs-status.warn{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+.bs-status b{font-weight:600}
+.bs-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.bs-upload{display:inline-flex;align-items:center}
+.bs-privacy{font-size:12px;color:var(--ink-dim);margin:12px 0 0}
+#lelyInput{width:100%;min-height:120px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;
+  background:var(--surface);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.5}
+.bs-erkannt{font-size:13px;color:var(--ink-dim)}
+.bs-settings{margin-top:14px;font-size:13.5px}
+.bs-settings summary{cursor:pointer;color:var(--ink-dim)}
+.bs-settings-grid{display:grid;gap:12px;margin-top:10px}
+.bs-settings-grid label{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px}
+.bs-settings-grid small{font-weight:400;color:var(--ink-dim)}
+.bs-inline{display:flex;align-items:center;gap:8px;font-weight:400}
+.bs-inline input[type=number]{width:80px;padding:7px 9px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);font-size:15px}
+.bs-inline input[type=range]{flex:1;min-width:0}
+.bs-map{display:grid;gap:9px;margin-top:12px;padding:12px;border:1px dashed var(--border-strong);border-radius:10px}
+.bs-map label{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center;font-size:13px;font-weight:600}
+.bs-map select{min-width:0;padding:7px 8px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);font-size:13px}
+.bs-map .bs-map-hint{font-size:12.5px;color:var(--ink-dim);font-weight:400}
+@media (max-width:560px){.bs-map label{grid-template-columns:1fr}}
+.bs-result{padding:0 0 6px}
+.bs-result-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px 6px}
+.bs-result-head h2{font-size:18px;font-weight:600}
+.bs-summary{display:flex;gap:8px;flex-wrap:wrap;padding:6px 18px 14px}
+.bs-table td,.bs-table th{white-space:nowrap}
+.bs-table td.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.bs-table tr.ho td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.bs-table tr.grenz td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
+.bs-table tr.nf td{color:var(--ink-dim)}
+.rec{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.rec.ho{background:var(--accent-soft);color:var(--accent)}
+.rec.bb{background:var(--indigo-soft);color:var(--indigo)}
+.rec.grenz{background:var(--gold-soft);color:var(--gold)}
+.rec.nf{background:var(--chip);color:var(--ink-dim)}
+.bs-note{font-size:12.5px;color:var(--ink-dim);padding:12px 18px 10px;margin:0}
+@media (max-width:560px){.bs-table{font-size:12.5px}.bs-table td,.bs-table th{padding:9px 7px}.bs-card{padding:15px 14px 13px}}
+
+@media print{
+  .tabs,header.top .top-actions,.bs-steps,.bs-result-head button{display:none!important}
+  body{background:#fff}
+  .panel{box-shadow:none;border:none}
+}
 </style>
 </head>
 <body>
@@ -209,12 +279,12 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
     <div class="brand">
       <div class="brand-icon">🐄</div>
       <div>
-        <div class="kicker">Poolehof · Zuchtplanung</div>
-        <h1>Bullenauswahl</h1>
-        <p class="sub">Bullenkataloge von WWS, RBW, Prismagen, Semex und CRI Genetics an einem Ort – gefiltert nach den Zuchtkriterien vom Poolehof, deutsche (RZ-Skala) und amerikanische (TPI-Skala) Werte nebeneinander.</p>
+        <div class="kicker">Poolehof</div>
+        <h1>Zuchtplanung</h1>
+        <p class="sub">Bullen aus den Katalogen von WWS, RBW, Prismagen, Semex und CRI Genetics finden – und entscheiden, welche Kühe Holstein und welche British Blue bekommen.</p>
       </div>
     </div>
-    <div class="top-actions">
+    <div class="top-actions" id="bullenActions">
       <div class="source-chips" id="sourceChips"></div>
       <div class="refresh-line">
         <span id="refreshLine"></span>
@@ -223,6 +293,17 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
     </div>
   </header>
 
+  <!-- Zwei klar getrennte Werkzeuge: Bullensuche und Holstein/British-Blue-Entscheidung -->
+  <nav class="tabs" role="tablist" aria-label="Werkzeug wählen">
+    <button class="tab" role="tab" data-tab="bullen" id="tabBtnBullen" aria-controls="tabBullen">
+      <span class="tab-icon">🐂</span><span><b>Bullensuche</b><small>Bullen aus 5 Katalogen filtern</small></span>
+    </button>
+    <button class="tab" role="tab" data-tab="besamung" id="tabBtnBesamung" aria-controls="tabBesamung">
+      <span class="tab-icon">🐄</span><span><b>Holstein oder British Blue</b><small>Welche Kühe bekommen Holstein?</small></span>
+    </button>
+  </nav>
+
+  <div id="tabBullen" role="tabpanel" aria-labelledby="tabBtnBullen">
   <div id="statusAlert"></div>
 
   <section class="summary" id="summary"></section>
@@ -277,6 +358,80 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
     <p><b>Strichlänge &amp; Stärke:</b> bei allen fünf Quellen vorhanden – diese Einzelmerkmale stehen nicht in den Übersichtslisten, sondern nur auf der jeweiligen Bull-Detailseite, die pro Bulle mit abgerufen wird. RBW, Prismagen (deutsche Bullen) und CRI liefern sie auf RZ-Skala (&gt;100 = überdurchschnittlich), WWS, Semex und die US-Bullen auf der amerikanischen Linearskala (&gt;0,0). Die Spalte zeigt jeweils mit „DE“/„US“ an, welche Skala gilt.</p>
     <p style="margin-top:10px"><b>Kriterien werden nur in diesem Browser gespeichert</b> (nicht auf dem Server) – auf einem anderen Gerät siehst du wieder die Standard-Kriterien, bis du sie dort auch anpasst.</p>
   </footer>
+  </div><!-- /tabBullen -->
+
+  <!-- ===================== Holstein oder British Blue ===================== -->
+  <div id="tabBesamung" role="tabpanel" aria-labelledby="tabBtnBesamung" hidden>
+    <div class="bs-steps">
+      <!-- Schritt 1: Herdenliste aus Netrind -->
+      <section class="panel bs-card">
+        <div class="bs-step-head">
+          <span class="bs-num">1</span>
+          <div>
+            <h2>Herdenliste aus Netrind</h2>
+            <p class="bs-help">Nur nötig nach jeder Zuchtwertschätzung (3× im Jahr: April, August, Dezember). Die Liste bleibt danach hier gespeichert.</p>
+          </div>
+        </div>
+        <div id="herdeStatus" class="bs-status"></div>
+        <div class="bs-actions">
+          <label class="btn primary bs-upload">
+            Netrind-Liste hochladen (CSV oder Excel)
+            <input type="file" id="herdeFile" accept=".csv,.txt,.xlsx,.xls" hidden>
+          </label>
+          <button class="btn ghost" id="herdeLoeschen" type="button" hidden>Gespeicherte Liste entfernen</button>
+        </div>
+        <div id="herdeMapping" hidden></div>
+        <p class="bs-privacy">🔒 Die Kuhdaten bleiben nur in diesem Browser auf diesem Gerät – sie werden nirgendwohin hochgeladen.</p>
+      </section>
+
+      <!-- Schritt 2: Lely-Liste einfügen -->
+      <section class="panel bs-card">
+        <div class="bs-step-head">
+          <span class="bs-num">2</span>
+          <div>
+            <h2>Kühe zum Besamen einfügen</h2>
+            <p class="bs-help">In Lely Horizon die Liste „Offene Kühe Reproduktion“ markieren, kopieren und hier einfügen. Halsbandnummern und andere Werte stören nicht – die Ohrmarken (DE …) werden automatisch erkannt.</p>
+          </div>
+        </div>
+        <textarea id="lelyInput" rows="6" placeholder="Hier die Liste aus Lely einfügen …"></textarea>
+        <div class="bs-actions">
+          <button class="btn primary" id="auswertenBtn" type="button">Auswerten</button>
+          <span id="erkanntInfo" class="bs-erkannt"></span>
+        </div>
+        <details class="bs-settings">
+          <summary>Einstellungen (Holstein-Anteil, Gewichtung)</summary>
+          <div class="bs-settings-grid">
+            <label>Holstein-Anteil der Herde
+              <span class="bs-inline"><input type="number" id="quoteInput" min="5" max="95" step="1" value="25"> %</span>
+            </label>
+            <label>Gewichtung RZG ↔ Milch
+              <span class="bs-inline">RZG <input type="range" id="gewichtInput" min="0" max="100" step="5" value="50"> Milch</span>
+              <small id="gewichtText"></small>
+            </label>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <!-- Ergebnis -->
+    <section class="panel bs-result" id="bsResult" hidden>
+      <div class="bs-result-head">
+        <h2>Ergebnis</h2>
+        <button class="btn small" type="button" onclick="window.print()">Drucken</button>
+      </div>
+      <div id="bsSummary" class="bs-summary"></div>
+      <div class="table-scroll">
+        <table class="bs-table">
+          <thead><tr>
+            <th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th><th>RZG</th><th>Milch kg</th>
+            <th>Platz in der Herde</th>
+          </tr></thead>
+          <tbody id="bsBody"></tbody>
+        </table>
+      </div>
+      <p class="bs-note"><b>Nur zur Orientierung.</b> „Grenzfall“ und Kühe mit sehr hoher Leistung trotz schwacher Zuchtwerte im Lely prüfen und selbst entscheiden.</p>
+    </section>
+  </div><!-- /tabBesamung -->
 </div>
 
 <script>
@@ -846,6 +1001,443 @@ document.getElementById("bullDialog").addEventListener("click", e=>{
 document.getElementById("refreshBtn").addEventListener("click", onRefreshClick);
 
 loadData();
+</script>
+
+<script>
+// ======================================================================
+// Tabs: Bullensuche  |  Holstein oder British Blue
+// ======================================================================
+const TAB_KEY = "poolehof-tab-v1";
+
+function zeigeTab(name){
+  const bes = name === "besamung";
+  document.getElementById("tabBullen").hidden = bes;
+  document.getElementById("tabBesamung").hidden = !bes;
+  document.getElementById("bullenActions").hidden = bes;  // Katalog-Chips/Aktualisieren gehören nur zur Bullensuche
+  document.getElementById("tabBtnBullen").setAttribute("aria-selected", String(!bes));
+  document.getElementById("tabBtnBesamung").setAttribute("aria-selected", String(bes));
+  try { localStorage.setItem(TAB_KEY, name); } catch(e) {}
+  if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+}
+document.querySelectorAll(".tabs .tab").forEach(b => b.addEventListener("click", () => zeigeTab(b.dataset.tab)));
+window.addEventListener("hashchange", () => {
+  const h = location.hash.slice(1);
+  if (h === "bullen" || h === "besamung") zeigeTab(h);
+});
+(function(){
+  let start = location.hash.slice(1);
+  if (start !== "bullen" && start !== "besamung"){
+    try { start = localStorage.getItem(TAB_KEY) || "bullen"; } catch(e) { start = "bullen"; }
+  }
+  zeigeTab(start === "besamung" ? "besamung" : "bullen");
+})();
+
+// ======================================================================
+// Holstein oder British Blue
+//
+// Ablauf: Netrind-Liste (Zuchtwerte der eigenen Herde) wird einmal
+// hochgeladen und im Browser gespeichert. Pro Besamungsrunde wird die
+// Lely-Liste "Offene Kühe Reproduktion" hineinkopiert; daraus werden die
+// Ohrmarken gefischt und jede Kuh gegen die GANZE Herde eingestuft:
+// die besten x % (Standard 25 %) bekommen Holstein, der Rest British Blue.
+// Die Kuhdaten verlassen dabei nie diesen Browser.
+// ======================================================================
+const HERDE_KEY = "poolehof-herde-v1";
+const BS_SETTINGS_KEY = "poolehof-besamung-einstellungen-v1";
+const HERDE_MAX_ALTER_TAGE = 150;   // Zuchtwertschätzung 3×/Jahr -> nach ~5 Monaten gibt es neue Werte
+const GRENZ_BAND = 0.05;            // ±5 Prozentpunkte um die Quote = "Grenzfall, im Lely prüfen"
+
+let herde = ladeHerde();            // {datei, hochgeladen, header, rows, mapping:{ohr,rzg,milch,name}}
+let bsSettings = ladeBsSettings();  // {quote, gewichtMilch}
+
+function ladeHerde(){
+  try { const raw = localStorage.getItem(HERDE_KEY); return raw ? JSON.parse(raw) : null; }
+  catch(e) { return null; }
+}
+function speichereHerde(){
+  try {
+    if (herde) localStorage.setItem(HERDE_KEY, JSON.stringify(herde));
+    else localStorage.removeItem(HERDE_KEY);
+    return true;
+  } catch(e) {
+    alert("Die Liste konnte in diesem Browser nicht gespeichert werden (Speicher voll oder gesperrt). Sie gilt nur, bis die Seite neu geladen wird.");
+    return false;
+  }
+}
+function ladeBsSettings(){
+  try { return Object.assign({quote:25, gewichtMilch:50}, JSON.parse(localStorage.getItem(BS_SETTINGS_KEY) || "{}")); }
+  catch(e) { return {quote:25, gewichtMilch:50}; }
+}
+function speichereBsSettings(){
+  try { localStorage.setItem(BS_SETTINGS_KEY, JSON.stringify(bsSettings)); } catch(e) {}
+}
+
+// --- Ohrmarken -------------------------------------------------------
+// Deutsche Ohrmarke = "DE" + 10 Ziffern, geschrieben z.B. "DE 08 123 45678",
+// "DE0812345678" oder in manchen Systemen als 276… (ISO-Code für Deutschland).
+// Verglichen wird deshalb immer über die letzten 10 Ziffern.
+function ohrKey(text){
+  const ziffern = String(text ?? "").replace(/\D/g, "");
+  return ziffern.length >= 10 ? ziffern.slice(-10) : null;
+}
+function ohrAnzeige(key){ return `DE ${key.slice(0,2)} ${key.slice(2,5)} ${key.slice(5)}`; }
+
+// Fischt aus beliebig zusammenkopiertem Text (Lely-Liste mit Halsbandnummern,
+// Laktationen, Tagen …) nur die Ohrmarken heraus: "DE" + genau 10 Ziffern,
+// zwischen den Ziffern höchstens ein Leer-/Trennzeichen. Reihenfolge bleibt,
+// doppelte fliegen raus.
+function ohrmarkenAusText(text){
+  const re = /(?<![A-Za-z])DE[\s.\-]*(\d(?:[\s.\-]?\d){9})(?!\d)/gi;
+  const gesehen = new Set(), out = [];
+  for (const m of String(text).matchAll(re)){
+    const key = m[1].replace(/\D/g, "");
+    if (!gesehen.has(key)){ gesehen.add(key); out.push(key); }
+  }
+  return out;
+}
+
+// --- Datei einlesen (CSV oder Excel) ---------------------------------
+// Deutsche CSV-Exporte sind oft Windows-1252 statt UTF-8 kodiert - sonst
+// werden aus Umlauten Kästchen.
+function dekodiere(buf){
+  try { return new TextDecoder("utf-8", {fatal:true}).decode(buf); }
+  catch(e) { return new TextDecoder("windows-1252").decode(buf); }
+}
+
+function parseCSV(text){
+  text = text.replace(/^﻿/, "");
+  const probe = text.split(/\r?\n/).slice(0, 25).join("\n");
+  let trenn = ";", best = -1;
+  for (const k of [";", "\t", ","]){
+    const n = probe.split(k).length;
+    if (n > best){ best = n; trenn = k; }
+  }
+  const rows = []; let row = [], feld = "", inQ = false;
+  for (let i = 0; i < text.length; i++){
+    const ch = text[i];
+    if (inQ){
+      if (ch === '"'){ if (text[i+1] === '"'){ feld += '"'; i++; } else inQ = false; }
+      else feld += ch;
+    } else if (ch === '"') inQ = true;
+    else if (ch === trenn){ row.push(feld); feld = ""; }
+    else if (ch === "\n"){ row.push(feld); rows.push(row); row = []; feld = ""; }
+    else if (ch !== "\r") feld += ch;
+  }
+  if (feld !== "" || row.length){ row.push(feld); rows.push(row); }
+  return rows.map(r => r.map(c => String(c).trim())).filter(r => r.some(c => c !== ""));
+}
+
+function ladeSheetJS(){
+  return new Promise((res, rej) => {
+    if (window.XLSX) return res(window.XLSX);
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+    s.onload = () => res(window.XLSX);
+    s.onerror = () => rej(new Error("Der Excel-Leser konnte nicht geladen werden – Internetverbindung prüfen oder die Liste als CSV exportieren."));
+    document.head.appendChild(s);
+  });
+}
+
+async function leseTabelle(file){
+  const buf = await file.arrayBuffer();
+  if (/\.xlsx?$/i.test(file.name)){
+    const XLSX = await ladeSheetJS();
+    const wb = XLSX.read(buf, {type: "array"});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(ws, {header: 1, raw: false, defval: ""})
+      .map(r => r.map(c => String(c).trim())).filter(r => r.some(c => c !== ""));
+  }
+  return parseCSV(dekodiere(buf));
+}
+
+// "1.234,5" / "1234,5" / "+128" / "-312" -> Zahl
+function zahl(v){
+  let s = String(v ?? "").trim().replace(/\s/g, "").replace(/^\+/, "");
+  if (!s || s === "-" || s === "–") return null;
+  if (/,\d+$/.test(s)) s = s.replace(/\./g, "").replace(",", ".");
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, "");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+// --- Spalten automatisch erkennen ------------------------------------
+// Netrind-Exporte haben oft Titelzeilen über der eigentlichen Kopfzeile.
+// Kopfzeile = erste Zeile mit einer Ohrmarken-/Lebensnummer-Spalte.
+const RX_OHR = /ohrmarke|lebens-?n(umme)?r|\blom\b|ohrm|tier-?n(umme)?r/i;
+
+function findeKopfzeile(rows){
+  for (let i = 0; i < Math.min(rows.length, 20); i++){
+    if (rows[i].some(c => RX_OHR.test(c))) return i;
+  }
+  // sonst: Zeile mit den meisten gefüllten Zellen unter den ersten 20
+  let best = 0, bestN = -1;
+  for (let i = 0; i < Math.min(rows.length, 20); i++){
+    const n = rows[i].filter(c => c !== "").length;
+    if (n > bestN){ bestN = n; best = i; }
+  }
+  return best;
+}
+
+function erkenneSpalten(header, rows){
+  const probe = rows.slice(0, 60);
+  const anteil = (i, test) => {
+    const werte = probe.map(r => r[i]).filter(v => v !== undefined && v !== "");
+    return werte.length ? werte.filter(test).length / werte.length : 0;
+  };
+  const besteSpalte = bewerte => {
+    let bi = -1, bs = 0;
+    header.forEach((h, i) => { const s = bewerte(h, i); if (s > bs){ bs = s; bi = i; } });
+    return bi;
+  };
+  const ohr = besteSpalte((h, i) => (RX_OHR.test(h) ? 2 : 0) + anteil(i, v => ohrKey(v) !== null));
+  const rzg = besteSpalte((h, i) => {
+    if (!/rzg/i.test(h)) return 0;
+    let s = /^\s*g?rzg\s*$/i.test(h) ? 3 : 1;
+    if (/sich|%|rang|b-?wert/i.test(h)) s -= 2;              // "RZG Sicherheit" o.ä. ist nicht der Wert selbst
+    s += anteil(i, v => { const n = zahl(v); return n !== null && n >= 50 && n <= 180; });
+    return s;
+  });
+  const milch = besteSpalte((h, i) => {
+    if (!/milch/i.test(h)) return 0;
+    let s = 1;
+    if (/kg/i.test(h)) s += 1;
+    if (/zw|zucht/i.test(h)) s += 1;
+    if (/fett|eiw|%|sich/i.test(h)) s -= 2;
+    s += anteil(i, v => zahl(v) !== null);
+    return s;
+  });
+  const name = besteSpalte(h => /^\s*(tier)?name\s*$/i.test(h) ? 2 : (/name/i.test(h) ? 1 : 0));
+  return {ohr, rzg, milch, name};
+}
+
+// --- Herde: Index berechnen + Platz in der Herde -----------------------
+function herdenTiere(){
+  if (!herde) return [];
+  const m = herde.mapping;
+  const zelle = (r, i) => (i >= 0 ? r[i] : "");
+  return herde.rows.map(r => ({
+    key: ohrKey(zelle(r, m.ohr)),
+    name: zelle(r, m.name) || "",
+    rzg: m.rzg >= 0 ? zahl(zelle(r, m.rzg)) : null,
+    milch: m.milch >= 0 ? zahl(zelle(r, m.milch)) : null,
+  })).filter(t => t.key);
+}
+
+// RZG und Milch-kg haben völlig verschiedene Skalen (≈100 vs. ≈±1000 kg).
+// Deshalb wird jeder Wert erst relativ zur eigenen Herde ausgedrückt
+// (Abstand vom Herdenmittel in Standardabweichungen) und dann gewichtet.
+function bewerteHerde(tiere){
+  const gM = bsSettings.gewichtMilch / 100, gR = 1 - gM;
+  const stat = feld => {
+    const v = tiere.map(t => t[feld]).filter(x => x !== null);
+    if (!v.length) return null;
+    const mw = v.reduce((a, b) => a + b, 0) / v.length;
+    const sd = Math.sqrt(v.reduce((a, b) => a + (b - mw) ** 2, 0) / v.length) || 1;
+    return {mw, sd};
+  };
+  const sR = stat("rzg"), sM = stat("milch");
+  const bewertet = [];
+  for (const t of tiere){
+    const zR = (t.rzg !== null && sR) ? (t.rzg - sR.mw) / sR.sd : null;
+    const zM = (t.milch !== null && sM) ? (t.milch - sM.mw) / sM.sd : null;
+    if (zR === null && zM === null) continue;
+    // Fehlt einer der beiden Werte, zählt nur der vorhandene
+    t.index = (zR !== null && zM !== null) ? gR * zR + gM * zM : (zR !== null ? zR : zM);
+    bewertet.push(t);
+  }
+  bewertet.sort((a, b) => b.index - a.index);
+  bewertet.forEach((t, i) => { t.platz = i + 1; t.anteil = (i + 1) / bewertet.length; });
+  return new Map(bewertet.map(t => [t.key, t])).set("__n", bewertet.length);
+}
+
+function empfehlung(anteil){
+  const q = bsSettings.quote / 100;
+  if (anteil <= q - GRENZ_BAND) return "ho";
+  if (anteil <= q + GRENZ_BAND) return "grenz";
+  return "bb";
+}
+const REC_TEXT = {ho: "Holstein", grenz: "Grenzfall", bb: "British Blue", nf: "nicht in Liste", nz: "keine Zuchtwerte"};
+
+// --- Anzeige -----------------------------------------------------------
+function fmtDatum(iso){
+  const d = new Date(iso);
+  return isNaN(d) ? iso : d.toLocaleDateString("de-DE", {day:"2-digit", month:"2-digit", year:"numeric"});
+}
+function vorzeichen(n){ return n === null ? "–" : (n > 0 ? "+" : "") + n.toLocaleString("de-DE"); }
+
+function renderHerdeStatus(){
+  const el = document.getElementById("herdeStatus");
+  document.getElementById("herdeLoeschen").hidden = !herde;
+  if (!herde){
+    el.className = "bs-status";
+    el.innerHTML = "Noch keine Netrind-Liste geladen. In Netrind die Liste der Kühe und Färsen mit Zuchtwerten als CSV oder Excel exportieren und hier hochladen.";
+    document.getElementById("herdeMapping").hidden = true;
+    return;
+  }
+  const tiere = herdenTiere();
+  const mitRzg = tiere.filter(t => t.rzg !== null).length;
+  const mitMilch = tiere.filter(t => t.milch !== null).length;
+  const alter = Math.floor((Date.now() - new Date(herde.hochgeladen).getTime()) / 86400000);
+  const alt = alter > HERDE_MAX_ALTER_TAGE;
+  el.className = "bs-status " + (alt || !mitRzg ? "warn" : "ok");
+  el.innerHTML =
+    `<b>${tiere.length} Tiere geladen</b> · ${mitRzg} mit RZG · ${mitMilch} mit Milch<br>` +
+    `Datei „${esc(herde.datei)}“, hochgeladen am ${fmtDatum(herde.hochgeladen)}` +
+    (alt ? `<br><b>Die Liste ist ${alter} Tage alt.</b> Nach der letzten Zuchtwertschätzung bitte neu hochladen – die Auswertung funktioniert aber auch mit der alten Liste.` : "") +
+    (!mitRzg ? `<br><b>Keine RZG-Werte erkannt</b> – unten die richtige Spalte auswählen.` : "") +
+    ` · <a href="#" id="spaltenLink">Spalten prüfen</a>`;
+  document.getElementById("spaltenLink").addEventListener("click", e => {
+    e.preventDefault();
+    const box = document.getElementById("herdeMapping");
+    box.hidden = !box.hidden;
+    if (!box.hidden) renderMapping();
+  });
+}
+
+// Spaltenzuordnung: automatisch erkannt, aber kontrollier- und änderbar,
+// weil wir den genauen Aufbau des Netrind-Exports nicht garantieren können.
+function renderMapping(){
+  const box = document.getElementById("herdeMapping");
+  const felder = [["ohr", "Ohrmarke", true], ["rzg", "RZG", true], ["milch", "Milch (kg)", true], ["name", "Name", false]];
+  const beispiel = i => {
+    if (i < 0) return "";
+    const v = herde.rows.map(r => r[i]).filter(x => x)[0];
+    return v ? `z. B. „${esc(v)}“` : "";
+  };
+  box.innerHTML = `<div class="bs-map">
+    <div class="bs-map-hint">Automatisch erkannt – bitte kurz prüfen, ob die Spalten stimmen:</div>
+    ${felder.map(([k, label, pflicht]) => `<label>${label}
+      <span><select data-map="${k}">
+        <option value="-1" ${herde.mapping[k] < 0 ? "selected" : ""}>${pflicht ? "– bitte wählen –" : "– keine –"}</option>
+        ${herde.header.map((h, i) => `<option value="${i}" ${herde.mapping[k] === i ? "selected" : ""}>${esc(h || "(Spalte " + (i + 1) + ")")}</option>`).join("")}
+      </select> <span class="bs-map-hint">${beispiel(herde.mapping[k])}</span></span>
+    </label>`).join("")}
+  </div>`;
+  box.querySelectorAll("select").forEach(sel => sel.addEventListener("change", () => {
+    herde.mapping[sel.dataset.map] = parseInt(sel.value, 10);
+    speichereHerde();
+    renderMapping();
+    renderHerdeStatus();
+    werteAus();
+  }));
+}
+
+function werteAus(){
+  const text = document.getElementById("lelyInput").value;
+  const keys = ohrmarkenAusText(text);
+  const info = document.getElementById("erkanntInfo");
+  info.textContent = text.trim()
+    ? (keys.length ? `${keys.length} Ohrmarke${keys.length === 1 ? "" : "n"} erkannt` : "Keine Ohrmarken (DE …) im Text gefunden")
+    : "";
+  const result = document.getElementById("bsResult");
+  if (!keys.length){ result.hidden = true; return; }
+  result.hidden = false;
+
+  const summary = document.getElementById("bsSummary");
+  const body = document.getElementById("bsBody");
+  if (!herde){
+    summary.innerHTML = `<div class="bs-status warn">Zuerst in Schritt 1 die Netrind-Liste hochladen – ohne Zuchtwerte kann nichts eingestuft werden.</div>`;
+    body.innerHTML = "";
+    return;
+  }
+
+  const bewertung = bewerteHerde(herdenTiere());
+  const n = bewertung.get("__n");
+  const alleKeys = new Set(herdenTiere().map(t => t.key));
+  const zeilen = keys.map(key => {
+    const t = bewertung.get(key);
+    if (t) return {key, t, rec: empfehlung(t.anteil)};
+    return {key, t: null, rec: alleKeys.has(key) ? "nz" : "nf"};
+  });
+  // Beste zuerst, nicht gefundene ans Ende
+  zeilen.sort((a, b) => (b.t ? b.t.index : -Infinity) - (a.t ? a.t.index : -Infinity));
+
+  const zaehle = r => zeilen.filter(z => z.rec === r).length;
+  const chip = (cls, anzahl, text) => anzahl ? `<span class="rec ${cls}">${anzahl} × ${text}</span>` : "";
+  summary.innerHTML =
+    chip("ho", zaehle("ho"), "Holstein") +
+    chip("grenz", zaehle("grenz"), "Grenzfall") +
+    chip("bb", zaehle("bb"), "British Blue") +
+    chip("nf", zaehle("nf") + zaehle("nz"), "ohne Zuchtwert") +
+    `<span class="bs-erkannt" style="flex-basis:100%">Eingestuft gegen ${n} Tiere der Netrind-Liste vom ${fmtDatum(herde.hochgeladen)} · Holstein = beste ${bsSettings.quote} % der Herde, Grenzfall = ±${GRENZ_BAND * 100} Prozentpunkte darum</span>`;
+
+  let nr = 0;
+  body.innerHTML = zeilen.map(z => {
+    const t = z.t;
+    const top = t ? Math.max(1, Math.round(t.anteil * 100)) : null;
+    return `<tr class="${z.rec}">
+      <td class="num">${t ? ++nr : ""}</td>
+      <td class="num">${ohrAnzeige(z.key)}</td>
+      <td><span class="rec ${z.rec}">${REC_TEXT[z.rec]}</span></td>
+      <td>${t ? esc(t.name) : ""}</td>
+      <td class="num">${t && t.rzg !== null ? t.rzg : "–"}</td>
+      <td class="num">${t ? vorzeichen(t.milch) : "–"}</td>
+      <td class="num">${t ? `${t.platz} von ${n} <span class="bs-erkannt">(Top ${top} %)</span>` : ""}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderGewichtText(){
+  const m = bsSettings.gewichtMilch;
+  document.getElementById("gewichtText").textContent = `RZG ${100 - m} % · Milch ${m} %`;
+}
+
+// --- Ereignisse --------------------------------------------------------
+document.getElementById("herdeFile").addEventListener("change", async e => {
+  const file = e.target.files[0];
+  e.target.value = "";            // gleiche Datei nochmal wählbar
+  if (!file) return;
+  try {
+    const rows = await leseTabelle(file);
+    if (rows.length < 2) throw new Error("Die Datei enthält keine Tabelle.");
+    const k = findeKopfzeile(rows);
+    const header = rows[k];
+    const daten = rows.slice(k + 1).filter(r => r.length > 1);
+    const mapping = erkenneSpalten(header, daten);
+    if (mapping.ohr < 0) throw new Error("In der Datei wurde keine Spalte mit Ohrmarken gefunden. Ist es der richtige Export?");
+    herde = {datei: file.name, hochgeladen: new Date().toISOString(), header, rows: daten, mapping};
+    speichereHerde();
+    renderHerdeStatus();
+    const box = document.getElementById("herdeMapping");
+    box.hidden = false;           // nach dem Hochladen einmal zeigen, was erkannt wurde
+    renderMapping();
+    werteAus();
+  } catch(err) {
+    alert("Die Datei konnte nicht gelesen werden:\n" + err.message);
+  }
+});
+
+document.getElementById("herdeLoeschen").addEventListener("click", () => {
+  if (!confirm("Die gespeicherte Netrind-Liste von diesem Gerät entfernen?")) return;
+  herde = null;
+  speichereHerde();
+  renderHerdeStatus();
+  werteAus();
+});
+
+let werteAusTimer = null;
+document.getElementById("lelyInput").addEventListener("input", () => {
+  clearTimeout(werteAusTimer);
+  werteAusTimer = setTimeout(werteAus, 250);
+});
+document.getElementById("auswertenBtn").addEventListener("click", werteAus);
+
+const quoteInput = document.getElementById("quoteInput");
+const gewichtInput = document.getElementById("gewichtInput");
+quoteInput.value = bsSettings.quote;
+gewichtInput.value = bsSettings.gewichtMilch;
+quoteInput.addEventListener("change", () => {
+  const q = Math.min(95, Math.max(5, parseInt(quoteInput.value, 10) || 25));
+  quoteInput.value = q;
+  bsSettings.quote = q; speichereBsSettings(); werteAus();
+});
+gewichtInput.addEventListener("input", () => {
+  bsSettings.gewichtMilch = parseInt(gewichtInput.value, 10);
+  speichereBsSettings(); renderGewichtText(); werteAus();
+});
+
+renderGewichtText();
+renderHerdeStatus();
 </script>
 </body>
 </html>
