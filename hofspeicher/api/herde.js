@@ -14,6 +14,10 @@
 //   {"aktion":"laden",     "schluessel":"…"}              → {"ok":true,"daten":{…}|null}
 //   {"aktion":"speichern", "schluessel":"…","daten":{…}}  → {"ok":true}
 //   GET ?selbsttest=1   → prüft nur, ob der Speicher erreichbar ist (keine Daten)
+//
+// Optional "fach": "herde" (Standard, die Kuhliste) oder "konfig" (verschlüsselte
+// Einstellungen, z.B. die Adresse des Feldbuch-Skripts). Jedes Fach hat genau
+// einen gültigen Eintrag.
 const { put, list, del } = require("@vercel/blob");
 const crypto = require("crypto");
 
@@ -22,7 +26,7 @@ const ERLAUBTE_SEITEN = new Set([
   "http://127.0.0.1:8777",
   "http://localhost:8777",
 ]);
-const ORDNER = "herde/";
+const FAECHER = { herde: "herde/", konfig: "konfig/" };
 const MAX_GROESSE = 3_000_000;          // ~3 MB – die Liste hat ~200 KB
 
 function pruefwert(text) {
@@ -36,8 +40,8 @@ function schluesselRichtig(schluessel) {
   return crypto.timingSafeEqual(Buffer.from(ist), Buffer.from(soll));
 }
 
-async function aktuellerBlob() {
-  const { blobs } = await list({ prefix: ORDNER });
+async function aktuellerBlob(ordner) {
+  const { blobs } = await list({ prefix: ordner });
   blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
   return { neuester: blobs[0] || null, alle: blobs };
 }
@@ -75,8 +79,12 @@ module.exports = async (req, res) => {
       return res.status(401).json({ ok: false, fehler: "Passwort falsch" });
     }
 
+    const fach = body.fach || "herde";
+    const ordner = Object.prototype.hasOwnProperty.call(FAECHER, fach) ? FAECHER[fach] : null;
+    if (!ordner) return res.status(400).json({ ok: false, fehler: "Unbekanntes Fach" });
+
     if (body.aktion === "laden") {
-      const { neuester } = await aktuellerBlob();
+      const { neuester } = await aktuellerBlob(ordner);
       if (!neuester) return res.status(200).json({ ok: true, daten: null });
       const antwort = await fetch(neuester.url, { cache: "no-store" });
       return res.status(200).json({ ok: true, daten: await antwort.json() });
@@ -90,9 +98,9 @@ module.exports = async (req, res) => {
       const text = JSON.stringify(daten);
       if (text.length > MAX_GROESSE) return res.status(413).json({ ok: false, fehler: "Liste zu groß" });
       // Zufälliger Dateiname, damit die (verschlüsselte) Datei nicht erraten werden kann
-      const neu = await put(ORDNER + "liste.json", text, { access: "public", addRandomSuffix: true, contentType: "application/json" });
+      const neu = await put(ordner + "liste.json", text, { access: "public", addRandomSuffix: true, contentType: "application/json" });
       // ältere Versionen löschen – es gibt immer nur EINE gültige Liste
-      const { alle } = await aktuellerBlob();
+      const { alle } = await aktuellerBlob(ordner);
       const alt = alle.filter((b) => b.url !== neu.url).map((b) => b.url);
       if (alt.length) await del(alt);
       return res.status(200).json({ ok: true });
