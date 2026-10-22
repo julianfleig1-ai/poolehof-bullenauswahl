@@ -1,7 +1,7 @@
 {
-  "name": "Poolehof Zuchtplanung",
-  "short_name": "Zuchtplanung",
-  "description": "Bullensuche und Holstein-/British-Blue-Entscheidung für den Poolehof",
+  "name": "Poolehof",
+  "short_name": "Poolehof",
+  "description": "Die Hof-App vom Poolehof: Zuchtplanung, Feldbuch und mehr",
   "lang": "de",
   "start_url": "./",
   "scope": "./",
