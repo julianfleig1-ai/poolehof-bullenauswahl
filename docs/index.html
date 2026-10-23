@@ -393,9 +393,9 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 }
 
 /* ===================== Feldbuch ===================== */
-.fb-tabs{grid-template-columns:repeat(5,1fr)}
+.fb-tabs{grid-template-columns:repeat(6,1fr)}
 @media (max-width:1100px){.fb-tabs .tab small{display:none}}
-@media (max-width:760px){.fb-tabs{grid-template-columns:1fr 1fr}.fb-tabs .tab:last-child{grid-column:span 2}}
+@media (max-width:760px){.fb-tabs{grid-template-columns:1fr 1fr}}
 .fb-loeschen{margin-left:auto;color:var(--warn)}
 .fb-re-knoepfe{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .fb-aw tr.storniert td{color:var(--ink-dim);text-decoration:line-through}
@@ -528,8 +528,24 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-kachel{padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border)}
 .fb-kachel b{display:block;font-family:"Newsreader",serif;font-size:24px}
 .fb-kachel small{color:var(--ink-dim);font-size:12.5px}
-.fb-doku{margin:14px 0 18px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:var(--accent-soft)}
-.fb-doku h3{font-size:16px;margin:0 0 4px;font-family:"IBM Plex Sans",system-ui,sans-serif}
+.fb-doku-karten{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:640px){.fb-doku-karten{grid-template-columns:1fr}}
+.fb-doku-karte{padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:var(--accent-soft)}
+.fb-doku-karte h3{font-size:16px;margin:0 0 2px;font-family:"IBM Plex Sans",system-ui,sans-serif}
+.fb-doku-karte .fb-form-knoepfe{flex-wrap:wrap;margin-top:8px}
+.fb-check li{margin:4px 0}
+.fb-check .ok{color:var(--accent)}
+.fb-ps-felder{border:1px dashed var(--accent);border-radius:12px;padding:10px 12px 12px;background:var(--accent-soft)}
+.fb-ps-felder[hidden]{display:none}
+.fb-ps-titel{font-size:12.5px;font-weight:600;color:var(--accent);margin-bottom:2px}
+.fb-form-innen{margin-top:4px}
+.fb-dm-tabelle input,.fb-dm-tabelle select{width:100%;min-width:0;padding:6px 7px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);color:var(--ink);font-size:14.5px;box-sizing:border-box}
+.fb-dm-tabelle td{padding:3px 3px;vertical-align:middle}
+.fb-dm-tabelle td:nth-child(1){min-width:130px}
+.fb-dm-tabelle td:nth-child(2){min-width:150px}
+.fb-dm-tabelle td:nth-child(3){min-width:120px}
+.fb-dm-tabelle td:nth-child(n+4){min-width:72px}
+.fb-dm-tabelle tr.neu td:first-child input{border-color:var(--warn)}
 @media (max-width:640px){.fb-kacheln{grid-template-columns:1fr 1fr;gap:8px}.fb-kachel{padding:10px 12px}.fb-kachel b{font-size:21px}}
 dialog#fbDialog{border:none;padding:0;border-radius:16px;background:var(--surface);color:var(--ink);width:min(620px,calc(100vw - 24px));
   max-height:min(90vh,820px);box-shadow:0 12px 48px rgba(31,42,60,.28)}
@@ -652,6 +668,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
       <button class="tab" role="tab" data-fbtab="liste" id="fbTabListe"><span class="tab-icon">📋</span><span><b>Liste</b><small>alle Feldarbeiten</small></span></button>
       <button class="tab" role="tab" data-fbtab="rechnung" id="fbTabRechnung"><span class="tab-icon">🧾</span><span><b>Rechnung</b><small>per Klick erstellen</small></span></button>
       <button class="tab" role="tab" data-fbtab="auswertung" id="fbTabAuswertung"><span class="tab-icon">📊</span><span><b>Auswertung</b><small>z. B. ha Mais gesät</small></span></button>
+      <button class="tab" role="tab" data-fbtab="doku" id="fbTabDoku"><span class="tab-icon">📋</span><span><b>Doku</b><small>Pflanzenschutz, Düngung</small></span></button>
       <button class="tab" role="tab" data-fbtab="stamm" id="fbTabStamm"><span class="tab-icon">🏠</span><span><b>Stammdaten</b><small>Firmen, Mandanten, Sicherung</small></span></button>
     </nav>
 
@@ -675,6 +692,14 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <label>Stunden<input name="Stunden" inputmode="decimal"></label>
         <label class="breit">Mittel / Dünger<input name="Mittel / Dünger" list="fbListeMittel" placeholder="z. B. KAS 1,5 dt/ha"></label>
         <label class="breit">Bemerkung<input name="Bemerkung"></label>
+        <div class="breit fb-ps-felder" id="fbPsFelder" hidden>
+          <div class="fb-ps-titel">Für die Pflanzenschutz-Doku</div>
+          <div class="fb-form fb-form-innen">
+            <label>BBCH-Stadium<input name="BBCH" inputmode="numeric" placeholder="z. B. 32"></label>
+            <label>Uhrzeit (Beginn)<input name="Uhrzeit" type="time"></label>
+            <label class="breit">Anwender<input name="Anwender" placeholder="Vor- und Nachname"></label>
+          </div>
+        </div>
         <div class="fb-form-knoepfe breit">
           <button class="btn primary" type="submit">Speichern</button>
           <button class="btn ghost" type="button" id="fbLeeren">Leeren</button>
@@ -690,8 +715,8 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <select id="fbFilterJahr"></select>
         <select id="fbFilterMandant"><option value="">alle Mandanten</option></select>
         <select id="fbFilterTaetigkeit"><option value="">alle Tätigkeiten</option></select>
-        <label class="toggle-only"><input type="checkbox" id="fbNurOffen"> nur nicht abgerechnet</label>
-        <label class="toggle-only"><input type="checkbox" id="fbNurPruefen"> nur „Prüfen“</label>
+        <label class="toggle-only" title="Nur Lohnarbeiten, für die noch keine Rechnung erstellt wurde"><input type="checkbox" id="fbNurOffen"> Noch keine Rechnung</label>
+        <label class="toggle-only" id="fbNurPruefenLabel" hidden><input type="checkbox" id="fbNurPruefen"> Nur unklare (gelb)</label>
         <button class="btn small" type="button" id="fbAuswahlKnopf">🧾 Für Rechnung auswählen</button>
       </div>
       <div id="fbListeInfo" class="bs-note" style="padding:10px 16px 0"></div>
@@ -733,20 +758,43 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <label>Jahr<select id="fbAwJahr"></select></label>
         <label>Flächen<select id="fbAwWer"><option value="alle">eigene + Lohnarbeit</option><option value="eigen">nur eigene</option><option value="fremd">nur Lohnarbeit</option></select></label>
       </div>
-      <div class="fb-doku">
-        <h3>📋 Dokumentation für Kontrollen</h3>
-        <p class="bs-help">Aufzeichnungen nach Pflanzenschutzgesetz (§ 11 PflSchG) und Düngeverordnung (§ 10 DüV) als PDF – für das gewählte Jahr. Bitte vor dem Abgeben kurz durchsehen: Fehlt bei einem Eintrag die Fläche oder das Mittel, steht dort „–“.</p>
-        <div class="fb-form">
-          <label>Flächen von<select id="fbDokuWer"></select></label>
-          <label>Anwender<input id="fbDokuAnwender" placeholder="Name"></label>
-        </div>
-        <div class="fb-form-knoepfe" style="margin-top:10px;flex-wrap:wrap">
-          <button class="btn primary" type="button" id="fbDokuPs">🌿 Pflanzenschutz-Dokumentation</button>
-          <button class="btn primary" type="button" id="fbDokuDuenger">🧪 Düngedokumentation</button>
-        </div>
-        <div id="fbDokuInfo" class="bs-erkannt" style="margin-top:6px"></div>
-      </div>
       <div id="fbAwInhalt"></div>
+    </section>
+
+    <!-- Doku -->
+    <section id="fbDoku" class="panel fb-card" hidden>
+      <h2>Dokumentation für Kontrollen</h2>
+      <div class="fb-form fb-re-kopf">
+        <label>Jahr<select id="fbDokuJahr"></select></label>
+        <label>Flächen von<select id="fbDokuWer"></select></label>
+        <label class="breit">Anwender (wenn beim Eintrag keiner steht)<input id="fbDokuAnwender" placeholder="Vor- und Nachname"></label>
+      </div>
+      <div class="fb-doku-karten">
+        <div class="fb-doku-karte">
+          <h3>🌿 Pflanzenschutz</h3>
+          <p class="bs-help">§ 11 PflSchG, VO (EU) 2023/564 – eine Zeile je Mittel</p>
+          <div class="fb-form-knoepfe"><button class="btn primary" type="button" id="fbDokuPs">PDF</button><button class="btn" type="button" id="fbDokuPsCsv">Datei für Programme (CSV)</button></div>
+        </div>
+        <div class="fb-doku-karte">
+          <h3>🧪 Düngung</h3>
+          <p class="bs-help">§ 10 DüV – mit N und P₂O₅ je Hektar</p>
+          <div class="fb-form-knoepfe"><button class="btn primary" type="button" id="fbDokuDuenger">PDF</button><button class="btn" type="button" id="fbDokuDuengerCsv">Datei für Programme (CSV)</button></div>
+        </div>
+      </div>
+      <div id="fbDokuInfo" class="bs-erkannt" style="margin-top:8px"></div>
+      <h3 class="fb-zwischen">Was fehlt noch?</h3>
+      <div id="fbDokuCheck"></div>
+      <h3 class="fb-zwischen">Mittel und Dünger</h3>
+      <p class="bs-help">Einmal eintragen, dann füllt die App die Doku selbst aus: bei Pflanzenschutzmitteln die <b>Zulassungsnummer</b>, bei Düngern die <b>Gehalte</b> – Mineraldünger in % (z. B. KAS: N 27), Gülle/Mist in kg je m³ bzw. je t (Werte aus der Gülle-Analyse oder Richtwerte). Namen aus deinen Einträgen stehen schon in der Liste.</p>
+      <div id="fbDokuMittel"></div>
+      <h3 class="fb-zwischen">Flächen</h3>
+      <p class="bs-help">Für Pflanzenschutz muss die Lage der Fläche drin stehen: am besten die <b>FID</b> (Flächen-ID aus dem Gemeinsamen Antrag / FIONA), sonst Flurstück. Die Größe wird genommen, wenn beim Eintrag keine Hektar stehen.</p>
+      <div id="fbDokuFlaechen"></div>
+      <details class="fb-notizen" style="margin:16px 0 0">
+        <summary>Was muss in die Dokumentation? (Stand Oktober 2026 – bitte mit dem Landwirtschaftsamt abklären)</summary>
+        <p><b>Pflanzenschutz</b> (je Anwendung, unverzüglich, 3 Jahre aufbewahren): Name des Anwenders · Datum (Uhrzeit bei Zeitauflagen, z. B. Bienenschutz) · Mittel mit Zulassungsnummer · Aufwandmenge · Kultur mit EPPO-Code · BBCH-Stadium (wenn die Zulassung es einschränkt) · Fläche mit Lage (FID, Flurstück oder GPS) und Größe · Art der Verwendung (Freiland). Elektronisch/maschinenlesbar: laut BW ab 2026, laut Bayern/Niedersachsen ab 01.01.2027 – die CSV-Datei erfüllt das.</p>
+        <p><b>Düngung</b> (§ 10 DüV, spätestens 14 Tage nach der Düngung, 7 Jahre aufbewahren): Schlag und Größe · Datum · Düngerart (Typenbezeichnung) und Menge · Gesamt-Stickstoff und Phosphat (P₂O₅) · bei Gülle/Mist zusätzlich verfügbarer Stickstoff und der Anteil tierischer Herkunft. Dazu kommen die Düngebedarfsermittlung vor der Düngung und die jährliche Nährstoff-Zusammenfassung (bis 31.03.).</p>
+      </details>
     </section>
 
     <!-- Stammdaten -->
@@ -2679,8 +2727,8 @@ hsAbgleichen();          // neuere Liste von einem anderen Gerät holen (falls v
 const FB_DATEN_KEY = "poolehof-feldbuch-daten-v2";        // zuletzt geladener Stand {daten, version}
 const FB_OPS_KEY = "poolehof-feldbuch-aenderungen-v1";    // noch nicht übertragene Änderungen
 const FB_TAB_KEY = "poolehof-feldbuch-tab-v1";
-const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung", "stamm"];
-const FB_FELDER = ["Datum", "Mandant", "Tätigkeit", "Kultur", "Ort / Schlag", "Menge", "Einheit", "Stunden", "Mittel / Dünger", "Bemerkung"];
+const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung", "doku", "stamm"];
+const FB_FELDER = ["Datum", "Mandant", "Tätigkeit", "Kultur", "Ort / Schlag", "Menge", "Einheit", "Stunden", "Mittel / Dünger", "Bemerkung", "BBCH", "Uhrzeit", "Anwender"];
 const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Letzte Rechnungs-Nr."];
 const FB_MANDANT_FELDER = ["Kurzname", "Name", "Andere Namen", "Straße", "PLZ Ort", "Notiz"];
 const FB_STANDARD_LISTEN = {
@@ -2789,6 +2837,15 @@ function fbAnwenden(d, op){
       if (m) Object.assign(m, op.mandant); else d.mandanten.push(fbKopie(op.mandant));
       return null;
     }
+    case "mittel":
+      d.mittel = fbKopie(op.liste || []);
+      return null;
+    case "schlaege":
+      d.schlaege = fbKopie(op.liste || []);
+      return null;
+    case "dokuEinstellung":
+      d.doku = {...(d.doku || {}), ...op.felder};
+      return null;
     case "standardpreise":
       d.standardpreise = fbKopie(op.liste || []);
       return null;
@@ -3213,10 +3270,17 @@ function fbTeilVerstehen(roh, k){
   const f = {};
   const datum = fbDatumAusText(t);
   if (datum) f["Datum"] = datum;
+  // BBCH-Stadium ("BBCH 32", "EC 32", "im Stadium 32") und Uhrzeit ("um 8 Uhr", "ab 7:30")
+  let tb = t, mb;
+  if ((mb = tb.match(/(?<![\p{L}])(?:bbch|ec|stadium)\s*(\d{1,2})(?!\d)/iu))){ f["BBCH"] = mb[1]; tb = tb.replace(mb[0], " "); }
+  if ((mb = tb.match(/(?<![\p{L}])(?:um|ab|gegen)\s+(\d{1,2})(?:[:.](\d{2}))?\s*uhr/iu)) || (mb = tb.match(/(?<![\p{L}])(?:von\s+)?(\d{1,2})(?::(\d{2}))?\s*(?:uhr\s*)?(?:bis|-|–)\s*\d{1,2}(?::\d{2})?\s*uhr/iu))){
+    if (Number(mb[1]) < 24) f["Uhrzeit"] = `${String(mb[1]).padStart(2, "0")}:${mb[2] || "00"}`;
+    if (/^(um|ab|gegen)/i.test(mb[0].trim())) tb = tb.replace(mb[0], " ");
+  }
 
   // Mittel / Dünger: "mit …" (mit Zahl oder bekanntem Mittel) oder bekannte Mittel im Text
-  let rest = t, m;
-  if ((m = t.match(/(?<![\p{L}])mit\s+(.+?)(?=\s+(?:für|bei|auf|im|am|in|beim|heute|gestern|vorgestern)\s|[.;!?]|$)/iu))){
+  let rest = tb, m;
+  if ((m = tb.match(/(?<![\p{L}])mit\s+(.+?)(?=\s+(?:für|bei|auf|im|am|in|beim|heute|gestern|vorgestern)\s|[.;!?]|$)/iu))){
     // Mittel endet vor einer Flächen-/Stundenangabe oder einem Tätigkeitswort ("… 5 ha gespritzt")
     const roh = m[1].split(/\s+(?=\d+(?:,\d+)?\s*(?:ha|m³|Ballen|Wagen|Fass|h|min)(?![\p{L}\/]))|\s+(?=g?e?\p{L}+(?:t|en)(?![\p{L}])\s*$)/u)[0];
     const kandidat = roh.replace(/\s+(ge|g)\p{L}+t$/u, "").replace(/\s+und\s+/gi, " + ").trim();
@@ -3224,7 +3288,7 @@ function fbTeilVerstehen(roh, k){
     // nur Mittel, wenn ein bekanntes Mittel oder eine Mittel-Menge (l, kg, dt, Ztr) drin steht – nicht "mit dem Grubber 8 ha"
     if (/\d+(?:,\d+)?\s*(l|kg|dt|Ztr)(?![\p{L}])/u.test(kandidat) || k.mittel.some(w => fbWort(w).test(kandidat))){
       f["Mittel / Dünger"] = kandidat;
-      rest = t.replace(new RegExp(`mit\\s+${fbRx(m[1])}`, "i"), " ");
+      rest = tb.replace(new RegExp(`mit\\s+${fbRx(m[1])}`, "i"), " ");
     }
   }
   if (!f["Mittel / Dünger"]){
@@ -3370,6 +3434,7 @@ function fbFormularLeeren(){
   form.elements["Datum"].value = fbHeuteIso();
   form.querySelectorAll(".geaendert").forEach(x => x.classList.remove("geaendert"));
   $fb("fbText").value = "";
+  fbPsFelderZeigen();
   fbHinweise = []; fbMandantAngenommen = false;
   fbRenderVorschau();
 }
@@ -3379,9 +3444,17 @@ function fbTextAuswerten(){
   const form = $fb("fbForm");
   form.querySelectorAll(".geaendert").forEach(x => x.classList.remove("geaendert"));
   // Nicht Erkanntes leeren, damit kein alter Wert stehen bleibt
-  FB_FELDER.filter(n => n !== "Bemerkung").forEach(n => { if (!(n in felder) && form.elements[n]) form.elements[n].value = n === "Datum" ? fbHeuteIso() : ""; });
+  FB_FELDER.filter(n => n !== "Bemerkung" && n !== "Anwender").forEach(n => { if (!(n in felder) && form.elements[n]) form.elements[n].value = n === "Datum" ? fbHeuteIso() : ""; });
   fbFormularSetzen(felder, true);
+  fbPsFelderZeigen();
   fbRenderVorschau();
+}
+// BBCH/Uhrzeit/Anwender nur bei Pflanzenschutz zeigen
+function fbPsFelderZeigen(){
+  const form = $fb("fbForm");
+  const ps = FB_PS_TAETIGKEITEN.includes((form.elements["Tätigkeit"].value || "").trim());
+  $fb("fbPsFelder").hidden = !ps;
+  if (ps && !form.elements["Anwender"].value) form.elements["Anwender"].value = fbDokuAnwenderStandard();
 }
 function fbFormularWerte(){
   const form = $fb("fbForm"), e = {};
@@ -3422,6 +3495,7 @@ function fbRenderVorschau(){
       <span>${fbIstEigen(e.Mandant) ? "🏠 eigene Fläche" : `🤝 für <b>${esc(e.Mandant)}</b>`}</span>
       ${e["Ort / Schlag"] ? `<span>📍 ${esc(e["Ort / Schlag"])}</span>` : ""}
       ${e["Mittel / Dünger"] ? `<span>🧪 ${esc(e["Mittel / Dünger"])}</span>` : ""}
+      ${e.BBCH ? `<span>🌱 BBCH ${esc(e.BBCH)}</span>` : ""}${e.Uhrzeit ? `<span>🕗 ${esc(e.Uhrzeit)} Uhr</span>` : ""}
     </div>
     ${fbIstEigen(e.Mandant) && fbMandantAngenommen ? `<div class="fb-vorschau-mandant">Kein Mandant genannt → <b>eigene Fläche</b>. Für jemand anderen?
       <div class="fb-schnell">${fbLetzteMandanten().map(n => `<button class="btn small" type="button" data-schnell="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
@@ -3591,6 +3665,9 @@ function fbRenderListe(){
     if (q && !Object.values(a).some(v => String(v).toLowerCase().includes(q))) return false;
     return true;
   }).sort((a, b) => String(b.Datum).localeCompare(String(a.Datum)) || String(b.ID).localeCompare(String(a.ID)));
+  const gelb = fbArbeiten().some(a => a["Prüfen"]);
+  $fb("fbNurPruefenLabel").hidden = !gelb;
+  if (!gelb) $fb("fbNurPruefen").checked = false;
   const notizen = (fbDaten && fbDaten.notizen) || [];
   $fb("fbNotizenBox").hidden = !notizen.length;
   $fb("fbNotizenTitel").textContent = `Notizen aus der alten Liste (${notizen.length})`;
@@ -4191,93 +4268,310 @@ $fb("fbPwAendernForm").addEventListener("submit", async ev => {
 });
 
 // --- Dokumentation Pflanzenschutz / Düngung ---------------------------------
-const FB_DOKU = {
-  ps: {taetigkeiten: ["Pflanzenschutz"], titel: "Aufzeichnungen über die Anwendung von Pflanzenschutzmitteln",
-       grundlage: "nach § 11 PflSchG i. V. m. Art. 67 VO (EG) Nr. 1107/2009", datei: "Pflanzenschutz-Dokumentation"},
-  duenger: {taetigkeiten: ["Düngen", "Gülle fahren", "Mist streuen", "Kalken"], titel: "Aufzeichnungen über die Düngung",
-       grundlage: "nach § 10 Düngeverordnung (DüV)", datei: "Duengedokumentation"},
-};
-let fbDokuFertig = {};   // vorbereitete PDFs (am Handy/PC muss das Speichern direkt nach dem Tippen kommen)
-function fbRenderDokuAuswahl(){
-  const sel = $fb("fbDokuWer"), alt = sel.value || "Eigen";
-  const namen = [...new Set(fbArbeiten().filter(a => !fbIstEigen(a.Mandant) && FB_DOKU.ps.taetigkeiten.concat(FB_DOKU.duenger.taetigkeiten).includes(a["Tätigkeit"])).map(a => a.Mandant))].sort((a, b) => a.localeCompare(b, "de"));
-  sel.innerHTML = `<option value="Eigen">eigene Flächen</option>` + namen.map(n => `<option ${n === alt ? "selected" : ""}>${esc(n)}</option>`).join("");
-  if (alt === "Eigen") sel.value = "Eigen";
-  const anw = $fb("fbDokuAnwender");
-  if (!anw.value){ const f = ((fbDaten && fbDaten.firmen) || [])[0]; anw.value = (f && (f.Inhaber || f.Firma)) || ""; }
+// Pflanzenschutz: § 11 PflSchG i. V. m. VO (EU) 2023/564 (seit 2026: EPPO-Code,
+// BBCH, Zulassungsnummer, Lage der Fläche). Düngung: § 10 DüV (Gesamt-N, P2O5,
+// bei Wirtschaftsdünger verfügbarer N und Anteil tierischer Herkunft).
+// Gehalte und Zulassungsnummern kommen aus der Tabelle "Mittel und Dünger",
+// Lage/Größe der Flächen aus der Tabelle "Flächen" – beides im Reiter Doku.
+const FB_PS_TAETIGKEITEN = ["Pflanzenschutz"];
+const FB_DUENGE_TAETIGKEITEN = ["Düngen", "Gülle fahren", "Mist streuen", "Kalken"];
+// EPPO-Codes (EU-einheitliche Kürzel) – bei "–" bitte selbst ergänzen
+const FB_EPPO = {"Mais": "ZEAMX", "Winterweizen": "TRZAW", "Sommerweizen": "TRZAS", "Wintergerste": "HORVW", "Sommergerste": "HORVS",
+  "Triticale": "TTLSS", "Roggen": "SECCE", "Hafer": "AVESA", "Dinkel": "TRZSP", "Raps": "BRSNW", "Zuckerrüben": "BEAVA", "Kartoffeln": "SOLTU"};
+const FB_MITTEL_ARTEN = ["Pflanzenschutz", "Mineraldünger", "Wirtschaftsdünger", "Kalk"];
+const FB_MITTEL_FELDER = ["Name", "Art", "Zulassungs-Nr.", "N", "N verfügbar", "P2O5", "Bezug"];
+let fbDokuFertig = {};   // vorbereitete Dateien (Speichern-Fenster darf nur direkt nach dem Tippen aufgehen)
+
+function fbDokuJahrUndWer(){ return {jahr: $fb("fbDokuJahr").value || String(new Date().getFullYear()), wer: $fb("fbDokuWer").value || "Eigen"}; }
+function fbDokuAnwenderStandard(){
+  const d = (fbDaten && fbDaten.doku) || {};
+  if (d.anwender) return d.anwender;
+  const f = ((fbDaten && fbDaten.firmen) || [])[0];
+  return (f && f.Inhaber) || "";
 }
-function fbDokuZeilen(art, jahr, wer){
-  return fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr) && FB_DOKU[art].taetigkeiten.includes(a["Tätigkeit"])
+function fbDokuEintraege(taetigkeiten, jahr, wer){
+  return fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr) && taetigkeiten.includes(a["Tätigkeit"])
       && (wer === "Eigen" ? fbIstEigen(a.Mandant) : a.Mandant === wer))
-    .sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)));
+    .sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)) || String(a.Uhrzeit || "").localeCompare(String(b.Uhrzeit || "")));
+}
+function fbMittelStamm(name){
+  const liste = (fbDaten && fbDaten.mittel) || [];
+  const n = fbNorm(name);
+  if (!n) return null;
+  return liste.find(m => fbNorm(m.Name) === n) || liste.find(m => fbNorm(m.Name).length >= 3 && (n.includes(fbNorm(m.Name)) || fbNorm(m.Name).includes(n))) || null;
+}
+function fbFlaecheStamm(ort){
+  const n = fbNorm(ort);
+  return ((fbDaten && fbDaten.schlaege) || []).find(s => fbNorm(s.Name) === n) || null;
+}
+// "Primero 0,8 + Laudis 1,4 + Spectrum 0,9" → [{name, menge, einheit, proHa}]
+function fbMittelTeile(text, standardEinheit){
+  return String(text || "").split(/\s\+\s|\s+und\s+/i).map(t => t.trim()).filter(Boolean).map(teil => {
+    let rest = teil.replace(/^(herbizid|fungizid|insektizid|wachstumsregler|beize)\s*:?\s*/i, "");
+    const bekannte = ((fbDaten && fbDaten.mittel) || []).map(m => m.Name).filter(Boolean).sort((a, b) => b.length - a.length);
+    const treffer = bekannte.find(n => fbNorm(rest).includes(fbNorm(n)));
+    const mengen = [...rest.matchAll(/(?<![\d\/])(\d+(?:,\d+)?)\s*(l|ml|kg|g|dt|t|Ztr|m³)?(\/ha)?(?![\d\/\p{L}])/gu)];
+    const m = mengen.filter(x => x[2]).pop() || mengen.pop();
+    let name = treffer || (m ? rest.replace(m[0], " ") : rest).replace(/\/ha/g, "").replace(/[,;:]+\s*$/, "").replace(/\s+/g, " ").trim();
+    if (!name) name = rest;
+    return {name, menge: m ? fbZahl(m[1]) : null, einheit: m ? (m[2] || standardEinheit) : "", proHa: !!(m && (m[3] || standardEinheit === "l"))};
+  });
+}
+function fbFlaecheHa(a){
+  if (a.Einheit === "ha" && fbZahl(a.Menge) !== null) return fbZahl(a.Menge);
+  const s = fbFlaecheStamm(a["Ort / Schlag"]);
+  return s ? fbZahl(s["Größe (ha)"]) : null;
+}
+const FB_KG_JE = {kg: 1, g: 0.001, dt: 100, t: 1000, Ztr: 50};
+
+function fbPsZeilen(jahr, wer){
+  const anwStandard = $fb("fbDokuAnwender").value.trim() || fbDokuAnwenderStandard();
+  const zeilen = [];
+  fbDokuEintraege(FB_PS_TAETIGKEITEN, jahr, wer).forEach(a => {
+    const ha = fbFlaecheHa(a), fl = fbFlaecheStamm(a["Ort / Schlag"]);
+    const teile = a["Mittel / Dünger"] ? fbMittelTeile(a["Mittel / Dünger"], "l") : [{name: "", menge: null, einheit: "", proHa: false}];
+    teile.forEach(t => {
+      const st = fbMittelStamm(t.name);
+      const gesamt = t.menge !== null && ha !== null && t.proHa ? Math.round(t.menge * ha * 100) / 100 : null;
+      zeilen.push({a, datum: a.Datum, uhrzeit: a.Uhrzeit || "", flaeche: a["Ort / Schlag"] || "", lage: fl ? fl.FID || "" : "", ha,
+        kultur: a.Kultur || "", eppo: FB_EPPO[a.Kultur] || "", bbch: a.BBCH || "", mittel: st ? st.Name : t.name, zulassung: st ? st["Zulassungs-Nr."] || "" : "",
+        aufwand: t.menge !== null ? `${fbZahlText(t.menge, 3)} ${t.einheit}${t.proHa ? "/ha" : ""}` : "", gesamt: gesamt !== null ? `${fbZahlText(gesamt, 2)} ${t.einheit}` : "",
+        anwender: a.Anwender || anwStandard, verwendung: "Freiland", bemerkung: a.Bemerkung || ""});
+    });
+  });
+  return zeilen;
+}
+function fbDuengeZeilen(jahr, wer){
+  const zeilen = [];
+  fbDokuEintraege(FB_DUENGE_TAETIGKEITEN, jahr, wer).forEach(a => {
+    const ha = fbFlaecheHa(a);
+    const standard = a["Tätigkeit"] === "Gülle fahren" ? "Gülle" : a["Tätigkeit"] === "Mist streuen" ? "Mist" : a["Tätigkeit"] === "Kalken" ? "Kalk" : "";
+    const teile = a["Mittel / Dünger"] ? fbMittelTeile(a["Mittel / Dünger"], "dt") : [{name: standard, menge: null, einheit: "", proHa: false}];
+    teile.forEach(t => {
+      const st = fbMittelStamm(t.name) || (standard ? fbMittelStamm(standard) : null);
+      // Menge je ha bestimmen (in kg bzw. m³/t)
+      let jeHa = null, einheitJeHa = "", gesamt = null, einheitGesamt = "";
+      if (t.menge !== null && t.proHa){ jeHa = t.menge; einheitJeHa = t.einheit; }
+      else if (t.menge !== null){ gesamt = t.menge; einheitGesamt = t.einheit; }
+      if (!a["Mittel / Dünger"] && a.Einheit && a.Einheit !== "ha" && fbZahl(a.Menge) !== null){ gesamt = fbZahl(a.Menge); einheitGesamt = a.Einheit; }
+      if (jeHa === null && gesamt !== null && ha) { jeHa = gesamt / ha; einheitJeHa = einheitGesamt; }
+      if (gesamt === null && jeHa !== null && ha) { gesamt = jeHa * ha; einheitGesamt = einheitJeHa; }
+      // Nährstoffe je ha
+      let n = null, nVerf = null, p = null;
+      if (st && jeHa !== null){
+        if (st.Bezug === "%" && FB_KG_JE[einheitJeHa]){
+          const kg = jeHa * FB_KG_JE[einheitJeHa];
+          n = fbZahl(st.N) !== null ? kg * fbZahl(st.N) / 100 : null;
+          nVerf = fbZahl(st["N verfügbar"]) !== null ? kg * fbZahl(st["N verfügbar"]) / 100 : n;
+          p = fbZahl(st.P2O5) !== null ? kg * fbZahl(st.P2O5) / 100 : null;
+        } else if ((st.Bezug === "kg/m³" && einheitJeHa === "m³") || (st.Bezug === "kg/t" && einheitJeHa === "t")){
+          n = fbZahl(st.N) !== null ? jeHa * fbZahl(st.N) : null;
+          nVerf = fbZahl(st["N verfügbar"]) !== null ? jeHa * fbZahl(st["N verfügbar"]) : null;
+          p = fbZahl(st.P2O5) !== null ? jeHa * fbZahl(st.P2O5) : null;
+        }
+      }
+      const handN = fbStickstoff(a);
+      if (n === null && handN) n = fbZahl(handN);
+      const tierisch = st ? st.Art === "Wirtschaftsdünger" : /gülle|mist|gärrest|jauche/i.test(t.name || standard);
+      const r = x => x === null ? "" : fbZahlText(Math.round(x * 10) / 10, 1);
+      zeilen.push({a, datum: a.Datum, flaeche: a["Ort / Schlag"] || "", ha, kultur: a.Kultur || "", massnahme: a["Tätigkeit"],
+        duenger: st ? st.Name : (t.name || standard), jeHa: jeHa !== null ? `${fbZahlText(Math.round(jeHa * 100) / 100, 2)} ${einheitJeHa}/ha` : "",
+        gesamt: gesamt !== null ? `${fbZahlText(Math.round(gesamt * 100) / 100, 2)} ${einheitGesamt}` : "",
+        n: r(n), nVerf: tierisch ? r(nVerf) : r(n), p: r(p), tierisch: tierisch ? "ja" : "nein", bemerkung: a.Bemerkung || "", fehltGehalt: n === null});
+    });
+  });
+  return zeilen;
 }
 function fbStickstoff(a){
-  const m = `${a["Mittel / Dünger"] || ""} ${a.Bemerkung || ""}`.match(/(\d+(?:,\d+)?)\s*(?:kg\s*)?N(?![\p{L}+])/u);
+  const m = `${a["Mittel / Dünger"] || ""} ${a.Bemerkung || ""}`.match(/(\d+(?:,\d+)?)\s*(?:kg\s*)?N(?![\p{L}+\/])/u);
   return m ? m[1] : "";
 }
-async function fbDokuPdf(art){
+function fbDokuSpalten(art){
+  return art === "ps"
+    ? [["Datum", z => fbDatumAnzeige(z.datum)], ["Uhrzeit", z => z.uhrzeit], ["Fläche", z => z.flaeche], ["Lage (FID/Flurstück)", z => z.lage],
+       ["ha", z => z.ha !== null ? fbZahlText(z.ha, 2) : ""], ["Kultur", z => z.kultur], ["EPPO", z => z.eppo], ["BBCH", z => z.bbch],
+       ["Pflanzenschutzmittel", z => z.mittel], ["Zulassungs-Nr.", z => z.zulassung], ["Aufwandmenge", z => z.aufwand], ["Menge gesamt", z => z.gesamt],
+       ["Anwender", z => z.anwender], ["Verwendung", z => z.verwendung], ["Bemerkung", z => z.bemerkung]]
+    : [["Datum", z => fbDatumAnzeige(z.datum)], ["Schlag", z => z.flaeche], ["ha", z => z.ha !== null ? fbZahlText(z.ha, 2) : ""], ["Kultur", z => z.kultur],
+       ["Maßnahme", z => z.massnahme], ["Düngemittel", z => z.duenger], ["Menge je ha", z => z.jeHa], ["Menge gesamt", z => z.gesamt],
+       ["N ges. kg/ha", z => z.n], ["N verf. kg/ha", z => z.nVerf], ["P₂O₅ kg/ha", z => z.p], ["tierisch", z => z.tierisch], ["Bemerkung", z => z.bemerkung]];
+}
+async function fbDokuDatei(art, format){
+  const {jahr, wer} = fbDokuJahrUndWer();
+  const zeilen = art === "ps" ? fbPsZeilen(jahr, wer) : fbDuengeZeilen(jahr, wer);
+  if (!zeilen.length) throw new Error(`Keine Einträge für ${art === "ps" ? "Pflanzenschutz" : "Düngung"} ${jahr} (${wer === "Eigen" ? "eigene Flächen" : wer}).`);
+  const spalten = fbDokuSpalten(art);
+  const basis = `${art === "ps" ? "Pflanzenschutz-Dokumentation" : "Duengedokumentation"} ${jahr}${wer === "Eigen" ? "" : " " + wer}`;
+  if (format === "csv"){
+    const feld = v => { const t = String(v ?? ""); return /[;"\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+    const kopf = spalten.map(s => s[0].replace("₂", "2").replace("₅", "5"));
+    const text = "﻿" + [kopf.join(";"), ...zeilen.map(z => spalten.map(s => feld(s[1](z))).join(";"))].join("\r\n");
+    return {datei: new File([text], basis + ".csv", {type: "text/csv;charset=utf-8"}), name: basis + ".csv", typ: "text/csv;charset=utf-8", anzahl: zeilen.length};
+  }
   await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf);
   await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js", () => window.jspdf && window.jspdf.jsPDF.API.autoTable);
-  const jahr = $fb("fbAwJahr").value, wer = $fb("fbDokuWer").value, anwender = $fb("fbDokuAnwender").value.trim();
-  const zeilen = fbDokuZeilen(art, jahr, wer);
-  if (!zeilen.length) throw new Error(`Keine Einträge für ${art === "ps" ? "Pflanzenschutz" : "Düngung"} ${jahr} (${wer === "Eigen" ? "eigene Flächen" : wer}).`);
   const firma = ((fbDaten && fbDaten.firmen) || [])[0] || {};
   const mandant = wer === "Eigen" ? null : ((fbDaten && fbDaten.mandanten) || []).find(m => m.Kurzname === wer);
   const pdf = new jspdf.jsPDF({orientation: "landscape", unit: "mm", format: "a4"});
-  const gruen = [63, 112, 89];
   pdf.setFont("helvetica", "bold"); pdf.setFontSize(14);
-  pdf.text(`${FB_DOKU[art].titel} ${jahr}`, 14, 16);
-  pdf.setFont("helvetica", "normal"); pdf.setFontSize(9.5);
-  pdf.text(FB_DOKU[art].grundlage, 14, 22);
+  pdf.text(art === "ps" ? `Aufzeichnungen über die Anwendung von Pflanzenschutzmitteln ${jahr}` : `Aufzeichnungen über die Düngung ${jahr}`, 12, 15);
+  pdf.setFont("helvetica", "normal"); pdf.setFontSize(9);
+  pdf.text(art === "ps" ? "nach § 11 PflSchG i. V. m. Art. 67 VO (EG) Nr. 1107/2009 und VO (EU) 2023/564" : "nach § 10 Düngeverordnung (DüV)", 12, 20.5);
   const betrieb = mandant ? `Betrieb: ${mandant.Name || mandant.Kurzname}${mandant["Straße"] ? ", " + mandant["Straße"] : ""}${mandant["PLZ Ort"] ? ", " + mandant["PLZ Ort"] : ""} · ausgeführt durch ${firma.Firma || ""}`
                           : `Betrieb: ${firma.Firma || ""}${firma.Inhaber ? ", " + firma.Inhaber : ""}${firma["Straße"] ? ", " + firma["Straße"] : ""}${firma["PLZ Ort"] ? ", " + firma["PLZ Ort"] : ""}`;
-  pdf.text(betrieb, 14, 28);
-  const fl = a => a.Einheit === "ha" && fbZahl(a.Menge) !== null ? fbZahlText(fbZahl(a.Menge), 2) : "–";
-  let kopf, koerper;
-  if (art === "ps"){
-    kopf = [["Datum", "Schlag / Ort", "Kultur", "Fläche (ha)", "Pflanzenschutzmittel und Aufwandmenge", "Anwender", "Bemerkung"]];
-    koerper = zeilen.map(a => [fbDatumAnzeige(a.Datum), a["Ort / Schlag"] || "–", a.Kultur || "–", fl(a), a["Mittel / Dünger"] || "–", anwender || "–", a.Bemerkung || ""]);
-  } else {
-    kopf = [["Datum", "Schlag / Ort", "Kultur", "Fläche (ha)", "Maßnahme", "Düngemittel / Aufwand", "Menge gesamt", "kg N/ha", "Bemerkung"]];
-    koerper = zeilen.map(a => [fbDatumAnzeige(a.Datum), a["Ort / Schlag"] || "–", a.Kultur || "–", fl(a), a["Tätigkeit"],
-      a["Mittel / Dünger"] || (a["Tätigkeit"] === "Gülle fahren" ? "Gülle" : a["Tätigkeit"] === "Mist streuen" ? "Mist" : "–"),
-      a.Einheit && a.Einheit !== "ha" && fbZahl(a.Menge) !== null ? `${fbZahlText(fbZahl(a.Menge), 2)} ${a.Einheit}` : "–", fbStickstoff(a) || "–", a.Bemerkung || ""]);
-  }
-  pdf.autoTable({head: kopf, body: koerper, startY: 33, theme: "grid", styles: {fontSize: 8.5, cellPadding: 1.6, valign: "top"},
-    headStyles: {fillColor: gruen, textColor: 255, fontStyle: "bold"}, alternateRowStyles: {fillColor: [246, 244, 238]},
-    margin: {left: 14, right: 14, bottom: 16},
+  pdf.text(betrieb, 12, 26);
+  pdf.autoTable({head: [spalten.map(s => s[0].replace("₂", "2").replace("₅", "5"))], body: zeilen.map(z => spalten.map(s => s[1](z) || "–")), startY: 30, theme: "grid",
+    styles: {fontSize: art === "ps" ? 6.8 : 7.6, cellPadding: 1.2, valign: "top", overflow: "linebreak"},
+    headStyles: {fillColor: [63, 112, 89], textColor: 255, fontStyle: "bold"}, alternateRowStyles: {fillColor: [246, 244, 238]},
+    margin: {left: 10, right: 10, bottom: 14},
     didDrawPage: () => {
-      const seite = pdf.internal.getNumberOfPages();
-      pdf.setFontSize(8); pdf.setTextColor(120);
-      pdf.text(`Erstellt mit der Poolehof-App am ${fbDatumAnzeige(fbHeuteIso())} · ${zeilen.length} Einträge`, 14, 203);
-      pdf.text(`Seite ${seite}`, 283, 203, {align: "right"});
+      pdf.setFontSize(7.5); pdf.setTextColor(120);
+      pdf.text(`Erstellt mit der Poolehof-App am ${fbDatumAnzeige(fbHeuteIso())} · ${zeilen.length} Zeilen · „–“ = Angabe fehlt`, 10, 204);
+      pdf.text(`Seite ${pdf.internal.getNumberOfPages()}`, 287, 204, {align: "right"});
       pdf.setTextColor(0);
     }});
-  const fehlen = zeilen.filter(a => !a["Ort / Schlag"] || fl(a) === "–" || (art === "ps" && !a["Mittel / Dünger"])).length;
-  const name = `${FB_DOKU[art].datei} ${jahr}${wer === "Eigen" ? "" : " " + wer}.pdf`;
-  return {datei: new File([pdf.output("blob")], name, {type: "application/pdf"}), name, anzahl: zeilen.length, fehlen};
+  return {datei: new File([pdf.output("blob")], basis + ".pdf", {type: "application/pdf"}), name: basis + ".pdf", typ: "application/pdf", anzahl: zeilen.length};
 }
-async function fbDokuKlick(art){
-  const knopf = $fb(art === "ps" ? "fbDokuPs" : "fbDokuDuenger"), info = $fb("fbDokuInfo");
-  const schluessel = `${art}|${$fb("fbAwJahr").value}|${$fb("fbDokuWer").value}|${$fb("fbDokuAnwender").value}`;
-  const fertig = fbDokuFertig[art];
+async function fbDokuKlick(art, format, knopf){
+  const info = $fb("fbDokuInfo");
+  const {jahr, wer} = fbDokuJahrUndWer();
+  const schluessel = `${art}|${format}|${jahr}|${wer}|${$fb("fbDokuAnwender").value}|${fbGeladen && fbGeladen.version}`;
+  const fertig = fbDokuFertig[art + format];
   if (fertig && fertig.schluessel === schluessel){
-    const erg = await fbSichern(fertig.name, fertig.datei, "application/pdf");
+    const erg = await fbSichern(fertig.name, fertig.datei, fertig.typ);
     if (erg === "gespeichert") info.textContent = "✓ Gespeichert: " + fertig.name;
     return;
   }
-  const text = knopf.textContent;
-  knopf.textContent = "⏳ wird erstellt …";
+  const text = knopf.dataset.text || (knopf.dataset.text = knopf.textContent);
+  knopf.textContent = "⏳ …";
   try {
-    const d = await fbDokuPdf(art);
-    fbDokuFertig[art] = {...d, schluessel};
-    knopf.textContent = (art === "ps" ? "🌿" : "🧪") + " Fertig – jetzt " + (fbSicherArt() === "auswahl" ? "speichern …" : fbSicherArt() === "teilen" ? "teilen / sichern" : "herunterladen");
-    info.textContent = `${d.anzahl} Einträge${d.fehlen ? ` · bei ${d.fehlen} fehlt Fläche, Ort oder Mittel („–“) – bitte ergänzen` : ""}`;
-    setTimeout(() => { knopf.textContent = text; delete fbDokuFertig[art]; }, 60000);
+    const d = await fbDokuDatei(art, format);
+    // CSV ist sofort fertig → gleich speichern; PDF: zweites Tippen
+    if (format === "csv"){ knopf.textContent = text; const erg = await fbSichern(d.name, d.datei, d.typ); if (erg === "gespeichert") info.textContent = "✓ Gespeichert: " + d.name; return; }
+    fbDokuFertig[art + format] = {...d, schluessel};
+    knopf.textContent = "✓ " + (fbSicherArt() === "auswahl" ? "Jetzt speichern …" : fbSicherArt() === "teilen" ? "Jetzt teilen / sichern" : "Jetzt herunterladen");
+    info.textContent = `${d.anzahl} Zeilen erstellt.`;
+    setTimeout(() => { knopf.textContent = text; delete fbDokuFertig[art + format]; }, 60000);
   } catch(err) { knopf.textContent = text; info.textContent = err.message; }
 }
-$fb("fbDokuPs").addEventListener("click", () => fbDokuKlick("ps"));
-$fb("fbDokuDuenger").addEventListener("click", () => fbDokuKlick("duenger"));
+
+// Was fehlt noch für eine vollständige Doku?
+function fbRenderDokuCheck(){
+  const {jahr, wer} = fbDokuJahrUndWer();
+  const ps = fbPsZeilen(jahr, wer), du = fbDuengeZeilen(jahr, wer);
+  const zaehl = (liste, test) => liste.filter(test).length;
+  const punkte = [];
+  const p = (n, text) => { if (n) punkte.push(`<li>⚠ <b>${n}</b> ${text}</li>`); };
+  if (ps.length){
+    p(zaehl(ps, z => !z.mittel), "Pflanzenschutz-Zeilen ohne Mittel");
+    p(zaehl(ps, z => z.mittel && !z.zulassung), "Pflanzenschutz-Zeilen ohne Zulassungsnummer → unten bei „Mittel und Dünger“ eintragen");
+    p(zaehl(ps, z => !z.aufwand), "Pflanzenschutz-Zeilen ohne Aufwandmenge");
+    p(zaehl(ps, z => z.ha === null), "Pflanzenschutz-Zeilen ohne Fläche in ha");
+    p(zaehl(ps, z => !z.lage), "Pflanzenschutz-Zeilen ohne Lage (FID/Flurstück) → unten bei „Flächen“ eintragen");
+    p(zaehl(ps, z => !z.kultur), "Pflanzenschutz-Zeilen ohne Kultur");
+    p(zaehl(ps, z => z.kultur && !z.eppo), "Zeilen mit Kultur ohne EPPO-Code (z. B. Grünland – bitte beim Amt erfragen)");
+    p(zaehl(ps, z => !z.bbch), "Pflanzenschutz-Zeilen ohne BBCH-Stadium (nur Pflicht, wenn die Zulassung es einschränkt)");
+    p(zaehl(ps, z => !z.anwender), "Pflanzenschutz-Zeilen ohne Anwender");
+  }
+  if (du.length){
+    p(zaehl(du, z => z.fehltGehalt), "Düngezeilen ohne Stickstoffangabe → Gehalte unten bei „Mittel und Dünger“ eintragen");
+    p(zaehl(du, z => z.ha === null), "Düngezeilen ohne Fläche in ha");
+    p(zaehl(du, z => !z.flaeche), "Düngezeilen ohne Schlag");
+  }
+  $fb("fbDokuCheck").innerHTML = !ps.length && !du.length
+    ? `<p class="bs-help">Für ${jahr} (${wer === "Eigen" ? "eigene Flächen" : esc(wer)}) gibt es keine Pflanzenschutz- oder Düngeeinträge.</p>`
+    : `<p class="bs-help">${ps.length} Pflanzenschutz-Zeilen · ${du.length} Düngezeilen</p>` +
+      (punkte.length ? `<ul class="fb-check">${punkte.join("")}</ul><p class="bs-help">Fehlende Angaben bei einzelnen Einträgen: im Reiter Liste antippen und ergänzen. In der Doku steht dort „–“.</p>`
+                     : `<p class="fb-check ok">✓ Alles Wichtige ist da.</p>`);
+}
+
+// Tabelle "Mittel und Dünger": gespeicherte + in den Einträgen gefundene Namen
+function fbRenderDokuMittel(){
+  const gespeichert = ((fbDaten && fbDaten.mittel) || []).map(m => ({...m}));
+  const gefunden = new Map();
+  fbArbeiten().forEach(a => {
+    const ps = FB_PS_TAETIGKEITEN.includes(a["Tätigkeit"]), du = FB_DUENGE_TAETIGKEITEN.includes(a["Tätigkeit"]);
+    if (!ps && !du) return;
+    if (a["Mittel / Dünger"]) fbMittelTeile(a["Mittel / Dünger"], ps ? "l" : "dt").forEach(t => { if (t.name && t.name.length >= 2) gefunden.set(fbNorm(t.name), {Name: t.name, Art: ps ? "Pflanzenschutz" : /kalk/i.test(t.name) ? "Kalk" : "Mineraldünger"}); });
+    else if (a["Tätigkeit"] === "Gülle fahren") gefunden.set("guele", {Name: "Gülle", Art: "Wirtschaftsdünger"});
+    else if (a["Tätigkeit"] === "Mist streuen") gefunden.set("mist", {Name: "Mist", Art: "Wirtschaftsdünger"});
+  });
+  const liste = [...gespeichert];
+  gefunden.forEach(g => { if (!fbMittelStamm(g.Name)) liste.push({...g, "Zulassungs-Nr.": "", N: "", "N verfügbar": "", P2O5: "", Bezug: g.Art === "Pflanzenschutz" ? "" : g.Art === "Wirtschaftsdünger" ? "kg/m³" : "%", __neu: true}); });
+  const box = $fb("fbDokuMittel");
+  const zeichnen = () => {
+    box.innerHTML = `<div class="table-scroll"><table class="fb-aw fb-dm-tabelle"><thead><tr><th>Name</th><th>Art</th><th>Zulassungs-Nr.</th><th>N</th><th>N verfügbar</th><th>P₂O₅</th><th>Gehalt in</th><th></th></tr></thead><tbody>
+      ${liste.map((m, i) => `<tr data-i="${i}" class="${m.__neu ? "neu" : ""}"><td><input data-k="Name" value="${esc(m.Name || "")}" title="${m.__neu ? "aus deinen Einträgen – noch nicht gespeichert" : ""}"></td>
+        <td><select data-k="Art">${FB_MITTEL_ARTEN.map(a => `<option ${a === m.Art ? "selected" : ""}>${a}</option>`).join("")}</select></td>
+        <td><input data-k="Zulassungs-Nr." value="${esc(m["Zulassungs-Nr."] || "")}" placeholder="${m.Art === "Pflanzenschutz" ? "z. B. 008473-00" : "–"}"></td>
+        <td><input data-k="N" inputmode="decimal" value="${esc(m.N ?? "")}" placeholder="${m.Art === "Pflanzenschutz" ? "" : m.Art === "Wirtschaftsdünger" ? "kg" : "%"}"></td>
+        <td><input data-k="N verfügbar" inputmode="decimal" value="${esc(m["N verfügbar"] ?? "")}"></td>
+        <td><input data-k="P2O5" inputmode="decimal" value="${esc(m.P2O5 ?? "")}"></td>
+        <td><select data-k="Bezug">${["", "%", "kg/m³", "kg/t"].map(b => `<option value="${b}" ${b === (m.Bezug || "") ? "selected" : ""}>${b || "–"}</option>`).join("")}</select></td>
+        <td><button class="btn small ghost" type="button" data-weg="${i}" aria-label="Zeile löschen">✕</button></td></tr>`).join("")}
+      </tbody></table></div>
+      <div class="fb-form-knoepfe" style="margin-top:8px"><button class="btn small" type="button" id="fbDmNeu">+ Mittel</button><button class="btn primary small" type="button" id="fbDmSpeichern">Speichern</button>
+      <span class="bs-erkannt">${liste.some(m => m.__neu) ? "Orange = aus deinen Einträgen, noch nicht gespeichert" : ""}</span></div>`;
+    box.querySelectorAll("input,select").forEach(inp => inp.addEventListener("input", () => { liste[inp.closest("tr").dataset.i][inp.dataset.k] = inp.value; }));
+    box.querySelectorAll("button[data-weg]").forEach(b => b.addEventListener("click", () => { liste.splice(Number(b.dataset.weg), 1); zeichnen(); }));
+    $fb("fbDmNeu").addEventListener("click", () => { liste.push({Name: "", Art: "Pflanzenschutz", Bezug: ""}); zeichnen(); });
+    $fb("fbDmSpeichern").addEventListener("click", () => {
+      const sauber = liste.filter(m => String(m.Name || "").trim() && (!m.__neu || m["Zulassungs-Nr."] || m.N || m.P2O5 || m["N verfügbar"]))
+        .map(m => { const o = {}; FB_MITTEL_FELDER.forEach(k => { o[k] = typeof m[k] === "string" ? m[k].trim() : (m[k] ?? ""); }); return o; });
+      fbAendern({typ: "mittel", liste: sauber});
+    });
+  };
+  zeichnen();
+}
+// Tabelle "Flächen": FID/Flurstück + Größe
+function fbRenderDokuFlaechen(){
+  const gespeichert = ((fbDaten && fbDaten.schlaege) || []).map(x => ({...x}));
+  const orte = new Set();
+  fbArbeiten().forEach(a => { if ([...FB_PS_TAETIGKEITEN, ...FB_DUENGE_TAETIGKEITEN].includes(a["Tätigkeit"]) && a["Ort / Schlag"]) orte.add(a["Ort / Schlag"]); });
+  const liste = [...gespeichert];
+  orte.forEach(o => { if (!fbFlaecheStamm(o)) liste.push({Name: o, FID: "", "Größe (ha)": "", __neu: true}); });
+  const box = $fb("fbDokuFlaechen");
+  const zeichnen = () => {
+    box.innerHTML = `<div class="table-scroll"><table class="fb-aw fb-dm-tabelle"><thead><tr><th>Fläche / Schlag</th><th>Lage (FID oder Flurstück)</th><th>Größe ha</th><th></th></tr></thead><tbody>
+      ${liste.map((f, i) => `<tr data-i="${i}" class="${f.__neu ? "neu" : ""}"><td><input data-k="Name" value="${esc(f.Name || "")}"></td><td><input data-k="FID" value="${esc(f.FID || "")}" placeholder="z. B. DEBWLI0123456789"></td>
+        <td><input data-k="Größe (ha)" inputmode="decimal" value="${esc(f["Größe (ha)"] ?? "")}"></td><td><button class="btn small ghost" type="button" data-weg="${i}" aria-label="Zeile löschen">✕</button></td></tr>`).join("")
+        || `<tr><td colspan="4" class="bs-help">Noch keine Flächen – sie erscheinen hier, sobald bei Pflanzenschutz/Düngung ein Ort eingetragen ist.</td></tr>`}
+      </tbody></table></div>
+      <div class="fb-form-knoepfe" style="margin-top:8px"><button class="btn small" type="button" id="fbFlNeu">+ Fläche</button><button class="btn primary small" type="button" id="fbFlSpeichern">Speichern</button></div>`;
+    box.querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => { liste[inp.closest("tr").dataset.i][inp.dataset.k] = inp.value; }));
+    box.querySelectorAll("button[data-weg]").forEach(b => b.addEventListener("click", () => { liste.splice(Number(b.dataset.weg), 1); zeichnen(); }));
+    $fb("fbFlNeu").addEventListener("click", () => { liste.push({Name: "", FID: "", "Größe (ha)": ""}); zeichnen(); });
+    $fb("fbFlSpeichern").addEventListener("click", () => {
+      const sauber = liste.filter(f => String(f.Name || "").trim() && (!f.__neu || f.FID || f["Größe (ha)"]))
+        .map(f => ({Name: f.Name.trim(), FID: String(f.FID || "").trim(), "Größe (ha)": fbZahl(f["Größe (ha)"]) ?? ""}));
+      fbAendern({typ: "schlaege", liste: sauber});
+    });
+  };
+  zeichnen();
+}
+function fbRenderDoku(){
+  const jSel = $fb("fbDokuJahr"), jAlt = jSel.value || String(new Date().getFullYear());
+  jSel.innerHTML = fbJahre().map(j => `<option ${j === jAlt ? "selected" : ""}>${j}</option>`).join("");
+  const sel = $fb("fbDokuWer"), alt = sel.value || "Eigen";
+  const namen = [...new Set(fbArbeiten().filter(a => !fbIstEigen(a.Mandant) && [...FB_PS_TAETIGKEITEN, ...FB_DUENGE_TAETIGKEITEN].includes(a["Tätigkeit"])).map(a => a.Mandant))].sort((a, b) => a.localeCompare(b, "de"));
+  sel.innerHTML = `<option value="Eigen">eigene Flächen</option>` + namen.map(n => `<option ${n === alt ? "selected" : ""}>${esc(n)}</option>`).join("");
+  if (alt === "Eigen") sel.value = "Eigen";
+  const anw = $fb("fbDokuAnwender");
+  if (!anw.value) anw.value = fbDokuAnwenderStandard();
+  fbRenderDokuCheck();
+  fbRenderDokuMittel();
+  fbRenderDokuFlaechen();
+}
+$fb("fbDokuPs").addEventListener("click", ev => fbDokuKlick("ps", "pdf", ev.currentTarget));
+$fb("fbDokuPsCsv").addEventListener("click", ev => fbDokuKlick("ps", "csv", ev.currentTarget));
+$fb("fbDokuDuenger").addEventListener("click", ev => fbDokuKlick("duenger", "pdf", ev.currentTarget));
+$fb("fbDokuDuengerCsv").addEventListener("click", ev => fbDokuKlick("duenger", "csv", ev.currentTarget));
+["fbDokuJahr", "fbDokuWer"].forEach(id => $fb(id).addEventListener("input", fbRenderDokuCheck));
+$fb("fbDokuAnwender").addEventListener("change", () => {
+  const v = $fb("fbDokuAnwender").value.trim();
+  if (v && v !== fbDokuAnwenderStandard()) fbAendern({typ: "dokuEinstellung", felder: {anwender: v}});
+  fbRenderDokuCheck();
+});
 
 // --- Gesamt / Navigation -------------------------------------------------
 function fbZeigeTab(name){
@@ -4292,7 +4586,8 @@ function fbZeigeTab(name){
 function fbRenderTab(){
   if (fbTab === "liste") fbRenderListe();
   else if (fbTab === "rechnung") fbRenderRechnung();
-  else if (fbTab === "auswertung"){ fbRenderAuswertung(); fbRenderDokuAuswahl(); }
+  else if (fbTab === "auswertung") fbRenderAuswertung();
+  else if (fbTab === "doku") fbRenderDoku();
   else if (fbTab === "stamm") fbRenderStamm();
 }
 function fbRenderStartKarte(){
@@ -4314,7 +4609,7 @@ function fbRenderAlles(){
 // Ereignisse
 FB_TABS.forEach(t => $fb("fbTab" + t[0].toUpperCase() + t.slice(1)).addEventListener("click", () => fbZeigeTab(t)));
 $fb("fbForm").addEventListener("submit", fbSpeichern);
-$fb("fbForm").addEventListener("input", fbRenderVorschau);
+$fb("fbForm").addEventListener("input", () => { fbPsFelderZeigen(); fbRenderVorschau(); });
 $fb("fbLeeren").addEventListener("click", fbFormularLeeren);
 let fbTextTimer = null;
 $fb("fbText").addEventListener("input", () => { clearTimeout(fbTextTimer); fbTextTimer = setTimeout(fbTextAuswerten, 300); });
