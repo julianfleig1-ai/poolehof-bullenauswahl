@@ -466,6 +466,10 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-auswahl-leiste{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
   margin:10px 16px 0;padding:10px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--accent);font-size:14px}
 .fb-auswahl-leiste[hidden]{display:none}
+.fb-empf-liste{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fb-umschreiben{color:var(--warn);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:11.5px}
+.fb-zusammen{margin-top:6px;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:13.5px;font-weight:400;color:var(--ink)}
+.fb-zusammen select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:15px}
 @media (max-width:640px){.fb-auswahl-leiste{position:sticky;top:auto;bottom:calc(70px + env(safe-area-inset-bottom));margin:10px 12px 0}}
 /* Handy: jede Feldarbeit als kleine Karte statt breiter Tabelle */
 @media (max-width:640px){
@@ -2653,7 +2657,7 @@ const FB_TAB_KEY = "poolehof-feldbuch-tab-v1";
 const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung", "stamm"];
 const FB_FELDER = ["Datum", "Mandant", "Tätigkeit", "Kultur", "Ort / Schlag", "Menge", "Einheit", "Stunden", "Mittel / Dünger", "Bemerkung"];
 const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Letzte Rechnungs-Nr."];
-const FB_MANDANT_FELDER = ["Kurzname", "Name", "Straße", "PLZ Ort", "Notiz"];
+const FB_MANDANT_FELDER = ["Kurzname", "Name", "Andere Namen", "Straße", "PLZ Ort", "Notiz"];
 const FB_STANDARD_LISTEN = {
   "Tätigkeiten": ["Pflügen", "Grubbern", "Eggen", "Striegeln", "Walzen", "Mulchen", "Säen", "Düngen", "Kalken", "Gülle fahren", "Mist streuen",
                   "Pflanzenschutz", "Mähen", "Kreiseln", "Schwaden", "Häckseln", "Pressen", "Ballen fahren", "Dreschen", "Transport", "Silo walzen",
@@ -2725,6 +2729,7 @@ function fbRechnungAnwenden(d, a){
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
     z.Rechnung = nr; z["Rechnung Firma"] = a.firma;
+    if (z.Mandant !== a.mandant){ z["Mandant (vorher)"] = z.Mandant; z.Mandant = a.mandant; }   // stand unter falschem Namen
     if (!p.taetigkeit || !p.einheit) return;
     const alt = d.preise.find(x => x["Tätigkeit"] === p.taetigkeit && x.Einheit === p.einheit && x.Mandant === a.mandant);
     if (alt) Object.assign(alt, {"Preis (€)": p.preis, Stand: a.zeit});
@@ -2757,6 +2762,18 @@ function fbAnwenden(d, op){
     case "mandant": {
       const m = d.mandanten.find(x => x.Kurzname === op.mandant.Kurzname);
       if (m) Object.assign(m, op.mandant); else d.mandanten.push(fbKopie(op.mandant));
+      return null;
+    }
+    case "mandantZusammen": {
+      const von = d.mandanten.find(x => x.Kurzname === op.von), nach = d.mandanten.find(x => x.Kurzname === op.nach);
+      if (!von || !nach) throw new Error("Mandant nicht gefunden");
+      d.feldarbeiten.forEach(a => { if (a.Mandant === op.von){ a.Mandant = op.nach; a["Mandant (vorher)"] = op.von; } });
+      d.preise.forEach(p => { if (p.Mandant === op.von) p.Mandant = op.nach; });
+      const namen = new Set(String(nach["Andere Namen"] || "").split(",").map(x => x.trim()).filter(Boolean));
+      [op.von, ...String(von["Andere Namen"] || "").split(",")].map(x => x.trim()).filter(Boolean).forEach(x => namen.add(x));
+      nach["Andere Namen"] = [...namen].join(", ");
+      ["Name", "Straße", "PLZ Ort"].forEach(k => { if (!nach[k] && von[k]) nach[k] = von[k]; });
+      d.mandanten = d.mandanten.filter(x => x.Kurzname !== op.von);
       return null;
     }
     case "firma": {
@@ -3100,6 +3117,10 @@ function fbKontext(){
       namen.get(k).add(m.Kurzname);
     });
   });
+  // "Andere Namen" (Hofname, Spitzname) – haben Vorrang vor allem anderen
+  const aliase = [];
+  mandanten.filter(m => !fbIstEigen(m.Kurzname)).forEach(m => String(m["Andere Namen"] || "").split(",").map(x => x.trim()).filter(x => x.length >= 3)
+    .forEach(x => aliase.push({text: fbNorm(x), kurz: m.Kurzname})));
   const orte = new Set(), mittel = new Set(FB_STANDARD_MITTEL);
   arbeiten.forEach(a => {
     String(a["Ort / Schlag"] || "").split(/[,/+]| und /).map(s => s.trim()).filter(s => s.length >= 3).forEach(s => orte.add(s));
@@ -3108,7 +3129,7 @@ function fbKontext(){
       if (w.length >= 3 && w.length <= 20) mittel.add(w);
     });
   });
-  return {mandanten, namen, orte: [...orte].sort((a, b) => b.length - a.length), mittel: [...mittel].sort((a, b) => b.length - a.length)};
+  return {mandanten, namen, aliase, orte: [...orte].sort((a, b) => b.length - a.length), mittel: [...mittel].sort((a, b) => b.length - a.length)};
 }
 
 function fbIsoVon(d){ return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
@@ -3213,6 +3234,10 @@ function fbTeilVerstehen(roh, k){
   // Mandant: bekannter Name (auch leicht falsch geschrieben), sonst "für/bei X", sonst eigene Fläche
   const woerter = roh.split(/[^\p{L}\-]+/u).filter(w => w.length >= 3 && !FB_KEINE_NAMEN.has(w.toLowerCase()));
   const kandidaten = new Map();
+  const normText = " " + fbNorm(roh) + " ", normFest = normText.replace(/ /g, "");
+  k.aliase.forEach(al => {
+    if (normText.includes(" " + al.text + " ") || (al.text.replace(/ /g, "").length >= 6 && normFest.includes(al.text.replace(/ /g, "")))) kandidaten.set(al.kurz, -1);
+  });
   k.mandanten.filter(x => !fbIstEigen(x.Kurzname) && /\s/.test(x.Kurzname)).forEach(x => { if (fbNorm(roh).includes(fbNorm(x.Kurzname))) kandidaten.set(x.Kurzname, 0); });
   woerter.forEach(w => {
     for (const [name, ziele] of k.namen){
@@ -3521,7 +3546,7 @@ function fbRenderListe(){
   $fb("fbNotizenTitel").textContent = `Notizen aus der alten Liste (${notizen.length})`;
   $fb("fbNotizen").innerHTML = notizen.map(n => `<li><b>${esc(n[1] || "")}</b> ${esc(n[2] || "")} <span class="bs-erkannt">(${esc(n[0] || "")})</span></li>`).join("");
   $fb("fbListeInfo").textContent = `${zeilen.length} Einträge${wartend.length ? ` · ${wartend.length} warten noch auf Übertragung` : ""}`;
-  const waehlbar = a => !a.Rechnung && !fbIstEigen(a.Mandant) && !a.__wartet;
+  const waehlbar = a => !a.Rechnung && !a.__wartet;
   $fb("fbListeBody").innerHTML = zeilen.map(a => `<tr data-id="${esc(a.ID)}" class="${a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : ""}${fbAuswahl && fbAuswahl.has(a.ID) ? " gewaehlt" : ""}${fbAuswahl && !waehlbar(a) ? " nicht-waehlbar" : ""}" title="${esc(a["Prüfen"] || "")}">
       <td class="num">${fbAuswahl ? (waehlbar(a) ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="für Rechnung auswählen"> ` : `<span class="fb-wahl-platz"></span>`) : ""}${esc(fbDatumAnzeige(a.Datum))}</td><td>${esc(a.Mandant || "")}</td><td>${esc(a["Tätigkeit"] || "")}</td>
       <td>${esc(a.Kultur || "")}</td><td>${esc(a["Ort / Schlag"] || "")}</td>
@@ -3535,14 +3560,23 @@ function fbRenderListe(){
 let fbAuswahl = null;           // null = normale Liste, Set = Auswahl für Rechnung
 function fbAuswahlUmschalten(id){
   const a = fbArbeiten().find(x => x.ID === id);
-  if (!a || a.Rechnung || fbIstEigen(a.Mandant) || a.__wartet) return;
-  if (fbAuswahl.has(id)) fbAuswahl.delete(id);
-  else {
-    const andere = [...fbAuswahl].map(x => fbArbeiten().find(y => y.ID === x)).find(x => x && x.Mandant !== a.Mandant);
-    if (andere){ alert(`Eine Rechnung geht immer an einen Mandanten. Ausgewählt sind schon Arbeiten für „${andere.Mandant}“ – erst diese abwählen.`); return; }
-    fbAuswahl.add(id);
-  }
+  if (!a || a.Rechnung || a.__wartet) return;
+  if (fbAuswahl.has(id)) fbAuswahl.delete(id); else fbAuswahl.add(id);
   fbRenderListe();
+}
+// Wer bekommt die Rechnung? (wenn Arbeiten unter verschiedenen Namen ausgewählt sind)
+function fbEmpfaengerDialog(vorschlaege, weiter){
+  const alle = ((fbDaten && fbDaten.mandanten) || []).filter(m => !fbIstEigen(m.Kurzname)).map(m => m.Kurzname)
+    .sort((a, b) => (vorschlaege.includes(b) - vorschlaege.includes(a)) || a.localeCompare(b, "de"));
+  const d = $fb("fbDialog");
+  d.innerHTML = `<div class="fb-card">
+    <div class="dlg-head" style="padding:0 0 10px;position:static"><div class="row1"><h2>Wer bekommt die Rechnung?</h2>
+      <button class="dlg-close" type="button" aria-label="Schließen">✕</button></div></div>
+    <p class="bs-help">Die ausgewählten Arbeiten stehen unter verschiedenen Namen. Beim Erstellen der Rechnung werden sie auf den gewählten Mandanten umgeschrieben (der alte Name bleibt vermerkt).</p>
+    <div class="fb-empf-liste">${alle.map(n => `<button class="btn ${vorschlaege.includes(n) ? "primary" : ""}" type="button" data-m="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>`;
+  d.querySelector(".dlg-close").addEventListener("click", () => d.close());
+  d.querySelectorAll("button[data-m]").forEach(b => b.addEventListener("click", () => { d.close(); weiter(b.dataset.m); }));
+  d.showModal();
 }
 function fbRenderAuswahlLeiste(){
   const leiste = $fb("fbAuswahlLeiste");
@@ -3550,16 +3584,23 @@ function fbRenderAuswahlLeiste(){
   if (!fbAuswahl){ leiste.hidden = true; return; }
   leiste.hidden = false;
   const ids = [...fbAuswahl];
-  const mandant = ids.length ? (fbArbeiten().find(a => a.ID === ids[0]) || {}).Mandant : "";
+  const zaehl = {};
+  ids.forEach(id => { const a = fbArbeiten().find(x => x.ID === id); if (a) zaehl[a.Mandant] = (zaehl[a.Mandant] || 0) + 1; });
+  const namen = Object.keys(zaehl);
   leiste.innerHTML = ids.length
-    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} für <b>${esc(mandant)}</b> ausgewählt</span>
+    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt · ${namen.map(n => `${esc(n)}${namen.length > 1 ? " " + zaehl[n] : ""}`).join(", ")}</span>
        <button class="btn primary small" type="button" id="fbAuswahlUebernehmen">In Rechnung übernehmen →</button>`
-    : `<span>Offene Lohnarbeiten antippen, die in die Rechnung sollen. Abgerechnete (✓) und eigene Arbeiten sind ausgegraut.</span>`;
+    : `<span>Arbeiten antippen, die in die Rechnung sollen – auch wenn sie unter einem anderen Namen stehen. Abgerechnete (✓) sind ausgegraut.</span>`;
   if (ids.length) $fb("fbAuswahlUebernehmen").addEventListener("click", () => {
-    fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
-    fbAuswahl = null;
-    fbZeigeTab("rechnung");
-    window.scrollTo({top: 0, behavior: "smooth"});
+    const fremd = namen.filter(n => !fbIstEigen(n));
+    const weiter = mandant => {
+      fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
+      fbAuswahl = null;
+      fbZeigeTab("rechnung");
+      window.scrollTo({top: 0, behavior: "smooth"});
+    };
+    if (fremd.length === 1 && namen.length === 1) return weiter(fremd[0]);
+    fbEmpfaengerDialog(fremd, weiter);
   });
 }
 
@@ -3633,6 +3674,7 @@ function fbRenderRechnung(){
   fbArbeiten().forEach(a => { if (!a.Rechnung && !fbIstEigen(a.Mandant)) offen[a.Mandant] = (offen[a.Mandant] || 0) + 1; });
   const mSel = $fb("fbReMandant");
   const namen = Object.keys(offen).sort((a, b) => a.localeCompare(b, "de"));
+  if (fbRe.mandant && fbRe.vorauswahl && !namen.includes(fbRe.mandant)){ namen.unshift(fbRe.mandant); offen[fbRe.mandant] = 0; }
   if (!fbRe.mandant || !namen.includes(fbRe.mandant)) fbRe.mandant = namen[0] || "";
   mSel.innerHTML = namen.length ? namen.map(n => `<option value="${esc(n)}" ${n === fbRe.mandant ? "selected" : ""}>${esc(n)} (${offen[n]} offen)</option>`).join("")
                                : `<option value="">– nichts offen –</option>`;
@@ -3650,7 +3692,7 @@ function fbRenderRePositionen(){
     $fb("fbAdrAendern").addEventListener("click", e => { e.preventDefault(); fbAdresseFormular(mandant, adr); });
   } else fbAdresseFormular(mandant, adr);
 
-  const pos = fbOffeneFuer(mandant);
+  const pos = fbRePosListe();
   pos.forEach(a => {
     if (fbRe.positionen[a.ID]) return;
     const nachStunden = (fbZahl(a.Menge) === null) && fbZahl(a.Stunden) !== null;
@@ -3665,7 +3707,7 @@ function fbRenderRePositionen(){
   $fb("fbRePositionen").innerHTML = `<div class="table-scroll"><table class="fb-pos"><thead><tr><th></th><th>Datum</th><th>Leistung</th><th>Menge</th><th>Einheit</th><th>Preis/Einheit €</th><th class="r">Betrag</th></tr></thead><tbody>
     ${pos.map(a => { const p = fbRe.positionen[a.ID]; return `<tr data-id="${esc(a.ID)}" class="${p.an ? "" : "aus"}">
       <td><input type="checkbox" data-k="an" ${p.an ? "checked" : ""} aria-label="in die Rechnung"></td>
-      <td class="num">${esc(fbDatumAnzeige(p.datum))}</td>
+      <td class="num">${esc(fbDatumAnzeige(p.datum))}${a.Mandant !== mandant ? `<br><small class="fb-umschreiben">stand bei „${esc(a.Mandant)}“</small>` : ""}</td>
       <td><input data-k="text" value="${esc(p.text)}"></td>
       <td><input class="klein" data-k="menge" inputmode="decimal" value="${esc(p.menge)}" placeholder="Menge" aria-label="Menge"></td>
       <td><input class="klein" data-k="einheit" list="fbListeEinheiten" value="${esc(p.einheit)}" placeholder="Einheit" aria-label="Einheit"></td>
@@ -3680,8 +3722,14 @@ function fbRenderRePositionen(){
   }));
   fbRenderReSumme();
 }
+// Positionen der Rechnung: offene Arbeiten des Mandanten + aus der Liste ausgewählte unter anderem Namen
+function fbRePosListe(){
+  const eigene = fbOffeneFuer(fbRe.mandant);
+  const fremde = fbRe.vorauswahl ? fbArbeiten().filter(a => fbRe.vorauswahl.has(a.ID) && !a.Rechnung && a.Mandant !== fbRe.mandant) : [];
+  return [...eigene, ...fremde].sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)));
+}
 function fbReAuswahl(){
-  return fbOffeneFuer(fbRe.mandant).map(a => ({id: a.ID, ...fbRe.positionen[a.ID]})).filter(p => p.an);
+  return fbRePosListe().map(a => ({id: a.ID, ...fbRe.positionen[a.ID]})).filter(p => p.an);
 }
 function fbRenderReSumme(){
   let netto = 0;
@@ -3904,7 +3952,7 @@ function fbRenderStamm(){
   }));
   const mandanten = ((fbDaten && fbDaten.mandanten) || []).slice().sort((a, b) => fbIstEigen(a.Kurzname) ? -1 : fbIstEigen(b.Kurzname) ? 1 : a.Kurzname.localeCompare(b.Kurzname, "de"));
   $fb("fbStMandanten").innerHTML = `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Kurzname</th><th>Name / Adresse</th><th></th></tr></thead><tbody>
-    ${mandanten.map(m => `<tr><td><b>${esc(m.Kurzname)}</b></td><td>${m.Name ? esc([m.Name, m["Straße"], m["PLZ Ort"]].filter(Boolean).join(", ")) : `<span class="bs-erkannt">Adresse fehlt</span>`}</td>
+    ${mandanten.map(m => `<tr><td><b>${esc(m.Kurzname)}</b>${m["Andere Namen"] ? `<br><small class="bs-erkannt">auch: ${esc(m["Andere Namen"])}</small>` : ""}</td><td>${m.Name ? esc([m.Name, m["Straße"], m["PLZ Ort"]].filter(Boolean).join(", ")) : `<span class="bs-erkannt">Adresse fehlt</span>`}</td>
       <td><button class="btn small" type="button" data-mandant="${esc(m.Kurzname)}">Bearbeiten</button></td></tr>`).join("")}
     </tbody></table></div>`;
   $fb("fbStMandanten").querySelectorAll("button[data-mandant]").forEach(b => b.addEventListener("click", () => fbMandantDialog(b.dataset.mandant)));
@@ -3917,10 +3965,21 @@ function fbMandantDialog(kurzname){
     <div class="dlg-head" style="padding:0 0 10px;position:static"><div class="row1"><h2>${neu ? "Neuer Mandant" : "Mandant " + esc(kurzname)}</h2>
       <button class="dlg-close" type="button" aria-label="Schließen">✕</button></div></div>
     <form id="fbMandantForm" class="fb-form">
-      ${FB_MANDANT_FELDER.map(n => `<label class="breit">${n === "Kurzname" ? "Kurzname (wie er in der Liste steht)" : n}<input name="${n}" value="${esc(m[n] || "")}" ${n === "Kurzname" ? (neu ? "required" : "readonly") : ""}></label>`).join("")}
+      ${FB_MANDANT_FELDER.map(n => `<label class="breit">${{"Kurzname": "Kurzname (wie er in der Liste steht)", "Andere Namen": "Andere Namen (Hofname, Spitzname … mit Komma trennen)"}[n] || n}<input name="${n}" value="${esc(m[n] || "")}" ${n === "Kurzname" ? (neu ? "required" : "readonly") : ""} ${n === "Andere Namen" ? 'placeholder="z. B. Schillerhof, Bernd"' : ""}></label>`).join("")}
+      ${neu ? "" : `<div class="breit fb-zusammen"><b>Doppelt angelegt?</b> Alle Arbeiten von „${esc(kurzname)}“ zu einem anderen Mandanten verschieben:
+        <div class="bs-hof-form"><select id="fbZusammenZiel"><option value="">– Mandant wählen –</option>${((fbDaten && fbDaten.mandanten) || []).filter(x => x.Kurzname !== kurzname && !fbIstEigen(x.Kurzname)).map(x => `<option>${esc(x.Kurzname)}</option>`).join("")}</select>
+        <button class="btn small" type="button" id="fbZusammenKnopf">Zusammenführen</button></div></div>`}
       <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Speichern</button></div>
     </form><div id="fbMandantMeldung" class="bs-hof-meldung"></div></div>`;
   d.querySelector(".dlg-close").addEventListener("click", () => d.close());
+  if ($fb("fbZusammenKnopf")) $fb("fbZusammenKnopf").addEventListener("click", () => {
+    const nach = $fb("fbZusammenZiel").value;
+    if (!nach) return;
+    const n = fbArbeiten().filter(a => a.Mandant === kurzname).length;
+    if (!confirm(`„${kurzname}“ mit „${nach}“ zusammenführen?\n\n${n} Arbeit(en) werden auf „${nach}“ umgeschrieben, „${kurzname}“ wird als anderer Name von „${nach}“ gemerkt und als eigener Mandant entfernt.`)) return;
+    d.close();
+    fbAendern({typ: "mandantZusammen", von: kurzname, nach});
+  });
   $fb("fbMandantForm").addEventListener("submit", ev => {
     ev.preventDefault();
     const daten = {};
