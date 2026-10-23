@@ -2920,7 +2920,16 @@ function fbSync(){
           }
           throw new Error(j.fehler || "Fehler beim Laden");
         }
-        const daten = j.daten ? await hsEntschluesseln(j.daten) : null;
+        if (!j.daten && fbGeladen && fbGeladen.daten && fbGeladen.version){
+          // Sicherheitsbremse: Der Speicher meldet "leer", obwohl dieses Gerät schon ein Feldbuch kannte.
+          // Dann lieber nichts tun als womöglich alles mit einem leeren Stand zu überschreiben.
+          throw new Error("Hof-Speicher meldet ein leeres Feldbuch – zur Sicherheit wird nichts überschrieben. Bitte später nochmal „Neu laden“.");
+        }
+        let daten = null;
+        if (j.daten){
+          try { daten = await hsEntschluesseln(j.daten); }
+          catch(e) { throw new Error("Daten ließen sich nicht entschlüsseln – bitte einmal neu mit dem Hof-Passwort anmelden"); }
+        }
         if (!fbOps.length){ fbGeladen = {daten, version: j.version || null}; fertig = true; break; }
         const ops = fbOps.slice();
         const neu = daten ? fbKopie(daten) : fbLeer();
@@ -2988,7 +2997,8 @@ async function fbPasswortVerbinden(e){
 }
 
 async function fbStartdatenDatei(datei){
-  const meldung = $fb("fbImportMeldung");
+  const feld = $fb("fbImportMeldung");
+  const meldung = {set textContent(t){ if (feld && feld.isConnected) feld.textContent = t; else if (/^Nicht/.test(t)) alert(t); }};
   try {
     const inhalt = JSON.parse(await datei.text());
     if (inhalt.art !== "poolehof-feldbuch-startdaten" || !Array.isArray(inhalt.feldarbeiten)) throw new Error("Das ist keine Feldbuch-Startdaten-Datei");
@@ -3147,7 +3157,7 @@ function fbOrdnungszahl(wort){
 function fbZahlenNormalisieren(text){
   let t = text.replace(/(\d),(?=\d)/g, "$1#").replace(/(\d)\.(\d{3})(?!\d)/g, "$1$2").replace(/#/g, ",");
   // Ordnungszahlen vor Monat oder nach "am/den/vom"
-  t = t.replace(new RegExp(`(?<![\\p{L}])(\\p{L}+)(?=\\s+(${FB_MONATE.join("|")}))`, "giu"), (g, w) => { const z = fbOrdnungszahl(w); return z ? z + "." : g; });
+  t = t.replace(new RegExp(`(?<![\\p{L}])(\\p{L}+)(?=\\s+(${FB_MONATE.join("|")})(?![\\p{L}]))`, "giu"), (g, w) => { const z = fbOrdnungszahl(w); return z ? z + "." : g; });
   t = t.replace(/(?<![\p{L}])(am|den|vom|bis)\s+(\p{L}+)/giu, (g, p, w) => { const z = fbOrdnungszahl(w); return z ? `${p} ${z}.` : g; });
   // Zahlwörter → Ziffern
   t = t.replace(/\p{L}+/gu, w => { const z = fbWortZahl(w); return z === null ? w : String(z).replace(".", ","); });
@@ -3239,11 +3249,11 @@ function fbDatumAusText(t){
     if (!m[3] && d > tage(1)) d = new Date(jahr - 1, Number(m[2]) - 1, Number(m[1]), 12);
     if (!isNaN(d)) return fbIsoVon(d);
   }
-  if ((m = t.match(new RegExp(`(\\d{1,2})\\.?\\s*(${FB_MONATE.join("|")})`, "i")))){
+  if ((m = t.match(new RegExp(`(\\d{1,2})\\.?\\s*(${FB_MONATE.join("|")})(?![\\p{L}])`, "iu")))){
     const d = new Date(heute.getFullYear(), FB_MONATE.indexOf(m[2].toLowerCase()), Number(m[1]), 12);
     return fbIsoVon(d > tage(1) ? new Date(d.getFullYear() - 1, d.getMonth(), d.getDate(), 12) : d);
   }
-  if ((m = t.match(new RegExp(`(${FB_WOCHENTAGE.join("|")})`, "i")))){
+  if ((m = t.match(new RegExp(`(?<![\\p{L}])(${FB_WOCHENTAGE.join("|")})s?(?![\\p{L}])`, "iu")))){
     const ziel = FB_WOCHENTAGE.indexOf(m[1].toLowerCase());
     if (/letzte[nr]?\s+woche|vorige[nr]?\s+woche|vergangene[nr]?\s+woche/i.test(t)){
       const montagDieseWoche = tage(-((heute.getDay() + 6) % 7));
@@ -3583,7 +3593,7 @@ function fbMikroStopp(hinweis){
   fbMikroAnzeige(false);
   if (e){ try { e.onresult = e.onerror = e.onend = null; e.abort(); } catch(err) {} }
   if (hinweis) $fb("fbSprachHinweis").innerHTML = hinweis;
-  fbTextAuswerten();
+  if (fbHatErgebnis || $fb("fbText").value.trim()) fbTextAuswerten();   // ohne Ergebnis nichts überschreiben
 }
 const FB_TASTATUR_HINWEIS = "Notfalls das <b>🎤 Mikrofon der Tastatur</b> benutzen (unten neben der Leertaste) – das geht auch ohne Netz.";
 function fbMikroKlick(){
@@ -4593,6 +4603,7 @@ $fb("fbDokuAnwender").addEventListener("change", () => {
 // --- Gesamt / Navigation -------------------------------------------------
 function fbZeigeTab(name){
   if (!FB_TABS.includes(name)) name = fbTab || "eintragen";
+  FB_TABS.forEach(t => { const p = $fb("fb" + t[0].toUpperCase() + t.slice(1)); if (p) delete p.dataset.ungespeichert; });
   fbTab = name; lsSchreiben(FB_TAB_KEY, name);
   FB_TABS.forEach(t => {
     $fb("fb" + t[0].toUpperCase() + t.slice(1)).hidden = t !== name;
@@ -4616,14 +4627,28 @@ function fbRenderStartKarte(){
     ? `${fbArbeiten().length} Feldarbeiten · ${offen} Lohnarbeiten offen zum Abrechnen${(() => { const n = ((fbDaten && fbDaten.rechnungen) || []).filter(r => fbZahlStatus(r).art === "ueberfaellig").length; return n ? ` · ⚠ ${n} Rechnung${n === 1 ? "" : "en"} überfällig` : ""; })()}${fbOps.length ? ` · ${fbOps.length} warten auf Übertragung` : ""}`
     : "Eintragen per Sprache, Rechnungen per Klick";
 }
+// Wird gerade in diesem Reiter getippt oder gibt es ungespeicherte Eingaben in einer
+// Tabelle? Dann beim Abgleich im Hintergrund NICHT neu zeichnen (sonst wären sie weg).
+function fbEingabeAktiv(){
+  const panel = $fb("fb" + fbTab[0].toUpperCase() + fbTab.slice(1));
+  if (!panel) return false;
+  if (panel.dataset.ungespeichert === "1") return true;
+  const aktiv = document.activeElement;
+  return !!(aktiv && panel.contains(aktiv) && aktiv.matches("input, select, textarea"));
+}
 function fbRenderAlles(){
   fbRenderVerbindung();
   fbRenderAuswahl();
-  fbRenderTab();
+  if (!fbEingabeAktiv()) fbRenderTab();
   fbRenderStartKarte();
 }
 
 // Ereignisse
+// Tabellen in Stammdaten/Doku: Eingaben gelten als "ungespeichert", bis gespeichert wird
+["fbStamm", "fbDoku"].forEach(id => {
+  $fb(id).addEventListener("input", ev => { if (ev.target.closest("table, details")) $fb(id).dataset.ungespeichert = "1"; });
+  $fb(id).addEventListener("click", ev => { const b = ev.target.closest("button"); if (b && /speichern/i.test(b.textContent)) delete $fb(id).dataset.ungespeichert; }, true);
+});
 FB_TABS.forEach(t => $fb("fbTab" + t[0].toUpperCase() + t.slice(1)).addEventListener("click", () => fbZeigeTab(t)));
 $fb("fbForm").addEventListener("submit", fbSpeichern);
 $fb("fbForm").addEventListener("input", () => { fbPsFelderZeigen(); fbRenderVorschau(); });
