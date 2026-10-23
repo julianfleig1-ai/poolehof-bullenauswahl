@@ -525,7 +525,15 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 
 /* Rechnung als druckfertiges Blatt (Vorschau am Bildschirm + Druck/PDF) */
 #rechnungDruck{position:fixed;inset:0;z-index:100;background:rgba(20,24,18,.55);overflow:auto;padding:20px 12px 40px}
-.re-werkzeug{max-width:794px;margin:0 auto 10px;display:flex;gap:8px;justify-content:flex-end}
+.re-werkzeug{max-width:794px;margin:0 auto 10px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.re-pdf-hinweis{max-width:794px;margin:0 auto 8px;color:#fff;font-size:13.5px;text-align:right}
+.re-pdf-hinweis:empty{display:none}
+/* Unsichtbare Kopie in fester A4-Breite fürs PDF (auch am Handy Desktop-Layout) */
+.re-pdf{position:fixed;left:-10000px;top:0;width:794px;background:#fff}
+.re-pdf .re-blatt{max-width:none;width:794px;min-height:1123px;box-sizing:border-box;border-radius:0;padding:48px 52px!important;font-size:13.5px!important}
+.re-pdf .re-mitte{flex-direction:row!important}
+.re-pdf .re-blatt{display:flex;flex-direction:column}
+.re-pdf .re-fuss{margin-top:auto}
 .re-blatt{max-width:794px;margin:0 auto;background:#fff;color:#1f2a3c;padding:48px 52px;border-radius:6px;font-family:"IBM Plex Sans",Arial,sans-serif;font-size:13.5px;line-height:1.45}
 .re-kopf{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #3F7059;padding-bottom:14px}
 .re-kopf img{height:70px}
@@ -3749,7 +3757,8 @@ function fbRenderReListe(){
 function fbRechnungZeigen(r){
   const f = r.firma || {}, m = r.mandant || {};
   const el = $fb("rechnungDruck");
-  el.innerHTML = `<div class="re-werkzeug"><button class="btn primary" type="button" id="reDrucken">Drucken / als PDF speichern</button><button class="btn" type="button" id="reZu">Schließen</button></div>
+  el.innerHTML = `<div class="re-werkzeug"><button class="btn primary" type="button" id="rePdf">📄 PDF wird vorbereitet …</button><button class="btn" type="button" id="reDrucken">🖨 Drucken</button><button class="btn" type="button" id="reZu">Schließen</button></div>
+  <div class="re-pdf-hinweis" id="rePdfHinweis"></div>
   <div class="re-blatt">
     <div class="re-kopf"><div class="re-absender"><b>${esc(f.Firma || "")}</b><br>${esc(f.Inhaber || "")}<br>${esc(f["Straße"] || "")}<br>${esc(f["PLZ Ort"] || "")}</div><img src="img/logo.png" alt=""></div>
     <div class="re-mitte">
@@ -3773,6 +3782,67 @@ function fbRechnungZeigen(r){
     window.print();
     setTimeout(weg, 1500);
   });
+  // PDF gleich im Hintergrund erzeugen – am iPhone muss das Teilen-Menü direkt
+  // nach dem Tippen aufgehen, sonst blockiert Safari es
+  const name = `Rechnung ${r.nr} ${(m.Name || m.Kurzname || "").replace(/[\\/:*?"<>|]/g, "")}`.trim() + ".pdf";
+  const knopf = $fb("rePdf"), hinweis = $fb("rePdfHinweis");
+  let pdfDatei = null;
+  const fertig = fbRechnungPdf(el.querySelector(".re-blatt"), name)
+    .then(datei => { pdfDatei = datei; knopf.textContent = fbKannTeilen(datei) ? "📄 PDF teilen / sichern" : "📄 PDF herunterladen"; })
+    .catch(err => { knopf.textContent = "📄 PDF nochmal versuchen"; hinweis.textContent = err.message; });
+  knopf.addEventListener("click", async () => {
+    hinweis.textContent = "";
+    if (!pdfDatei){
+      knopf.textContent = "📄 PDF wird vorbereitet …";
+      await fertig;
+      if (!pdfDatei){ try { pdfDatei = await fbRechnungPdf(el.querySelector(".re-blatt"), name); } catch(err) { hinweis.textContent = err.message; return; } }
+      knopf.textContent = fbKannTeilen(pdfDatei) ? "📄 Jetzt teilen / sichern" : "📄 PDF herunterladen";
+      if (fbKannTeilen(pdfDatei)) return;   // neues Tippen nötig, damit das Teilen-Menü aufgehen darf
+    }
+    if (fbKannTeilen(pdfDatei)){
+      try { await navigator.share({files: [pdfDatei], title: name.replace(/\.pdf$/, "")}); }
+      catch(err) { if (err.name !== "AbortError") { fbHerunterladen(name, pdfDatei, "application/pdf"); } }
+    } else fbHerunterladen(name, pdfDatei, "application/pdf");
+  });
+}
+function fbKannTeilen(datei){
+  try { return !!(navigator.canShare && navigator.share && navigator.canShare({files: [datei]})); } catch(e) { return false; }
+}
+function fbSkriptLaden(url, pruef){
+  return new Promise((res, rej) => {
+    if (pruef()) return res();
+    const s = document.createElement("script");
+    s.src = url; s.onload = () => res(); s.onerror = () => rej(new Error("Für das PDF wird kurz Internet gebraucht (Bibliothek konnte nicht geladen werden)."));
+    document.head.appendChild(s);
+  });
+}
+// Rechnung als A4-PDF: das Blatt wird in fester Breite (wie am PC) gezeichnet
+// und auf A4-Seiten verteilt – sieht also auf jedem Gerät gleich aus.
+async function fbRechnungPdf(blatt, name){
+  await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", () => window.html2canvas);
+  await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf);
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  const huelle = document.createElement("div");
+  huelle.className = "re-pdf";
+  huelle.appendChild(blatt.cloneNode(true));
+  document.body.appendChild(huelle);
+  try {
+    const bild = huelle.querySelector("img");
+    if (bild && !bild.complete) await new Promise(r => { bild.onload = bild.onerror = r; });
+    const canvas = await html2canvas(huelle.firstChild, {scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false});
+    const pdf = new jspdf.jsPDF({unit: "mm", format: "a4", compress: true});
+    const breiteMm = 210, seiteMm = 297;
+    const pxProMm = canvas.width / breiteMm, seitePx = Math.floor(seiteMm * pxProMm);
+    for (let y = 0, seite = 0; y < canvas.height; y += seitePx, seite++){
+      const h = Math.min(seitePx, canvas.height - y);
+      const teil = document.createElement("canvas");
+      teil.width = canvas.width; teil.height = h;
+      teil.getContext("2d").drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+      if (seite) pdf.addPage();
+      pdf.addImage(teil.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, breiteMm, h / pxProMm);
+    }
+    return new File([pdf.output("blob")], name, {type: "application/pdf"});
+  } finally { huelle.remove(); }
 }
 
 // --- Auswertung ----------------------------------------------------------
