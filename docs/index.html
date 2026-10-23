@@ -3885,7 +3885,9 @@ const FB_LISTE_FILTER = [
 ];
 let fbListeFilter = "alle";
 const FB_MONATSNAMEN = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
-function fbWaehlbar(a){ return !a.__wartet && !fbIstNotiz(a); }
+// Auswählbar = kann abgerechnet werden (auch eigene – die werden auf den Empfänger umgeschrieben).
+// Schon abgerechnete sind ausgegraut, damit nichts doppelt auf eine Rechnung kommt.
+function fbWaehlbar(a){ return !a.__wartet && !fbIstNotiz(a) && !a.Rechnung; }
 function fbEintragHtml(a){
   const waehlbar = fbWaehlbar(a);
   const notiz = fbIstNotiz(a);
@@ -4042,29 +4044,29 @@ function fbRenderAuswahlLeiste(){
   $fb("fbAuswahlKnopf").classList.toggle("primary", !!fbAuswahl);
   if (!fbAuswahl){ leiste.hidden = true; return; }
   leiste.hidden = false;
-  const ids = [...fbAuswahl].filter(id => fbArbeiten().some(a => a.ID === id));
-  const abrechenbar = ids.filter(id => fbAbzurechnen(fbArbeiten().find(a => a.ID === id)));
+  const ids = [...fbAuswahl].filter(id => { const a = fbArbeiten().find(x => x.ID === id); return a && fbWaehlbar(a); });
+  const zaehl = {};
+  ids.forEach(id => { const a = fbArbeiten().find(x => x.ID === id); zaehl[a.Mandant] = (zaehl[a.Mandant] || 0) + 1; });
+  const namen = Object.keys(zaehl);
   leiste.innerHTML = ids.length
-    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt${abrechenbar.length < ids.length ? ` · davon ${abrechenbar.length} noch abzurechnen` : ""}</span>
+    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt · ${namen.map(n => `${esc(fbIstEigen(n) ? "eigen" : n)}${namen.length > 1 ? " " + zaehl[n] : ""}`).join(", ")}</span>
        <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbAuswahlNotiz">📝 Notiz hinzufügen</button>
-       <button class="btn primary" type="button" id="fbAuswahlUebernehmen" ${abrechenbar.length ? "" : "disabled"}>🧾 Rechnung erstellen</button></span>`
-    : `<span>Arbeiten antippen – dann <b>Notiz hinzufügen</b> oder <b>Rechnung erstellen</b>.</span>
+       <button class="btn primary" type="button" id="fbAuswahlUebernehmen">🧾 Rechnung erstellen</button></span>`
+    : `<span>Arbeiten antippen – dann <b>Notiz hinzufügen</b> oder <b>Rechnung erstellen</b>. Schon abgerechnete (✓) sind ausgegraut.</span>
        <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbNotizNeu">📝 Notiz ohne Arbeit</button></span>`;
   if (!ids.length){ $fb("fbNotizNeu").addEventListener("click", () => fbNotizDialog()); return; }
   $fb("fbAuswahlNotiz").addEventListener("click", () => fbNotizZuDialog(ids));
   $fb("fbAuswahlUebernehmen").addEventListener("click", () => {
-    if (!abrechenbar.length) return;
-    const zaehl = {};
-    abrechenbar.forEach(id => { const a = fbArbeiten().find(x => x.ID === id); zaehl[a.Mandant] = (zaehl[a.Mandant] || 0) + 1; });
-    const namen = Object.keys(zaehl);
+    const fremd = namen.filter(n => !fbIstEigen(n));
     const weiter = mandant => {
-      fbRe = {mandant, positionen: {}, vorauswahl: new Set(abrechenbar)};
+      fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
       fbAuswahl = null;
       fbZeigeTab("rechnung");
       window.scrollTo({top: 0, behavior: "smooth"});
     };
-    if (namen.length === 1) return weiter(namen[0]);
-    fbEmpfaengerDialog(namen, weiter);
+    // Alles unter einem fremden Namen → direkt; sonst fragen, wer die Rechnung bekommt
+    if (fremd.length === 1 && namen.length === 1) return weiter(fremd[0]);
+    fbEmpfaengerDialog(fremd, weiter);
   });
 }
 // Notiz an mehrere ausgewählte Arbeiten anhängen

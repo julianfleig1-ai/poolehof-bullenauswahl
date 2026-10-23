@@ -208,19 +208,22 @@
     // Auswählen → Notiz zu mehreren Arbeiten (auch zu einer abgerechneten)
     $fb("fbChips").querySelector('[data-filter="alle"]').click();
     $fb("fbAuswahlKnopf").click();
-    ["L-1", "T-001"].forEach(fbAuswahlUmschalten);
-    pruef("Auswahl: Leiste mit Notiz + Rechnung", $fb("fbAuswahlNotiz") && $fb("fbAuswahlUebernehmen") && /davon 0 noch abzurechnen/.test($fb("fbAuswahlLeiste").innerText) && $fb("fbAuswahlUebernehmen").disabled, $fb("fbAuswahlLeiste").innerText);
+    ["L-1", "T-001", "T-003"].forEach(fbAuswahlUmschalten);
+    pruef("Abgerechnete nicht auswählbar", !fbAuswahl.has("L-1") && fbAuswahl.has("T-001") && L().querySelector('[data-id="L-1"]').classList.contains("nicht-waehlbar"));
+    pruef("Auswahl: Leiste mit Notiz + Rechnung", $fb("fbAuswahlNotiz") && $fb("fbAuswahlUebernehmen") && !$fb("fbAuswahlUebernehmen").disabled && /2 Arbeiten ausgewählt/.test($fb("fbAuswahlLeiste").innerText), $fb("fbAuswahlLeiste").innerText);
     $fb("fbAuswahlNotiz").click(); await warte(50);
     $fb("fbNotizZuForm").elements.text.value = "Steine abgelesen"; $fb("fbNotizZuForm").requestSubmit(); await warte(500);
-    const l1 = fbArbeiten().find(a => a.ID === "L-1"), t1 = fbArbeiten().find(a => a.ID === "T-001");
-    pruef("Notiz an beide Arbeiten angehängt", l1.Bemerkung === "Zaun am Bach kaputt · Steine abgelesen" && t1.Bemerkung === "Steine abgelesen" && l1.Rechnung, JSON.stringify([l1.Bemerkung, t1.Bemerkung]));
+    const t3 = fbArbeiten().find(a => a.ID === "T-003"), t1 = fbArbeiten().find(a => a.ID === "T-001");
+    pruef("Notiz an beide Arbeiten angehängt", t3.Bemerkung === "Steine abgelesen" && t1.Bemerkung === "Steine abgelesen", JSON.stringify([t3.Bemerkung, t1.Bemerkung]));
     pruef("Notiz ist in der Liste sichtbar", /Steine abgelesen/.test(L().querySelector('[data-id="T-001"]').innerText) && !fbAuswahl);
-    // Auswählen → Rechnung nur aus den noch offenen
+    // Auswählen → Rechnung: alles Ausgewählte kommt drauf, auch eine eigene Arbeit (wird umgeschrieben)
     $fb("fbAuswahlKnopf").click();
-    ["L-1", "T-003", "T-001"].forEach(fbAuswahlUmschalten);
-    pruef("Gemischte Auswahl: 1 davon abzurechnen", /davon 1 noch abzurechnen/.test($fb("fbAuswahlLeiste").innerText) && !$fb("fbAuswahlUebernehmen").disabled, $fb("fbAuswahlLeiste").innerText);
+    ["T-003", "T-001"].forEach(fbAuswahlUmschalten);
     $fb("fbAuswahlUebernehmen").click(); await warte(200);
-    pruef("Rechnung erstellen nimmt nur die offene Arbeit", fbTab === "rechnung" && fbRe.mandant === "Muster" && [...fbRe.vorauswahl].join() === "T-003", JSON.stringify([fbTab, fbRe.mandant, [...(fbRe.vorauswahl || [])]]));
+    const empf = document.querySelector('#fbDialog[open] button[data-m="Muster"]');
+    pruef("Eigene + fremde Arbeit: fragt nach Empfänger", !!empf);
+    if (empf) empf.click(); await warte(200);
+    pruef("Rechnung erstellen nimmt alle ausgewählten", fbTab === "rechnung" && fbRe.mandant === "Muster" && [...fbRe.vorauswahl].sort().join() === "T-001,T-003" && fbRePosListe().length >= 2, JSON.stringify([fbTab, fbRe.mandant, [...(fbRe.vorauswahl || [])]]));
     fbZeigeTab("liste");
     // zwei Änderungen direkt hintereinander: beide müssen ankommen
     const p1 = fbAendern({typ: "aendern", id: "T-001", felder: {"Ort / Schlag": "Testacker Nord"}});
