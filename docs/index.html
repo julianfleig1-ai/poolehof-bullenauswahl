@@ -889,7 +889,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
     <section class="panel einst-karte"><h2>Hof-Zugang auf diesem Gerät</h2><div id="einstZugang"></div></section>
     <section class="panel einst-karte">
       <h2>Hof-Passwort ändern</h2>
-      <p class="bs-help">Das Hof-Passwort schützt Kuhliste, Feldbuch, Adressen und Rechnungen. Am besten <b>drei bis vier Wörter mit Bindestrich und eine Zahl</b> – leicht zu merken, praktisch nicht zu erraten. Ein Name von Hof, Ort oder Familie gehört nicht hinein. Lass es am iPhone bzw. PC im Passwort-Speicher sichern, dann musst du es pro Gerät nur einmal eintippen.</p>
+      <p class="bs-help">Das Hof-Passwort schützt Kuhliste, Feldbuch, Adressen und Rechnungen. Am besten <b>drei bis vier Wörter mit Bindestrich und eine Zahl</b> – leicht zu merken, praktisch nicht zu erraten. Ein Name von Hof, Ort oder Familie gehört nicht hinein. Lass es am Handy bzw. PC im Passwort-Speicher sichern, dann musst du es pro Gerät nur einmal eintippen.</p>
       <form id="fbPwAendernForm" class="fb-form">
         <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
         <label class="breit">Neues Passwort<input type="password" name="new-password" id="fbPwNeu" autocomplete="new-password" required></label>
@@ -898,6 +898,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Passwort ändern</button></div>
       </form><div id="fbPwAendernMeldung" class="bs-hof-meldung"></div>
     </section>
+    <section class="panel einst-karte"><h2>Als App aufs Handy</h2><div id="einstInstall"></div></section>
     <section class="panel einst-karte"><h2>App</h2>
       <div class="einst-zeile"><button class="btn" type="button" id="einstAktualisieren">↻ App aktualisieren</button><span class="bs-help">holt sofort die neueste Version (falls am Handy noch die alte angezeigt wird)</span></div>
       <div class="einst-zeile"><button class="btn" type="button" id="einstSicherung">⬇ Feldbuch-Sicherung herunterladen</button></div>
@@ -3785,7 +3786,7 @@ function fbMikroStopp(hinweis){
   if (hinweis) $fb("fbSprachHinweis").innerHTML = hinweis;
   if (fbHatErgebnis || $fb("fbText").value.trim()) fbTextAuswerten();   // ohne Ergebnis nichts überschreiben
 }
-const FB_TASTATUR_HINWEIS = "Notfalls das <b>🎤 Mikrofon der Tastatur</b> benutzen (unten neben der Leertaste) – das geht auch ohne Netz.";
+const FB_TASTATUR_HINWEIS = "Notfalls das <b>🎤 Mikrofon der Tastatur</b> benutzen (iPhone: unten neben der Leertaste · Samsung/Android: oben in der Tastaturleiste oder lange auf die Komma-Taste drücken) – das geht auch ohne Netz.";
 function fbMikroKlick(){
   if (fbErkenner){ fbMikroStopp(); return; }
   if (!FbSprache){
@@ -4600,6 +4601,7 @@ function renderEinstellungen(){
   if (hsZugang){
     const dauer = hsDauerhaft === "ja" ? `<span class="einst-ok">✓ dauerhaft gespeichert</span> – der Browser löscht die Anmeldung nicht von selbst.`
       : hsDauerhaft === "nein" && iphone && !homescreen ? `<span class="einst-warn">Hinweis:</span> Safari löscht Daten von Webseiten nach einigen Tagen ohne Besuch. Am sichersten: in Safari auf <b>Teilen → „Zum Home-Bildschirm“</b> und die App immer von dort öffnen – dann bleibt die Anmeldung.`
+      : hsDauerhaft === "nein" && !homescreen ? `Am sichersten bleibt die Anmeldung, wenn die App installiert ist (siehe unten „Als App aufs Handy“).`
       : hsDauerhaft === "nein" ? `Der Browser hat dauerhaftes Speichern nicht bestätigt. Die Anmeldung bleibt trotzdem, solange niemand die Browserdaten löscht.` : "";
     box.innerHTML = `<div style="margin:6px 0"><span class="einst-ok">✓ Angemeldet</span> – dieses Gerät ist mit dem Hof-Speicher verbunden (Kuhliste und Feldbuch).</div>
       <div class="bs-help">Die Anmeldung bleibt gespeichert, bis hier „Abmelden“ gedrückt wird. ${dauer}</div>
@@ -4628,12 +4630,48 @@ function renderEinstellungen(){
       catch(err) { m.textContent = /falsch|eingeben/.test(err.message) ? err.message : "Nicht angemeldet: " + err.message; }
     });
   }
+  renderEinstInstall();
   const info = document.getElementById("einstInfo");
   if (info){
     const stand = new Date(document.lastModified);
     info.textContent = `App-Stand: ${isNaN(stand) ? "–" : stand.toLocaleDateString("de-DE") + " " + stand.toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"})}`
       + (homescreen ? " · als App vom Home-Bildschirm geöffnet" : "") + (navigator.onLine === false ? " · gerade ohne Netz" : "");
   }
+}
+// "Als App installieren": Chrome/Edge/Samsung Internet bieten das direkt an (beforeinstallprompt),
+// am iPhone geht es nur über Safari → Teilen → "Zum Home-Bildschirm"
+var einstInstallAngebot = null, einstInstalliert = false;   // var: renderEinstellungen kann früher laufen
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); einstInstallAngebot = e; renderEinstInstall(); });
+window.addEventListener("appinstalled", () => { einstInstallAngebot = null; einstInstalliert = true; renderEinstInstall(); });
+function renderEinstInstall(){
+  const geradeInstalliert = einstInstalliert;
+  const el = document.getElementById("einstInstall");
+  if (!el) return;
+  const ua = navigator.userAgent;
+  const alsApp = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const iphone = /iP(hone|ad|od)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const samsung = /SamsungBrowser/i.test(ua), android = /Android/i.test(ua);
+  if (alsApp || geradeInstalliert){
+    el.innerHTML = `<div><span class="einst-ok">✓ ${geradeInstalliert ? "Installiert" : "Läuft als App"}</span> – öffnet sich vom Startbildschirm ohne Browserleiste, startet auch ohne Netz, und die Anmeldung bleibt gespeichert.</div>`;
+    return;
+  }
+  let anleitung;
+  if (iphone) anleitung = /CriOS|FxiOS|EdgiOS/.test(ua)
+    ? `Am iPhone geht das nur in <b>Safari</b>: diese Seite in Safari öffnen → unten <b>Teilen</b> (Quadrat mit Pfeil) → <b>„Zum Home-Bildschirm“</b>.`
+    : `In Safari unten auf <b>Teilen</b> (Quadrat mit Pfeil) → <b>„Zum Home-Bildschirm“</b> → <b>Hinzufügen</b>.`;
+  else if (samsung) anleitung = `Im Samsung Internet unten auf <b>☰ Menü</b> → <b>„Seite hinzufügen zu“</b> → <b>„Startbildschirm“</b>. (Tipp: In <b>Chrome</b> klappt auch die Spracheingabe am zuverlässigsten.)`;
+  else if (android) anleitung = `In Chrome oben rechts auf <b>⋮</b> → <b>„App installieren“</b> bzw. <b>„Zum Startbildschirm hinzufügen“</b>.`;
+  else anleitung = `Am PC in Chrome oder Edge rechts in der Adresszeile auf das Symbol <b>„App installieren“</b> klicken. Am Handy diese Seite öffnen und hier nachsehen.`;
+  el.innerHTML = `<p class="bs-help">Dann liegt „Poolehof“ als Symbol auf dem Startbildschirm, öffnet sich ohne Browserleiste, startet auch im Funkloch, und die Anmeldung bleibt sicher gespeichert. Funktioniert auf iPhone und Android (Samsung usw.) gleich.</p>
+    ${einstInstallAngebot ? `<div class="einst-zeile"><button class="btn primary" type="button" id="einstInstallKnopf">📲 Als App installieren</button></div>` : ""}
+    <div class="bs-help" style="margin-top:6px">${einstInstallAngebot ? "Oder von Hand: " : ""}${anleitung}</div>`;
+  const k = document.getElementById("einstInstallKnopf");
+  if (k) k.addEventListener("click", async () => {
+    const angebot = einstInstallAngebot; if (!angebot) return;
+    einstInstallAngebot = null;
+    try { await angebot.prompt(); const w = await angebot.userChoice; if (w && w.outcome === "accepted") einstInstalliert = true; renderEinstInstall(); }
+    catch(e) { renderEinstInstall(); }
+  });
 }
 document.getElementById("einstAktualisieren").addEventListener("click", async () => {
   if (navigator.onLine === false){ alert("Gerade kein Netz – Aktualisieren geht nur mit Verbindung."); return; }

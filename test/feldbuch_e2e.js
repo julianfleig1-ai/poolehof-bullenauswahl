@@ -231,6 +231,18 @@
     document.getElementById("einstForm").requestSubmit();
     for (let i = 0; i < 60 && !(hsZugang && fbStatus.zustand === "ok" && fbArbeiten().length); i++) await warte(200);
     pruef("Anmelden in Einstellungen lädt Feldbuch wieder", hsZugang && fbStatus.zustand === "ok" && fbArbeiten().length >= 4, fbStatus.text);
+    // "Als App installieren" (Chrome/Android bieten das per beforeinstallprompt an)
+    navigiere("einstellungen");
+    pruef("Installieren: Anleitung sichtbar", /App installieren|Startbildschirm|Home-Bildschirm/.test(document.getElementById("einstInstall").innerText));
+    let gefragt = false;
+    const ev = new Event("beforeinstallprompt"); ev.prompt = async () => { gefragt = true; }; ev.userChoice = Promise.resolve({outcome: "accepted"});
+    window.dispatchEvent(ev); await warte(50);
+    const ik = document.getElementById("einstInstallKnopf");
+    pruef("Installieren: Knopf erscheint, wenn der Browser es anbietet", !!ik);
+    if (ik){ ik.click(); await warte(100); }
+    pruef("Installieren: Knopf fragt den Browser, danach „Installiert“", gefragt && /Installiert/.test(document.getElementById("einstInstall").innerText));
+    renderEinstellungen();
+    pruef("Installiert bleibt nach Neuzeichnen", /Installiert/.test(document.getElementById("einstInstall").innerText));
     navigiere("feld");
   });
   await schritt("Lely-Import", async () => {
