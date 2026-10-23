@@ -177,11 +177,12 @@
     const zeile = L().querySelector('[data-id="L-1"]');
     pruef("Liste zeigt alle Angaben inkl. Bemerkung", zeile && /Mähen Grünland/.test(zeile.innerText) && /2,5 Std/.test(zeile.innerText) && /Hinterwiese/.test(zeile.innerText) && /Zaun am Bach/.test(zeile.innerText), zeile && zeile.innerText);
     // neue Notiz
-    $fb("fbNotizNeu").click(); await warte(50);
+    $fb("fbAuswahlKnopf").click(); $fb("fbNotizNeu").click(); await warte(50);
     const f = $fb("fbNotizForm");
     f.elements.Bemerkung.value = "Drainage am Oberfeld prüfen"; f.elements.Mandant.value = "Muster"; f.requestSubmit(); await warte(400);
     const notiz = fbArbeiten().find(a => fbIstNotiz(a) && /Drainage/.test(a.Bemerkung));
     pruef("Notiz gespeichert", notiz && notiz.Datum === fbHeuteIso());
+    if (fbAuswahl) $fb("fbAuswahlKnopf").click();
     pruef("Notiz nicht abzurechnen", notiz && !fbOffeneFuer("Muster").includes(notiz) && !fbAbzurechnen(notiz));
     $fb("fbChips").querySelector('[data-filter="notiz"]').click();
     pruef("Knopf „Notizen“ zeigt nur Notizen", [...L().querySelectorAll(".fb-e")].length >= 1 && [...L().querySelectorAll(".fb-e")].every(e => e.classList.contains("notiz")));
@@ -203,7 +204,29 @@
     $fb("fbAuswahlKnopf").click();
     pruef("Auswahl: Notizen nicht wählbar", (() => { const n = fbArbeiten().find(fbIstNotiz); fbAuswahlUmschalten(n.ID); return !fbAuswahl.has(n.ID); })());
     $fb("fbAuswahlKnopf").click();
-    pruef("Auswahl beenden → wieder alle", !fbAuswahl && fbListeFilter === "alle");
+    pruef("Auswahl beenden", !fbAuswahl && $fb("fbAuswahlLeiste").hidden && /Auswählen/.test($fb("fbAuswahlKnopf").textContent));
+    // Auswählen → Notiz zu mehreren Arbeiten (auch zu einer abgerechneten)
+    $fb("fbChips").querySelector('[data-filter="alle"]').click();
+    $fb("fbAuswahlKnopf").click();
+    ["L-1", "T-001"].forEach(fbAuswahlUmschalten);
+    pruef("Auswahl: Leiste mit Notiz + Rechnung", $fb("fbAuswahlNotiz") && $fb("fbAuswahlUebernehmen") && /davon 0 noch abzurechnen/.test($fb("fbAuswahlLeiste").innerText) && $fb("fbAuswahlUebernehmen").disabled, $fb("fbAuswahlLeiste").innerText);
+    $fb("fbAuswahlNotiz").click(); await warte(50);
+    $fb("fbNotizZuForm").elements.text.value = "Steine abgelesen"; $fb("fbNotizZuForm").requestSubmit(); await warte(500);
+    const l1 = fbArbeiten().find(a => a.ID === "L-1"), t1 = fbArbeiten().find(a => a.ID === "T-001");
+    pruef("Notiz an beide Arbeiten angehängt", l1.Bemerkung === "Zaun am Bach kaputt · Steine abgelesen" && t1.Bemerkung === "Steine abgelesen" && l1.Rechnung, JSON.stringify([l1.Bemerkung, t1.Bemerkung]));
+    pruef("Notiz ist in der Liste sichtbar", /Steine abgelesen/.test(L().querySelector('[data-id="T-001"]').innerText) && !fbAuswahl);
+    // Auswählen → Rechnung nur aus den noch offenen
+    $fb("fbAuswahlKnopf").click();
+    ["L-1", "T-003", "T-001"].forEach(fbAuswahlUmschalten);
+    pruef("Gemischte Auswahl: 1 davon abzurechnen", /davon 1 noch abzurechnen/.test($fb("fbAuswahlLeiste").innerText) && !$fb("fbAuswahlUebernehmen").disabled, $fb("fbAuswahlLeiste").innerText);
+    $fb("fbAuswahlUebernehmen").click(); await warte(200);
+    pruef("Rechnung erstellen nimmt nur die offene Arbeit", fbTab === "rechnung" && fbRe.mandant === "Muster" && [...fbRe.vorauswahl].join() === "T-003", JSON.stringify([fbTab, fbRe.mandant, [...(fbRe.vorauswahl || [])]]));
+    fbZeigeTab("liste");
+    // zwei Änderungen direkt hintereinander: beide müssen ankommen
+    const p1 = fbAendern({typ: "aendern", id: "T-001", felder: {"Ort / Schlag": "Testacker Nord"}});
+    const p2 = fbAendern({typ: "aendern", id: "T-003", felder: {"Ort / Schlag": "Bachwiese"}});
+    const [u1, u2] = await Promise.all([p1, p2]);
+    pruef("Zwei schnelle Änderungen: beide sofort übertragen", u1 && u2 && !fbOps.length, JSON.stringify([u1, u2, fbOps.length]));
   });
   await schritt("Einstellungen", async () => {
     const M = "http://127.0.0.1:8779/";
@@ -264,6 +287,15 @@
     pruef("Lely PDF: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
     await lelyDatei(new File(["Kuhnummer;Name\n12;Berta"], "falsch.csv"));
     pruef("Lely ohne Ohrmarken: klare Meldung", /keine Ohrmarken/.test(document.getElementById("erkanntInfo").textContent));
+    // Netrind-Liste als Datei (erfundene Tiere), dann Lely-Datei → Empfehlung Holstein/British Blue
+    pruef("Netrind: Einfügefeld entfernt", !document.getElementById("herdePaste"));
+    const netrind = ["Ohrmarke;Name;RZG;M-kg;RZS;stl;RZD;RZR",
+      ...Array.from({length: 20}, (_, i) => `DE 08 123 456${String(70 + i).padStart(2, "0")};Kuh${i};${100 + i * 2};${200 + i * 40};${95 + i};${100 + (i % 5)};${98 + (i % 7)};${97 + (i % 4)}`)].join("\r\n");
+    await uebernehmeDatei(new File([netrind], "Zuchtwerte wbl.csv", {type: "text/csv"}));
+    pruef("Netrind-Datei übernommen (20 Tiere)", herde && herdenTiere().length === 20, herde && herdenTiere().length);
+    await lelyDatei(new File([zeilen.map(r => r.join(";")).join("\r\n")], "Offene Kühe.csv"));
+    const empf = [...document.querySelectorAll("#bsBody tr")].map(tr => tr.innerText);
+    pruef("Auswertung: 3 Kühe mit Empfehlung", empf.length === 3 && empf.every(t => /Holstein|British Blue|Grenzfall/.test(t)), JSON.stringify(empf).slice(0, 300));
     document.getElementById("lelyLeeren").click();
     pruef("Lely-Liste leeren", document.getElementById("erkanntInfo").textContent === "" && document.getElementById("bsResult").hidden);
   });

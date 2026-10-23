@@ -260,10 +260,6 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .bs-hof-form input{flex:1 1 150px;min-width:0;padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:15px}
 .nur-fuer-browser{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
 .bs-hof-meldung{font-size:12.5px;margin-top:6px;color:var(--warn)}
-.bs-oder{display:flex;align-items:center;gap:10px;margin:12px 0 8px;font-size:12.5px;color:var(--ink-dim)}
-.bs-oder::before,.bs-oder::after{content:"";flex:1;height:1px;background:var(--border)}
-#herdePaste{width:100%;min-height:64px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;
-  background:var(--surface);font-size:13px;line-height:1.45}
 .bs-anleitung{margin-top:12px;font-size:13.5px;border:1px solid var(--border);border-radius:10px;padding:10px 13px;background:var(--surface)}
 .bs-anleitung summary{cursor:pointer;font-weight:600}
 .bs-anleitung ol{margin:10px 0 2px;padding-left:20px;display:grid;gap:6px}
@@ -461,51 +457,77 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-gespeichert .bs-status{margin:0}
 .fb-filter select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);font-size:13.5px}
 .fb-table tr{cursor:pointer}
-/* Feldarbeiten-Liste: Monatsgruppen, ein Eintrag = eine Karte mit allen Angaben */
-.fb-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
-.fb-chip{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;font:inherit;font-size:13.5px}
-.fb-chip small{color:var(--ink-dim);margin-left:4px}
+/* Feldarbeiten-Liste: Tabelle mit Monatsüberschriften, große Schrift (gut lesbar) */
+.fb-chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px}
+.fb-chip{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer;font:inherit;font-size:15px}
+.fb-chip small{color:var(--ink-dim);margin-left:5px;font-size:13.5px}
 .fb-chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .fb-chip[aria-pressed="true"] small{color:rgba(255,255,255,.85)}
-.fb-liste-kopf{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:0 16px 8px}
-.fb-liste-info{font-size:13px;color:var(--ink-dim)}
-.fb-liste-knoepfe{display:flex;gap:6px;flex-wrap:wrap}
+.fb-liste-kopf{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:0 16px 10px}
+.fb-liste-info{font-size:15px;color:var(--ink-dim)}
+.fb-liste-knoepfe{display:flex;gap:8px;flex-wrap:wrap}
+.fb-liste-tipp{font-size:14px}
 .fb-eintraege{border-top:1px solid var(--border)}
-.fb-monat{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 16px;
-  background:var(--surface-2);border-bottom:1px solid var(--border);font-weight:600;font-size:13.5px}
-.fb-monat small{font-weight:400;color:var(--ink-dim);font-size:12.5px}
-.fb-e{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:start;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer}
-.fb-e:hover{background:var(--surface-2)}
-.fb-e-datum{display:flex;align-items:center;gap:6px;min-width:58px;font-size:13.5px;font-variant-numeric:tabular-nums}
-.fb-e-datum small{display:block;color:var(--ink-dim);font-size:11.5px}
-.fb-e-haupt{min-width:0}
-.fb-e-z1{font-size:14.5px}
-.fb-e-z1 b{font-weight:600}
-.fb-e-menge{color:var(--ink);white-space:nowrap}
-.fb-e-z2{font-size:13px;color:var(--ink-dim);margin-top:2px}
-.fb-e-z3{font-size:13px;margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere}
-.fb-e-re{text-align:right}
-.fb-e.notiz .fb-e-z1{font-weight:400}
-.fb-e.pruefen{background:var(--gold-soft)}
-.fb-e.wartet{color:var(--ink-dim);font-style:italic}
-.fb-e.gewaehlt{background:var(--accent-soft)!important}
-.fb-e.nicht-waehlbar{opacity:.45}
-.fb-e .fb-wahl{width:18px;height:18px;margin:0;pointer-events:none}
-button.fb-badge{border:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600}
+.fb-tab{width:100%;border-collapse:collapse;font-size:16px;line-height:1.35}
+.fb-tab thead th{position:sticky;top:0;z-index:3;background:var(--surface);text-align:left;font-size:13.5px;font-weight:600;color:var(--ink-dim);
+  padding:10px 10px;border-bottom:1px solid var(--border-strong);white-space:nowrap}
+.fb-tab td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.fb-tab th:first-child,.fb-tab td:first-child{padding-left:16px}
+.fb-tab th:last-child,.fb-tab td:last-child{padding-right:16px;text-align:right}
+.fb-tab td.num,.fb-tab th.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-family:inherit}
+.fb-tab tr.fb-monat td{position:sticky;top:41px;z-index:2;background:var(--surface-2);font-weight:600;font-size:15.5px;padding-top:9px;padding-bottom:9px;text-align:left}
+.fb-tab tr.fb-monat small{font-weight:400;color:var(--ink-dim);font-size:14px;margin-left:8px}
+.fb-tab tr.fb-e{cursor:pointer}
+.fb-tab tr.fb-e:hover td{background:var(--surface-2)}
+.fb-e .c-datum{white-space:nowrap;font-variant-numeric:tabular-nums}
+.fb-e .c-datum small{display:block;color:var(--ink-dim);font-size:13.5px}
+.fb-e .c-arbeit b{font-weight:600}
+.fb-e .c-bem{display:block;font-size:14.5px;color:var(--ink-dim);margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere}
+.fb-e .c-klein,.fb-e .c-zeile2{display:none}
+.fb-tab tr.notiz .c-arbeit{font-weight:400}
+.fb-tab tr.pruefen td{background:var(--gold-soft)}
+.fb-tab tr.wartet td{color:var(--ink-dim);font-style:italic}
+.fb-tab tr.gewaehlt td{background:var(--accent-soft)!important}
+.fb-tab tr.nicht-waehlbar{opacity:.45}
+.fb-e .fb-wahl{width:22px;height:22px;margin:0 8px 0 0;vertical-align:-5px;pointer-events:none;accent-color:var(--accent)}
+.fb-tab .fb-badge{font-size:13.5px;padding:3px 10px}
+button.fb-badge{border:none;cursor:pointer;font:inherit;font-weight:600}
 button.fb-badge.ok:hover{text-decoration:underline}
-.fb-leer{padding:24px 16px;color:var(--ink-dim);text-align:center}
+.fb-leer{padding:24px 16px;color:var(--ink-dim);text-align:center;font-size:16px}
+.fb-auswahl-leiste{font-size:15.5px}
+.fb-auswahl-leiste .fb-liste-knoepfe .btn{font-size:15px}
+@media (max-width:760px){
+  /* Handy: Karten wie vorher (Datum links, alles andere rechts untereinander), aber größere Schrift */
+  .fb-tab,.fb-tab tbody{display:block}
+  .fb-tab thead{display:none}
+  .fb-tab tr{display:block}
+  .fb-tab tr.fb-monat td{display:block;top:0;padding:10px 12px;font-size:16.5px}
+  .fb-tab tr.fb-e{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding:12px;border-bottom:1px solid var(--border)}
+  .fb-tab tr.fb-e td{padding:0!important;border:none;background:none!important;text-align:left!important}
+  .fb-tab tr.pruefen{background:var(--gold-soft)}
+  .fb-tab tr.gewaehlt{background:var(--accent-soft)}
+  .fb-e .c-mandant,.fb-e .c-ort,.fb-e .c-menge,.fb-e .c-std,.fb-e .c-mittel{display:none}
+  .fb-e .c-datum{grid-column:1;grid-row:1 / span 2;font-size:16.5px;min-width:58px}
+  .fb-e .c-datum b{display:block}
+  .fb-e .fb-wahl{display:block;margin:0 0 6px}
+  .fb-e .fb-wahl-platz{display:block;height:28px}
+  .fb-e .c-datum small{font-size:14.5px}
+  .fb-e .c-arbeit{grid-column:2;grid-row:1;font-size:17px}
+  .fb-e .c-klein{display:inline;font-size:17px}
+  .fb-e .c-zeile2{display:block;font-size:15.5px;color:var(--ink-dim);margin-top:3px}
+  .fb-e .c-bem{font-size:15.5px;color:var(--ink)}
+  .fb-e .c-re{grid-column:2;grid-row:2}
+  .fb-e .c-re:empty{display:none}
+  .fb-chips,.fb-liste-kopf{padding-left:12px;padding-right:12px}
+  .fb-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .fb-chips::-webkit-scrollbar{display:none}
+  .fb-chip{flex:none;font-size:16px}
+}
 .fb-alt-notizen{margin:14px 16px 4px;padding:12px 14px;border:1px dashed var(--border-strong);border-radius:12px}
 .fb-alt-notizen h3{font-size:14px;margin-bottom:4px}
 .fb-alt-notiz{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--border);font-size:13.5px;flex-wrap:wrap}
 .fb-alt-notiz span{flex:1 1 200px;overflow-wrap:anywhere}
-@media (max-width:640px){
-  .fb-e{grid-template-columns:auto 1fr;padding:10px 12px}
-  .fb-e-re{grid-column:2;text-align:left}
-  .fb-chips,.fb-liste-kopf{padding-left:12px;padding-right:12px}
-  .fb-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .fb-chips::-webkit-scrollbar{display:none}
-  .fb-chip{flex:none}
-}
+
 .fb-table tr.pruefen td{background:var(--gold-soft)}
 .fb-table tr.wartet td{color:var(--ink-dim);font-style:italic}
 .fb-table td.re{color:var(--accent);font-weight:600}
@@ -771,13 +793,12 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
       <div class="fb-liste-kopf">
         <span id="fbListeInfo" class="fb-liste-info"></span>
         <span class="fb-liste-knoepfe">
-          <button class="btn small" type="button" id="fbNotizNeu">📝 Notiz</button>
-          <button class="btn small" type="button" id="fbAuswahlKnopf">🧾 Für Rechnung auswählen</button>
+          <button class="btn" type="button" id="fbAuswahlKnopf">☑ Auswählen</button>
         </span>
       </div>
       <div id="fbAuswahlLeiste" class="fb-auswahl-leiste" hidden></div>
       <div id="fbListeBody" class="fb-eintraege"></div>
-      <p class="bs-note">Auf einen Eintrag tippen zum Bearbeiten · auf „✓ Rechnung“ tippen, um die Rechnung anzusehen.</p>
+      <p class="bs-note fb-liste-tipp">Auf eine Zeile tippen zum Bearbeiten · „☑ Auswählen“ für Notiz oder Rechnung zu mehreren Arbeiten · auf „✓ Rechnung“ tippen, um die Rechnung anzusehen.</p>
       <div id="fbAltNotizen"></div>
     </section>
 
@@ -1018,8 +1039,6 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
             <span class="bs-drop-sub">oder klicken und Datei auswählen · PDF, Excel oder CSV aus Netrind · die alte Liste wird automatisch ersetzt</span>
           </span>
         </label>
-        <div class="bs-oder"><span>oder einfach kopieren</span></div>
-        <textarea id="herdePaste" rows="3" placeholder="In Netrind die Stall-Liste „Zuchtwerte wbl“ öffnen, alles markieren (⌘A / Strg+A), kopieren (⌘C / Strg+C) und hier einfügen (⌘V / Strg+V)."></textarea>
         <div id="herdeErsetzt" class="bs-status ok" hidden></div>
         <details class="bs-anleitung" id="herdeAnleitung">
           <summary>Anleitung: Liste aus Netrind holen (ca. 1 Minute)</summary>
@@ -1030,7 +1049,6 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
             <li>Oben auf das <b>Drucker-Symbol</b> klicken – es sitzt neben „Buchen“, links von „ZWS“. Netrind erstellt eine <b>PDF</b> zum Herunterladen.</li>
             <li>Die PDF hier oben ins Feld <b>hineinziehen</b> (oder anklicken und die Datei aus „Downloads“ wählen) – fertig. Die alte Liste wird automatisch gelöscht und ersetzt. Alle Spalten der PDF werden übernommen, nicht nur RZG und Milch.</li>
           </ol>
-          <p class="bs-help" style="margin:8px 0 0">Ohne Download geht es auch: auf der Netrind-Seite alles markieren (⌘A / Strg+A), kopieren und ins Feld „oder einfach kopieren“ einfügen.</p>
         </details>
         <div class="bs-actions">
           <button class="btn ghost small" id="herdeLoeschen" type="button" hidden>Gespeicherte Liste entfernen</button>
@@ -2549,22 +2567,6 @@ function uebernehmeTabelle(rows, quelle){
   hsSpeichern();                 // neue Liste auch für alle anderen Geräte sichern
 }
 
-// Netrind-Liste einfach kopieren und einfügen (statt Datei-Export)
-document.getElementById("herdePaste").addEventListener("paste", () => {
-  setTimeout(() => {
-    const feld = document.getElementById("herdePaste");
-    const text = feld.value;
-    if (!text.trim()) return;
-    try {
-      uebernehmeTabelle(parseCSV(text, true), "aus Netrind eingefügt");
-      feld.value = "";                // großer Text muss nicht stehen bleiben
-    } catch(err) {
-      document.getElementById("herdeErsetzt").hidden = true;
-      alert("Der eingefügte Text konnte nicht gelesen werden – die bisherige Liste bleibt unverändert.\n\n" + err.message);
-    }
-  }, 50);
-});
-
 document.getElementById("herdeFile").addEventListener("change", e => {
   const file = e.target.files[0];
   e.target.value = "";            // gleiche Datei nochmal wählbar
@@ -3054,6 +3056,20 @@ function fbAnwenden(d, op){
         d.rechnungen.forEach(r => { if (r.Firma === op.alt) r.Firma = op.felder.Firma; });
       return null;
     }
+    case "notizZu": {
+      // Notiz an die Bemerkung mehrerer Arbeiten anhängen (auch abgerechnete – die Rechnung ändert sich nicht)
+      const text = String(op.text || "").trim();
+      if (!text) return 0;
+      let n = 0;
+      d.feldarbeiten.forEach(a => {
+        if (!op.ids.includes(a.ID)) return;
+        const alt = String(a.Bemerkung || "").trim();
+        if (alt.endsWith(text)) return;            // nicht doppelt anhängen (z. B. beim Wiederholen)
+        a.Bemerkung = alt ? alt + " · " + text : text;
+        a["Geändert"] = op.zeit; n++;
+      });
+      return n;
+    }
     case "altNotiz": {
       // Notiz aus der alten Liste übernehmen (eintrag) oder verwerfen (ohne eintrag)
       const k = JSON.stringify(op.notiz);
@@ -3089,10 +3105,12 @@ function fbSichtBerechnen(){
 }
 
 // --- Abgleich mit dem Hof-Speicher -----------------------------------------
-let fbSyncLaeuft = null;
+let fbSyncLaeuft = null, fbSyncNachher = null;
 function fbSync(){
   if (!HOF_SPEICHER_URL || !hsZugang) return Promise.resolve();
-  if (fbSyncLaeuft) return fbSyncLaeuft;
+  // Läuft schon ein Abgleich? Dann danach noch einen – sonst bliebe eine gerade
+  // hinzugekommene Änderung bis zum nächsten Anlass liegen
+  if (fbSyncLaeuft) return fbSyncNachher || (fbSyncNachher = fbSyncLaeuft.then(() => { fbSyncNachher = null; return fbSync(); }));
   fbSyncLaeuft = (async () => {
     fbStatus = {...fbStatus, zustand: "laedt"}; fbRenderVerbindung();
     try {
@@ -3867,33 +3885,34 @@ const FB_LISTE_FILTER = [
 ];
 let fbListeFilter = "alle";
 const FB_MONATSNAMEN = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+function fbWaehlbar(a){ return !a.__wartet && !fbIstNotiz(a); }
 function fbEintragHtml(a){
-  const waehlbar = !a.Rechnung && !a.__wartet && !fbIstNotiz(a);
+  const waehlbar = fbWaehlbar(a);
   const notiz = fbIstNotiz(a);
   const d = new Date(String(a.Datum || "").slice(0, 10) + "T12:00");
   const tag = isNaN(d) ? "" : FB_TAG_KURZ[d.getDay()] || "";
   const datum = isNaN(d) ? esc(a.Datum || "ohne Datum") : `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`;
-  const menge = [
-    a.Menge !== "" && a.Menge !== undefined && a.Menge !== null ? fbZahlText(fbZahl(a.Menge)) + (a.Einheit ? " " + a.Einheit : "") : "",
-    a.Stunden !== "" && a.Stunden !== undefined && a.Stunden !== null && fbZahl(a.Stunden) !== null ? fbZahlText(fbZahl(a.Stunden)) + " Std." : "",
-  ].filter(Boolean).join(" · ");
-  const z2 = [
-    fbIstEigen(a.Mandant) ? (notiz ? "" : "eigen") : a.Mandant,
-    a["Ort / Schlag"], a["Mittel / Dünger"],
-    a.BBCH ? "BBCH " + a.BBCH : "", a.Uhrzeit ? a.Uhrzeit + " Uhr" : "", a.Anwender,
-  ].filter(Boolean).map(esc).join(" · ");
-  const titel = notiz ? `📝 ${esc(a.Bemerkung || "(leere Notiz)")}` : `<b>${esc(a["Tätigkeit"] || "?")}${a.Kultur ? " " + esc(a.Kultur) : ""}</b>${menge ? ` <span class="fb-e-menge">· ${esc(menge)}</span>` : ""}`;
+  const hat = v => v !== "" && v !== undefined && v !== null;
+  const menge = hat(a.Menge) ? fbZahlText(fbZahl(a.Menge)) + (a.Einheit ? " " + a.Einheit : "") : "";
+  const std = hat(a.Stunden) && fbZahl(a.Stunden) !== null ? fbZahlText(fbZahl(a.Stunden)) + " Std." : "";
+  const extra = [a.BBCH ? "BBCH " + a.BBCH : "", a.Uhrzeit ? a.Uhrzeit + " Uhr" : "", a.Anwender].filter(Boolean).join(" · ");
+  const bem = [notiz ? "" : a.Bemerkung, extra].filter(Boolean).join(" · ");
+  const arbeit = notiz ? `📝 ${esc(a.Bemerkung || "(leere Notiz)")}` : `<b>${esc(a["Tätigkeit"] || "?")}${a.Kultur ? " " + esc(a.Kultur) : ""}</b>`;
   const re = a.__wartet ? `<span title="wartet auf Übertragung">⏳</span>`
-    : a.Rechnung ? `<button type="button" class="fb-badge ok fb-re-link" data-re="${esc(a.Rechnung)}" data-firma="${esc(a["Rechnung Firma"] || "")}" title="Rechnung ansehen">✓ Rechnung ${esc(a.Rechnung)}</button>`
-    : fbAbzurechnen(a) ? `<span class="fb-badge offen">noch abzurechnen</span>` : "";
+    : a.Rechnung ? `<button type="button" class="fb-badge ok fb-re-link" data-re="${esc(a.Rechnung)}" data-firma="${esc(a["Rechnung Firma"] || "")}" title="Rechnung ansehen">✓ ${esc(a.Rechnung)}</button>`
+    : fbAbzurechnen(a) ? `<span class="fb-badge offen">offen</span>` : "";
   const cls = ["fb-e", notiz ? "notiz" : "", a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : "",
     fbAuswahl && fbAuswahl.has(a.ID) ? "gewaehlt" : "", fbAuswahl && !waehlbar ? "nicht-waehlbar" : ""].filter(Boolean).join(" ");
-  return `<div class="${cls}" data-id="${esc(a.ID)}" role="button" tabindex="0"${a["Prüfen"] ? ` title="${esc(a["Prüfen"])}"` : ""}>
-    <div class="fb-e-datum">${fbAuswahl ? (waehlbar ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="für Rechnung auswählen" tabindex="-1">` : `<span class="fb-wahl-platz"></span>`) : ""}<span><b>${datum}</b><small>${esc(tag)}</small></span></div>
-    <div class="fb-e-haupt"><div class="fb-e-z1">${titel}${a["Prüfen"] ? " ⚠" : ""}</div>
-      ${z2 ? `<div class="fb-e-z2">${z2}</div>` : ""}
-      ${!notiz && a.Bemerkung ? `<div class="fb-e-z3">${esc(a.Bemerkung)}</div>` : ""}</div>
-    <div class="fb-e-re">${re}</div></div>`;
+  const mandant = fbIstEigen(a.Mandant) ? (notiz ? "" : "eigen") : a.Mandant;
+  return `<tr class="${cls}" data-id="${esc(a.ID)}" tabindex="0"${a["Prüfen"] ? ` title="${esc(a["Prüfen"])}"` : ""}>
+    <td class="c-datum">${fbAuswahl ? (waehlbar ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="auswählen" tabindex="-1">` : `<span class="fb-wahl-platz"></span>`) : ""}<b>${datum}</b><small>${esc(tag)}</small></td>
+    <td class="c-mandant">${esc(mandant || "")}</td>
+    <td class="c-arbeit">${arbeit}${a["Prüfen"] ? " ⚠" : ""}<span class="c-klein">${menge || std ? " · " + esc([menge, std].filter(Boolean).join(" · ")) : ""}</span>${(() => { const z = [mandant, a["Ort / Schlag"], a["Mittel / Dünger"]].filter(Boolean).map(esc).join(" · "); return z ? `<span class="c-zeile2">${z}</span>` : ""; })()}${bem ? `<span class="c-bem">${esc(bem)}</span>` : ""}</td>
+    <td class="c-ort">${esc(a["Ort / Schlag"] || "")}</td>
+    <td class="num c-menge">${esc(menge)}</td>
+    <td class="num c-std">${esc(std)}</td>
+    <td class="c-mittel">${esc(a["Mittel / Dünger"] || "")}</td>
+    <td class="c-re">${re}</td></tr>`;
 }
 function fbRenderListe(){
   const jahrSel = $fb("fbFilterJahr");
@@ -3918,7 +3937,6 @@ function fbRenderListe(){
     if (q && !Object.values(a).some(v => String(v).toLowerCase().includes(q))) return false;
     return true;
   });
-  if (fbAuswahl) fbListeFilter = "offen";
   const filter = FB_LISTE_FILTER.find(f => f[0] === fbListeFilter) || FB_LISTE_FILTER[0];
   const zeilen = basis.filter(a => !filter[2] || filter[2](a))
     .sort((a, b) => String(b.Datum).localeCompare(String(a.Datum)) || String(b.ID).localeCompare(String(a.ID)));
@@ -3936,7 +3954,7 @@ function fbRenderListe(){
     const [j, m] = (monat || "").split("-");
     const name = m ? `${FB_MONATSNAMEN[Number(m) - 1] || m} ${j}` : "Ohne Datum";
     const h = gruppe.reduce((s, a) => s + (fbIstNotiz(a) ? 0 : fbZahl(a.Stunden) || 0), 0);
-    html += `<div class="fb-monat"><span>${esc(name)}</span><small>${gruppe.length} ${gruppe.length === 1 ? "Eintrag" : "Einträge"}${h ? " · " + fbZahlText(h) + " Std." : ""}</small></div>` + gruppe.map(fbEintragHtml).join("");
+    html += `<tr class="fb-monat"><td colspan="8">${esc(name)}<small>${gruppe.length} ${gruppe.length === 1 ? "Eintrag" : "Einträge"}${h ? " · " + fbZahlText(h) + " Std." : ""}</small></td></tr>` + gruppe.map(fbEintragHtml).join("");
     gruppe = [];
   };
   zeilen.forEach(a => {
@@ -3945,7 +3963,7 @@ function fbRenderListe(){
     gruppe.push(a);
   });
   flush();
-  $fb("fbListeBody").innerHTML = html || `<div class="fb-leer">${basis.length ? "Hier gibt es nichts mit dieser Auswahl." : "Keine Einträge – Filter oben ändern oder etwas eintragen."}</div>`;
+  $fb("fbListeBody").innerHTML = html ? `<table class="fb-tab"><thead><tr><th>Datum</th><th>Mandant</th><th>Arbeit</th><th>Ort / Schlag</th><th class="num">Menge</th><th class="num">Std.</th><th>Mittel / Dünger</th><th>Rechnung</th></tr></thead><tbody>${html}</tbody></table>` : `<div class="fb-leer">${basis.length ? "Hier gibt es nichts mit dieser Auswahl." : "Keine Einträge – Filter oben ändern oder etwas eintragen."}</div>`;
 
   // Notizen aus der alten Liste: übernehmen oder verwerfen
   const alt = (fbDaten && fbDaten.notizen) || [];
@@ -4000,7 +4018,7 @@ function fbNotizDialog(vorgabe = {}, altNotiz = null){
 let fbAuswahl = null;           // null = normale Liste, Set = Auswahl für Rechnung
 function fbAuswahlUmschalten(id){
   const a = fbArbeiten().find(x => x.ID === id);
-  if (!a || a.Rechnung || a.__wartet || fbIstNotiz(a)) return;
+  if (!a || !fbWaehlbar(a)) return;
   if (fbAuswahl.has(id)) fbAuswahl.delete(id); else fbAuswahl.add(id);
   fbRenderListe();
 }
@@ -4020,28 +4038,58 @@ function fbEmpfaengerDialog(vorschlaege, weiter){
 }
 function fbRenderAuswahlLeiste(){
   const leiste = $fb("fbAuswahlLeiste");
-  $fb("fbAuswahlKnopf").textContent = fbAuswahl ? "✕ Auswahl beenden" : "🧾 Für Rechnung auswählen";
+  $fb("fbAuswahlKnopf").textContent = fbAuswahl ? "✕ Auswahl beenden" : "☑ Auswählen";
+  $fb("fbAuswahlKnopf").classList.toggle("primary", !!fbAuswahl);
   if (!fbAuswahl){ leiste.hidden = true; return; }
   leiste.hidden = false;
-  const ids = [...fbAuswahl];
-  const zaehl = {};
-  ids.forEach(id => { const a = fbArbeiten().find(x => x.ID === id); if (a) zaehl[a.Mandant] = (zaehl[a.Mandant] || 0) + 1; });
-  const namen = Object.keys(zaehl);
+  const ids = [...fbAuswahl].filter(id => fbArbeiten().some(a => a.ID === id));
+  const abrechenbar = ids.filter(id => fbAbzurechnen(fbArbeiten().find(a => a.ID === id)));
   leiste.innerHTML = ids.length
-    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt · ${namen.map(n => `${esc(n)}${namen.length > 1 ? " " + zaehl[n] : ""}`).join(", ")}</span>
-       <button class="btn primary small" type="button" id="fbAuswahlUebernehmen">In Rechnung übernehmen →</button>`
-    : `<span>Arbeiten antippen, die in die Rechnung sollen – auch wenn sie unter einem anderen Namen stehen. Abgerechnete (✓) sind ausgegraut.</span>`;
-  if (ids.length) $fb("fbAuswahlUebernehmen").addEventListener("click", () => {
-    const fremd = namen.filter(n => !fbIstEigen(n));
+    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt${abrechenbar.length < ids.length ? ` · davon ${abrechenbar.length} noch abzurechnen` : ""}</span>
+       <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbAuswahlNotiz">📝 Notiz hinzufügen</button>
+       <button class="btn primary" type="button" id="fbAuswahlUebernehmen" ${abrechenbar.length ? "" : "disabled"}>🧾 Rechnung erstellen</button></span>`
+    : `<span>Arbeiten antippen – dann <b>Notiz hinzufügen</b> oder <b>Rechnung erstellen</b>.</span>
+       <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbNotizNeu">📝 Notiz ohne Arbeit</button></span>`;
+  if (!ids.length){ $fb("fbNotizNeu").addEventListener("click", () => fbNotizDialog()); return; }
+  $fb("fbAuswahlNotiz").addEventListener("click", () => fbNotizZuDialog(ids));
+  $fb("fbAuswahlUebernehmen").addEventListener("click", () => {
+    if (!abrechenbar.length) return;
+    const zaehl = {};
+    abrechenbar.forEach(id => { const a = fbArbeiten().find(x => x.ID === id); zaehl[a.Mandant] = (zaehl[a.Mandant] || 0) + 1; });
+    const namen = Object.keys(zaehl);
     const weiter = mandant => {
-      fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
-      fbAuswahl = null; fbListeFilter = "alle";
+      fbRe = {mandant, positionen: {}, vorauswahl: new Set(abrechenbar)};
+      fbAuswahl = null;
       fbZeigeTab("rechnung");
       window.scrollTo({top: 0, behavior: "smooth"});
     };
-    if (fremd.length === 1 && namen.length === 1) return weiter(fremd[0]);
-    fbEmpfaengerDialog(fremd, weiter);
+    if (namen.length === 1) return weiter(namen[0]);
+    fbEmpfaengerDialog(namen, weiter);
   });
+}
+// Notiz an mehrere ausgewählte Arbeiten anhängen
+function fbNotizZuDialog(ids){
+  const d = $fb("fbDialog");
+  const arbeiten = ids.map(id => fbArbeiten().find(a => a.ID === id)).filter(Boolean);
+  d.innerHTML = `<div class="fb-card">
+    <div class="dlg-head" style="padding:0 0 10px;position:static"><div class="row1"><h2>Notiz zu ${arbeiten.length === 1 ? "1 Arbeit" : arbeiten.length + " Arbeiten"}</h2>
+      <button class="dlg-close" type="button" aria-label="Schließen">✕</button></div></div>
+    <ul class="bs-help" style="margin:0 0 10px 18px">${arbeiten.slice(0, 6).map(a => `<li>${esc(fbDatumAnzeige(a.Datum))} · ${esc(a["Tätigkeit"] || "")}${a.Kultur ? " " + esc(a.Kultur) : ""}${a["Ort / Schlag"] ? " · " + esc(a["Ort / Schlag"]) : ""}${fbIstEigen(a.Mandant) ? "" : " · " + esc(a.Mandant)}</li>`).join("")}${arbeiten.length > 6 ? `<li>… und ${arbeiten.length - 6} weitere</li>` : ""}</ul>
+    <form id="fbNotizZuForm" class="fb-form">
+      <label class="breit">Notiz (wird bei jeder Arbeit an die Bemerkung angehängt)<textarea name="text" rows="4" required></textarea></label>
+      <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Notiz hinzufügen</button></div>
+    </form></div>`;
+  d.querySelector(".dlg-close").addEventListener("click", () => d.close());
+  $fb("fbNotizZuForm").addEventListener("submit", ev => {
+    ev.preventDefault();
+    const text = ev.target.elements.text.value.trim();
+    if (!text) return;
+    d.close();
+    fbAuswahl = null;
+    fbAendern({typ: "notizZu", ids, text});
+  });
+  d.showModal();
+  setTimeout(() => { const t = d.querySelector("textarea"); if (t) t.focus(); }, 50);
 }
 
 function fbBearbeiten(id){
@@ -5057,7 +5105,6 @@ $fb("fbNeuLaden").addEventListener("click", () => fbSync());
 $fb("fbChips").addEventListener("click", e => {
   const b = e.target.closest("[data-filter]");
   if (!b) return;
-  if (fbAuswahl && b.dataset.filter !== "offen") fbAuswahl = null;      // anderer Knopf = Auswahl beenden
   fbListeFilter = b.dataset.filter; fbRenderListe();
 });
 $fb("fbListeBody").addEventListener("click", e => {
@@ -5071,12 +5118,7 @@ $fb("fbListeBody").addEventListener("click", e => {
 $fb("fbListeBody").addEventListener("keydown", e => {
   if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-id]")){ e.preventDefault(); e.target.click(); }
 });
-$fb("fbNotizNeu").addEventListener("click", () => fbNotizDialog());
-$fb("fbAuswahlKnopf").addEventListener("click", () => {
-  fbAuswahl = fbAuswahl ? null : new Set();
-  fbListeFilter = fbAuswahl ? "offen" : "alle";
-  fbRenderListe();
-});
+$fb("fbAuswahlKnopf").addEventListener("click", () => { fbAuswahl = fbAuswahl ? null : new Set(); fbRenderListe(); });
 $fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRe.vorauswahl = null; fbRe.positionen = {}; fbRenderRePositionen(); });
 ["fbReFirma", "fbReDatum", "fbReMwst"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
 $fb("fbReErstellen").addEventListener("click", fbRechnungErstellen);
