@@ -424,13 +424,27 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 }
 .fb-mikro.hoert{background:var(--warn);animation:fbPuls 1.2s ease-in-out infinite}
 @keyframes fbPuls{50%{filter:brightness(1.25)}}
-.fb-erkannt{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px;min-height:4px}
-.fb-erkannt .rec{font-weight:500}
+.fb-erkannt{margin:12px 0 4px;padding:12px 14px;border-radius:12px;border:2px solid var(--accent);background:var(--accent-soft)}
+.fb-erkannt[hidden]{display:none}
+.fb-vorschau-titel{font-size:12.5px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.fb-vorschau-satz{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15.5px;line-height:1.4}
+.fb-vorschau-satz .fehlt{color:var(--warn);font-weight:600}
+.fb-vorschau-warn{margin-top:8px;font-size:13.5px;color:var(--warn);font-weight:500}
+.fb-erkannt .fb-form-knoepfe{margin-top:10px}
+.fb-meldung{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
 .fb-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 12px;margin-top:10px}
 .fb-form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--ink-dim);min-width:0}
 .fb-form input,.fb-form select{width:100%;min-width:0;padding:9px 10px;border:1px solid var(--border-strong);border-radius:9px;
   background:var(--surface);color:var(--ink);font-size:14.5px;font-weight:400}
 .fb-form input.geaendert{border-color:var(--accent);background:var(--accent-soft)}
+/* Alle Felder gleich hoch – iPhone-Safari zeichnet Datum und Auswahllisten sonst in eigener Größe */
+.fb-form input:not([type=checkbox]),.fb-form select{height:46px;box-sizing:border-box;-webkit-appearance:none;appearance:none;line-height:1.2}
+.fb-form input[type=date]{display:flex;align-items:center;text-align:left}
+.fb-form input[type=date]::-webkit-date-and-time-value{text-align:left}
+.fb-form select{padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.8'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center}
+.fb-erkannt .fb-form-knoepfe .btn{white-space:nowrap}
+@media (max-width:640px){.fb-erkannt .fb-form-knoepfe .btn.primary{flex:1}}
 .fb-form .breit{grid-column:span 2}
 .fb-form-knoepfe{display:flex;gap:10px;align-items:end}
 @media (max-width:760px){.fb-form{grid-template-columns:1fr 1fr}.fb-form .breit{grid-column:span 2}}
@@ -442,6 +456,17 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-table tr.pruefen td{background:var(--gold-soft)}
 .fb-table tr.wartet td{color:var(--ink-dim);font-style:italic}
 .fb-table td.re{color:var(--accent);font-weight:600}
+.fb-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.fb-badge.ok{background:var(--accent-soft);color:var(--accent)}
+.fb-badge.offen{background:var(--warn-soft);color:var(--warn)}
+.fb-table tr.gewaehlt td{background:var(--accent-soft)!important}
+.fb-table tr.nicht-waehlbar{opacity:.45}
+.fb-table .fb-wahl{width:18px;height:18px;vertical-align:middle;margin:0 6px 0 0;pointer-events:none}
+.fb-wahl-platz{display:inline-block;width:24px}
+.fb-auswahl-leiste{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  margin:10px 16px 0;padding:10px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--accent);font-size:14px}
+.fb-auswahl-leiste[hidden]{display:none}
+@media (max-width:640px){.fb-auswahl-leiste{position:sticky;top:auto;bottom:calc(70px + env(safe-area-inset-bottom));margin:10px 12px 0}}
 /* Handy: jede Feldarbeit als kleine Karte statt breiter Tabelle */
 @media (max-width:640px){
   .fb-table thead{display:none}
@@ -617,7 +642,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <button class="btn primary fb-mikro" id="fbMikro" type="button" aria-label="Sprechen">🎤<span>Sprechen</span></button>
       </div>
       <p class="bs-help" id="fbSprachHinweis">Einfach reden wie zu einem Kollegen: was, wo, wie viel, für wen. Die App füllt die Felder darunter aus – kurz prüfen, dann speichern.</p>
-      <div id="fbErkannt" class="fb-erkannt"></div>
+      <div id="fbErkannt" class="fb-erkannt" aria-live="polite" hidden></div>
       <form id="fbForm" class="fb-form" autocomplete="off">
         <label>Datum<input type="date" name="Datum" required></label>
         <label>Mandant<input name="Mandant" list="fbListeMandanten" placeholder="Eigen"></label>
@@ -646,8 +671,10 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <select id="fbFilterTaetigkeit"><option value="">alle Tätigkeiten</option></select>
         <label class="toggle-only"><input type="checkbox" id="fbNurOffen"> nur nicht abgerechnet</label>
         <label class="toggle-only"><input type="checkbox" id="fbNurPruefen"> nur „Prüfen“</label>
+        <button class="btn small" type="button" id="fbAuswahlKnopf">🧾 Für Rechnung auswählen</button>
       </div>
       <div id="fbListeInfo" class="bs-note" style="padding:10px 16px 0"></div>
+      <div id="fbAuswahlLeiste" class="fb-auswahl-leiste" hidden></div>
       <div class="table-scroll">
         <table class="bs-table fb-table">
           <thead><tr><th>Datum</th><th>Mandant</th><th>Tätigkeit</th><th>Kultur</th><th>Ort / Schlag</th><th>Menge</th><th>Std.</th><th>Mittel / Dünger</th><th>Rechnung</th><th></th></tr></thead>
@@ -702,6 +729,15 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <button class="btn" type="button" id="fbExportCsv">⬇ Feldarbeiten für Excel (CSV)</button>
         <button class="btn" type="button" id="fbExportJson">⬇ Komplette Sicherung (JSON)</button>
       </div>
+      <h3 class="fb-zwischen">Hof-Passwort ändern</h3>
+      <p class="bs-help">Das Hof-Passwort schützt Kuhliste, Feldbuch, Adressen und Rechnungen. Am besten <b>drei bis vier Wörter mit Bindestrich und eine Zahl</b> – leicht zu merken, praktisch nicht zu erraten. Ein Name von Hof, Ort oder Familie gehört nicht hinein. Lass es am iPhone bzw. PC im Passwort-Speicher sichern, dann musst du es pro Gerät nur einmal eintippen.</p>
+      <form id="fbPwAendernForm" class="fb-form">
+        <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
+        <label class="breit">Neues Passwort<input type="password" name="new-password" id="fbPwNeu" autocomplete="new-password" required></label>
+        <label class="breit">Neues Passwort nochmal<input type="password" id="fbPwNeu2" autocomplete="new-password" required></label>
+        <div class="breit bs-help" id="fbPwStaerke"></div>
+        <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Passwort ändern</button></div>
+      </form><div id="fbPwAendernMeldung" class="bs-hof-meldung"></div>
     </section>
 
     <!-- Auswahllisten für die Eingabefelder -->
@@ -2438,24 +2474,40 @@ async function sha256hex(text){
   return [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, "0")).join("");
 }
 
-async function hsZugangAusPasswort(pw){
+// verfahren "v1": Anmelde-Schlüssel per einfachem SHA-256 (alt).
+// verfahren "v2": Anmelde-Schlüssel per PBKDF2 mit 600.000 Runden – auch wer den
+// Prüfwert vom Server stiehlt, kann damit keine Passwörter durchprobieren.
+async function hsZugangAusPasswort(pw, verfahren = "v1"){
   const enc = new TextEncoder();
-  const auth = await sha256hex(HS_SALZ + ":auth:" + pw);
+  let auth;
+  if (verfahren === "v2"){
+    const roh = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+    const bits = await crypto.subtle.deriveBits({name: "PBKDF2", salt: enc.encode(HS_SALZ + ":auth2"), iterations: 600000, hash: "SHA-256"}, roh, 256);
+    auth = [...new Uint8Array(bits)].map(x => x.toString(16).padStart(2, "0")).join("");
+  } else auth = await sha256hex(HS_SALZ + ":auth:" + pw);
   const basis = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]);
   const aes = await crypto.subtle.deriveKey(
     {name: "PBKDF2", salt: enc.encode(HS_SALZ + ":aes"), iterations: 600000, hash: "SHA-256"},
     basis, {name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
-  return {auth, aes: b64aus(await crypto.subtle.exportKey("raw", aes))};
+  return {auth, aes: b64aus(await crypto.subtle.exportKey("raw", aes)), verfahren};
 }
-function hsAesKey(){ return crypto.subtle.importKey("raw", b64ein(hsZugang.aes), "AES-GCM", false, ["encrypt", "decrypt"]); }
+// Welches Verfahren gilt gerade? (nach einem Passwortwechsel "v2")
+async function hsVerfahren(){
+  try {
+    const r = await fetch(HOF_SPEICHER_URL + (HOF_SPEICHER_URL.includes("?") ? "&" : "?") + "verfahren=1", {cache: "no-store"});
+    const j = await r.json();
+    return j.verfahren === "v2" ? "v2" : "v1";
+  } catch(e) { return "v1"; }
+}
+function hsAesKey(z = hsZugang){ return crypto.subtle.importKey("raw", b64ein(z.aes), "AES-GCM", false, ["encrypt", "decrypt"]); }
 
-async function hsVerschluesseln(obj){
+async function hsVerschluesseln(obj, z = hsZugang){
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const ct = await crypto.subtle.encrypt({name: "AES-GCM", iv}, await hsAesKey(), new TextEncoder().encode(JSON.stringify(obj)));
+  const ct = await crypto.subtle.encrypt({name: "AES-GCM", iv}, await hsAesKey(z), new TextEncoder().encode(JSON.stringify(obj)));
   return {v: 1, iv: b64aus(iv), daten: b64aus(ct), hochgeladen: obj.hochgeladen};
 }
-async function hsEntschluesseln(umschlag){
-  const klar = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64ein(umschlag.iv)}, await hsAesKey(), b64ein(umschlag.daten));
+async function hsEntschluesseln(umschlag, z = hsZugang){
+  const klar = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64ein(umschlag.iv)}, await hsAesKey(z), b64ein(umschlag.daten));
   return JSON.parse(new TextDecoder().decode(klar));
 }
 
@@ -2525,7 +2577,7 @@ async function hsVerbinden(e){
   const meldung = document.getElementById("hsMeldung");
   meldung.textContent = "Verbinde …";
   try {
-    const zugang = await hsZugangAusPasswort(document.getElementById("hsPasswort").value);
+    const zugang = await hsZugangAusPasswort(document.getElementById("hsPasswort").value, await hsVerfahren());
     const j = await hsAnfrage({aktion: "laden", schluessel: zugang.auth});
     if (!j.ok){ meldung.textContent = /passwort/i.test(j.fehler || "") ? "Passwort falsch." : (j.fehler || "Fehler"); return; }
     hsZugang = zugang; hsSpeichereZugang();
@@ -2598,8 +2650,9 @@ const FB_STANDARD_LISTEN = {
   "Tätigkeiten": ["Pflügen", "Grubbern", "Eggen", "Striegeln", "Walzen", "Mulchen", "Säen", "Düngen", "Kalken", "Gülle fahren", "Mist streuen",
                   "Pflanzenschutz", "Mähen", "Kreiseln", "Schwaden", "Häckseln", "Pressen", "Ballen fahren", "Dreschen", "Transport", "Silo walzen",
                   "Maschinenmiete", "Sonstiges"],
-  "Kulturen": ["Mais", "Winterweizen", "Triticale", "Wintergerste", "Sommergerste", "Getreide", "Raps", "Grünland", "Silphie", "Zwischenfrucht", "Sonstige"],
-  "Einheiten": ["ha", "m³", "h", "Ballen", "t", "dt", "l", "kg", "Wagen", "Fass", "Stück", "pauschal"],
+  "Kulturen": ["Mais", "Winterweizen", "Triticale", "Wintergerste", "Sommergerste", "Getreide", "Dinkel", "Roggen", "Hafer", "Raps", "Grünland",
+               "Kleegras", "Silphie", "Zwischenfrucht", "Zuckerrüben", "Kartoffeln", "Sonstige"],
+  "Einheiten": ["ha", "m³", "h", "Ballen", "t", "dt", "Ztr", "l", "kg", "Wagen", "Fass", "Stück", "pauschal"],
 };
 
 function lsLesen(k){ try { return localStorage.getItem(k); } catch(e) { return null; } }
@@ -2744,7 +2797,11 @@ function fbSync(){
       for (let versuch = 0; versuch < 6 && !fertig; versuch++){
         const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth});
         if (!j.ok){
-          if (/passwort/i.test(j.fehler || "")){ hsZugang = null; hsSpeichereZugang(); }
+          if (/passwort/i.test(j.fehler || "")){
+            // Passwort wurde geändert: abmelden und die Kopie auf diesem Gerät nicht mehr zeigen
+            hsZugang = null; hsSpeichereZugang();
+            fbGeladen = null; lsSchreiben(FB_DATEN_KEY, null);
+          }
           throw new Error(j.fehler || "Fehler beim Laden");
         }
         const daten = j.daten ? await hsEntschluesseln(j.daten) : null;
@@ -2805,7 +2862,7 @@ async function fbPasswortVerbinden(e){
   const meldung = $fb("fbPwMeldung");
   meldung.textContent = "Verbinde …";
   try {
-    const zugang = await hsZugangAusPasswort($fb("fbPasswort").value);
+    const zugang = await hsZugangAusPasswort($fb("fbPasswort").value, await hsVerfahren());
     const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: zugang.auth});
     if (!j.ok){ meldung.textContent = /passwort/i.test(j.fehler || "") ? "Passwort falsch." : (j.fehler || "Fehler"); return; }
     hsZugang = zugang; hsSpeichereZugang();
@@ -2862,55 +2919,179 @@ function fbRenderVerbindung(){
 }
 
 // --- Eingabe verstehen (Sprache oder Text) -------------------------------
-// Bewusst ohne KI-Dienst: feste Regeln + alles, was schon im Feldbuch steht
-// (Mandanten, Orte, Mittel). Das Ergebnis ist nur ein Vorschlag – die Felder
-// werden vor dem Speichern angezeigt und können korrigiert werden.
+// Ohne KI-Dienst: läuft komplett auf dem Gerät, also auch im Funkloch.
+// Feste Regeln + alles, was schon im Feldbuch steht (Mandanten, Orte, Mittel).
+// Versteht Umgangssprache ("Kubik", "Zentner", "Doppelzentner", "Kilo",
+// "zwei", "anderthalb"), relative Zeitangaben ("letzten Samstag",
+// "vorgestern", "vor drei Tagen") und Selbstkorrekturen ("8 Hektar, nein 9").
+// Das Ergebnis wird VOR dem Speichern als Satz angezeigt (Vorschau) und
+// kann in den Feldern korrigiert werden.
+const fbW = src => new RegExp(`(?<![\\p{L}])(?:${src})`, "iu");
 const FB_TAETIGKEIT_REGELN = [
-  [/silo\s*(ge)?walz/i, "Silo walzen"],
-  [/ballen\s*(geholt|holen|gefahren|fahren|abgefahren)/i, "Ballen fahren"],
-  [/gülle|gärrest|güllefass/i, "Gülle fahren"],
-  [/\bmist\b/i, "Mist streuen"],
-  [/spritz|herbizid|fungizid|insektizid|pflanzenschutz|unkraut/i, "Pflanzenschutz"],
-  [/(?<![\p{L}])(kalk|kalken|gekalkt|kalkung)(?![\p{L}])/iu, "Kalken"],
-  [/dünger|gedüngt|düngen|\bkas\b|gestreut|streuen|harnstoff/i, "Düngen"],
-  [/gepflügt|pflügen|pflug/i, "Pflügen"],
-  [/grubber/i, "Grubbern"],
-  [/geeggt|eggen|kreiselegge/i, "Eggen"],
-  [/striegel/i, "Striegeln"],
-  [/gewalzt|walzen|walze/i, "Walzen"],
-  [/gemulcht|mulchen|mulcher/i, "Mulchen"],
-  [/gesät|säen|saat|gedrillt|drillen|gelegt|legen/i, "Säen"],
-  [/gemäht|mähen|mähwerk/i, "Mähen"],
-  [/gekreiselt|kreiseln|gezettet|zetten|gewendet|wenden/i, "Kreiseln"],
-  [/geschwadet|schwaden/i, "Schwaden"],
-  [/gehäckselt|häckseln|häcksler/i, "Häckseln"],
-  [/gepresst|pressen|presse|ballen/i, "Pressen"],
-  [/gedroschen|dreschen|drusch|mähdrescher/i, "Dreschen"],
-  [/miete|gemietet|verliehen|ausgeliehen/i, "Maschinenmiete"],
-  [/transport|abgefahren/i, "Transport"],
+  [fbW("silo\\s*(ge)?walz|silo\\s*(fest)?(ge)?fahr|silo\\s*fest"), "Silo walzen"],
+  [fbW("ballen\\s*(ge)?(holt|hol|fahr|gefahren|heim|einge|abge|lad|geladen|transport)|ballen\\s*(rein|heim)"), "Ballen fahren"],
+  [fbW("gülle|güll|gegüllt|güllet|gärrest|garrest|jauche|odel|odl|schleppschlauch|schlitzger"), "Gülle fahren"],
+  [fbW("mist(?![\\p{L}])|miststreu|gemistet|mist\\s*(ge)?streut|kompost"), "Mist streuen"],
+  [fbW("(ab|ge|g)?spritz|gesprizt|behandel|behandelt|herbizid|fungizid|insektizid|pflanzenschutz|wachstumsregler|unkraut|feldspritze|glyphosat"), "Pflanzenschutz"],
+  [fbW("kalk(en|t|ung)?(?![\\p{L}])|gekalkt|aufgekalkt"), "Kalken"],
+  [fbW("dünger|gedüngt|gdüngt|düngen|dünge|gestreut|streuen|streuer|kas(?![\\p{L}])|harnstoff|kunstdünger|schwefel|piamon|n\\+s|n\\s*plus\\s*s|kali(?![\\p{L}])"), "Düngen"],
+  [fbW("(ge)?pflüg|pflüag|pflug|umgebrochen|umbrechen|umgeackert"), "Pflügen"],
+  [fbW("grubber|gegrubb|grubbert"), "Grubbern"],
+  [fbW("kreisel\\s*egge|kreiselecke|kreiselegg|geeggt|eggen|egge(?![\\p{L}])|saatbett|scheibenegge|gescheibt|scheiben(?![\\p{L}])"), "Eggen"],
+  [fbW("striegel|gestriegelt"), "Striegeln"],
+  [fbW("gewalzt|gwalzt|walzen|walze(?![\\p{L}])|cambridge|prismenwalze"), "Walzen"],
+  [fbW("mulch|gemulcht|gmulcht"), "Mulchen"],
+  [fbW("gesät|gesäht|gesäet|gesaet|gsät|gsäht|gseet|gsäet|säen|saen|sähen|saat|gedrillt|drill|eingesät|angesät|nachgesät|gelegt|legen|einsaat|untersaat"), "Säen"],
+  [fbW("gemäht|gemaeht|gmäht|gmeht|mähen|maehen|mähwerk|abgemäht|mahd|mähe"), "Mähen"],
+  [fbW("gekreiselt|gkreiselt|kreisel|zetten|gezettet|gewendet|wenden|worben|geworben|gworbe|zettwender|heuwender"), "Kreiseln"],
+  [fbW("schwad|geschwadet|gschwadet|gschwadt|schwader"), "Schwaden"],
+  [fbW("häcksel|gehäckselt|ghäckselt|häcksler|häckseln|haecksel"), "Häckseln"],
+  [fbW("gepresst|gepreßt|gpresst|pressen|presse(?![\\p{L}])|rundballen|quaderballen|gewickelt|wickeln|ballen"), "Pressen"],
+  [fbW("gedroschen|dresch|drusch|mähdrescher|gedrescht"), "Dreschen"],
+  [fbW("miete|gemietet|vermietet|verliehen|ausgeliehen|geliehen"), "Maschinenmiete"],
+  [fbW("transport|abgefahren|abfahr|gefahren|geholt|gebracht|ausgefahren"), "Transport"],
 ];
 const FB_KULTUR_REGELN = [
-  [/silphie/i, "Silphie"], [/zwischenfrucht/i, "Zwischenfrucht"], [/\bmais/i, "Mais"],
-  [/winterweizen|weizen|(?<![\p{L}])ww(?![\p{L}])/iu, "Winterweizen"], [/triticale|tritikale|(?<![\p{L}])trit/iu, "Triticale"],
-  [/wintergerste|(?<![\p{L}])wg(?![\p{L}])/iu, "Wintergerste"], [/sommergerste/i, "Sommergerste"], [/gerste/i, "Wintergerste"],
-  [/raps/i, "Raps"], [/grünland|wiese|\bgras\b|\bheu\b|schnitt/i, "Grünland"], [/getreide/i, "Getreide"],
+  [fbW("silphie"), "Silphie"],
+  [fbW("zwischenfrucht|zwifru|senf(?![\\p{L}])|phacelia|ölrettich"), "Zwischenfrucht"],
+  [fbW("kleegras|klee(?![\\p{L}])"), "Kleegras"],
+  [fbW("mais|silomais|körnermais"), "Mais"],
+  [fbW("winterweizen|weizen|ww(?![\\p{L}])"), "Winterweizen"],
+  [fbW("dinkel"), "Dinkel"], [fbW("roggen"), "Roggen"], [fbW("hafer"), "Hafer"],
+  [fbW("triticale|tritikale|trit(?![\\p{L}])|triti(?![\\p{L}])"), "Triticale"],
+  [fbW("wintergerste|wg(?![\\p{L}])"), "Wintergerste"], [fbW("sommergerste"), "Sommergerste"], [fbW("gerste"), "Wintergerste"],
+  [fbW("raps"), "Raps"], [fbW("zuckerrüben|rüben"), "Zuckerrüben"], [fbW("kartoffel"), "Kartoffeln"],
+  [fbW("grünland|wiese|gras(?![\\p{L}])|grassilage|weide(?![\\p{L}])|heu(?![\\p{L}])|öhmd|ömd|emd(?![\\p{L}])|schnitt"), "Grünland"],
+  [fbW("getreide"), "Getreide"],
 ];
-const FB_EINHEITEN = {hektar: "ha", ha: "ha", kubikmeter: "m³", kubik: "m³", cbm: "m³", "m³": "m³", m3: "m³",
-  fass: "Fass", fässer: "Fass", fässern: "Fass", stunden: "h", stunde: "h", std: "h", h: "h", ballen: "Ballen",
-  tonnen: "t", tonne: "t", to: "t", t: "t", doppelzentner: "dt", dt: "dt", liter: "l", l: "l", kilo: "kg", kg: "kg",
-  wagen: "Wagen", stück: "Stück"};
-const FB_MENGEN_EINHEITEN = ["ha", "m³", "Ballen", "Wagen", "Fass", "Stück"];
+// Einheiten-Wörter → Kurzform (Reihenfolge: lange Wörter zuerst)
+const FB_EINHEIT_WOERTER = [
+  ["doppelzentnern?|dezitonnen|dz", "dt"], ["zentnern?|ztr", "Ztr"],
+  ["kubikmetern?|kubik|cbm|m3|m³|qbm", "m³"], ["hektaren?|hektar|ha", "ha"],
+  ["kilogramm|kilos?|kg", "kg"], ["litern?|l", "l"], ["tonnen?|to|t", "t"],
+  ["stunden|stunde|stund|std|h", "h"], ["minuten|min", "min"],
+  ["rundballen|quaderballen|ballen", "Ballen"], ["fässern|fässer|fass|fässle", "Fass"],
+  ["wagen|hänger|anhänger|fuhren|fuhre|ladungen|ladung|kipper", "Wagen"], ["stück", "Stück"],
+];
+const FB_MENGEN_VORRANG = ["ha", "m³", "Ballen", "Wagen", "Fass", "Stück", "t", "Ztr", "dt", "kg", "l"];
 const FB_MONATE = ["januar","februar","märz","april","mai","juni","juli","august","september","oktober","november","dezember"];
 const FB_WOCHENTAGE = ["sonntag","montag","dienstag","mittwoch","donnerstag","freitag","samstag"];
+const FB_TAG_KURZ = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 const FB_STANDARD_MITTEL = ["KAS", "Kalk", "Harnstoff", "Salz", "N+S", "Primero", "Laudis", "Spectrum", "Casper", "Arrat", "Adengo",
-  "Vivendi", "Ariana", "CCC", "Countdown", "Tebu", "Prothioconazol", "Vulcanus", "Trinity", "Glyphosat"];
+  "Vivendi", "Ariana", "CCC", "Countdown", "Tebu", "Prothioconazol", "Vulcanus", "Trinity", "Glyphosat", "Piamon", "SSA"];
+const FB_FUELLWOERTER = /(?<![\p{L}])(äh+|ähm+|öh+m?|hm+|also|halt|quasi|sozusagen|gell|gelle|oder so|sag(en)? wir mal|weißt du)(?![\p{L}])/giu;
+const FB_KORREKTUR = /(?<![\p{L}])(nein|nee|doch nicht|ich mein(e|te)?|korrektur|korrigiere|quatsch|falsch|sorry|moment mal|moment|vielmehr|beziehungsweise|bzw\.?)(?![\p{L}])/iu;
 
 function fbRx(text){ return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 function fbWort(wort){ return new RegExp(`(?<![\\p{L}\\d])${fbRx(wort)}(?![\\p{L}\\d])`, "iu"); }
 
+// --- Zahlwörter: "zwei", "zwo", "anderthalb", "zweihundertfünfzig", "dreiviertel"
+const FB_EINER = {null: 0, ein: 1, eins: 1, eine: 1, einen: 1, einem: 1, einer: 1, zwei: 2, zwo: 2, drei: 3, vier: 4, "fünf": 5, sechs: 6, sieben: 7, acht: 8, neun: 9};
+const FB_TEEN = {zehn: 10, elf: 11, "zwölf": 12, dreizehn: 13, vierzehn: 14, "fünfzehn": 15, sechzehn: 16, siebzehn: 17, achtzehn: 18, neunzehn: 19};
+const FB_ZEHNER = {zwanzig: 20, "dreißig": 30, dreissig: 30, vierzig: 40, "fünfzig": 50, sechzig: 60, siebzig: 70, achtzig: 80, neunzig: 90};
+function fbUnter100(w){
+  if (w in FB_TEEN) return FB_TEEN[w];
+  if (w in FB_ZEHNER) return FB_ZEHNER[w];
+  if (w in FB_EINER) return FB_EINER[w];
+  const m = w.match(/^(\p{L}+?)und(\p{L}+)$/u);
+  if (m && FB_EINER[m[1]] > 0 && m[2] in FB_ZEHNER) return FB_EINER[m[1]] + FB_ZEHNER[m[2]];
+  return null;
+}
+function fbUnter1000(w){
+  if (!w) return 0;
+  const i = w.indexOf("hundert");
+  if (i < 0) return fbUnter100(w);
+  const vorne = w.slice(0, i), hinten = w.slice(i + 7);
+  const h = vorne ? fbUnter100(vorne) : 1, r = hinten ? fbUnter100(hinten.replace(/^und/, "")) : 0;
+  return h === null || r === null ? null : h * 100 + r;
+}
+function fbWortZahl(wort){
+  const w = wort.toLowerCase();
+  const fest = {anderthalb: 1.5, eineinhalb: 1.5, halb: 0.5, halbe: 0.5, halben: 0.5, halber: 0.5, viertel: 0.25, dreiviertel: 0.75};
+  if (w in fest) return fest[w];
+  let m = w.match(/^(\p{L}+)einhalb$/u);
+  if (m){ const z = fbWortZahl(m[1]); return z === null ? null : z + 0.5; }
+  const i = w.indexOf("tausend");
+  if (i >= 0){
+    const t = i ? fbUnter1000(w.slice(0, i)) : 1, r = fbUnter1000(w.slice(i + 7).replace(/^und/, ""));
+    return t === null || r === null ? null : t * 1000 + r;
+  }
+  return fbUnter1000(w);
+}
+// Ordnungszahlen fürs Datum: "am zwölften", "dritten Oktober"
+function fbOrdnungszahl(wort){
+  const w = wort.toLowerCase();
+  const fest = {ersten: 1, erster: 1, erste: 1, dritten: 3, dritter: 3, dritte: 3, siebten: 7, siebter: 7, achten: 8, achter: 8};
+  if (w in fest) return fest[w];
+  const m = w.match(/^(\p{L}+?)(s?te[nrm]?)$/u);
+  if (!m) return null;
+  const z = fbWortZahl(m[1]);
+  return z !== null && z >= 1 && z <= 31 && Number.isInteger(z) ? z : null;
+}
+function fbZahlenNormalisieren(text){
+  let t = text.replace(/(\d),(?=\d)/g, "$1#").replace(/(\d)\.(\d{3})(?!\d)/g, "$1$2").replace(/#/g, ",");
+  // Ordnungszahlen vor Monat oder nach "am/den/vom"
+  t = t.replace(new RegExp(`(?<![\\p{L}])(\\p{L}+)(?=\\s+(${FB_MONATE.join("|")}))`, "giu"), (g, w) => { const z = fbOrdnungszahl(w); return z ? z + "." : g; });
+  t = t.replace(/(?<![\p{L}])(am|den|vom|bis)\s+(\p{L}+)/giu, (g, p, w) => { const z = fbOrdnungszahl(w); return z ? `${p} ${z}.` : g; });
+  // Zahlwörter → Ziffern
+  t = t.replace(/\p{L}+/gu, w => { const z = fbWortZahl(w); return z === null ? w : String(z).replace(".", ","); });
+  // "acht komma sechs" → "8,6"
+  t = t.replace(/(\d+)\s*(?:komma|,)\s*(\d+)/gi, "$1,$2");
+  // "1 0,5 ha" (aus "einen halben Hektar") → "0,5 ha"
+  t = t.replace(/(?<![\d,])1\s+0,5(?!\d)/g, "0,5");
+  // "zwei einhalb" → 2,5
+  t = t.replace(/(\d+)\s+0,5(?!\d)/g, (g, a) => String(Number(a) + 0.5).replace(".", ","));
+  return t;
+}
+function fbEinheitenNormalisieren(text){
+  let t = text;
+  for (const [woerter, kurz] of FB_EINHEIT_WOERTER)
+    t = t.replace(new RegExp(`(\\d)\\s*(?:${woerter})(?![\\p{L}\\d])`, "giu"), `$1 ${kurz}`);
+  // "pro Hektar", "je ha", "am Hektar", "auf den Hektar" → "/ha"
+  t = t.replace(/\s*(?:pro|je|am|auf den|aufn|den)\s+(?:hektar|ha)(?![\p{L}])/giu, "/ha");
+  return t;
+}
+
+// --- Ähnlichkeit für Namen (Spracherkennung schreibt Namen oft leicht anders)
+// Schreibweisen angleichen: ß/ss, Doppelbuchstaben, Dehnungs-h ("Strohm" = "Strom", "Obergfel" = "Obergfell")
+function fbNorm(s){ return String(s || "").toLowerCase().replace(/ß/g, "s").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
+  .replace(/[^a-z0-9 ]/g, "").replace(/([aeiou])h(?![aeiou])/g, "$1").replace(/(.)\1+/g, "$1"); }
+function fbAbstand(a, b){
+  if (a === b) return 0;
+  if (Math.abs(a.length - b.length) > 2) return 9;
+  const z = Array.from({length: b.length + 1}, (_, i) => i);
+  for (let i = 1; i <= a.length; i++){
+    let vor = z[0]; z[0] = i;
+    for (let j = 1; j <= b.length; j++){
+      const tmp = z[j];
+      z[j] = Math.min(z[j] + 1, z[j - 1] + 1, vor + (a[i - 1] === b[j - 1] ? 0 : 1));
+      vor = tmp;
+    }
+  }
+  return z[b.length];
+}
+function fbAehnlich(wort, ziel){
+  const a = fbNorm(wort), b = fbNorm(ziel);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const grenze = b.length >= 8 ? 2 : b.length >= 4 ? 1 : 0;
+  return grenze > 0 && fbAbstand(a, b) <= grenze;
+}
+const FB_KEINE_NAMEN = new Set(["heute", "gestern", "vorgestern", "hektar", "stunden", "stunde", "liter", "kilo", "ballen", "wagen", "mais", "weizen",
+  "gerste", "gras", "wiese", "feld", "acker", "schlag", "eigen", "nein", "mittel", "spritzen", "gespritzt", "dünger", "gülle", "morgen", "abend"]);
+
 function fbKontext(){
   const arbeiten = fbArbeiten();
-  const mandanten = ((fbDaten && fbDaten.mandanten) || []).map(m => m.Kurzname).filter(Boolean);
+  const mandanten = (fbDaten && fbDaten.mandanten) || [];
+  // Kurzname + Vor-/Nachname aus dem Namen ("Hubert" → Grieshaber), nur wenn eindeutig
+  const namen = new Map();
+  mandanten.filter(m => !fbIstEigen(m.Kurzname)).forEach(m => {
+    [m.Kurzname, ...String(m.Name || "").split(/[\s,]+/)].filter(w => w && w.length >= 3 && !/^(gbr|kg|gmbh|und|familie)$/i.test(w)).forEach(w => {
+      const k = fbNorm(w);
+      if (!namen.has(k)) namen.set(k, new Set());
+      namen.get(k).add(m.Kurzname);
+    });
+  });
   const orte = new Set(), mittel = new Set(FB_STANDARD_MITTEL);
   arbeiten.forEach(a => {
     String(a["Ort / Schlag"] || "").split(/[,/+]| und /).map(s => s.trim()).filter(s => s.length >= 3).forEach(s => orte.add(s));
@@ -2919,113 +3100,194 @@ function fbKontext(){
       if (w.length >= 3 && w.length <= 20) mittel.add(w);
     });
   });
-  return {mandanten, orte: [...orte].sort((a, b) => b.length - a.length), mittel: [...mittel].sort((a, b) => b.length - a.length)};
+  return {mandanten, namen, orte: [...orte].sort((a, b) => b.length - a.length), mittel: [...mittel].sort((a, b) => b.length - a.length)};
 }
 
+function fbIsoVon(d){ return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
 function fbDatumAusText(t){
   const heute = new Date(); heute.setHours(12, 0, 0, 0);
-  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   const tage = n => { const d = new Date(heute); d.setDate(d.getDate() + n); return d; };
   let m;
-  if (/vorgestern/i.test(t)) return iso(tage(-2));
-  if (/gestern/i.test(t)) return iso(tage(-1));
+  if ((m = t.match(/vor\s+(\d+)\s+tag/i))) return fbIsoVon(tage(-Number(m[1])));
+  if (/vor\s+(einer|1)\s+woche/i.test(t)) return fbIsoVon(tage(-7));
+  if (/vorvorgestern/i.test(t)) return fbIsoVon(tage(-3));
+  if (/vorgestern/i.test(t)) return fbIsoVon(tage(-2));
+  if (/gestern/i.test(t)) return fbIsoVon(tage(-1));
   if ((m = t.match(/(?<![\d,.])(\d{1,2})\.\s?(\d{1,2})\.(\d{2,4})?(?!\d)/))){
     const jahr = m[3] ? (m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3])) : heute.getFullYear();
     let d = new Date(jahr, Number(m[2]) - 1, Number(m[1]), 12);
     if (!m[3] && d > tage(1)) d = new Date(jahr - 1, Number(m[2]) - 1, Number(m[1]), 12);
-    if (!isNaN(d)) return iso(d);
+    if (!isNaN(d)) return fbIsoVon(d);
   }
   if ((m = t.match(new RegExp(`(\\d{1,2})\\.?\\s*(${FB_MONATE.join("|")})`, "i")))){
     const d = new Date(heute.getFullYear(), FB_MONATE.indexOf(m[2].toLowerCase()), Number(m[1]), 12);
-    return iso(d > tage(1) ? new Date(d.getFullYear() - 1, d.getMonth(), d.getDate(), 12) : d);
+    return fbIsoVon(d > tage(1) ? new Date(d.getFullYear() - 1, d.getMonth(), d.getDate(), 12) : d);
   }
   if ((m = t.match(new RegExp(`(${FB_WOCHENTAGE.join("|")})`, "i")))){
     const ziel = FB_WOCHENTAGE.indexOf(m[1].toLowerCase());
+    if (/letzte[nr]?\s+woche|vorige[nr]?\s+woche|vergangene[nr]?\s+woche/i.test(t)){
+      const montagDieseWoche = tage(-((heute.getDay() + 6) % 7));
+      const d = new Date(montagDieseWoche); d.setDate(d.getDate() - 7 + (ziel + 6) % 7);
+      return fbIsoVon(d);
+    }
     let diff = heute.getDay() - ziel; if (diff < 0) diff += 7;
-    if (/letzt/i.test(t) && diff === 0) diff = 7;
-    return iso(tage(-diff));
+    if (/(letzt|vorig|vergangen)\p{L}*\s+(\p{L}+\s+)?(montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag)/iu.test(t) && diff === 0) diff = 7;
+    if (/vorletzt/i.test(t)) diff += 7;
+    return fbIsoVon(tage(-diff));
   }
-  if (/heute|heut\b/i.test(t)) return iso(heute);
+  if ((m = t.match(/(?<![\p{L}])(?:am|den)\s+(\d{1,2})\.(?!\d)/u))){
+    let d = new Date(heute.getFullYear(), heute.getMonth(), Number(m[1]), 12);
+    if (d > tage(1)) d = new Date(heute.getFullYear(), heute.getMonth() - 1, Number(m[1]), 12);
+    return fbIsoVon(d);
+  }
+  if (/heute|heut(?![\p{L}])|vorhin|grad eben|gerade eben/iu.test(t)) return fbIsoVon(heute);
   return null;
 }
 
-function fbVerstehen(text){
-  const t = String(text || "").trim();
-  const f = {}, erkannt = [];
-  if (!t) return {felder: f, erkannt};
-  const k = fbKontext();
-
+// Ein Satzteil (ohne Korrekturen) → gefundene Felder
+function fbTeilVerstehen(roh, k){
+  const t = fbEinheitenNormalisieren(fbZahlenNormalisieren(roh));
+  const f = {};
   const datum = fbDatumAusText(t);
-  if (datum){ f["Datum"] = datum; erkannt.push("Datum"); }
+  if (datum) f["Datum"] = datum;
 
-  // Mittel: alles nach "mit …" bis "für/bei/auf/im/am/in" oder Satzende
+  // Mittel / Dünger: "mit …" (mit Zahl oder bekanntem Mittel) oder bekannte Mittel im Text
   let rest = t, m;
-  if ((m = t.match(/(?<![\p{L}])mit\s+(.+?)(?=\s+(?:für|bei|auf|im|am|in|beim|heute|gestern)\s|[.;!?]|$)/iu))){
-    const kandidat = m[1].replace(/\s+und\s+/gi, " + ").trim();
-    if (/\d/.test(kandidat) || k.mittel.some(w => fbWort(w).test(kandidat))){
-      f["Mittel / Dünger"] = kandidat.replace(/(\d)\s+(l|liter|kg|dt)\b/gi, "$1 $2").replace(/\bliter\b/gi, "l");
-      erkannt.push("Mittel");
-      rest = t.replace(m[0], " ");
+  if ((m = t.match(/(?<![\p{L}])mit\s+(.+?)(?=\s+(?:für|bei|auf|im|am|in|beim|heute|gestern|vorgestern)\s|[.;!?]|$)/iu))){
+    // Mittel endet vor einer Flächen-/Stundenangabe oder einem Tätigkeitswort ("… 5 ha gespritzt")
+    const roh = m[1].split(/\s+(?=\d+(?:,\d+)?\s*(?:ha|m³|Ballen|Wagen|Fass|h|min)(?![\p{L}\/]))|\s+(?=g?e?\p{L}+(?:t|en)(?![\p{L}])\s*$)/u)[0];
+    const kandidat = roh.replace(/\s+(ge|g)\p{L}+t$/u, "").replace(/\s+und\s+/gi, " + ").trim();
+    m = [ "mit " + roh, roh ];
+    // nur Mittel, wenn ein bekanntes Mittel oder eine Mittel-Menge (l, kg, dt, Ztr) drin steht – nicht "mit dem Grubber 8 ha"
+    if (/\d+(?:,\d+)?\s*(l|kg|dt|Ztr)(?![\p{L}])/u.test(kandidat) || k.mittel.some(w => fbWort(w).test(kandidat))){
+      f["Mittel / Dünger"] = kandidat;
+      rest = t.replace(new RegExp(`mit\\s+${fbRx(m[1])}`, "i"), " ");
     }
   }
   if (!f["Mittel / Dünger"]){
-    const treffer = k.mittel.filter(w => fbWort(w).test(t));
+    const woerter = t.split(/[\s,]+/);
+    const treffer = k.mittel.filter(w => fbWort(w).test(t) || (w.length >= 5 && woerter.some(x => x.length >= 5 && fbAehnlich(x, w))));
     if (treffer.length){
       const teile = treffer.map(w => {
-        const mm = t.match(new RegExp(`((\\d+(?:[.,]\\d+)?)\\s*(dt|kg|l|t)(\\/ha)?\\s*)?${fbRx(w)}(\\s*(\\d+(?:[.,]\\d+)?)\\s*(dt|kg|l|t)(\\/ha)?)?`, "i"));
-        return mm ? mm[0].trim() : w;
+        const name = fbWort(w).test(t) ? w : woerter.find(x => fbAehnlich(x, w));
+        const mm = t.match(new RegExp(`((\\d+(?:,\\d+)?)\\s*(dt|Ztr|kg|l|t)(\\/ha)?\\s*)?${fbRx(name)}(\\/ha)?(\\s*(\\d+(?:,\\d+)?)\\s*(dt|Ztr|kg|l|t)?(\\/ha)?)?`, "i"));
+        return {text: mm ? mm[0].trim() : name, anzeige: (mm ? mm[0].trim() : name).replace(fbWort(name), w)};
       });
-      f["Mittel / Dünger"] = teile.join(" + ");
-      erkannt.push("Mittel");
-      teile.forEach(x => { rest = rest.replace(x, " "); });
+      f["Mittel / Dünger"] = teile.map(x => x.anzeige).join(" + ");
+      teile.forEach(x => { rest = rest.replace(x.text, " "); });
+    }
+  }
+  // Mengen mit "/ha" sind Aufwandmengen → gehören zum Mittel, nicht zur Fläche
+  const raten = [...rest.matchAll(/(\d+(?:,\d+)?)\s*(dt|Ztr|kg|l|t|m³)\/ha/g)];
+  if (raten.length && !f["Mittel / Dünger"]) f["Mittel / Dünger"] = raten.map(r => r[0]).join(" + ");
+  raten.forEach(r => { rest = rest.replace(r[0], " "); });
+
+  const mengen = [...rest.matchAll(/(\d+(?:,\d+)?)\s*(ha|m³|Ballen|Wagen|Fass|Stück|t|Ztr|dt|kg|l|h|min)(?![\p{L}\d\/])/gu)].map(x => ({wert: x[1], einheit: x[2]}));
+  const haupt = FB_MENGEN_VORRANG.map(e => mengen.find(x => x.einheit === e)).find(Boolean);
+  if (haupt){ f["Menge"] = haupt.wert; f["Einheit"] = haupt.einheit; }
+  // Stunden: "4 h", "45 min", "1 h 30", "3:17 h", "von 9 bis 13 Uhr"
+  let stunden = null;
+  if ((m = rest.match(/(\d{1,2}):(\d{2})\s*h/))) stunden = Number(m[1]) + Number(m[2]) / 60;
+  else if ((m = rest.match(/(\d+(?:,\d+)?)\s*h\s*(?:und\s*)?(\d{1,2})(?![\d,]|\s*(ha|m³|Ballen|Wagen|Fass|t|dt|kg|l|uhr))/i))) stunden = fbZahl(m[1]) + Number(m[2]) / 60;
+  else {
+    const h = mengen.find(x => x.einheit === "h"), mi = mengen.find(x => x.einheit === "min");
+    if (h || mi) stunden = (h ? fbZahl(h.wert) : 0) + (mi ? fbZahl(mi.wert) / 60 : 0);
+    else if ((m = t.match(/(?:von\s+)?(\d{1,2})(?::(\d{2}))?\s*(?:uhr\s*)?(?:bis|-|–)\s*(\d{1,2})(?::(\d{2}))?\s*uhr/i))){
+      const dauer = (Number(m[3]) + (Number(m[4]) || 0) / 60) - (Number(m[1]) + (Number(m[2]) || 0) / 60);
+      if (dauer > 0 && dauer < 24) stunden = dauer;
+    }
+  }
+  if (stunden !== null) f["Stunden"] = fbZahlText(Math.round(stunden * 100) / 100, 2);
+  // bare Zahl ohne Einheit merken (für Korrekturen wie "nein, neun")
+  const bloss = rest.match(/(?<![\d,.:])(\d+(?:,\d+)?)(?![\d,.:]|\s*(?:ha|m³|Ballen|Wagen|Fass|Stück|t|Ztr|dt|kg|l|h|min|uhr|\.))/u);
+  if (bloss) f.__zahl = bloss[1];
+
+  // Mandant: bekannter Name (auch leicht falsch geschrieben), sonst "für/bei X", sonst eigene Fläche
+  const woerter = roh.split(/[^\p{L}\-]+/u).filter(w => w.length >= 3 && !FB_KEINE_NAMEN.has(w.toLowerCase()));
+  const kandidaten = new Map();
+  k.mandanten.filter(x => !fbIstEigen(x.Kurzname) && /\s/.test(x.Kurzname)).forEach(x => { if (fbNorm(roh).includes(fbNorm(x.Kurzname))) kandidaten.set(x.Kurzname, 0); });
+  woerter.forEach(w => {
+    for (const [name, ziele] of k.namen){
+      if (ziele.size !== 1) continue;
+      const exakt = fbNorm(w) === name;
+      if (exakt || (/^\p{Lu}/u.test(w) || name.length >= 6) && fbAehnlich(w, name)){
+        const ziel = [...ziele][0];
+        kandidaten.set(ziel, Math.min(kandidaten.get(ziel) ?? 9, exakt ? 0 : 1));
+      }
+    }
+  });
+  if (kandidaten.size){
+    const best = [...kandidaten.entries()].sort((a, b) => a[1] - b[1]);
+    if (best.length === 1 || best[0][1] < best[1][1]){ f["Mandant"] = best[0][0]; if (best[0][1]) f.__mandantUnsicher = true; }
+  }
+  if (!f["Mandant"]){
+    if (/(?<![\p{L}])(eigen\p{L}*|bei uns|für uns|unser\p{L}*|selber|daheim|dahoim|zuhause)(?![\p{L}])/iu.test(roh)) f["Mandant"] = "Eigen";
+    else if ((m = roh.match(/(?<![\p{L}])(?:für|bei|beim)\s+(?:dem\s+|der\s+|den\s+|herrn?\s+|frau\s+|familie\s+)?([A-ZÄÖÜ][\p{L}-]{2,})/u)) && !FB_KEINE_NAMEN.has(m[1].toLowerCase())){
+      f["Mandant"] = m[1]; f.__mandantNeu = true;
     }
   }
 
-  // Mengen und Stunden (ohne die Mengen, die zum Mittel gehören)
-  const mengen = [];
-  for (const mm of rest.matchAll(/(\d+(?:[.,]\d+)?)\s*(hektar|ha|kubikmeter|kubik|cbm|m³|m3|fässern|fässer|fass|stunden|stunde|std|h|ballen|tonnen|tonne|to|t|doppelzentner|dt|liter|l|kilo|kg|wagen|stück)(?![\p{L}\d])/giu)){
-    mengen.push({wert: mm[1].replace(".", ","), einheit: FB_EINHEITEN[mm[2].toLowerCase()]});
-  }
-  const haupt = mengen.find(x => FB_MENGEN_EINHEITEN.includes(x.einheit)) || mengen.find(x => x.einheit !== "h");
-  if (haupt){ f["Menge"] = haupt.wert; f["Einheit"] = haupt.einheit; erkannt.push("Menge"); }
-  const std = mengen.find(x => x.einheit === "h");
-  if (std){ f["Stunden"] = std.wert; erkannt.push("Stunden"); }
-  else if ((m = t.match(/(?:von\s+)?(\d{1,2})(?::(\d{2}))?\s*(?:uhr\s*)?(?:bis|-|–)\s*(\d{1,2})(?::(\d{2}))?\s*uhr/i))){
-    const dauer = (Number(m[3]) + (Number(m[4]) || 0) / 60) - (Number(m[1]) + (Number(m[2]) || 0) / 60);
-    if (dauer > 0 && dauer < 24){ f["Stunden"] = fbZahlText(dauer, 2); erkannt.push("Stunden"); }
-  }
-
-  // Mandant: bekannter Name, sonst "für/bei <Name>", sonst eigene Fläche
-  const bekannt = k.mandanten.filter(n => !fbIstEigen(n)).find(n => fbWort(n).test(t));
-  if (bekannt) f["Mandant"] = bekannt;
-  else if (/(?<![\p{L}])(eigen|bei uns|unser|selber)/iu.test(t)) f["Mandant"] = "Eigen";
-  else if ((m = t.match(/(?<![\p{L}])(?:für|bei)\s+(?:dem\s+|der\s+|den\s+|herrn?\s+|frau\s+)?([A-ZÄÖÜ][\p{L}-]{2,})/u))) f["Mandant"] = m[1];
-  else f["Mandant"] = "Eigen";
-  erkannt.push(f["Mandant"] === "Eigen" ? "eigene Fläche" : "Mandant");
-
-  // Ort / Schlag: bekannter Ort, sonst "auf dem/im/Feld/Schlag <Name>"
-  const ort = k.orte.find(o => o !== f["Mandant"] && fbWort(o).test(t));
+  // Ort / Schlag: bekannter Ort (auch leicht falsch geschrieben), sonst "Feld/Schlag X", "auf dem X", "im X"
+  const ort = k.orte.find(o => o !== f["Mandant"] && fbWort(o).test(roh))
+    || k.orte.find(o => o.length >= 6 && !/\s/.test(o) && woerter.some(w => /^\p{Lu}/u.test(w) && fbAehnlich(w, o)));
   if (ort) f["Ort / Schlag"] = ort;
-  else if ((m = t.match(/(?:[Ff]eld|[Ss]chlag|[Aa]cker|[Ww]iese)\s+([A-ZÄÖÜ][\p{L}-]+(?:\s+[A-ZÄÖÜ][\p{L}-]+)?)/u)) ||
-           (m = t.match(/(?<![\p{L}])(?:auf\s+(?:dem|der|den)|im|am)\s+([A-ZÄÖÜ][\p{L}-]+(?:\s+[A-ZÄÖÜ][\p{L}-]+)?)/u))){
+  else if ((m = roh.match(/(?:[Ff]eld|[Ss]chlag|[Aa]cker|[Ww]iese|[Ff]läche|[Gg]rundstück)\s+([A-ZÄÖÜ][\p{L}-]+(?:\s+[A-ZÄÖÜ][\p{L}-]+)?)/u)) ||
+           (m = roh.match(/(?<![\p{L}])(?:auf\s+(?:dem|der|den)|im|am|beim)\s+([A-ZÄÖÜ][\p{L}-]+(?:\s+[A-ZÄÖÜ][\p{L}-]+)?)/u))){
     const kandidat = m[1];
-    const keinOrt = new RegExp(`^(${[...FB_WOCHENTAGE, ...FB_MONATE, "heute", "gestern", "morgen", "vormittag", "nachmittag", "abend"].join("|")})`, "i");
-    if (kandidat !== f["Mandant"] && !keinOrt.test(kandidat) && !FB_KULTUR_REGELN.some(([rx]) => rx.test(kandidat))) f["Ort / Schlag"] = kandidat;
+    const keinOrt = new RegExp(`^(${[...FB_WOCHENTAGE, ...FB_MONATE, "heute", "gestern", "morgen", "vormittag", "nachmittag", "abend", "hof"].join("|")})`, "i");
+    if (kandidat !== f["Mandant"] && !keinOrt.test(kandidat) && !FB_KULTUR_REGELN.some(([rx]) => rx.test(kandidat))
+        && ![...k.namen.keys()].includes(fbNorm(kandidat))) f["Ort / Schlag"] = kandidat;
   }
-  if (f["Ort / Schlag"]) erkannt.push("Ort");
 
-  // Tätigkeit und Kultur ohne die Namen suchen – sonst wird aus "Feld Kalkgrube" Kalken
+  // Tätigkeit + Kultur ohne die Namen suchen – sonst wird aus "Feld Kalkgrube" Kalken
   let ohneNamen = t;
   [f["Ort / Schlag"], fbIstEigen(f["Mandant"]) ? "" : f["Mandant"]].filter(Boolean).forEach(n => { ohneNamen = ohneNamen.replace(fbWort(n), " "); });
   const taet = FB_TAETIGKEIT_REGELN.find(([rx]) => rx.test(ohneNamen));
-  if (taet){ f["Tätigkeit"] = taet[1]; erkannt.unshift("Tätigkeit"); }
+  if (taet) f["Tätigkeit"] = taet[1];
+  // "gekreiselt": bei Heu/Gras = Kreiselheuer (Kreiseln), auf dem Acker = Kreiselegge (Eggen)
+  if (f["Tätigkeit"] === "Kreiseln" && /kreisel/i.test(ohneNamen)
+      && !fbW("heu(?![\\p{L}])|gras|wiese|grünland|schnitt|öhmd|ömd|emd(?![\\p{L}])|weide|silage").test(ohneNamen)) f["Tätigkeit"] = "Eggen";
   const kultur = FB_KULTUR_REGELN.find(([rx]) => rx.test(ohneNamen));
-  if (kultur){ f["Kultur"] = kultur[1]; erkannt.push("Kultur"); }
-  return {felder: f, erkannt};
+  if (kultur) f["Kultur"] = kultur[1];
+  return f;
+}
+
+function fbVerstehen(text){
+  const sauber = String(text || "").replace(FB_FUELLWOERTER, " ").replace(/\s+/g, " ").trim();
+  const f = {}, hinweise = [];
+  if (!sauber) return {felder: f, hinweise};
+  const k = fbKontext();
+  // Selbstkorrekturen: "… 8 Hektar, nein 9 Hektar" → spätere Angaben gewinnen
+  const teile = sauber.split(new RegExp(FB_KORREKTUR.source, "giu")).filter((x, i) => i % 2 === 0 || false);
+  const segmente = [];
+  let rest = sauber, mm;
+  while ((mm = rest.match(FB_KORREKTUR))){ segmente.push(rest.slice(0, mm.index)); rest = rest.slice(mm.index + mm[0].length); }
+  segmente.push(rest);
+  segmente.map(s => s.trim()).filter(Boolean).forEach((seg, i) => {
+    const g = fbTeilVerstehen(seg, k);
+    if (i > 0){
+      // Korrektur nur mit einer Zahl ("nein, neun") → ersetzt die letzte Zahlenangabe
+      if (!g["Menge"] && !g["Stunden"] && g.__zahl){
+        if (f["Menge"]) g["Menge"] = g.__zahl;
+        else if (f["Stunden"]) g["Stunden"] = g.__zahl;
+      }
+      if (g["Menge"] && !g["Einheit"]) g["Einheit"] = f["Einheit"];
+      hinweise.push("Korrektur übernommen");
+    }
+    delete g.__zahl;
+    if (g["Mandant"]){ delete f.__mandantNeu; delete f.__mandantUnsicher; }
+    Object.assign(f, g);
+  });
+  void teile;
+  if (!f["Mandant"]) f["Mandant"] = "Eigen";
+  if (f.__mandantNeu){ hinweise.push(`„${f["Mandant"]}“ ist noch kein Mandant – Name richtig?`); }
+  if (f.__mandantUnsicher){ hinweise.push(`Mandant als „${f["Mandant"]}“ erkannt – stimmt das?`); }
+  delete f.__mandantNeu; delete f.__mandantUnsicher;
+  return {felder: f, hinweise};
 }
 
 // --- Eintragen ---------------------------------------------------------
-let fbAutoFelder = new Set();
+let fbHinweise = [];
 function fbFormularSetzen(felder, markieren){
   const form = $fb("fbForm");
   FB_FELDER.forEach(name => {
@@ -3040,75 +3302,166 @@ function fbFormularLeeren(){
   form.elements["Datum"].value = fbHeuteIso();
   form.querySelectorAll(".geaendert").forEach(x => x.classList.remove("geaendert"));
   $fb("fbText").value = "";
-  $fb("fbErkannt").innerHTML = "";
+  fbHinweise = [];
+  fbRenderVorschau();
 }
 function fbTextAuswerten(){
-  const {felder, erkannt} = fbVerstehen($fb("fbText").value);
+  const {felder, hinweise} = fbVerstehen($fb("fbText").value);
+  fbHinweise = hinweise;
   const form = $fb("fbForm");
   form.querySelectorAll(".geaendert").forEach(x => x.classList.remove("geaendert"));
   // Nicht Erkanntes leeren, damit kein alter Wert stehen bleibt
   FB_FELDER.filter(n => n !== "Bemerkung").forEach(n => { if (!(n in felder) && form.elements[n]) form.elements[n].value = n === "Datum" ? fbHeuteIso() : ""; });
   fbFormularSetzen(felder, true);
-  $fb("fbErkannt").innerHTML = erkannt.length
-    ? erkannt.map(x => `<span class="rec ho">✓ ${esc(x)}</span>`).join("") + `<span class="bs-erkannt">– bitte kurz prüfen</span>`
-    : "";
+  fbRenderVorschau();
 }
-
+function fbFormularWerte(){
+  const form = $fb("fbForm"), e = {};
+  FB_FELDER.forEach(n => { e[n] = (form.elements[n].value || "").trim(); });
+  if (!e["Mandant"]) e["Mandant"] = "Eigen";
+  return e;
+}
+// Bestätigung VOR dem Speichern: was genau eingetragen wird, als ein Satz
+function fbRenderVorschau(){
+  const box = $fb("fbErkannt");
+  const text = $fb("fbText").value.trim();
+  const e = fbFormularWerte();
+  const irgendwas = text || e["Tätigkeit"] || e["Menge"] || e["Stunden"];
+  if (!irgendwas){ box.innerHTML = ""; box.hidden = true; return; }
+  const d = e.Datum ? new Date(e.Datum + "T12:00") : null;
+  const tag = d && !isNaN(d) ? `${FB_TAG_KURZ[d.getDay()]} ${fbDatumAnzeige(e.Datum)}` : "–";
+  const teil = (wert, leer) => wert ? `<b>${esc(wert)}</b>` : `<span class="fehlt">${leer}</span>`;
+  const menge = [e.Menge ? `${e.Menge} ${e.Einheit || ""}`.trim() : "", e.Stunden ? `${e.Stunden} Std.` : ""].filter(Boolean).join(" · ");
+  const warnungen = [...fbHinweise];
+  const mandanten = ((fbDaten && fbDaten.mandanten) || []).map(m => m.Kurzname);
+  if (!e["Tätigkeit"]) warnungen.push("Tätigkeit fehlt");
+  if (!fbIstEigen(e.Mandant) && !e.Menge && !e.Stunden) warnungen.push("Für die Rechnung fehlt Menge oder Stunden");
+  if (!fbIstEigen(e.Mandant) && mandanten.length && !mandanten.includes(e.Mandant) && !warnungen.some(w => w.includes(e.Mandant))) warnungen.push(`„${e.Mandant}“ ist noch kein Mandant – Name richtig?`);
+  if (e.Datum && e.Datum > fbHeuteIso()) warnungen.push("Datum liegt in der Zukunft");
+  box.hidden = false;
+  box.innerHTML = `<div class="fb-vorschau-titel">Wird so eingetragen:</div>
+    <div class="fb-vorschau-satz">
+      <span>📅 ${tag}</span>
+      <span>🚜 ${teil(e["Tätigkeit"], "Tätigkeit?")}${e.Kultur ? " · " + esc(e.Kultur) : ""}</span>
+      <span>📏 ${menge ? `<b>${esc(menge)}</b>` : `<span class="fehlt">keine Menge</span>`}</span>
+      <span>${fbIstEigen(e.Mandant) ? "🏠 eigene Fläche" : `🤝 für <b>${esc(e.Mandant)}</b>`}</span>
+      ${e["Ort / Schlag"] ? `<span>📍 ${esc(e["Ort / Schlag"])}</span>` : ""}
+      ${e["Mittel / Dünger"] ? `<span>🧪 ${esc(e["Mittel / Dünger"])}</span>` : ""}
+    </div>
+    ${warnungen.length ? `<div class="fb-vorschau-warn">${warnungen.map(w => `⚠ ${esc(w)}`).join("<br>")}</div>` : ""}
+    <div class="fb-form-knoepfe"><button class="btn primary" type="button" id="fbVorschauOk">✓ So speichern</button>
+      <button class="btn ghost" type="button" id="fbVorschauAendern">Felder ändern ↓</button></div>`;
+  $fb("fbVorschauOk").addEventListener("click", () => $fb("fbForm").requestSubmit());
+  $fb("fbVorschauAendern").addEventListener("click", () => { $fb("fbForm").scrollIntoView({behavior: "smooth", block: "start"}); });
+}
 
 async function fbSpeichern(e){
   e.preventDefault();
   const form = $fb("fbForm");
-  const eintrag = {ID: fbNeueId()};
-  FB_FELDER.forEach(n => { eintrag[n] = (form.elements[n].value || "").trim(); });
-  if (!eintrag["Mandant"]) eintrag["Mandant"] = "Eigen";
+  if (!form.reportValidity()) return;
+  if (fbErkenner) fbMikroStopp();
+  const eintrag = {ID: fbNeueId(), ...fbFormularWerte()};
   ["Menge", "Stunden"].forEach(n => { if (eintrag[n]) eintrag[n] = String(fbZahl(eintrag[n]) ?? eintrag[n]); });
   const text = $fb("fbText").value.trim();
   if (text) eintrag["Original (alt)"] = "Spracheingabe: " + text;
   eintrag["Erfasst"] = fbJetztText();
 
-  const kurz = `${fbDatumAnzeige(eintrag.Datum)} · ${eintrag["Tätigkeit"]}${eintrag.Kultur ? " " + eintrag.Kultur : ""}${eintrag.Menge ? " · " + eintrag.Menge + " " + (eintrag.Einheit || "") : ""}${fbIstEigen(eintrag.Mandant) ? "" : " · für " + eintrag.Mandant}`;
+  const d = new Date(eintrag.Datum + "T12:00");
+  const kurz = `${FB_TAG_KURZ[d.getDay()] || ""} ${fbDatumAnzeige(eintrag.Datum)} · ${eintrag["Tätigkeit"]}${eintrag.Kultur ? " " + eintrag.Kultur : ""}${eintrag.Menge ? " · " + eintrag.Menge + " " + (eintrag.Einheit || "") : ""}${eintrag.Stunden ? " · " + eintrag.Stunden + " Std." : ""}${fbIstEigen(eintrag.Mandant) ? "" : " · für " + eintrag.Mandant}`;
   fbFormularLeeren();
   const meldung = document.createElement("div");
-  meldung.className = "bs-status";
-  meldung.textContent = "⏳ " + kurz + " – wird übertragen …";
+  meldung.className = "bs-status fb-meldung";
+  meldung.innerHTML = `<span>⏳ ${esc(kurz)} – wird übertragen …</span>`;
   $fb("fbGespeichert").prepend(meldung);
+  window.scrollTo({top: 0, behavior: "smooth"});
   const uebertragen = await fbAendern({typ: "neu", eintrag});
-  meldung.className = uebertragen ? "bs-status ok" : "bs-status warn";
-  meldung.textContent = uebertragen ? "✓ Im Feldbuch gespeichert: " + kurz
-    : "📥 Auf dem Gerät gespeichert, wird übertragen, sobald wieder Netz da ist: " + kurz;
+  meldung.className = (uebertragen ? "bs-status ok" : "bs-status warn") + " fb-meldung";
+  meldung.innerHTML = `<span>${uebertragen ? "✓ Gespeichert: " : "📥 Auf dem Handy gespeichert, wird übertragen, sobald wieder Netz da ist: "}${esc(kurz)}</span>
+    <button class="btn small ghost" type="button">Rückgängig</button>`;
+  meldung.querySelector("button").addEventListener("click", () => {
+    const a = fbArbeiten().find(x => x.ID === eintrag.ID);
+    if (a && a.Rechnung){ alert("Schon abgerechnet – kann nicht mehr rückgängig gemacht werden."); return; }
+    fbAendern({typ: "loeschen", id: eintrag.ID});
+    meldung.className = "bs-status fb-meldung";
+    meldung.innerHTML = `<span>↩ Rückgängig gemacht: ${esc(kurz)}</span>`;
+  });
 }
 
-// Spracheingabe: Chrome/Android und Safari können das direkt im Browser.
-// Sonst bleibt die Diktier-Taste der Handy-Tastatur – die geht überall.
+// --- Spracheingabe -----------------------------------------------------------
+// Nutzt die Spracherkennung des Browsers (Chrome/Android, Safari/iPhone).
+// Sicherungen, damit nichts hängen bleibt:
+//  - "Stopp" setzt die Anzeige SOFORT zurück (wartet nicht auf den Browser)
+//  - kommt nach 8 Sekunden gar nichts an, wird abgebrochen und ein Hinweis gezeigt
+//  - nach 90 Sekunden ist automatisch Schluss
+//  - ohne Netz klappt die Browser-Erkennung meist nicht → Hinweis auf das
+//    Mikrofon der Tastatur (geht auf dem Gerät, auch im Funkloch)
 const FbSprache = window.SpeechRecognition || window.webkitSpeechRecognition;
-let fbErkenner = null;
+let fbErkenner = null, fbErkennerTimer = null, fbErkennerMax = null, fbHatErgebnis = false;
+function fbMikroAnzeige(an){
+  const knopf = $fb("fbMikro");
+  knopf.classList.toggle("hoert", an);
+  knopf.querySelector("span").textContent = an ? "Stopp" : "Sprechen";
+  knopf.setAttribute("aria-label", an ? "Aufnahme stoppen" : "Sprechen");
+}
+function fbMikroStopp(hinweis){
+  const e = fbErkenner;
+  fbErkenner = null;
+  clearTimeout(fbErkennerTimer); clearTimeout(fbErkennerMax);
+  fbMikroAnzeige(false);
+  if (e){ try { e.onresult = e.onerror = e.onend = null; e.abort(); } catch(err) {} }
+  if (hinweis) $fb("fbSprachHinweis").innerHTML = hinweis;
+  fbTextAuswerten();
+}
+const FB_TASTATUR_HINWEIS = "Notfalls das <b>🎤 Mikrofon der Tastatur</b> benutzen (unten neben der Leertaste) – das geht auch ohne Netz.";
 function fbMikroKlick(){
+  if (fbErkenner){ fbMikroStopp(); return; }
   if (!FbSprache){
     $fb("fbText").focus();
-    $fb("fbSprachHinweis").innerHTML = "Dieser Browser kann nicht selbst zuhören – einfach die <b>🎤 Diktier-Taste der Tastatur</b> benutzen, das geht genauso.";
+    $fb("fbSprachHinweis").innerHTML = "Dieser Browser kann nicht selbst zuhören. " + FB_TASTATUR_HINWEIS;
     return;
   }
-  if (fbErkenner){ fbErkenner.stop(); return; }
-  const knopf = $fb("fbMikro");
+  if (!navigator.onLine){
+    $fb("fbText").focus();
+    $fb("fbSprachHinweis").innerHTML = "📵 Kein Netz – die Spracherkennung im Browser braucht Internet. " + FB_TASTATUR_HINWEIS + " Gespeichert wird trotzdem, übertragen wird später.";
+    return;
+  }
   const vorher = $fb("fbText").value.trim();
-  fbErkenner = new FbSprache();
-  fbErkenner.lang = "de-DE";
-  fbErkenner.interimResults = true;
-  fbErkenner.continuous = true;
-  fbErkenner.onresult = ev => {
+  const erk = new FbSprache();
+  fbErkenner = erk; fbHatErgebnis = false;
+  erk.lang = "de-DE";
+  erk.interimResults = true;
+  erk.continuous = true;
+  erk.maxAlternatives = 1;
+  erk.onresult = ev => {
+    if (fbErkenner !== erk) return;
+    fbHatErgebnis = true;
+    clearTimeout(fbErkennerTimer);
     let text = "";
-    for (const r of ev.results) text += r[0].transcript;
-    $fb("fbText").value = (vorher ? vorher + " " : "") + text.trim();
+    for (const r of ev.results) text += r[0].transcript + " ";
+    $fb("fbText").value = (vorher ? vorher + " " : "") + text.replace(/\s+/g, " ").trim();
     fbTextAuswerten();
+    // nach 4 Sekunden Stille automatisch fertig
+    fbErkennerTimer = setTimeout(() => { if (fbErkenner === erk) fbMikroStopp(); }, 4000);
   };
-  fbErkenner.onerror = ev => {
-    $fb("fbSprachHinweis").textContent = ev.error === "not-allowed"
-      ? "Das Mikrofon ist für diese Seite gesperrt – in den Einstellungen erlauben oder die Diktier-Taste der Tastatur benutzen."
-      : "Spracheingabe hat nicht geklappt (" + ev.error + ") – notfalls die Diktier-Taste der Tastatur benutzen.";
+  erk.onerror = ev => {
+    if (fbErkenner !== erk) return;
+    const texte = {
+      "not-allowed": "Das Mikrofon ist für diese Seite gesperrt (Einstellungen → Safari → Mikrofon). ",
+      "service-not-allowed": "Die Spracherkennung ist auf diesem Gerät gesperrt. ",
+      "network": "📵 Keine Verbindung zur Spracherkennung. ",
+      "no-speech": "Nichts gehört – nochmal versuchen, näher ans Handy. ",
+      "audio-capture": "Kein Mikrofon gefunden. ",
+    };
+    fbMikroStopp((texte[ev.error] || `Spracheingabe hat nicht geklappt (${ev.error}). `) + FB_TASTATUR_HINWEIS);
   };
-  fbErkenner.onend = () => { fbErkenner = null; knopf.classList.remove("hoert"); knopf.querySelector("span").textContent = "Sprechen"; fbTextAuswerten(); };
-  knopf.classList.add("hoert"); knopf.querySelector("span").textContent = "Stopp";
-  try { fbErkenner.start(); } catch(err) { fbErkenner = null; knopf.classList.remove("hoert"); }
+  erk.onend = () => { if (fbErkenner === erk) fbMikroStopp(); };
+  fbMikroAnzeige(true);
+  $fb("fbSprachHinweis").innerHTML = "🎙 Ich höre zu … einfach reden, danach <b>Stopp</b> (oder 4 Sekunden Pause).";
+  // Hängt die Erkennung (passiert am iPhone manchmal), nicht ewig warten
+  fbErkennerTimer = setTimeout(() => { if (fbErkenner === erk && !fbHatErgebnis) fbMikroStopp("Die Spracherkennung hat nicht reagiert – bitte nochmal tippen. " + FB_TASTATUR_HINWEIS); }, 8000);
+  fbErkennerMax = setTimeout(() => { if (fbErkenner === erk) fbMikroStopp(); }, 90000);
+  try { erk.start(); }
+  catch(err) { fbMikroStopp("Spracheingabe ließ sich nicht starten. " + FB_TASTATUR_HINWEIS); }
 }
 
 // --- Auswahllisten ---------------------------------------------------------
@@ -3117,9 +3470,9 @@ function fbRenderAuswahl(){
   const arbeiten = fbArbeiten();
   const setze = (id, werte) => { $fb(id).innerHTML = [...new Set(werte.filter(Boolean))].map(w => `<option value="${esc(w)}">`).join(""); };
   setze("fbListeMandanten", ((fbDaten && fbDaten.mandanten) || []).map(m => m.Kurzname));
-  setze("fbListeTaetigkeiten", l["Tätigkeiten"] || FB_TAETIGKEIT_REGELN.map(r => r[1]));
-  setze("fbListeKulturen", l["Kulturen"] || FB_KULTUR_REGELN.map(r => r[1]));
-  setze("fbListeEinheiten", l["Einheiten"] || ["ha", "m³", "h", "Ballen", "t", "dt", "l", "kg", "Wagen"]);
+  setze("fbListeTaetigkeiten", [...(l["Tätigkeiten"] || []), ...FB_STANDARD_LISTEN["Tätigkeiten"]]);
+  setze("fbListeKulturen", [...(l["Kulturen"] || []), ...FB_STANDARD_LISTEN["Kulturen"]]);
+  setze("fbListeEinheiten", [...(l["Einheiten"] || []), ...FB_STANDARD_LISTEN["Einheiten"]]);
   setze("fbListeOrte", arbeiten.map(a => a["Ort / Schlag"]));
   setze("fbListeMittel", arbeiten.map(a => a["Mittel / Dünger"]));
 }
@@ -3160,12 +3513,46 @@ function fbRenderListe(){
   $fb("fbNotizenTitel").textContent = `Notizen aus der alten Liste (${notizen.length})`;
   $fb("fbNotizen").innerHTML = notizen.map(n => `<li><b>${esc(n[1] || "")}</b> ${esc(n[2] || "")} <span class="bs-erkannt">(${esc(n[0] || "")})</span></li>`).join("");
   $fb("fbListeInfo").textContent = `${zeilen.length} Einträge${wartend.length ? ` · ${wartend.length} warten noch auf Übertragung` : ""}`;
-  $fb("fbListeBody").innerHTML = zeilen.map(a => `<tr data-id="${esc(a.ID)}" class="${a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : ""}" title="${esc(a["Prüfen"] || "")}">
-      <td class="num">${esc(fbDatumAnzeige(a.Datum))}</td><td>${esc(a.Mandant || "")}</td><td>${esc(a["Tätigkeit"] || "")}</td>
+  const waehlbar = a => !a.Rechnung && !fbIstEigen(a.Mandant) && !a.__wartet;
+  $fb("fbListeBody").innerHTML = zeilen.map(a => `<tr data-id="${esc(a.ID)}" class="${a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : ""}${fbAuswahl && fbAuswahl.has(a.ID) ? " gewaehlt" : ""}${fbAuswahl && !waehlbar(a) ? " nicht-waehlbar" : ""}" title="${esc(a["Prüfen"] || "")}">
+      <td class="num">${fbAuswahl ? (waehlbar(a) ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="für Rechnung auswählen"> ` : `<span class="fb-wahl-platz"></span>`) : ""}${esc(fbDatumAnzeige(a.Datum))}</td><td>${esc(a.Mandant || "")}</td><td>${esc(a["Tätigkeit"] || "")}</td>
       <td>${esc(a.Kultur || "")}</td><td>${esc(a["Ort / Schlag"] || "")}</td>
       <td class="num">${a.Menge !== "" && a.Menge !== undefined ? esc(fbZahlText(fbZahl(a.Menge)) + " " + (a.Einheit || "")) : ""}</td>
       <td class="num">${esc(fbZahlText(fbZahl(a.Stunden)))}</td><td>${esc(a["Mittel / Dünger"] || "")}</td>
-      <td class="re">${a.__wartet ? "⏳" : esc(a.Rechnung || "")}</td><td>${a["Prüfen"] ? "⚠" : ""}</td></tr>`).join("");
+      <td class="re">${a.__wartet ? "⏳" : a.Rechnung ? `<span class="fb-badge ok" title="abgerechnet">✓ ${esc(a.Rechnung)}</span>` : fbIstEigen(a.Mandant) ? "" : `<span class="fb-badge offen">offen</span>`}</td><td>${a["Prüfen"] ? "⚠" : ""}</td></tr>`).join("");
+  fbRenderAuswahlLeiste();
+}
+
+// --- Auswahl in der Liste → Rechnung -------------------------------------
+let fbAuswahl = null;           // null = normale Liste, Set = Auswahl für Rechnung
+function fbAuswahlUmschalten(id){
+  const a = fbArbeiten().find(x => x.ID === id);
+  if (!a || a.Rechnung || fbIstEigen(a.Mandant) || a.__wartet) return;
+  if (fbAuswahl.has(id)) fbAuswahl.delete(id);
+  else {
+    const andere = [...fbAuswahl].map(x => fbArbeiten().find(y => y.ID === x)).find(x => x && x.Mandant !== a.Mandant);
+    if (andere){ alert(`Eine Rechnung geht immer an einen Mandanten. Ausgewählt sind schon Arbeiten für „${andere.Mandant}“ – erst diese abwählen.`); return; }
+    fbAuswahl.add(id);
+  }
+  fbRenderListe();
+}
+function fbRenderAuswahlLeiste(){
+  const leiste = $fb("fbAuswahlLeiste");
+  $fb("fbAuswahlKnopf").textContent = fbAuswahl ? "✕ Auswahl beenden" : "🧾 Für Rechnung auswählen";
+  if (!fbAuswahl){ leiste.hidden = true; return; }
+  leiste.hidden = false;
+  const ids = [...fbAuswahl];
+  const mandant = ids.length ? (fbArbeiten().find(a => a.ID === ids[0]) || {}).Mandant : "";
+  leiste.innerHTML = ids.length
+    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} für <b>${esc(mandant)}</b> ausgewählt</span>
+       <button class="btn primary small" type="button" id="fbAuswahlUebernehmen">In Rechnung übernehmen →</button>`
+    : `<span>Offene Lohnarbeiten antippen, die in die Rechnung sollen. Abgerechnete (✓) und eigene Arbeiten sind ausgegraut.</span>`;
+  if (ids.length) $fb("fbAuswahlUebernehmen").addEventListener("click", () => {
+    fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
+    fbAuswahl = null;
+    fbZeigeTab("rechnung");
+    window.scrollTo({top: 0, behavior: "smooth"});
+  });
 }
 
 function fbBearbeiten(id){
@@ -3262,7 +3649,7 @@ function fbRenderRePositionen(){
     const menge = nachStunden ? fbZahl(a.Stunden) : fbZahl(a.Menge);
     const einheit = nachStunden ? "h" : (a.Einheit || "");
     fbRe.positionen[a.ID] = {
-      an: true, datum: String(a.Datum || "").slice(0, 10), taetigkeit: a["Tätigkeit"] || "", einheit,
+      an: fbRe.vorauswahl ? fbRe.vorauswahl.has(a.ID) : true, datum: String(a.Datum || "").slice(0, 10), taetigkeit: a["Tätigkeit"] || "", einheit,
       text: [a["Tätigkeit"], a.Kultur].filter(Boolean).join(" ") + (a["Ort / Schlag"] ? ", " + a["Ort / Schlag"] : "") + (a["Mittel / Dünger"] ? " (" + a["Mittel / Dünger"] + ")" : ""),
       menge: menge === null ? "" : fbZahlText(menge, 2), preis: fbZahlText(fbPreisVorschlag(a["Tätigkeit"], einheit, mandant), 2),
     };
@@ -3496,6 +3883,64 @@ function fbExportJson(){
     JSON.stringify({art: "poolehof-feldbuch-startdaten", ...rest, feldarbeiten: (feldarbeiten || []).map(({__wartet, ...a}) => a)}, null, 1), "application/json");
 }
 
+// --- Hof-Passwort ändern -------------------------------------------------
+function fbPwBewertung(pw){
+  if (!pw) return {ok: false, text: ""};
+  if (pw.length < 12) return {ok: false, text: "Zu kurz – mindestens 12 Zeichen (z. B. drei Wörter mit Bindestrich und eine Zahl)."};
+  if (/^\d+$/.test(pw)) return {ok: false, text: "Nur Ziffern sind zu leicht zu erraten."};
+  if (/^(.)\1+$/.test(pw)) return {ok: false, text: "Immer dasselbe Zeichen ist zu leicht zu erraten."};
+  if (/poolehof|passwort|password|nordstetten|fleig|123456|qwertz|asdf/i.test(pw)) return {ok: false, text: "Bitte nichts Naheliegendes (Hofname, Ort, Familienname, 123 …)."};
+  const woerter = pw.split(/[\s\-_.,+]+/).filter(w => w.length >= 3).length;
+  return {ok: true, text: woerter >= 3 || pw.length >= 18 ? "✓ Stark" : "✓ In Ordnung – mit einem weiteren Wort wäre es noch besser."};
+}
+async function fbPasswortAendern(pw){
+  if (!hsZugang) throw new Error("Nicht angemeldet");
+  await fbSync();
+  if (fbOps.length) throw new Error("Es warten noch Änderungen auf Übertragung – erst wieder Netz, dann nochmal");
+  const neu = await hsZugangAusPasswort(pw, "v2");
+  for (let versuch = 0; versuch < 4; versuch++){
+    const h = await hsAnfrage({aktion: "laden", schluessel: hsZugang.auth});
+    const f = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth});
+    if (!h.ok || !f.ok) throw new Error((h.ok ? f : h).fehler || "Laden fehlgeschlagen");
+    const herdeKlar = h.daten ? await hsEntschluesseln(h.daten) : null;
+    const fbKlar = f.daten ? await hsEntschluesseln(f.daten) : null;
+    const daten = {
+      herde: herdeKlar ? await hsVerschluesseln({...herdeKlar, hochgeladen: herdeKlar.hochgeladen || h.daten.hochgeladen}, neu) : null,
+      feldbuch: fbKlar ? await hsVerschluesseln({...fbKlar, hochgeladen: new Date().toISOString()}, neu) : null,
+    };
+    const r = await hsAnfrage({aktion: "passwortAendern", schluessel: hsZugang.auth, neu: {pruefwert: await sha256hex(neu.auth), verfahren: "v2"},
+                               daten, feldbuchVersion: f.version || null});
+    if (r.konflikt) continue;
+    if (!r.ok) throw new Error(r.fehler || "Ändern fehlgeschlagen");
+    hsZugang = neu; hsSpeichereZugang();
+    if (fbKlar) { fbGeladen = {daten: fbKlar, version: (r.versionen && r.versionen.feldbuch) || null}; lsSchreiben(FB_DATEN_KEY, fbGeladen); }
+    await fbSync();
+    hsAbgleichen();
+    return;
+  }
+  throw new Error("Gerade wird zu viel gleichzeitig geändert – bitte gleich nochmal");
+}
+$fb("fbPwNeu").addEventListener("input", () => {
+  const b = fbPwBewertung($fb("fbPwNeu").value);
+  $fb("fbPwStaerke").textContent = b.text;
+  $fb("fbPwStaerke").style.color = b.ok ? "var(--accent)" : "var(--warn)";
+});
+$fb("fbPwAendernForm").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const pw = $fb("fbPwNeu").value, meldung = $fb("fbPwAendernMeldung");
+  const b = fbPwBewertung(pw);
+  if (!b.ok){ meldung.textContent = b.text; return; }
+  if (pw !== $fb("fbPwNeu2").value){ meldung.textContent = "Die beiden Eingaben sind nicht gleich."; return; }
+  if (!confirm("Hof-Passwort jetzt ändern?\n\nKuhliste und Feldbuch werden mit dem neuen Passwort neu verschlüsselt. Alle anderen Geräte (Handy, Stall-PC …) fragen danach einmal nach dem neuen Passwort.")) return;
+  meldung.style.color = ""; meldung.textContent = "Ändere – Kuhliste und Feldbuch werden neu verschlüsselt …";
+  try {
+    await fbPasswortAendern(pw);
+    ev.target.reset(); $fb("fbPwStaerke").textContent = "";
+    meldung.style.color = "var(--accent)";
+    meldung.textContent = "✓ Passwort geändert. Auf den anderen Geräten einmal das neue Passwort eingeben.";
+  } catch(err) { meldung.style.color = ""; meldung.textContent = "Nicht geändert: " + err.message + " (das alte Passwort gilt weiter)"; }
+});
+
 // --- Gesamt / Navigation -------------------------------------------------
 function fbZeigeTab(name){
   if (!FB_TABS.includes(name)) name = fbTab || "eintragen";
@@ -3531,14 +3976,21 @@ function fbRenderAlles(){
 // Ereignisse
 FB_TABS.forEach(t => $fb("fbTab" + t[0].toUpperCase() + t.slice(1)).addEventListener("click", () => fbZeigeTab(t)));
 $fb("fbForm").addEventListener("submit", fbSpeichern);
+$fb("fbForm").addEventListener("input", fbRenderVorschau);
 $fb("fbLeeren").addEventListener("click", fbFormularLeeren);
 let fbTextTimer = null;
 $fb("fbText").addEventListener("input", () => { clearTimeout(fbTextTimer); fbTextTimer = setTimeout(fbTextAuswerten, 300); });
 $fb("fbMikro").addEventListener("click", fbMikroKlick);
 $fb("fbNeuLaden").addEventListener("click", () => fbSync());
 ["fbSuche", "fbFilterJahr", "fbFilterMandant", "fbFilterTaetigkeit", "fbNurOffen", "fbNurPruefen"].forEach(id => $fb(id).addEventListener("input", fbRenderListe));
-$fb("fbListeBody").addEventListener("click", e => { const tr = e.target.closest("tr[data-id]"); if (tr) fbBearbeiten(tr.dataset.id); });
-$fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRenderRePositionen(); });
+$fb("fbListeBody").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-id]");
+  if (!tr) return;
+  if (fbAuswahl){ fbAuswahlUmschalten(tr.dataset.id); return; }
+  fbBearbeiten(tr.dataset.id);
+});
+$fb("fbAuswahlKnopf").addEventListener("click", () => { fbAuswahl = fbAuswahl ? null : new Set(); if (fbAuswahl){ $fb("fbNurOffen").checked = true; } fbRenderListe(); });
+$fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRe.vorauswahl = null; fbRe.positionen = {}; fbRenderRePositionen(); });
 ["fbReFirma", "fbReDatum", "fbReMwst"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
 $fb("fbReErstellen").addEventListener("click", fbRechnungErstellen);
 $fb("fbStMandantNeu").addEventListener("click", () => fbMandantDialog(""));

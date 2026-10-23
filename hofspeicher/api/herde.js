@@ -21,6 +21,12 @@
 // mitschickt, bekommt {"konflikt":true}, falls inzwischen ein anderes Gerät
 // gespeichert hat – dann neu laden, Änderungen darauf anwenden, nochmal speichern.
 // Beim Feldbuch bleiben die letzten 30 Stände als Sicherung liegen.
+//
+// Passwort ändern: {"aktion":"passwortAendern","schluessel":"<alt>","neu":{"pruefwert":"…","verfahren":"v2"},
+//   "daten":{"herde":{…}|null,"feldbuch":{…}|null},"feldbuchVersion":"…"} – die Daten kommen schon mit dem
+//   NEUEN Passwort verschlüsselt an. Der neue Prüfwert liegt dann im Speicher (Ordner zugang/) und gilt
+//   statt der Umgebungsvariable. GET ?verfahren=1 sagt der App, wie sie den Schlüssel berechnen muss
+//   (v1 = alt/schnell, v2 = PBKDF2, langsam und sicher).
 const { put, list, del } = require("@vercel/blob");
 const crypto = require("crypto");
 
@@ -39,11 +45,27 @@ function pruefwert(text) {
   return crypto.createHash("sha256").update(String(text)).digest("hex");
 }
 
-function schluesselRichtig(schluessel) {
-  const soll = process.env.HOF_KEY_HASH || "";
+// Gültiger Prüfwert: der zuletzt per "passwortAendern" gesetzte, sonst die Umgebungsvariable
+async function zugangsInfo() {
+  const { blobs } = await list({ prefix: "zugang/" });
+  blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+  if (blobs[0]) {
+    // Gibt es einen neuen Prüfwert, gilt NUR er – nie stillschweigend zurück aufs alte Passwort
+    const j = await (await fetch(blobs[0].url, { cache: "no-store" })).json();
+    if (!j || !/^[0-9a-f]{64}$/.test(j.pruefwert)) throw new Error("Zugangsdaten im Speicher beschädigt");
+    return { pruefwert: j.pruefwert, verfahren: j.verfahren || "v1", alle: blobs };
+  }
+  return { pruefwert: process.env.HOF_KEY_HASH || "", verfahren: "v1", alle: blobs };
+}
+
+function schluesselRichtig(schluessel, soll) {
   const ist = pruefwert(schluessel || "");
-  if (soll.length !== 64) return false;
+  if (!soll || soll.length !== 64) return false;
   return crypto.timingSafeEqual(Buffer.from(ist), Buffer.from(soll));
+}
+
+function umschlagGueltig(d) {
+  return d && d.v === 1 && typeof d.daten === "string" && typeof d.iv === "string";
 }
 
 async function aktuellerBlob(ordner) {
@@ -68,7 +90,12 @@ module.exports = async (req, res) => {
     if (req.method === "GET" && req.query && req.query.selbsttest) {
       const probe = await put("selbsttest/probe.txt", "ok", { access: "public", addRandomSuffix: true, contentType: "text/plain" });
       await del(probe.url);
-      return res.status(200).json({ ok: true, speicher: "erreichbar", schluesselGesetzt: (process.env.HOF_KEY_HASH || "").length === 64 });
+      const info = await zugangsInfo();
+      return res.status(200).json({ ok: true, speicher: "erreichbar", schluesselGesetzt: info.pruefwert.length === 64, verfahren: info.verfahren });
+    }
+    if (req.method === "GET" && req.query && req.query.verfahren) {
+      const info = await zugangsInfo();
+      return res.status(200).json({ ok: true, verfahren: info.verfahren });
     }
     if (req.method !== "POST") return res.status(405).json({ ok: false, fehler: "Nur POST erlaubt" });
 
@@ -79,10 +106,42 @@ module.exports = async (req, res) => {
     }
     body = body || {};
 
-    if (!schluesselRichtig(body.schluessel)) {
+    const zugang = await zugangsInfo();
+    if (!schluesselRichtig(body.schluessel, zugang.pruefwert)) {
       // Bremse gegen Durchprobieren von Passwörtern
       await new Promise((r) => setTimeout(r, 2000));
       return res.status(401).json({ ok: false, fehler: "Passwort falsch" });
+    }
+
+    if (body.aktion === "passwortAendern") {
+      const neu = body.neu || {};
+      if (!/^[0-9a-f]{64}$/.test(neu.pruefwert || "") || neu.verfahren !== "v2") return res.status(400).json({ ok: false, fehler: "Ungültiger neuer Schlüssel" });
+      const daten = body.daten || {};
+      for (const f of ["herde", "feldbuch"]) {
+        if (daten[f] !== null && daten[f] !== undefined && !umschlagGueltig(daten[f])) return res.status(400).json({ ok: false, fehler: "Ungültige Daten (" + f + ")" });
+      }
+      // Feldbuch inzwischen von einem anderen Gerät geändert? Dann erst neu laden.
+      const { neuester: fbNeu } = await aktuellerBlob(FAECHER.feldbuch.ordner);
+      if ((fbNeu ? fbNeu.pathname : null) !== (body.feldbuchVersion || null)) {
+        return res.status(409).json({ ok: false, konflikt: true, fehler: "Feldbuch wurde inzwischen geändert – bitte nochmal" });
+      }
+      const versionen = {};
+      for (const f of ["herde", "feldbuch"]) {
+        if (!daten[f]) continue;
+        const neuBlob = await put(FAECHER[f].ordner + "liste.json", JSON.stringify(daten[f]), { access: "public", addRandomSuffix: true, contentType: "application/json" });
+        versionen[f] = neuBlob.pathname;
+        if (f === "herde") {
+          const { alle } = await aktuellerBlob(FAECHER.herde.ordner);
+          const alt = alle.filter((b) => b.url !== neuBlob.url).map((b) => b.url);
+          if (alt.length) await del(alt);
+        }
+      }
+      // Zum Schluss den neuen Prüfwert setzen – ab jetzt gilt nur noch das neue Passwort
+      const z = await put("zugang/pruefwert.json", JSON.stringify({ pruefwert: neu.pruefwert, verfahren: "v2", geaendert: new Date().toISOString() }),
+        { access: "public", addRandomSuffix: true, contentType: "application/json" });
+      const altZ = zugang.alle.map((b) => b.url).filter((u) => u !== z.url);
+      if (altZ.length) await del(altZ);
+      return res.status(200).json({ ok: true, versionen });
     }
 
     const fach = body.fach || "herde";
@@ -99,7 +158,7 @@ module.exports = async (req, res) => {
 
     if (body.aktion === "speichern") {
       const daten = body.daten;
-      if (!daten || daten.v !== 1 || typeof daten.daten !== "string" || typeof daten.iv !== "string") {
+      if (!umschlagGueltig(daten)) {
         return res.status(400).json({ ok: false, fehler: "Ungültige Daten" });
       }
       const text = JSON.stringify(daten);
