@@ -2652,8 +2652,11 @@ document.addEventListener("paste", e => {
   const text = (e.clipboardData || window.clipboardData).getData("text");
   if (!ohrmarkenAusText(text).length) return;
   e.preventDefault();
-  lely = {text, quelle: "eingefügt"}; werteAus();
+  lely = {text, quelle: "eingefügt"};
+  if (location.hash !== "#besamung") navigiere("besamung");
+  werteAus();
 });
+window.addEventListener("online", () => { if (hsZugang && hsStatus.zustand === "fehler") hsAbgleichen(); });
 
 const quoteInput = document.getElementById("quoteInput");
 quoteInput.value = bsSettings.quote;
@@ -4031,7 +4034,7 @@ function fbRenderAuswahlLeiste(){
     const fremd = namen.filter(n => !fbIstEigen(n));
     const weiter = mandant => {
       fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
-      fbAuswahl = null;
+      fbAuswahl = null; fbListeFilter = "alle";
       fbZeigeTab("rechnung");
       window.scrollTo({top: 0, behavior: "smooth"});
     };
@@ -5044,7 +5047,8 @@ $fb("fbExportCsv").addEventListener("click", fbExportCsv);
 $fb("fbExportJson").addEventListener("click", fbExportJson);
 ["fbAwJahr", "fbAwWer"].forEach(id => $fb(id).addEventListener("input", fbRenderAuswertung));
 $fb("fbDialog").addEventListener("click", e => { if (e.target.id === "fbDialog") e.target.close(); });
-window.addEventListener("online", () => { if (fbOps.length) fbSync(); });
+// Netz wieder da: Wartendes übertragen bzw. nach einem Fehler neuesten Stand holen
+window.addEventListener("online", () => { if (hsZugang && (fbOps.length || fbStatus.zustand === "fehler")) fbSync(); });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && hsZugang) fbSync(); });   // beim Zurückkommen neuesten Stand holen
 
 $fb("fbForm").elements["Datum"].value = fbHeuteIso();
