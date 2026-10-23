@@ -51,7 +51,7 @@ async function zugangsInfo() {
   blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
   if (blobs[0]) {
     // Gibt es einen neuen Prüfwert, gilt NUR er – nie stillschweigend zurück aufs alte Passwort
-    const j = await (await fetch(blobs[0].url, { cache: "no-store" })).json();
+    const j = await blobLesen(blobs[0].url);
     if (!j || !/^[0-9a-f]{64}$/.test(j.pruefwert)) throw new Error("Zugangsdaten im Speicher beschädigt");
     return { pruefwert: j.pruefwert, verfahren: j.verfahren || "v1", alle: blobs };
   }
@@ -66,6 +66,25 @@ function schluesselRichtig(schluessel, soll) {
 
 function umschlagGueltig(d) {
   return d && d.v === 1 && typeof d.daten === "string" && typeof d.iv === "string";
+}
+
+// Gespeicherte Datei lesen. Direkt nach dem Speichern ist eine neue Datei manchmal für
+// einen Moment noch nicht überall abrufbar (dann kommt eine HTML-Fehlerseite statt JSON) –
+// deshalb mehrmals mit kurzer Pause versuchen.
+async function blobLesen(url) {
+  let letzter = null;
+  for (const pause of [0, 300, 800, 1600]) {
+    if (pause) await new Promise((r) => setTimeout(r, pause));
+    try {
+      const antwort = await fetch(url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" });
+      const text = await antwort.text();
+      if (antwort.ok && /^\s*[{\[]/.test(text)) return JSON.parse(text);
+      letzter = new Error("Datei gerade nicht lesbar (HTTP " + antwort.status + ")");
+    } catch (e) { letzter = e; }
+  }
+  const f = new Error("Gespeicherte Daten gerade nicht abrufbar – bitte gleich nochmal versuchen");
+  f.vorlaeufig = true; f.ursache = letzter;
+  throw f;
 }
 
 async function aktuellerBlob(ordner) {
@@ -150,10 +169,20 @@ module.exports = async (req, res) => {
     const ordner = fachInfo.ordner;
 
     if (body.aktion === "laden") {
-      const { neuester } = await aktuellerBlob(ordner);
-      if (!neuester) return res.status(200).json({ ok: true, daten: null, version: null });
-      const antwort = await fetch(neuester.url, { cache: "no-store" });
-      return res.status(200).json({ ok: true, daten: await antwort.json(), version: neuester.pathname });
+      // Zwei Runden: falls ein anderes Gerät genau jetzt speichert, ist die eben gefundene
+      // Datei evtl. schon ersetzt – dann die Liste neu holen und die neue Datei lesen
+      let fehler = null;
+      for (let runde = 0; runde < 2; runde++) {
+        const { neuester } = await aktuellerBlob(ordner);
+        if (!neuester) return res.status(200).json({ ok: true, daten: null, version: null });
+        try {
+          return res.status(200).json({ ok: true, daten: await blobLesen(neuester.url), version: neuester.pathname });
+        } catch (e) {
+          if (!e.vorlaeufig) throw e;
+          fehler = e;
+        }
+      }
+      throw fehler;
     }
 
     if (body.aktion === "speichern") {
@@ -183,6 +212,7 @@ module.exports = async (req, res) => {
 
     return res.status(400).json({ ok: false, fehler: "Unbekannte Aktion" });
   } catch (e) {
+    if (e && e.vorlaeufig) return res.status(503).json({ ok: false, vorlaeufig: true, fehler: e.message });
     return res.status(500).json({ ok: false, fehler: "Speicherfehler: " + (e && e.message ? e.message : String(e)) });
   }
 };

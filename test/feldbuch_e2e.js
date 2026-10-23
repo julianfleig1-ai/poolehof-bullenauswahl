@@ -168,6 +168,93 @@
     pruef("Alle Reiter zeichnen ohne Fehler", true);
     fbZeigeTab("eintragen");
   });
+  await schritt("Liste", async () => {
+    fbZeigeTab("liste"); $fb("fbFilterJahr").value = ""; fbListeFilter = "alle"; fbRenderListe();
+    const L = () => $fb("fbListeBody");
+    pruef("Liste: alte Häkchen weg, Filter-Knöpfe da", !$fb("fbNurOffen") && !$fb("fbNurPruefen") && $fb("fbChips").querySelectorAll(".fb-chip").length === 5);
+    pruef("Liste: nach Monaten gruppiert", L().querySelectorAll(".fb-monat").length >= 2, L().querySelectorAll(".fb-monat").length);
+    await fbAendern({typ: "neu", eintrag: {ID: "L-1", Datum: fbHeuteIso(), Mandant: "Muster", "Tätigkeit": "Mähen", Kultur: "Grünland", "Ort / Schlag": "Hinterwiese", Menge: "", Einheit: "", Stunden: "2,5", "Mittel / Dünger": "", Bemerkung: "Zaun am Bach kaputt", Rechnung: "", "Prüfen": ""}});
+    const zeile = L().querySelector('[data-id="L-1"]');
+    pruef("Liste zeigt alle Angaben inkl. Bemerkung", zeile && /Mähen Grünland/.test(zeile.innerText) && /2,5 Std/.test(zeile.innerText) && /Hinterwiese/.test(zeile.innerText) && /Zaun am Bach/.test(zeile.innerText), zeile && zeile.innerText);
+    // neue Notiz
+    $fb("fbNotizNeu").click(); await warte(50);
+    const f = $fb("fbNotizForm");
+    f.elements.Bemerkung.value = "Drainage am Oberfeld prüfen"; f.elements.Mandant.value = "Muster"; f.requestSubmit(); await warte(400);
+    const notiz = fbArbeiten().find(a => fbIstNotiz(a) && /Drainage/.test(a.Bemerkung));
+    pruef("Notiz gespeichert", notiz && notiz.Datum === fbHeuteIso());
+    pruef("Notiz nicht abzurechnen", notiz && !fbOffeneFuer("Muster").includes(notiz) && !fbAbzurechnen(notiz));
+    $fb("fbChips").querySelector('[data-filter="notiz"]').click();
+    pruef("Knopf „Notizen“ zeigt nur Notizen", [...L().querySelectorAll(".fb-e")].length >= 1 && [...L().querySelectorAll(".fb-e")].every(e => e.classList.contains("notiz")));
+    // alte Notiz übernehmen
+    pruef("Alte Notizen werden angeboten", /Testnotiz/.test($fb("fbAltNotizen").innerText));
+    $fb("fbAltNotizen").querySelector("[data-alt-ueber]").click(); await warte(50);
+    $fb("fbNotizForm").requestSubmit(); await warte(400);
+    pruef("Alte Notiz übernommen", !(fbDaten.notizen || []).length && fbArbeiten().some(a => fbIstNotiz(a) && /Testnotiz/.test(a.Bemerkung)) && !$fb("fbAltNotizen").innerText.trim());
+    // Rechnung aus der Liste öffnen
+    await fbSofort({typ: "rechnung", firma: "Testhof", mandant: "Muster", datum: fbHeuteIso(), positionen: [{id: "L-1", menge: 2.5, preis: 50}]});
+    $fb("fbChips").querySelector('[data-filter="abgerechnet"]').click();
+    const link = L().querySelector('[data-id="L-1"] .fb-re-link');
+    pruef("Abgerechnet zeigt Rechnungs-Knopf", !!link && [...L().querySelectorAll(".fb-e")].every(e => e.querySelector(".fb-re-link")));
+    link.click(); await warte(300);
+    pruef("Tipp auf Rechnung öffnet die Rechnung", new RegExp(link.dataset.re).test($fb("rechnungDruck").innerText) && !document.querySelector("#fbDialog[open]"));
+    $fb("reZu").click();
+    $fb("fbChips").querySelector('[data-filter="offen"]').click();
+    pruef("„Noch abzurechnen“ ohne Eigene/Notizen/Abgerechnete", [...L().querySelectorAll(".fb-e")].every(e => { const a = fbArbeiten().find(x => x.ID === e.dataset.id); return fbAbzurechnen(a); }));
+    $fb("fbAuswahlKnopf").click();
+    pruef("Auswahl: Notizen nicht wählbar", (() => { const n = fbArbeiten().find(fbIstNotiz); fbAuswahlUmschalten(n.ID); return !fbAuswahl.has(n.ID); })());
+    $fb("fbAuswahlKnopf").click();
+    pruef("Auswahl beenden → wieder alle", !fbAuswahl && fbListeFilter === "alle");
+  });
+  await schritt("Einstellungen", async () => {
+    const M = "http://127.0.0.1:8779/";
+    navigiere("einstellungen"); await warte(200);
+    pruef("Einstellungen-Seite öffnet", !document.getElementById("viewEinstellungen").hidden && /Einstellungen/.test(document.title));
+    pruef("Einstellungen zeigt angemeldet", /Angemeldet/.test(document.getElementById("einstZugang").innerText) && !$fb("fbPwAendernForm").closest(".einst-karte").hidden);
+    pruef("Kuhliste hat kein „Gerät trennen“ mehr", !/trennen/i.test(document.getElementById("hofSpeicher").innerText));
+    // Server hakt kurz: angemeldet bleiben, von selbst nochmal versuchen
+    await fetch(M + "?stoerung=1");
+    await fbSync();
+    pruef("Server-Störung meldet nicht ab", hsZugang && fbStatus.zustand === "fehler" && /automatisch/.test($fb("fbVerbindung").innerText), fbStatus.text);
+    for (let i = 0; i < 125 && fbStatus.zustand !== "ok"; i++) await warte(200);
+    pruef("Nach Störung von selbst wieder verbunden", hsZugang && fbStatus.zustand === "ok", fbStatus.text);
+    // Abmelden nur über Einstellungen
+    document.getElementById("einstAbmelden").click(); await warte(100);
+    pruef("Abmelden entfernt Zugang und Feldbuch-Kopie", !hsZugang && !fbGeladen && !localStorage.getItem("poolehof-hofspeicher-v1") && !document.getElementById("navPunktEinst").hidden);
+    // Störung beim Anmelden darf nicht "Passwort falsch" sagen
+    await fetch(M + "?stoerung=1");
+    let fehler = ""; try { await hsAnmelden("test-4711"); } catch(e) { fehler = e.message; }
+    pruef("Störung beim Anmelden ≠ „Passwort falsch“", !hsZugang && fehler && !/falsch/i.test(fehler), fehler);
+    fehler = ""; try { await hsAnmelden("falsch-123"); } catch(e) { fehler = e.message; }
+    pruef("Falsches Passwort wird erkannt", !hsZugang && /falsch/i.test(fehler), fehler);
+    renderEinstellungen();
+    document.getElementById("einstPasswort").value = "test-4711";
+    document.getElementById("einstForm").requestSubmit();
+    for (let i = 0; i < 60 && !(hsZugang && fbStatus.zustand === "ok" && fbArbeiten().length); i++) await warte(200);
+    pruef("Anmelden in Einstellungen lädt Feldbuch wieder", hsZugang && fbStatus.zustand === "ok" && fbArbeiten().length >= 4, fbStatus.text);
+    navigiere("feld");
+  });
+  await schritt("Lely-Import", async () => {
+    // nur erfundene Test-Ohrmarken
+    const zeilen = [["Kuhnummer", "Halsband", "Lebensnummer", "Laktation", "Tage"], ["12", "305", "DE 08 123 45678", "2", "61"], ["13", "306", "DE0812345679", "3", "75"], ["14", "307", "DE 0812345680", "1", "58"]];
+    const anzahl = () => (document.getElementById("erkanntInfo").textContent.match(/(\d+) Ohrmarke/) || [])[1];
+    pruef("Lely: Einfügefeld entfernt, Datei-Feld da", !document.getElementById("lelyInput") && document.getElementById("lelyFile"));
+    await lelyDatei(new File([zeilen.map(r => r.join(";")).join("\r\n")], "Offene Kühe.csv", {type: "text/csv"}));
+    pruef("Lely CSV: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
+    await lelyDatei(new File([`<?xml version="1.0"?><Liste>${zeilen.slice(1).map(r => `<Kuh Nummer="${r[0]}"><Lebensnummer>${r[2]}</Lebensnummer></Kuh>`).join("")}</Liste>`], "Offene Kühe.xml", {type: "text/xml"}));
+    pruef("Lely XML: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
+    const XLSX = await ladeSheetJS();
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(zeilen), "Offene Kühe");
+    await lelyDatei(new File([XLSX.write(wb, {type: "array", bookType: "xlsx"})], "Offene Kühe.xlsx"));
+    pruef("Lely Excel: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
+    await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf);
+    const pdf = new jspdf.jsPDF(); zeilen.forEach((r, i) => pdf.text(r.join("   "), 10, 20 + i * 8));
+    await lelyDatei(new File([pdf.output("arraybuffer")], "Offene Kühe.pdf", {type: "application/pdf"}));
+    pruef("Lely PDF: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
+    await lelyDatei(new File(["Kuhnummer;Name\n12;Berta"], "falsch.csv"));
+    pruef("Lely ohne Ohrmarken: klare Meldung", /keine Ohrmarken/.test(document.getElementById("erkanntInfo").textContent));
+    document.getElementById("lelyLeeren").click();
+    pruef("Lely-Liste leeren", document.getElementById("erkanntInfo").textContent === "" && document.getElementById("bsResult").hidden);
+  });
   await schritt("Passwort", async () => {
     await fbPasswortAendern("Test-Traktor-Wiese-17");
     pruef("Passwort ändern", hsZugang.verfahren === "v2" && fbStatus.zustand === "ok");

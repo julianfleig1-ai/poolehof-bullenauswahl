@@ -7,6 +7,7 @@ SOLL = hashlib.sha256(auth.encode()).hexdigest()
 SPEICHER = {"herde": [], "feldbuch": []}   # neueste zuerst: (version, daten)
 BEHALTEN = {"herde": 1, "feldbuch": 30}
 ZUGANG = {"soll": SOLL, "verfahren": "v1"}
+STOERUNG = {"n": 0}   # Test: die naechsten n Anfragen "haken" (503 wie beim echten Server)
 class H(http.server.BaseHTTPRequestHandler):
     def _cors(self):
         o = self.headers.get("Origin", "")
@@ -17,11 +18,21 @@ class H(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json"); self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
     def do_OPTIONS(self):
         self.send_response(204); self._cors(); self.end_headers()
+    def _stoert(self):
+        if STOERUNG["n"] > 0:
+            STOERUNG["n"] -= 1
+            self._json(503, {"ok": False, "vorlaeufig": True, "fehler": "Gespeicherte Daten gerade nicht abrufbar – bitte gleich nochmal versuchen"})
+            return True
+        return False
     def do_GET(self):
+        if "stoerung=" in self.path:
+            STOERUNG["n"] = int(self.path.split("stoerung=")[1].split("&")[0]); return self._json(200, {"ok": True})
+        if "verfahren" in self.path and self._stoert(): return
         if "verfahren" in self.path: return self._json(200, {"ok": True, "verfahren": ZUGANG["verfahren"]})
         self._json(200, {**{k: len(v) for k, v in SPEICHER.items()}, "verfahren": ZUGANG["verfahren"]})  # nur fuer Tests
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+        if self._stoert(): return
         ist = hashlib.sha256(str(body.get("schluessel", "")).encode()).hexdigest()
         if ist != ZUGANG["soll"]: return self._json(401, {"ok": False, "fehler": "Passwort falsch"})
         if body.get("aktion") == "passwortAendern":

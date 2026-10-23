@@ -272,8 +272,6 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .zws-hinweis{margin-bottom:16px}
 .zws-hinweis ol{margin:8px 0 10px;padding-left:20px;display:grid;gap:4px}
 .zws-hinweis .btn{margin-top:2px}
-#lelyInput{width:100%;min-height:120px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;
-  background:var(--surface);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.5}
 .bs-erkannt{font-size:13px;color:var(--ink-dim)}
 .bs-settings{margin-top:14px;font-size:13.5px}
 /* Aufklapp-Knopf im selben Stil wie "Auswerten", damit man ihn findet */
@@ -338,6 +336,13 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .appnav-item:hover{background:var(--surface-2);color:var(--ink)}
 .appnav-item[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .appnav-punkt{width:9px;height:9px;border-radius:50%;background:var(--warn);margin-left:auto;flex:none}
+.appnav-einst{margin-top:auto}
+@media (max-width:900px){.appnav-einst{margin-top:0}}
+.einst-karte{padding:18px 18px 16px;margin-bottom:14px}
+.einst-karte h2{font-size:19px;font-weight:600;margin-bottom:8px}
+.einst-zeile{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.einst-ok{color:var(--accent);font-weight:600}
+.einst-warn{color:var(--warn);font-weight:600}
 
 /* Startseite */
 .home-head{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
@@ -456,6 +461,51 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-gespeichert .bs-status{margin:0}
 .fb-filter select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);font-size:13.5px}
 .fb-table tr{cursor:pointer}
+/* Feldarbeiten-Liste: Monatsgruppen, ein Eintrag = eine Karte mit allen Angaben */
+.fb-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.fb-chip{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;font:inherit;font-size:13.5px}
+.fb-chip small{color:var(--ink-dim);margin-left:4px}
+.fb-chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.fb-chip[aria-pressed="true"] small{color:rgba(255,255,255,.85)}
+.fb-liste-kopf{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:0 16px 8px}
+.fb-liste-info{font-size:13px;color:var(--ink-dim)}
+.fb-liste-knoepfe{display:flex;gap:6px;flex-wrap:wrap}
+.fb-eintraege{border-top:1px solid var(--border)}
+.fb-monat{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 16px;
+  background:var(--surface-2);border-bottom:1px solid var(--border);font-weight:600;font-size:13.5px}
+.fb-monat small{font-weight:400;color:var(--ink-dim);font-size:12.5px}
+.fb-e{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:start;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.fb-e:hover{background:var(--surface-2)}
+.fb-e-datum{display:flex;align-items:center;gap:6px;min-width:58px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.fb-e-datum small{display:block;color:var(--ink-dim);font-size:11.5px}
+.fb-e-haupt{min-width:0}
+.fb-e-z1{font-size:14.5px}
+.fb-e-z1 b{font-weight:600}
+.fb-e-menge{color:var(--ink);white-space:nowrap}
+.fb-e-z2{font-size:13px;color:var(--ink-dim);margin-top:2px}
+.fb-e-z3{font-size:13px;margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere}
+.fb-e-re{text-align:right}
+.fb-e.notiz .fb-e-z1{font-weight:400}
+.fb-e.pruefen{background:var(--gold-soft)}
+.fb-e.wartet{color:var(--ink-dim);font-style:italic}
+.fb-e.gewaehlt{background:var(--accent-soft)!important}
+.fb-e.nicht-waehlbar{opacity:.45}
+.fb-e .fb-wahl{width:18px;height:18px;margin:0;pointer-events:none}
+button.fb-badge{border:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600}
+button.fb-badge.ok:hover{text-decoration:underline}
+.fb-leer{padding:24px 16px;color:var(--ink-dim);text-align:center}
+.fb-alt-notizen{margin:14px 16px 4px;padding:12px 14px;border:1px dashed var(--border-strong);border-radius:12px}
+.fb-alt-notizen h3{font-size:14px;margin-bottom:4px}
+.fb-alt-notiz{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--border);font-size:13.5px;flex-wrap:wrap}
+.fb-alt-notiz span{flex:1 1 200px;overflow-wrap:anywhere}
+@media (max-width:640px){
+  .fb-e{grid-template-columns:auto 1fr;padding:10px 12px}
+  .fb-e-re{grid-column:2;text-align:left}
+  .fb-chips,.fb-liste-kopf{padding-left:12px;padding-right:12px}
+  .fb-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .fb-chips::-webkit-scrollbar{display:none}
+  .fb-chip{flex:none}
+}
 .fb-table tr.pruefen td{background:var(--gold-soft)}
 .fb-table tr.wartet td{color:var(--ink-dim);font-style:italic}
 .fb-table td.re{color:var(--accent);font-weight:600}
@@ -604,6 +654,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
   <a class="appnav-item" data-view="start" href="#start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-6h4v6"/></svg><span>Start</span></a>
   <a class="appnav-item" data-view="zucht" href="#zucht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3c0 5 8 5 8 9s-8 4-8 9"/><path d="M16 3c0 5-8 5-8 9s8 4 8 9"/><path d="M9 6.5h6M9 17.5h6M10.5 12h3"/></svg><span>Zuchtplanung</span><span class="appnav-punkt" id="navPunkt" hidden></span></a>
   <a class="appnav-item" data-view="feld" href="#feld"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12C12 7.5 9 5 4 5c0 4.5 3 7 8 7z"/><path d="M12 13c0-3.6 2.4-6 7-6 0 3.6-2.4 6-7 6z"/><path d="M5 21h14"/></svg><span>Feldbuch</span></a>
+  <a class="appnav-item appnav-einst" data-view="einstellungen" href="#einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Einstellungen</span><span class="appnav-punkt" id="navPunktEinst" hidden></span></a>
 </nav>
 
 <main class="appmain">
@@ -712,23 +763,22 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
     <section id="fbListe" class="panel" hidden>
       <div class="toolbar fb-filter">
         <input type="search" id="fbSuche" placeholder="Suchen (Ort, Mittel, Bemerkung …)">
-        <select id="fbFilterJahr"></select>
-        <select id="fbFilterMandant"><option value="">alle Mandanten</option></select>
-        <select id="fbFilterTaetigkeit"><option value="">alle Tätigkeiten</option></select>
-        <label class="toggle-only" title="Nur Lohnarbeiten, für die noch keine Rechnung erstellt wurde"><input type="checkbox" id="fbNurOffen"> Noch keine Rechnung</label>
-        <label class="toggle-only" id="fbNurPruefenLabel" hidden><input type="checkbox" id="fbNurPruefen"> Nur unklare (gelb)</label>
-        <button class="btn small" type="button" id="fbAuswahlKnopf">🧾 Für Rechnung auswählen</button>
+        <select id="fbFilterJahr" aria-label="Jahr"></select>
+        <select id="fbFilterMandant" aria-label="Mandant"><option value="">alle Mandanten</option></select>
+        <select id="fbFilterTaetigkeit" aria-label="Tätigkeit"><option value="">alle Tätigkeiten</option></select>
       </div>
-      <div id="fbListeInfo" class="bs-note" style="padding:10px 16px 0"></div>
+      <div class="fb-chips" id="fbChips" role="group" aria-label="Was anzeigen?"></div>
+      <div class="fb-liste-kopf">
+        <span id="fbListeInfo" class="fb-liste-info"></span>
+        <span class="fb-liste-knoepfe">
+          <button class="btn small" type="button" id="fbNotizNeu">📝 Notiz</button>
+          <button class="btn small" type="button" id="fbAuswahlKnopf">🧾 Für Rechnung auswählen</button>
+        </span>
+      </div>
       <div id="fbAuswahlLeiste" class="fb-auswahl-leiste" hidden></div>
-      <div class="table-scroll">
-        <table class="bs-table fb-table">
-          <thead><tr><th>Datum</th><th>Mandant</th><th>Tätigkeit</th><th>Kultur</th><th>Ort / Schlag</th><th>Menge</th><th>Std.</th><th>Mittel / Dünger</th><th>Rechnung</th><th></th></tr></thead>
-          <tbody id="fbListeBody"></tbody>
-        </table>
-      </div>
-      <p class="bs-note">Auf eine Zeile tippen zum Bearbeiten. Gelb = beim Übertragen der alten Liste unklar geblieben, bitte prüfen.</p>
-      <details class="fb-notizen" id="fbNotizenBox" hidden><summary id="fbNotizenTitel">Notizen aus der alten Liste</summary><ul id="fbNotizen"></ul></details>
+      <div id="fbListeBody" class="fb-eintraege"></div>
+      <p class="bs-note">Auf einen Eintrag tippen zum Bearbeiten · auf „✓ Rechnung“ tippen, um die Rechnung anzusehen.</p>
+      <div id="fbAltNotizen"></div>
     </section>
 
     <!-- Rechnung -->
@@ -814,15 +864,8 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <button class="btn" type="button" id="fbExportCsv">⬇ Feldarbeiten für Excel (CSV)</button>
         <button class="btn" type="button" id="fbExportJson">⬇ Komplette Sicherung (JSON)</button>
       </div>
-      <h3 class="fb-zwischen">Hof-Passwort ändern</h3>
-      <p class="bs-help">Das Hof-Passwort schützt Kuhliste, Feldbuch, Adressen und Rechnungen. Am besten <b>drei bis vier Wörter mit Bindestrich und eine Zahl</b> – leicht zu merken, praktisch nicht zu erraten. Ein Name von Hof, Ort oder Familie gehört nicht hinein. Lass es am iPhone bzw. PC im Passwort-Speicher sichern, dann musst du es pro Gerät nur einmal eintippen.</p>
-      <form id="fbPwAendernForm" class="fb-form">
-        <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
-        <label class="breit">Neues Passwort<input type="password" name="new-password" id="fbPwNeu" autocomplete="new-password" required></label>
-        <label class="breit">Neues Passwort nochmal<input type="password" id="fbPwNeu2" autocomplete="new-password" required></label>
-        <div class="breit bs-help" id="fbPwStaerke"></div>
-        <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Passwort ändern</button></div>
-      </form><div id="fbPwAendernMeldung" class="bs-hof-meldung"></div>
+      <h3 class="fb-zwischen">Hof-Passwort</h3>
+      <p class="bs-help">Anmelden, Abmelden und Passwort ändern gibt es jetzt zentral unter <a href="#einstellungen">⚙ Einstellungen</a> – das gilt für die ganze App.</p>
     </section>
 
     <!-- Auswahllisten für die Eingabefelder -->
@@ -836,6 +879,33 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 <dialog id="fbDialog" aria-labelledby="fbDialogTitel"></dialog>
 
 <!-- ===================== Zuchtplanung ===================== -->
+<section id="viewEinstellungen" class="view" hidden>
+  <div class="wrap">
+    <header class="top"><div class="brand"><div>
+      <div class="kicker">Poolehof</div>
+      <h1>Einstellungen</h1>
+      <p class="sub">Gilt für die ganze App – Kuhliste, Feldbuch und alles, was noch dazukommt.</p>
+    </div></div></header>
+    <section class="panel einst-karte"><h2>Hof-Zugang auf diesem Gerät</h2><div id="einstZugang"></div></section>
+    <section class="panel einst-karte">
+      <h2>Hof-Passwort ändern</h2>
+      <p class="bs-help">Das Hof-Passwort schützt Kuhliste, Feldbuch, Adressen und Rechnungen. Am besten <b>drei bis vier Wörter mit Bindestrich und eine Zahl</b> – leicht zu merken, praktisch nicht zu erraten. Ein Name von Hof, Ort oder Familie gehört nicht hinein. Lass es am iPhone bzw. PC im Passwort-Speicher sichern, dann musst du es pro Gerät nur einmal eintippen.</p>
+      <form id="fbPwAendernForm" class="fb-form">
+        <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
+        <label class="breit">Neues Passwort<input type="password" name="new-password" id="fbPwNeu" autocomplete="new-password" required></label>
+        <label class="breit">Neues Passwort nochmal<input type="password" id="fbPwNeu2" autocomplete="new-password" required></label>
+        <div class="breit bs-help" id="fbPwStaerke"></div>
+        <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Passwort ändern</button></div>
+      </form><div id="fbPwAendernMeldung" class="bs-hof-meldung"></div>
+    </section>
+    <section class="panel einst-karte"><h2>App</h2>
+      <div class="einst-zeile"><button class="btn" type="button" id="einstAktualisieren">↻ App aktualisieren</button><span class="bs-help">holt sofort die neueste Version (falls am Handy noch die alte angezeigt wird)</span></div>
+      <div class="einst-zeile"><button class="btn" type="button" id="einstSicherung">⬇ Feldbuch-Sicherung herunterladen</button></div>
+      <div id="einstInfo" class="bs-help"></div>
+    </section>
+  </div>
+</section>
+
 <section id="viewZucht" class="view" hidden>
 <div class="wrap">
   <header class="top">
@@ -973,14 +1043,21 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <div class="bs-step-head">
           <span class="bs-num">2</span>
           <div>
-            <h2>Kühe zum Besamen einfügen</h2>
-            <p class="bs-help">In Lely Horizon die Liste „Offene Kühe Reproduktion“ markieren, kopieren und hier einfügen. Halsbandnummern und andere Werte stören nicht – die Ohrmarken (DE …) werden automatisch erkannt.</p>
+            <h2>Kühe zum Besamen: Liste aus Lely</h2>
+            <p class="bs-help">In Lely Horizon die Liste „Offene Kühe Reproduktion“ öffnen → Menü <b>⋮</b> → <b>Exportieren als EXCEL</b> (CSV, XML oder „Als PDF exportieren“ geht genauso) und die Datei hier hineinziehen. Die Ohrmarken (DE …) werden automatisch erkannt, alle anderen Spalten stören nicht.</p>
           </div>
         </div>
-        <textarea id="lelyInput" rows="6" placeholder="Hier die Liste aus Lely einfügen …"></textarea>
+        <label class="bs-drop" id="lelyDrop">
+          <input type="file" id="lelyFile" accept=".xlsx,.xls,.csv,.txt,.xml,.pdf" hidden>
+          <span class="bs-drop-icon">🐄</span>
+          <span>
+            <b id="lelyDropTitel">Lely-Liste hier hineinziehen</b>
+            <span class="bs-drop-sub">oder klicken und Datei auswählen · Excel, CSV, XML oder PDF aus Lely Horizon</span>
+          </span>
+        </label>
         <div class="bs-actions">
-          <button class="btn primary" id="auswertenBtn" type="button">Auswerten</button>
           <span id="erkanntInfo" class="bs-erkannt"></span>
+          <button class="btn ghost small" id="lelyLeeren" type="button" hidden>Liste leeren</button>
         </div>
         <details class="bs-settings" id="bsEinstellungen">
           <summary><span class="btn primary bs-settings-btn">⚙ Kriterien &amp; Gewichtung <span class="pfeil">▾</span></span><span id="gewichtKurz" class="bs-gew-kurz"></span></summary>
@@ -1632,8 +1709,8 @@ function zeigeTab(name){
 // Poolehof-App: Start | Zuchtplanung (#bullen, #besamung) | Feldbuch.
 // Die Adresse (#…) bestimmt die Ansicht – so funktionieren Zurück-Taste,
 // Lesezeichen und alte Links wie ".../#besamung" weiter.
-const ANSICHTEN = {start: "viewStart", zucht: "viewZucht", feld: "viewFeld"};
-const TITEL = {start: "Poolehof", zucht: "Zuchtplanung – Poolehof", feld: "Feldbuch – Poolehof"};
+const ANSICHTEN = {start: "viewStart", zucht: "viewZucht", feld: "viewFeld", einstellungen: "viewEinstellungen"};
+const TITEL = {start: "Poolehof", zucht: "Zuchtplanung – Poolehof", feld: "Feldbuch – Poolehof", einstellungen: "Einstellungen – Poolehof"};
 function navigiere(ziel){
   let ansicht = "start", tab = null;
   if (ziel === "bullen" || ziel === "besamung"){ ansicht = "zucht"; tab = ziel; }
@@ -1643,6 +1720,7 @@ function navigiere(ziel){
     if (tab !== "besamung") tab = "bullen";
   }
   else if (ziel === "feld" || /^feld-\w+$/.test(ziel)) ansicht = "feld";
+  else if (ziel === "einstellungen") ansicht = "einstellungen";
   for (const [k, id] of Object.entries(ANSICHTEN)) document.getElementById(id).hidden = k !== ansicht;
   document.querySelectorAll(".appnav-item").forEach(a => {
     if (a.dataset.view === ansicht) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
@@ -1651,6 +1729,7 @@ function navigiere(ziel){
   const hash = "#" + (tab || (ansicht === "feld" && /^feld-\w+$/.test(ziel) ? ziel : ansicht));
   if (location.hash !== hash) history.replaceState(null, "", hash);
   document.title = TITEL[ansicht];
+  if (ansicht === "einstellungen" && window.renderEinstellungen) renderEinstellungen();
 }
 document.querySelectorAll(".tabs .tab[data-tab]").forEach(b => b.addEventListener("click", () => navigiere(b.dataset.tab)));
 window.addEventListener("hashchange", () => { navigiere(location.hash.slice(1)); window.scrollTo(0, 0); });
@@ -1791,6 +1870,13 @@ function ohrmarkenAusText(text){
   for (const m of String(text).matchAll(re)){
     const key = m[1].replace(/\D/g, "");
     if (!gesehen.has(key)){ gesehen.add(key); out.push(key); }
+  }
+  if (!out.length){
+    // Ersatz: manche Exporte schreiben die Ohrmarke ISO-mäßig als 276 + 12 Ziffern
+    for (const m of String(text).matchAll(/(?<!\d)276((?:[\s.]?\d){12})(?!\d)/g)){
+      const key = m[1].replace(/\D/g, "").slice(-10);
+      if (!gesehen.has(key)){ gesehen.add(key); out.push(key); }
+    }
   }
   return out;
 }
@@ -2280,13 +2366,17 @@ function renderMapping(){
   }));
 }
 
+// Lely-Liste: kommt als Datei (Excel/CSV/XML/PDF); daraus werden nur die Ohrmarken gelesen
+var lely = {text: "", quelle: ""};   // var: wird evtl. schon vor dieser Zeile gebraucht
 function werteAus(){
-  const text = document.getElementById("lelyInput").value;
+  const text = (lely && lely.text) || "";
   const keys = ohrmarkenAusText(text);
   const info = document.getElementById("erkanntInfo");
   info.textContent = text.trim()
-    ? (keys.length ? `${keys.length} Ohrmarke${keys.length === 1 ? "" : "n"} erkannt` : "Keine Ohrmarken (DE …) im Text gefunden")
+    ? (keys.length ? `✓ ${lely.quelle ? "„" + lely.quelle + "“: " : ""}${keys.length} Ohrmarke${keys.length === 1 ? "" : "n"} erkannt` : `In ${lely.quelle ? "„" + lely.quelle + "“" : "der Liste"} wurden keine Ohrmarken (DE …) gefunden – ist es die Liste „Offene Kühe Reproduktion“?`)
     : "";
+  document.getElementById("lelyLeeren").hidden = !text.trim();
+  document.getElementById("lelyDropTitel").textContent = text.trim() ? "Andere Lely-Liste hier hineinziehen" : "Lely-Liste hier hineinziehen";
   const result = document.getElementById("bsResult");
   if (!keys.length){ result.hidden = true; return; }
   result.hidden = false;
@@ -2504,12 +2594,66 @@ document.getElementById("herdeLoeschen").addEventListener("click", () => {
   werteAus();
 });
 
-let werteAusTimer = null;
-document.getElementById("lelyInput").addEventListener("input", () => {
-  clearTimeout(werteAusTimer);
-  werteAusTimer = setTimeout(werteAus, 250);
+// Text aus einer Lely-Datei holen – egal welches Format, gesucht wird danach nur nach "DE …"
+async function lelyDateiText(file){
+  const buf = await file.arrayBuffer();
+  if (/\.pdf$/i.test(file.name) || file.type === "application/pdf"){
+    const pdfjs = await ladePdfJs();
+    const pdf = await pdfjs.getDocument({data: buf}).promise;
+    const teile = [];
+    for (let i = 1; i <= pdf.numPages; i++){
+      const inhalt = await (await pdf.getPage(i)).getTextContent();
+      teile.push(inhalt.items.map(t => t.str).join(" "));
+    }
+    return teile.join("\n");
+  }
+  if (/\.xlsx?$/i.test(file.name)){
+    const XLSX = await ladeSheetJS();
+    const wb = XLSX.read(buf, {type: "array"});
+    return wb.SheetNames.map(n => XLSX.utils.sheet_to_json(wb.Sheets[n], {header: 1, raw: false, defval: ""})
+      .map(r => r.join("\t")).join("\n")).join("\n");
+  }
+  // CSV, TXT, XML: einfach als Text; bei XML die Zeichen < > " trennen
+  return dekodiere(buf).replace(/[<>"]/g, " ");
+}
+async function lelyDatei(file){
+  const drop = document.getElementById("lelyDrop");
+  drop.classList.add("busy");
+  try {
+    const text = await lelyDateiText(file);
+    lely = {text, quelle: file.name};
+    werteAus();
+    if (ohrmarkenAusText(text).length) document.getElementById("bsResult").scrollIntoView({behavior: "smooth", block: "start"});
+  } catch(err) {
+    alert("Die Lely-Datei konnte nicht gelesen werden.\n\n" + err.message);
+  } finally {
+    drop.classList.remove("busy");
+  }
+}
+document.getElementById("lelyFile").addEventListener("change", e => {
+  const file = e.target.files[0];
+  e.target.value = "";
+  if (file) lelyDatei(file);
 });
-document.getElementById("auswertenBtn").addEventListener("click", werteAus);
+(function(){
+  const drop = document.getElementById("lelyDrop");
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+  ["dragleave", "dragend"].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove("drag")));
+  drop.addEventListener("drop", e => {
+    e.preventDefault(); drop.classList.remove("drag");
+    const file = e.dataTransfer.files[0];
+    if (file) lelyDatei(file);
+  });
+})();
+document.getElementById("lelyLeeren").addEventListener("click", () => { lely = {text: "", quelle: ""}; werteAus(); });
+// Falls doch einmal Text mit Ohrmarken kopiert wurde: einfach irgendwo in der Zuchtplanung einfügen
+document.addEventListener("paste", e => {
+  if (document.getElementById("viewZucht").hidden || (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]"))) return;
+  const text = (e.clipboardData || window.clipboardData).getData("text");
+  if (!ohrmarkenAusText(text).length) return;
+  e.preventDefault();
+  lely = {text, quelle: "eingefügt"}; werteAus();
+});
 
 const quoteInput = document.getElementById("quoteInput");
 quoteInput.value = bsSettings.quote;
@@ -2580,9 +2724,13 @@ async function hsZugangAusPasswort(pw, verfahren = "v1"){
 async function hsVerfahren(){
   try {
     const r = await fetch(HOF_SPEICHER_URL + (HOF_SPEICHER_URL.includes("?") ? "&" : "?") + "verfahren=1", {cache: "no-store"});
-    const j = await r.json();
+    let j = null; try { j = await r.json(); } catch(e) {}
+    if (!j || !j.ok) throw new Error((j && j.fehler) || "Hof-Speicher gerade nicht erreichbar");
     return j.verfahren === "v2" ? "v2" : "v1";
-  } catch(e) { return "v1"; }
+  } catch(e) {
+    // Lieber abbrechen als mit dem falschen Verfahren rechnen – sonst hieße es fälschlich "Passwort falsch"
+    throw new Error(/erreichbar|abrufbar/.test(e.message) ? e.message : "keine Verbindung zum Hof-Speicher");
+  }
 }
 function hsAesKey(z = hsZugang){ return crypto.subtle.importKey("raw", b64ein(z.aes), "AES-GCM", false, ["encrypt", "decrypt"]); }
 
@@ -2607,8 +2755,44 @@ async function hsAnfrage(nutzlast){
   finally { clearTimeout(timer); }
   let j = null;
   try { j = await r.json(); } catch(e) {}
-  if (!j) throw new Error("keine gültige Antwort (HTTP " + r.status + ")");
+  if (!j) throw new Error(r.status >= 500 ? "Hof-Speicher hat kurz gehakt (HTTP " + r.status + ")" : "keine gültige Antwort (HTTP " + r.status + ")");
+  j._status = r.status;
   return j;
+}
+// Nur eine echte Ablehnung des Schlüssels zählt als "Passwort falsch" – nie ein vorübergehender Fehler
+function hsPasswortAbgelehnt(j){ return !!j && j.ok === false && j._status === 401; }
+
+// Den Browser bitten, die gespeicherten Daten (Anmeldung, Feldbuch) nie von selbst zu löschen.
+// Safari löscht sonst nach 7 Tagen ohne Besuch alles, was eine Webseite gespeichert hat.
+let hsDauerhaft = null;
+async function hsDauerhaftSpeichern(){
+  try {
+    if (!navigator.storage || !navigator.storage.persist) { hsDauerhaft = "unbekannt"; return hsDauerhaft; }
+    hsDauerhaft = (await navigator.storage.persisted()) || (await navigator.storage.persist()) ? "ja" : "nein";
+  } catch(e) { hsDauerhaft = "unbekannt"; }
+  return hsDauerhaft;
+}
+
+// Zentrale Anmeldung – gilt für die ganze App (Kuhliste, Feldbuch, …)
+async function hsAnmelden(pw){
+  if (!pw) throw new Error("Bitte das Hof-Passwort eingeben.");
+  const zugang = await hsZugangAusPasswort(pw, await hsVerfahren());
+  const j = await hsAnfrage({aktion: "laden", schluessel: zugang.auth});
+  if (!j.ok) throw new Error(hsPasswortAbgelehnt(j) ? "Passwort falsch." : (j.fehler || "Fehler"));
+  hsZugang = zugang; hsSpeichereZugang();
+  hsStatus = {zustand: "start"};
+  hsDauerhaftSpeichern();
+  hsAbgleichen();
+  if (typeof fbSync === "function") fbSync();
+  if (typeof renderEinstellungen === "function") renderEinstellungen();
+}
+// Zentrale Abmeldung (nur in den Einstellungen)
+function hsAbmelden(){
+  hsZugang = null; hsSpeichereZugang();
+  hsStatus = {zustand: "getrennt", text: "Dieses Gerät ist abgemeldet."};
+  renderHofSpeicher();
+  if (typeof fbNachAbmelden === "function") fbNachAbmelden();
+  if (typeof renderEinstellungen === "function") renderEinstellungen();
 }
 
 async function hsSpeichern(){
@@ -2630,10 +2814,10 @@ async function hsAbgleichen(){
   try {
     const j = await hsAnfrage({aktion: "laden", schluessel: hsZugang.auth});
     if (!j.ok){
-      if (/passwort/i.test(j.fehler || "")){
+      if (hsPasswortAbgelehnt(j)){
         hsZugang = null; hsSpeichereZugang();
         hsStatus = {zustand: "getrennt", text: "Das Hof-Passwort wurde geändert – bitte einmal neu eingeben."};
-        renderHofSpeicher(); return;
+        renderHofSpeicher(); if (typeof renderEinstellungen === "function") renderEinstellungen(); return;
       }
       throw new Error(j.fehler || "Fehler");
     }
@@ -2652,7 +2836,9 @@ async function hsAbgleichen(){
       ? {zustand: "ok", text: `Verbunden – alle Geräte haben die Liste vom ${fmtDatum(fern.hochgeladen)}`}
       : {zustand: "ok", text: "Verbunden – noch keine Liste gespeichert. Einfach die PDF hochladen, dann gilt sie für alle Geräte."};
   } catch(e) {
-    hsStatus = {zustand: "fehler", text: "Hof-Speicher gerade nicht erreichbar – es wird mit der Liste auf diesem Gerät gerechnet."};
+    hsStatus = {zustand: "fehler", text: "Hof-Speicher gerade nicht erreichbar – es wird mit der Liste auf diesem Gerät gerechnet. Neuer Versuch in Kürze."};
+    clearTimeout(hsAbgleichen.nochmal);
+    hsAbgleichen.nochmal = setTimeout(() => { if (hsZugang && navigator.onLine !== false) hsAbgleichen(); }, 20000);
   }
   renderHofSpeicher();
 }
@@ -2661,15 +2847,8 @@ async function hsVerbinden(e){
   e.preventDefault();
   const meldung = document.getElementById("hsMeldung");
   meldung.textContent = "Verbinde …";
-  try {
-    const zugang = await hsZugangAusPasswort(document.getElementById("hsPasswort").value, await hsVerfahren());
-    const j = await hsAnfrage({aktion: "laden", schluessel: zugang.auth});
-    if (!j.ok){ meldung.textContent = /passwort/i.test(j.fehler || "") ? "Passwort falsch." : (j.fehler || "Fehler"); return; }
-    hsZugang = zugang; hsSpeichereZugang();
-    await hsAbgleichen();
-  } catch(err) {
-    meldung.textContent = "Hof-Speicher nicht erreichbar: " + err.message;
-  }
+  try { await hsAnmelden(document.getElementById("hsPasswort").value); }
+  catch(err) { meldung.textContent = /falsch|eingeben/.test(err.message) ? err.message : "Nicht verbunden: " + err.message; }
 }
 
 function renderHofSpeicher(){
@@ -2693,13 +2872,7 @@ function renderHofSpeicher(){
     return;
   }
   el.className = "bs-hof " + (hsStatus.zustand === "fehler" ? "warn" : hsStatus.zustand === "ok" ? "ok" : "");
-  el.innerHTML = `<span>☁ ${esc(hsStatus.text || "Mit dem Hof-Speicher verbunden")}</span><a href="#" id="hsTrennen">Gerät trennen</a>`;
-  document.getElementById("hsTrennen").addEventListener("click", e => {
-    e.preventDefault();
-    if (!confirm("Dieses Gerät vom Hof-Speicher trennen? Die Liste bleibt hier, wird aber nicht mehr mit den anderen Geräten abgeglichen.")) return;
-    hsZugang = null; hsSpeichereZugang();
-    hsStatus = {zustand: "getrennt"}; renderHofSpeicher();
-  });
+  el.innerHTML = `<span>☁ ${esc(hsStatus.text || "Mit dem Hof-Speicher verbunden")}</span>`;
 }
 
 ergaenzeMapping(herde);   // ältere gespeicherte Listen um die neuen Kriterien-Spalten ergänzen
@@ -2762,6 +2935,9 @@ function fbHeuteIso(){ const d = new Date(); return `${d.getFullYear()}-${String
 function fbDatumAnzeige(iso){ if (!iso) return ""; const t = String(iso).slice(0, 10).split("-"); return t.length === 3 ? `${t[2]}.${t[1]}.${t[0]}` : iso; }
 function fbArbeiten(){ return (fbDaten && fbDaten.feldarbeiten) || []; }
 function fbIstEigen(m){ return !m || /^eigen$/i.test(String(m).trim()); }
+function fbIstNotiz(a){ return /^notiz$/i.test(String((a && a["Tätigkeit"]) || "").trim()); }
+// Noch abzurechnen = Lohnarbeit für jemand anderen, ohne Rechnung, keine Notiz
+function fbAbzurechnen(a){ return !a.Rechnung && !fbIstEigen(a.Mandant) && !fbIstNotiz(a); }
 function fbKopie(x){ return JSON.parse(JSON.stringify(x)); }
 function fbJetztText(){ return new Date().toLocaleString("de-DE", {dateStyle: "short", timeStyle: "short"}); }
 function fbNeueId(){ return "F" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
@@ -2874,6 +3050,13 @@ function fbAnwenden(d, op){
         d.rechnungen.forEach(r => { if (r.Firma === op.alt) r.Firma = op.felder.Firma; });
       return null;
     }
+    case "altNotiz": {
+      // Notiz aus der alten Liste übernehmen (eintrag) oder verwerfen (ohne eintrag)
+      const k = JSON.stringify(op.notiz);
+      d.notizen = (d.notizen || []).filter(n => JSON.stringify(n) !== k);
+      if (op.eintrag && !d.feldarbeiten.some(a => a.ID === op.eintrag.ID)) d.feldarbeiten.push(fbKopie(op.eintrag));
+      return null;
+    }
     case "rechnung":
       return fbRechnungAnwenden(d, op);
     case "storno": {
@@ -2913,7 +3096,7 @@ function fbSync(){
       for (let versuch = 0; versuch < 6 && !fertig; versuch++){
         const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth});
         if (!j.ok){
-          if (/passwort/i.test(j.fehler || "")){
+          if (hsPasswortAbgelehnt(j)){
             // Passwort wurde geändert: abmelden und die Kopie auf diesem Gerät nicht mehr zeigen
             hsZugang = null; hsSpeichereZugang();
             fbGeladen = null; lsSchreiben(FB_DATEN_KEY, null);
@@ -2948,6 +3131,9 @@ function fbSync(){
       fbStatus = {zustand: "ok", zeit: new Date(), leer: !fbGeladen.daten};
     } catch(e) {
       fbStatus = {zustand: "fehler", text: e.message};
+      // Vorübergehender Fehler (Funkloch, Server hakt): von selbst nochmal versuchen
+      clearTimeout(fbSync.nochmal);
+      if (hsZugang) fbSync.nochmal = setTimeout(() => { if (hsZugang && navigator.onLine !== false) fbSync(); }, 15000);
     } finally {
       lsSchreiben(FB_OPS_KEY, fbOps);
       fbSyncLaeuft = null;
@@ -2986,14 +3172,15 @@ async function fbPasswortVerbinden(e){
   e.preventDefault();
   const meldung = $fb("fbPwMeldung");
   meldung.textContent = "Verbinde …";
-  try {
-    const zugang = await hsZugangAusPasswort($fb("fbPasswort").value, await hsVerfahren());
-    const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: zugang.auth});
-    if (!j.ok){ meldung.textContent = /passwort/i.test(j.fehler || "") ? "Passwort falsch." : (j.fehler || "Fehler"); return; }
-    hsZugang = zugang; hsSpeichereZugang();
-    hsAbgleichen();          // Kuhliste gleich mit holen
-    fbSync();
-  } catch(err) { meldung.textContent = "Nicht erreichbar: " + err.message; }
+  try { await hsAnmelden($fb("fbPasswort").value); }
+  catch(err) { meldung.textContent = /falsch|eingeben/.test(err.message) ? err.message : "Nicht verbunden: " + err.message; }
+}
+// Nach dem Abmelden (Einstellungen): Feldbuch-Kopie auf diesem Gerät entfernen
+function fbNachAbmelden(){
+  fbGeladen = null; lsSchreiben(FB_DATEN_KEY, null);
+  fbOps = []; lsSchreiben(FB_OPS_KEY, fbOps);
+  fbStatus = {zustand: "start"};
+  fbSichtBerechnen(); fbRenderAlles();
 }
 
 async function fbStartdatenDatei(datei){
@@ -3030,7 +3217,7 @@ function fbRenderVerbindung(){
   else stand.textContent = fbDaten ? `Gespeicherter Stand${warteschlange}` : "";
 
   if (fbStatus.zustand === "fehler"){
-    el.innerHTML = `<div class="bs-status warn">Hof-Speicher gerade nicht erreichbar: ${esc(fbStatus.text)}. ${fbDaten ? "Es wird der zuletzt geladene Stand angezeigt." : ""} Neue Einträge werden auf diesem Gerät gesammelt und später übertragen.</div>`;
+    el.innerHTML = `<div class="bs-status warn">Hof-Speicher gerade nicht erreichbar (${esc(fbStatus.text.replace(/[.\s]+$/, ""))}). ${fbDaten ? "Es wird der zuletzt geladene Stand angezeigt." : ""} Neue Einträge werden auf diesem Gerät gesammelt und automatisch übertragen – ein neuer Versuch läuft von selbst.</div>`;
   } else if (fbStatus.zustand === "ok" && fbStatus.leer && !fbOps.length){
     el.innerHTML = `<div class="bs-hof"><div class="bs-hof-titel">📦 Das Feldbuch ist noch leer</div>
       <div class="bs-help">Einmalig die Startdaten übernehmen: die bereinigte Liste 2026, die Mandanten mit Adressen und die Firmen.
@@ -3666,6 +3853,44 @@ function fbJahre(){
   jahre.add(String(new Date().getFullYear()));
   return [...jahre].sort().reverse();
 }
+// Welche Einträge zeigen? (Knöpfe über der Liste)
+const FB_LISTE_FILTER = [
+  ["alle", "Alle"],
+  ["offen", "Noch abzurechnen", a => fbAbzurechnen(a)],
+  ["abgerechnet", "Abgerechnet", a => !!a.Rechnung],
+  ["eigen", "Eigene Flächen", a => fbIstEigen(a.Mandant) && !fbIstNotiz(a)],
+  ["notiz", "Notizen", a => fbIstNotiz(a)],
+];
+let fbListeFilter = "alle";
+const FB_MONATSNAMEN = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+function fbEintragHtml(a){
+  const waehlbar = !a.Rechnung && !a.__wartet && !fbIstNotiz(a);
+  const notiz = fbIstNotiz(a);
+  const d = new Date(String(a.Datum || "").slice(0, 10) + "T12:00");
+  const tag = isNaN(d) ? "" : FB_TAG_KURZ[d.getDay()] || "";
+  const datum = isNaN(d) ? esc(a.Datum || "ohne Datum") : `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`;
+  const menge = [
+    a.Menge !== "" && a.Menge !== undefined && a.Menge !== null ? fbZahlText(fbZahl(a.Menge)) + (a.Einheit ? " " + a.Einheit : "") : "",
+    a.Stunden !== "" && a.Stunden !== undefined && a.Stunden !== null && fbZahl(a.Stunden) !== null ? fbZahlText(fbZahl(a.Stunden)) + " Std." : "",
+  ].filter(Boolean).join(" · ");
+  const z2 = [
+    fbIstEigen(a.Mandant) ? (notiz ? "" : "eigen") : a.Mandant,
+    a["Ort / Schlag"], a["Mittel / Dünger"],
+    a.BBCH ? "BBCH " + a.BBCH : "", a.Uhrzeit ? a.Uhrzeit + " Uhr" : "", a.Anwender,
+  ].filter(Boolean).map(esc).join(" · ");
+  const titel = notiz ? `📝 ${esc(a.Bemerkung || "(leere Notiz)")}` : `<b>${esc(a["Tätigkeit"] || "?")}${a.Kultur ? " " + esc(a.Kultur) : ""}</b>${menge ? ` <span class="fb-e-menge">· ${esc(menge)}</span>` : ""}`;
+  const re = a.__wartet ? `<span title="wartet auf Übertragung">⏳</span>`
+    : a.Rechnung ? `<button type="button" class="fb-badge ok fb-re-link" data-re="${esc(a.Rechnung)}" data-firma="${esc(a["Rechnung Firma"] || "")}" title="Rechnung ansehen">✓ Rechnung ${esc(a.Rechnung)}</button>`
+    : fbAbzurechnen(a) ? `<span class="fb-badge offen">noch abzurechnen</span>` : "";
+  const cls = ["fb-e", notiz ? "notiz" : "", a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : "",
+    fbAuswahl && fbAuswahl.has(a.ID) ? "gewaehlt" : "", fbAuswahl && !waehlbar ? "nicht-waehlbar" : ""].filter(Boolean).join(" ");
+  return `<div class="${cls}" data-id="${esc(a.ID)}" role="button" tabindex="0"${a["Prüfen"] ? ` title="${esc(a["Prüfen"])}"` : ""}>
+    <div class="fb-e-datum">${fbAuswahl ? (waehlbar ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="für Rechnung auswählen" tabindex="-1">` : `<span class="fb-wahl-platz"></span>`) : ""}<span><b>${datum}</b><small>${esc(tag)}</small></span></div>
+    <div class="fb-e-haupt"><div class="fb-e-z1">${titel}${a["Prüfen"] ? " ⚠" : ""}</div>
+      ${z2 ? `<div class="fb-e-z2">${z2}</div>` : ""}
+      ${!notiz && a.Bemerkung ? `<div class="fb-e-z3">${esc(a.Bemerkung)}</div>` : ""}</div>
+    <div class="fb-e-re">${re}</div></div>`;
+}
 function fbRenderListe(){
   const jahrSel = $fb("fbFilterJahr");
   const jahrAlt = jahrSel.value;
@@ -3680,40 +3905,98 @@ function fbRenderListe(){
 
   const q = $fb("fbSuche").value.trim().toLowerCase();
   const jahr = jahrSel.value, mand = $fb("fbFilterMandant").value, taet = $fb("fbFilterTaetigkeit").value;
-  const nurOffen = $fb("fbNurOffen").checked, nurPruefen = $fb("fbNurPruefen").checked;
   const wartend = fbArbeiten().filter(a => a.__wartet);
-  const zeilen = fbArbeiten().filter(a => {
+  // erst Suche/Jahr/Mandant/Tätigkeit, dann zählen, dann der gewählte Knopf
+  const basis = fbArbeiten().filter(a => {
     if (jahr && !String(a.Datum || "").startsWith(jahr)) return false;
     if (mand && a.Mandant !== mand) return false;
     if (taet && a["Tätigkeit"] !== taet) return false;
-    if (nurOffen && (a.Rechnung || fbIstEigen(a.Mandant))) return false;
-    if (nurPruefen && !a["Prüfen"]) return false;
     if (q && !Object.values(a).some(v => String(v).toLowerCase().includes(q))) return false;
     return true;
-  }).sort((a, b) => String(b.Datum).localeCompare(String(a.Datum)) || String(b.ID).localeCompare(String(a.ID)));
-  const gelb = fbArbeiten().some(a => a["Prüfen"]);
-  $fb("fbNurPruefenLabel").hidden = !gelb;
-  if (!gelb) $fb("fbNurPruefen").checked = false;
-  const notizen = (fbDaten && fbDaten.notizen) || [];
-  $fb("fbNotizenBox").hidden = !notizen.length;
-  $fb("fbNotizenTitel").textContent = `Notizen aus der alten Liste (${notizen.length})`;
-  $fb("fbNotizen").innerHTML = notizen.map(n => `<li><b>${esc(n[1] || "")}</b> ${esc(n[2] || "")} <span class="bs-erkannt">(${esc(n[0] || "")})</span></li>`).join("");
-  $fb("fbListeInfo").textContent = `${zeilen.length} Einträge${wartend.length ? ` · ${wartend.length} warten noch auf Übertragung` : ""}`;
-  const waehlbar = a => !a.Rechnung && !a.__wartet;
-  $fb("fbListeBody").innerHTML = zeilen.map(a => `<tr data-id="${esc(a.ID)}" class="${a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : ""}${fbAuswahl && fbAuswahl.has(a.ID) ? " gewaehlt" : ""}${fbAuswahl && !waehlbar(a) ? " nicht-waehlbar" : ""}" title="${esc(a["Prüfen"] || "")}">
-      <td class="num">${fbAuswahl ? (waehlbar(a) ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="für Rechnung auswählen"> ` : `<span class="fb-wahl-platz"></span>`) : ""}${esc(fbDatumAnzeige(a.Datum))}</td><td>${esc(a.Mandant || "")}</td><td>${esc(a["Tätigkeit"] || "")}</td>
-      <td>${esc(a.Kultur || "")}</td><td>${esc(a["Ort / Schlag"] || "")}</td>
-      <td class="num">${a.Menge !== "" && a.Menge !== undefined ? esc(fbZahlText(fbZahl(a.Menge)) + " " + (a.Einheit || "")) : ""}</td>
-      <td class="num">${esc(fbZahlText(fbZahl(a.Stunden)))}</td><td>${esc(a["Mittel / Dünger"] || "")}</td>
-      <td class="re">${a.__wartet ? "⏳" : a.Rechnung ? `<span class="fb-badge ok" title="abgerechnet">✓ ${esc(a.Rechnung)}</span>` : fbIstEigen(a.Mandant) ? "" : `<span class="fb-badge offen">offen</span>`}</td><td>${a["Prüfen"] ? "⚠" : ""}</td></tr>`).join("");
+  });
+  if (fbAuswahl) fbListeFilter = "offen";
+  const filter = FB_LISTE_FILTER.find(f => f[0] === fbListeFilter) || FB_LISTE_FILTER[0];
+  const zeilen = basis.filter(a => !filter[2] || filter[2](a))
+    .sort((a, b) => String(b.Datum).localeCompare(String(a.Datum)) || String(b.ID).localeCompare(String(a.ID)));
+  $fb("fbChips").innerHTML = FB_LISTE_FILTER.map(f => {
+    const n = f[2] ? basis.filter(f[2]).length : basis.length;
+    return `<button type="button" class="fb-chip" data-filter="${f[0]}" aria-pressed="${f[0] === filter[0]}">${f[1]}<small>${n}</small></button>`;
+  }).join("");
+  const offenN = basis.filter(fbAbzurechnen).length;
+  $fb("fbListeInfo").textContent = `${zeilen.length} ${zeilen.length === 1 ? "Eintrag" : "Einträge"}${jahr ? " in " + jahr : ""}${filter[0] === "alle" && offenN ? ` · ${offenN} noch abzurechnen` : ""}${wartend.length ? ` · ${wartend.length} warten noch auf Übertragung` : ""}`;
+
+  // nach Monaten gruppieren
+  let html = "", monat = null, gruppe = [];
+  const flush = () => {
+    if (!gruppe.length) return;
+    const [j, m] = (monat || "").split("-");
+    const name = m ? `${FB_MONATSNAMEN[Number(m) - 1] || m} ${j}` : "Ohne Datum";
+    const h = gruppe.reduce((s, a) => s + (fbIstNotiz(a) ? 0 : fbZahl(a.Stunden) || 0), 0);
+    html += `<div class="fb-monat"><span>${esc(name)}</span><small>${gruppe.length} ${gruppe.length === 1 ? "Eintrag" : "Einträge"}${h ? " · " + fbZahlText(h) + " Std." : ""}</small></div>` + gruppe.map(fbEintragHtml).join("");
+    gruppe = [];
+  };
+  zeilen.forEach(a => {
+    const mo = /^\d{4}-\d{2}/.test(String(a.Datum || "")) ? String(a.Datum).slice(0, 7) : "";
+    if (mo !== monat){ flush(); monat = mo; }
+    gruppe.push(a);
+  });
+  flush();
+  $fb("fbListeBody").innerHTML = html || `<div class="fb-leer">${basis.length ? "Hier gibt es nichts mit dieser Auswahl." : "Keine Einträge – Filter oben ändern oder etwas eintragen."}</div>`;
+
+  // Notizen aus der alten Liste: übernehmen oder verwerfen
+  const alt = (fbDaten && fbDaten.notizen) || [];
+  $fb("fbAltNotizen").innerHTML = alt.length && (filter[0] === "notiz" || filter[0] === "alle") ? `<div class="fb-alt-notizen">
+      <h3>📝 Notizen aus der alten Liste (${alt.length})</h3>
+      <p class="bs-help">Diese Notizen ließen sich keiner Arbeit zuordnen. „Übernehmen“ macht daraus eine Notiz in der Liste (Datum wählen), „Verwerfen“ löscht sie.</p>
+      ${alt.map((n, i) => `<div class="fb-alt-notiz"><span>${n[1] && !/^notiz$/i.test(n[1]) ? `<b>${esc(n[1])}:</b> ` : ""}${esc(n[2] || "")}</span>
+        <span class="fb-liste-knoepfe"><button class="btn small" type="button" data-alt-ueber="${i}">Übernehmen</button><button class="btn small ghost" type="button" data-alt-weg="${i}">Verwerfen</button></span></div>`).join("")}
+    </div>` : "";
+  $fb("fbAltNotizen").querySelectorAll("[data-alt-ueber]").forEach(b => b.addEventListener("click", () => {
+    const n = alt[Number(b.dataset.altUeber)];
+    fbNotizDialog({Bemerkung: [n[1] && !/^notiz$/i.test(n[1]) ? n[1] + ": " : "", n[2] || ""].join("")}, n);
+  }));
+  $fb("fbAltNotizen").querySelectorAll("[data-alt-weg]").forEach(b => b.addEventListener("click", () => {
+    const n = alt[Number(b.dataset.altWeg)];
+    if (!confirm(`Diese alte Notiz verwerfen?\n\n${n[2] || ""}`)) return;
+    fbAendern({typ: "altNotiz", notiz: n});
+  }));
   fbRenderAuswahlLeiste();
+}
+
+// Neue Notiz (oder alte Notiz übernehmen)
+function fbNotizDialog(vorgabe = {}, altNotiz = null){
+  const d = $fb("fbDialog");
+  d.innerHTML = `<div class="fb-card">
+    <div class="dlg-head" style="padding:0 0 10px;position:static"><div class="row1"><h2>${altNotiz ? "Alte Notiz übernehmen" : "Neue Notiz"}</h2>
+      <button class="dlg-close" type="button" aria-label="Schließen">✕</button></div></div>
+    <form id="fbNotizForm" class="fb-form">
+      <label>Datum<input name="Datum" type="date" required value="${esc(vorgabe.Datum || fbHeuteIso())}"></label>
+      <label>Mandant (wenn es jemanden betrifft)<input name="Mandant" list="fbListeMandanten" value="${esc(vorgabe.Mandant || "")}"></label>
+      <label class="breit">Ort / Schlag (optional)<input name="Ort / Schlag" list="fbListeOrte" value="${esc(vorgabe["Ort / Schlag"] || "")}"></label>
+      <label class="breit">Notiz<textarea name="Bemerkung" rows="4" required>${esc(vorgabe.Bemerkung || "")}</textarea></label>
+      <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Speichern</button></div>
+    </form></div>`;
+  d.querySelector(".dlg-close").addEventListener("click", () => d.close());
+  $fb("fbNotizForm").addEventListener("submit", ev => {
+    ev.preventDefault();
+    const f = ev.target.elements;
+    const eintrag = {ID: fbNeueId()};
+    FB_FELDER.forEach(n => { eintrag[n] = ""; });
+    Object.assign(eintrag, {Datum: f.Datum.value, Mandant: f.Mandant.value.trim(), "Tätigkeit": "Notiz", "Ort / Schlag": f["Ort / Schlag"].value.trim(),
+      Bemerkung: f.Bemerkung.value.trim(), Rechnung: "", "Prüfen": "", "Erfasst": fbJetztText()});
+    if (altNotiz) eintrag["Original (alt)"] = "Notiz aus der alten Liste";
+    d.close();
+    fbAendern(altNotiz ? {typ: "altNotiz", notiz: altNotiz, eintrag} : {typ: "neu", eintrag});
+  });
+  d.showModal();
+  setTimeout(() => { const t = d.querySelector("textarea"); if (t) t.focus(); }, 50);
 }
 
 // --- Auswahl in der Liste → Rechnung -------------------------------------
 let fbAuswahl = null;           // null = normale Liste, Set = Auswahl für Rechnung
 function fbAuswahlUmschalten(id){
   const a = fbArbeiten().find(x => x.ID === id);
-  if (!a || a.Rechnung || a.__wartet) return;
+  if (!a || a.Rechnung || a.__wartet || fbIstNotiz(a)) return;
   if (fbAuswahl.has(id)) fbAuswahl.delete(id); else fbAuswahl.add(id);
   fbRenderListe();
 }
@@ -3802,7 +4085,7 @@ function fbBearbeiten(id){
 // --- Rechnung ----------------------------------------------------------
 let fbRe = {mandant: "", positionen: {}};
 function fbOffeneFuer(mandant){
-  return fbArbeiten().filter(a => a.Mandant === mandant && !a.Rechnung && !fbIstEigen(a.Mandant))
+  return fbArbeiten().filter(a => a.Mandant === mandant && fbAbzurechnen(a))
     .sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)));
 }
 function fbPreisVorschlag(taetigkeit, einheit, mandant){
@@ -3828,7 +4111,7 @@ function fbRenderRechnung(){
   const fSel = $fb("fbReFirma"), fAlt = fSel.value;
   fSel.innerHTML = firmen.map(f => `<option ${f.Firma === fAlt ? "selected" : ""}>${esc(f.Firma)}</option>`).join("");
   const offen = {};
-  fbArbeiten().forEach(a => { if (!a.Rechnung && !fbIstEigen(a.Mandant)) offen[a.Mandant] = (offen[a.Mandant] || 0) + 1; });
+  fbArbeiten().forEach(a => { if (fbAbzurechnen(a)) offen[a.Mandant] = (offen[a.Mandant] || 0) + 1; });
   const mSel = $fb("fbReMandant");
   const namen = Object.keys(offen).sort((a, b) => a.localeCompare(b, "de"));
   if (fbRe.mandant && fbRe.vorauswahl && !namen.includes(fbRe.mandant)){ namen.unshift(fbRe.mandant); offen[fbRe.mandant] = 0; }
@@ -3948,6 +4231,17 @@ function fbZahlStatus(r){
   return tage > 30 ? {art: "ueberfaellig", tage, html: `<span class="fb-badge rot">überfällig · ${tage} Tage</span>`}
                    : {art: "offen", tage, html: `<span class="fb-badge offen">offen · ${Math.max(tage, 0)} Tage</span>`};
 }
+function fbGespeicherteRechnungZeigen(nr, firma){
+  const alle = (fbDaten && fbDaten.rechnungen) || [];
+  // Firma unbekannt (ältere Einträge)? Dann die einzige nicht stornierte Rechnung mit der Nummer
+  const r = alle.find(x => x["Rechnungs-Nr."] === nr && x.Firma === firma)
+    || (!firma && alle.filter(x => x["Rechnungs-Nr."] === nr && x.Status !== "storniert").length === 1 ? alle.find(x => x["Rechnungs-Nr."] === nr && x.Status !== "storniert") : null);
+  if (!r){ alert(`Rechnung ${nr} ist in der App nicht gespeichert (vermutlich aus der alten Liste).`); return; }
+  let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
+  fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
+    firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
+    storniert: r.Status === "storniert"});
+}
 function fbRenderReListe(){
   const liste = ((fbDaten && fbDaten.rechnungen) || []).slice().sort((a, b) => String(b["Rechnungs-Nr."]).localeCompare(String(a["Rechnungs-Nr."])));
   $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th>Zahlung</th><th></th></tr></thead><tbody>
@@ -3956,13 +4250,7 @@ function fbRenderReListe(){
         ? `<button class="btn small ghost" type="button" data-bezahlt="" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">↩ doch offen</button>`
         : `<button class="btn small" type="button" data-bezahlt="${fbHeuteIso()}" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">✓ Bezahlt</button><button class="btn small ghost" type="button" data-storno="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Stornieren</button>`}</td></tr>`; }).join("")}
     </tbody></table></div>` : `<p class="bs-help">Noch keine Rechnungen aus der App.</p>`;
-  $fb("fbReListe").querySelectorAll("button[data-nr]").forEach(b => b.addEventListener("click", () => {
-    const r = fbDaten.rechnungen.find(x => x["Rechnungs-Nr."] === b.dataset.nr && x.Firma === b.dataset.firma);
-    let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
-    fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
-      firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
-      storniert: r.Status === "storniert"});
-  }));
+  $fb("fbReListe").querySelectorAll("button[data-nr]").forEach(b => b.addEventListener("click", () => fbGespeicherteRechnungZeigen(b.dataset.nr, b.dataset.firma)));
   $fb("fbReListe").querySelectorAll("button[data-bezahlt]").forEach(b => b.addEventListener("click", () => {
     fbAendern({typ: "bezahlt", nr: b.dataset.re, firma: b.dataset.firma, datum: b.dataset.bezahlt});
   }));
@@ -4098,7 +4386,7 @@ function fbRenderAuswertung(){
   const jSel = $fb("fbAwJahr"), jAlt = jSel.value || String(new Date().getFullYear());
   jSel.innerHTML = fbJahre().map(j => `<option ${j === jAlt ? "selected" : ""}>${j}</option>`).join("");
   const jahr = jSel.value, wer = $fb("fbAwWer").value;
-  const arbeiten = fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr))
+  const arbeiten = fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr) && !fbIstNotiz(a))
     .filter(a => wer === "alle" || (wer === "eigen" ? fbIstEigen(a.Mandant) : !fbIstEigen(a.Mandant)));
   const summe = (filter, einheit) => arbeiten.filter(filter).filter(a => a.Einheit === einheit).reduce((s, a) => s + (fbZahl(a.Menge) || 0), 0);
   const gruppen = {};
@@ -4110,7 +4398,7 @@ function fbRenderAuswertung(){
     if (a.Einheit === "ha") g.ha += m; else if (a.Einheit === "m³") g.m3 += m; else if (a.Einheit === "Ballen") g.ballen += m; else if (a.Einheit === "t") g.t += m;
   });
   const fremd = {};
-  fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr) && !fbIstEigen(a.Mandant)).forEach(a => {
+  fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr) && !fbIstEigen(a.Mandant) && !fbIstNotiz(a)).forEach(a => {
     const f = fremd[a.Mandant] || (fremd[a.Mandant] = {n: 0, ha: 0, h: 0, offen: 0});
     f.n++; f.h += fbZahl(a.Stunden) || 0; if (a.Einheit === "ha") f.ha += fbZahl(a.Menge) || 0; if (!a.Rechnung) f.offen++;
   });
@@ -4292,6 +4580,72 @@ $fb("fbPwAendernForm").addEventListener("submit", async ev => {
     meldung.textContent = "✓ Passwort geändert. Auf den anderen Geräten einmal das neue Passwort eingeben.";
   } catch(err) { meldung.style.color = ""; meldung.textContent = "Nicht geändert: " + err.message + " (das alte Passwort gilt weiter)"; }
 });
+
+// --- Einstellungen (⚙): zentrale Anmeldung für die ganze App -----------------
+function renderEinstellungen(){
+  const box = document.getElementById("einstZugang");
+  if (!box) return;
+  const punkt = document.getElementById("navPunktEinst");
+  if (punkt) punkt.hidden = !!hsZugang;
+  const pwKarte = $fb("fbPwAendernForm").closest(".einst-karte");
+  if (pwKarte) pwKarte.hidden = !hsZugang;
+  const sich = document.getElementById("einstSicherung");
+  if (sich) sich.disabled = !hsZugang || !fbDaten;
+  if (box.contains(document.activeElement) && document.activeElement.tagName === "INPUT") return;   // beim Tippen nicht neu zeichnen
+  const homescreen = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const iphone = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (hsZugang){
+    const dauer = hsDauerhaft === "ja" ? `<span class="einst-ok">✓ dauerhaft gespeichert</span> – der Browser löscht die Anmeldung nicht von selbst.`
+      : hsDauerhaft === "nein" && iphone && !homescreen ? `<span class="einst-warn">Hinweis:</span> Safari löscht Daten von Webseiten nach einigen Tagen ohne Besuch. Am sichersten: in Safari auf <b>Teilen → „Zum Home-Bildschirm“</b> und die App immer von dort öffnen – dann bleibt die Anmeldung.`
+      : hsDauerhaft === "nein" ? `Der Browser hat dauerhaftes Speichern nicht bestätigt. Die Anmeldung bleibt trotzdem, solange niemand die Browserdaten löscht.` : "";
+    box.innerHTML = `<div style="margin:6px 0"><span class="einst-ok">✓ Angemeldet</span> – dieses Gerät ist mit dem Hof-Speicher verbunden (Kuhliste und Feldbuch).</div>
+      <div class="bs-help">Die Anmeldung bleibt gespeichert, bis hier „Abmelden“ gedrückt wird. ${dauer}</div>
+      <div class="einst-zeile" style="margin-top:10px"><button class="btn small" type="button" id="einstAbmelden">Auf diesem Gerät abmelden</button>
+      <span class="bs-help">nur nötig, wenn das Gerät weitergegeben wird oder verloren ging</span></div>`;
+    document.getElementById("einstAbmelden").addEventListener("click", () => {
+      const n = fbOps.length;
+      if (n && !confirm(`Achtung: ${n} Feldbuch-${n === 1 ? "Eintrag ist" : "Einträge sind"} noch nicht übertragen und ${n === 1 ? "geht" : "gehen"} beim Abmelden verloren.\n\nTrotzdem abmelden?`)) return;
+      if (!confirm("Dieses Gerät wirklich abmelden?\n\nDas Feldbuch wird von diesem Gerät entfernt (im Hof-Speicher bleibt alles). Zum Wiederanmelden braucht man das Hof-Passwort.")) return;
+      hsAbmelden();
+    });
+  } else {
+    box.innerHTML = `<div class="bs-help">${hsStatus.zustand === "getrennt" && hsStatus.text ? esc(hsStatus.text) + " " : ""}Einmal das Hof-Passwort eingeben – dann sind Kuhliste und Feldbuch auf diesem Gerät da und die Anmeldung bleibt gespeichert.</div>
+      <form id="einstForm" class="bs-hof-form" method="post" action="#">
+        <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
+        <input type="password" name="password" id="einstPasswort" autocomplete="current-password" placeholder="Hof-Passwort" required>
+        <button class="btn primary small" type="submit">Anmelden</button>
+      </form>
+      <div class="bs-help" style="margin-top:4px">Fragt der Browser „Passwort speichern?“ → <b>Speichern</b> wählen.</div>
+      <div id="einstMeldung" class="bs-hof-meldung" aria-live="polite"></div>`;
+    document.getElementById("einstForm").addEventListener("submit", async ev => {
+      ev.preventDefault();
+      const m = document.getElementById("einstMeldung");
+      m.textContent = "Melde an …";
+      try { await hsAnmelden(document.getElementById("einstPasswort").value); }
+      catch(err) { m.textContent = /falsch|eingeben/.test(err.message) ? err.message : "Nicht angemeldet: " + err.message; }
+    });
+  }
+  const info = document.getElementById("einstInfo");
+  if (info){
+    const stand = new Date(document.lastModified);
+    info.textContent = `App-Stand: ${isNaN(stand) ? "–" : stand.toLocaleDateString("de-DE") + " " + stand.toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"})}`
+      + (homescreen ? " · als App vom Home-Bildschirm geöffnet" : "") + (navigator.onLine === false ? " · gerade ohne Netz" : "");
+  }
+}
+document.getElementById("einstAktualisieren").addEventListener("click", async () => {
+  if (navigator.onLine === false){ alert("Gerade kein Netz – Aktualisieren geht nur mit Verbindung."); return; }
+  if (fbOps.length) await fbSync();
+  try {
+    const regs = navigator.serviceWorker ? await navigator.serviceWorker.getRegistrations() : [];
+    await Promise.all(regs.map(r => r.update().catch(() => {})));
+    if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+  } catch(e) {}
+  location.reload();
+});
+document.getElementById("einstSicherung").addEventListener("click", () => fbExportJson());
+hsDauerhaftSpeichern().then(renderEinstellungen);
+window.addEventListener("online", renderEinstellungen);
+window.addEventListener("offline", renderEinstellungen);
 
 // --- Dokumentation Pflanzenschutz / Düngung ---------------------------------
 // Pflanzenschutz: § 11 PflSchG i. V. m. VO (EU) 2023/564 (seit 2026: EPPO-Code,
@@ -4622,7 +4976,7 @@ function fbRenderStartKarte(){
   const el = document.querySelector('.home-card[href="#feld"]');
   if (!el) return;
   el.classList.remove("bald");
-  const offen = fbArbeiten().filter(a => !a.Rechnung && !fbIstEigen(a.Mandant)).length;
+  const offen = fbArbeiten().filter(fbAbzurechnen).length;
   el.querySelector("small").textContent = fbDaten
     ? `${fbArbeiten().length} Feldarbeiten · ${offen} Lohnarbeiten offen zum Abrechnen${(() => { const n = ((fbDaten && fbDaten.rechnungen) || []).filter(r => fbZahlStatus(r).art === "ueberfaellig").length; return n ? ` · ⚠ ${n} Rechnung${n === 1 ? "" : "en"} überfällig` : ""; })()}${fbOps.length ? ` · ${fbOps.length} warten auf Übertragung` : ""}`
     : "Eintragen per Sprache, Rechnungen per Klick";
@@ -4641,6 +4995,7 @@ function fbRenderAlles(){
   fbRenderAuswahl();
   if (!fbEingabeAktiv()) fbRenderTab();
   fbRenderStartKarte();
+  renderEinstellungen();
 }
 
 // Ereignisse
@@ -4657,14 +5012,30 @@ let fbTextTimer = null;
 $fb("fbText").addEventListener("input", () => { clearTimeout(fbTextTimer); fbTextTimer = setTimeout(fbTextAuswerten, 300); });
 $fb("fbMikro").addEventListener("click", fbMikroKlick);
 $fb("fbNeuLaden").addEventListener("click", () => fbSync());
-["fbSuche", "fbFilterJahr", "fbFilterMandant", "fbFilterTaetigkeit", "fbNurOffen", "fbNurPruefen"].forEach(id => $fb(id).addEventListener("input", fbRenderListe));
-$fb("fbListeBody").addEventListener("click", e => {
-  const tr = e.target.closest("tr[data-id]");
-  if (!tr) return;
-  if (fbAuswahl){ fbAuswahlUmschalten(tr.dataset.id); return; }
-  fbBearbeiten(tr.dataset.id);
+["fbSuche", "fbFilterJahr", "fbFilterMandant", "fbFilterTaetigkeit"].forEach(id => $fb(id).addEventListener("input", fbRenderListe));
+$fb("fbChips").addEventListener("click", e => {
+  const b = e.target.closest("[data-filter]");
+  if (!b) return;
+  if (fbAuswahl && b.dataset.filter !== "offen") fbAuswahl = null;      // anderer Knopf = Auswahl beenden
+  fbListeFilter = b.dataset.filter; fbRenderListe();
 });
-$fb("fbAuswahlKnopf").addEventListener("click", () => { fbAuswahl = fbAuswahl ? null : new Set(); if (fbAuswahl){ $fb("fbNurOffen").checked = true; } fbRenderListe(); });
+$fb("fbListeBody").addEventListener("click", e => {
+  const link = e.target.closest(".fb-re-link");
+  if (link){ e.stopPropagation(); fbGespeicherteRechnungZeigen(link.dataset.re, link.dataset.firma); return; }
+  const z = e.target.closest("[data-id]");
+  if (!z) return;
+  if (fbAuswahl){ fbAuswahlUmschalten(z.dataset.id); return; }
+  fbBearbeiten(z.dataset.id);
+});
+$fb("fbListeBody").addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-id]")){ e.preventDefault(); e.target.click(); }
+});
+$fb("fbNotizNeu").addEventListener("click", () => fbNotizDialog());
+$fb("fbAuswahlKnopf").addEventListener("click", () => {
+  fbAuswahl = fbAuswahl ? null : new Set();
+  fbListeFilter = fbAuswahl ? "offen" : "alle";
+  fbRenderListe();
+});
 $fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRe.vorauswahl = null; fbRe.positionen = {}; fbRenderRePositionen(); });
 ["fbReFirma", "fbReDatum", "fbReMwst"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
 $fb("fbReErstellen").addEventListener("click", fbRechnungErstellen);
