@@ -59,7 +59,7 @@ if befehl == "test":
     # Handy-Breite: jeder Reiter, nichts darf seitlich überstehen
     c.rufe("Emulation.setDeviceMetricsOverride", width=375, height=812, deviceScaleFactor=2, mobile=True)
     c.rufe("Page.reload"); time.sleep(4)
-    print("Handy:", c.js("""(async()=>{const w=ms=>new Promise(r=>setTimeout(r,ms));const out=[];for(const t of FB_TABS){fbZeigeTab(t);await w(300);const sw=document.documentElement.scrollWidth;out.push(t+(sw>innerWidth?' ✗ steht über ('+sw+'px)':' ok'));}
+    print("Handy:", c.js("""(async()=>{const w=ms=>new Promise(r=>setTimeout(r,ms));const out=[];for(const t of FB_TABS){fbZeigeTab(t);await w(300);const sw=document.documentElement.scrollWidth;const tb=t==='liste'&&document.querySelector('.fb-tab');out.push(t+(sw>innerWidth?' ✗ steht über ('+sw+'px)':tb&&tb.scrollWidth>$fb('fbListe').clientWidth+1?' ✗ Tabelle zu breit ('+tb.scrollWidth+'px)':' ok'));}
       fbRechnungZeigen({nr:'2026-001',datum:fbHeuteIso(),positionen:[{datum:fbHeuteIso(),text:'Test',menge:1,einheit:'h',preis:10,betrag:10}],netto:10,mwstSatz:.19,mwst:1.9,brutto:11.9,firma:fbDaten.firmen[0],mandant:fbDaten.mandanten[1]});await w(300);
       out.push('Rechnungsansicht'+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));$fb('reZu').click();
       navigiere('einstellungen');await w(300);out.push('Einstellungen'+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));

@@ -176,6 +176,10 @@
     await fbAendern({typ: "neu", eintrag: {ID: "L-1", Datum: fbHeuteIso(), Mandant: "Muster", "Tätigkeit": "Mähen", Kultur: "Grünland", "Ort / Schlag": "Hinterwiese", Menge: "", Einheit: "", Stunden: "2,5", "Mittel / Dünger": "", Bemerkung: "Zaun am Bach kaputt", Rechnung: "", "Prüfen": ""}});
     const zeile = L().querySelector('[data-id="L-1"]');
     pruef("Liste zeigt alle Angaben inkl. Bemerkung", zeile && /Mähen Grünland/.test(zeile.innerText) && /2,5 Std/.test(zeile.innerText) && /Hinterwiese/.test(zeile.innerText) && /Zaun am Bach/.test(zeile.innerText), zeile && zeile.innerText);
+    await fbAendern({typ: "neu", eintrag: {ID: "L-LANG", Datum: fbHeuteIso(), Mandant: "Beispiel", "Tätigkeit": "Pflanzenschutz", Kultur: "Winterweizen", "Ort / Schlag": "Oberfeld hinter dem Wald", Menge: "9,6", Einheit: "ha", Stunden: "", "Mittel / Dünger": "Herbizid: Vulcanus 0,4 + Trinity 2,0 + Netzmittel 0,1", Bemerkung: "2.10.–7.10.; WW Optimist 190 kg/ha, Bicross 180 kg/ha; Getreide gesamt 91,44 ha (Display 101,49), 2,8 ha/h, 10,1 l/ha, 1022 l, 36 Motorstunden, Arbeitszeit 20,2, 8,2 km/h, sehrlangeswortohneleerzeichenzumtestenderbreite", Rechnung: "", "Prüfen": ""}});
+    const breite = () => { const t = L().querySelector(".fb-tab"); return [t.scrollWidth, $fb("fbListe").clientWidth]; };
+    pruef("Lange Texte: Tabelle bleibt im Kasten (PC)", breite()[0] <= breite()[1] + 1, JSON.stringify(breite()));
+    pruef("Spalte Ort/Schlag entfernt, Schlag steht bei der Arbeit", !/Ort \/ Schlag/.test(L().querySelector("thead").innerText) && /Oberfeld hinter dem Wald/.test(L().querySelector('[data-id="L-LANG"] .c-arbeit').innerText));
     // neue Notiz
     $fb("fbAuswahlKnopf").click(); $fb("fbNotizNeu").click(); await warte(50);
     const f = $fb("fbNotizForm");
@@ -208,8 +212,7 @@
     // Auswählen → Notiz zu mehreren Arbeiten (auch zu einer abgerechneten)
     $fb("fbChips").querySelector('[data-filter="alle"]').click();
     $fb("fbAuswahlKnopf").click();
-    ["L-1", "T-001", "T-003"].forEach(fbAuswahlUmschalten);
-    pruef("Abgerechnete nicht auswählbar", !fbAuswahl.has("L-1") && fbAuswahl.has("T-001") && L().querySelector('[data-id="L-1"]').classList.contains("nicht-waehlbar"));
+    ["T-001", "T-003"].forEach(fbAuswahlUmschalten);
     pruef("Auswahl: Leiste mit Notiz + Rechnung", $fb("fbAuswahlNotiz") && $fb("fbAuswahlUebernehmen") && !$fb("fbAuswahlUebernehmen").disabled && /2 Arbeiten ausgewählt/.test($fb("fbAuswahlLeiste").innerText), $fb("fbAuswahlLeiste").innerText);
     $fb("fbAuswahlNotiz").click(); await warte(50);
     $fb("fbNotizZuForm").elements.text.value = "Steine abgelesen"; $fb("fbNotizZuForm").requestSubmit(); await warte(500);
@@ -225,6 +228,28 @@
     if (empf) empf.click(); await warte(200);
     pruef("Rechnung erstellen nimmt alle ausgewählten", fbTab === "rechnung" && fbRe.mandant === "Muster" && [...fbRe.vorauswahl].sort().join() === "T-001,T-003" && fbRePosListe().length >= 2, JSON.stringify([fbTab, fbRe.mandant, [...(fbRe.vorauswahl || [])]]));
     fbZeigeTab("liste");
+    // Schon abgerechnete Arbeit nochmal abrechnen: auswählbar, deutlich markiert, mit Rückfrage
+    fbZeigeTab("liste");
+    $fb("fbAuswahlKnopf").click();
+    fbAuswahlUmschalten("L-1");
+    const alteNr = fbArbeiten().find(a => a.ID === "L-1").Rechnung;
+    pruef("Abgerechnete auswählbar + Warnung in der Leiste", fbAuswahl.has("L-1") && new RegExp("schon abgerechnet \\(" + alteNr).test($fb("fbAuswahlLeiste").innerText), $fb("fbAuswahlLeiste").innerText);
+    $fb("fbAuswahlUebernehmen").click(); await warte(300);
+    pruef("Rechnungsseite zeigt „schon in Rechnung“", fbTab === "rechnung" && /schon in Rechnung/.test($fb("fbRePositionen").innerText) && fbReAuswahl().some(p => p.id === "L-1"), $fb("fbRePositionen").innerText.slice(0, 200));
+    let frage = "";
+    const echtConfirm = window.confirm; window.confirm = m => { frage = m; return true; };
+    fbRe.positionen["L-1"].preis = "";
+    await fbRechnungErstellen();
+    pruef("Fehlender Preis: große Meldung + rot markiert", !$fb("fbReMeldung").hidden && /fehlt noch Menge oder Preis/.test($fb("fbReMeldung").innerText) && $fb("fbRePositionen").querySelector('tr[data-id="L-1"] [data-k="preis"].fehlt'));
+    fbRe.positionen["L-1"].preis = "50";
+    await fbRechnungErstellen(); await warte(300);
+    window.confirm = echtConfirm;
+    const l1neu = fbArbeiten().find(a => a.ID === "L-1");
+    pruef("Rückfrage warnt vor doppelter Abrechnung", /ACHTUNG/.test(frage) && frage.includes(alteNr), frage.slice(0, 200));
+    pruef("Nochmal abgerechnet: neue Nummer, alte vermerkt", l1neu.Rechnung && l1neu.Rechnung !== alteNr && String(l1neu["Rechnung vorher"]).includes(alteNr) && /erstellt/.test($fb("fbReMeldung").innerText), JSON.stringify([l1neu.Rechnung, l1neu["Rechnung vorher"], $fb("fbReMeldung").innerText]));
+    $fb("reZu").click();
+    fbZeigeTab("liste"); fbListeFilter = "alle"; fbRenderListe();
+    pruef("Liste zeigt 2× abgerechnet", /\(2×\)/.test(L().querySelector('[data-id="L-1"]').innerText));
     // zwei Änderungen direkt hintereinander: beide müssen ankommen
     const p1 = fbAendern({typ: "aendern", id: "T-001", felder: {"Ort / Schlag": "Testacker Nord"}});
     const p2 = fbAendern({typ: "aendern", id: "T-003", felder: {"Ort / Schlag": "Bachwiese"}});

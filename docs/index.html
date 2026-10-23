@@ -468,7 +468,11 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-liste-knoepfe{display:flex;gap:8px;flex-wrap:wrap}
 .fb-liste-tipp{font-size:14px}
 .fb-eintraege{border-top:1px solid var(--border)}
-.fb-tab{width:100%;border-collapse:collapse;font-size:16px;line-height:1.35}
+.fb-tab{width:100%;border-collapse:collapse;font-size:16px;line-height:1.35;table-layout:fixed}
+.fb-tab col.w-datum{width:92px}.fb-tab col.w-mandant{width:12%}.fb-tab col.w-menge{width:96px}.fb-tab col.w-std{width:78px}
+.fb-tab col.w-mittel{width:18%}.fb-tab col.w-re{width:124px}
+.fb-tab td{overflow-wrap:anywhere;white-space:normal}   /* allgemeine Tabellenregel (kein Umbruch) hier aufheben */
+.fb-e .c-ort{color:var(--ink-dim);font-weight:400}
 .fb-tab thead th{position:sticky;top:0;z-index:3;background:var(--surface);text-align:left;font-size:13.5px;font-weight:600;color:var(--ink-dim);
   padding:10px 10px;border-bottom:1px solid var(--border-strong);white-space:nowrap}
 .fb-tab td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
@@ -502,11 +506,13 @@ button.fb-badge.ok:hover{text-decoration:underline}
   .fb-tab thead{display:none}
   .fb-tab tr{display:block}
   .fb-tab tr.fb-monat td{display:block;top:0;padding:10px 12px;font-size:16.5px}
-  .fb-tab tr.fb-e{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding:12px;border-bottom:1px solid var(--border)}
-  .fb-tab tr.fb-e td{padding:0!important;border:none;background:none!important;text-align:left!important}
+  .fb-tab{table-layout:auto}
+  .fb-tab colgroup{display:none}
+  .fb-tab tr.fb-e{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;padding:12px;border-bottom:1px solid var(--border)}
+  .fb-tab tr.fb-e td{padding:0!important;border:none;background:none!important;text-align:left!important;min-width:0}
   .fb-tab tr.pruefen{background:var(--gold-soft)}
   .fb-tab tr.gewaehlt{background:var(--accent-soft)}
-  .fb-e .c-mandant,.fb-e .c-ort,.fb-e .c-menge,.fb-e .c-std,.fb-e .c-mittel{display:none}
+  .fb-e .c-mandant,.fb-e .c-menge,.fb-e .c-std,.fb-e .c-mittel{display:none}
   .fb-e .c-datum{grid-column:1;grid-row:1 / span 2;font-size:16.5px;min-width:58px}
   .fb-e .c-datum b{display:block}
   .fb-e .fb-wahl{display:block;margin:0 0 6px}
@@ -546,6 +552,8 @@ button.fb-badge.ok:hover{text-decoration:underline}
   margin:10px 16px 0;padding:10px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--accent);font-size:14px}
 .fb-auswahl-leiste[hidden]{display:none}
 .fb-empf-liste{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fb-pos input.fehlt{border-color:#d9534f!important;box-shadow:0 0 0 2px rgba(217,83,79,.35)}
+.fb-schon{color:var(--warn);font-weight:600}
 .fb-umschreiben{color:var(--warn);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:11.5px}
 .fb-zusammen{margin-top:6px;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:13.5px;font-weight:400;color:var(--ink)}
 .fb-zusammen select{padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:15px}
@@ -818,6 +826,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <button class="btn primary" type="button" id="fbReErstellen">Rechnung erstellen</button>
         <span class="bs-erkannt" id="fbReInfo"></span>
       </div>
+      <div id="fbReMeldung" class="bs-status warn" hidden></div>
       <h3 class="fb-zwischen">Bisherige Rechnungen</h3>
       <div id="fbReListe"></div>
     </section>
@@ -2970,7 +2979,8 @@ function fbRechnungAnwenden(d, a){
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
     if (!z) throw new Error("Eine ausgewählte Arbeit wurde inzwischen gelöscht");
-    if (z.Rechnung) throw new Error(`Eine Arbeit ist inzwischen schon abgerechnet (Rechnung ${z.Rechnung})`);
+    // Nochmal abrechnen geht nur, wenn es beim Erstellen ausdrücklich bestätigt wurde
+    if (z.Rechnung && !(a.nochmal || []).includes(p.id)) throw new Error(`Eine Arbeit ist inzwischen schon abgerechnet (Rechnung ${z.Rechnung})`);
   });
   const nr = fbNaechsteNrVon(firma, a.datum);
   let netto = 0;
@@ -2983,6 +2993,7 @@ function fbRechnungAnwenden(d, a){
                      Positionen: pos, Erstellt: a.zeit, Status: ""});
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
+    if (z.Rechnung) z["Rechnung vorher"] = [z["Rechnung vorher"], z.Rechnung + (z["Rechnung Firma"] ? " (" + z["Rechnung Firma"] + ")" : "")].filter(Boolean).join(", ");
     z.Rechnung = nr; z["Rechnung Firma"] = a.firma;
     if (z.Mandant !== a.mandant){ z["Mandant (vorher)"] = z.Mandant; z.Mandant = a.mandant; }   // stand unter falschem Namen
     if (!p.taetigkeit || !p.einheit) return;
@@ -3885,9 +3896,9 @@ const FB_LISTE_FILTER = [
 ];
 let fbListeFilter = "alle";
 const FB_MONATSNAMEN = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
-// Auswählbar = kann abgerechnet werden (auch eigene – die werden auf den Empfänger umgeschrieben).
-// Schon abgerechnete sind ausgegraut, damit nichts doppelt auf eine Rechnung kommt.
-function fbWaehlbar(a){ return !a.__wartet && !fbIstNotiz(a) && !a.Rechnung; }
+// Auswählbar = kann abgerechnet werden: auch eigene (werden auf den Empfänger umgeschrieben)
+// und schon abgerechnete (deutlich markiert, vor dem Erstellen wird nachgefragt).
+function fbWaehlbar(a){ return !a.__wartet && !fbIstNotiz(a); }
 function fbEintragHtml(a){
   const waehlbar = fbWaehlbar(a);
   const notiz = fbIstNotiz(a);
@@ -3901,7 +3912,7 @@ function fbEintragHtml(a){
   const bem = [notiz ? "" : a.Bemerkung, extra].filter(Boolean).join(" · ");
   const arbeit = notiz ? `📝 ${esc(a.Bemerkung || "(leere Notiz)")}` : `<b>${esc(a["Tätigkeit"] || "?")}${a.Kultur ? " " + esc(a.Kultur) : ""}</b>`;
   const re = a.__wartet ? `<span title="wartet auf Übertragung">⏳</span>`
-    : a.Rechnung ? `<button type="button" class="fb-badge ok fb-re-link" data-re="${esc(a.Rechnung)}" data-firma="${esc(a["Rechnung Firma"] || "")}" title="Rechnung ansehen">✓ ${esc(a.Rechnung)}</button>`
+    : a.Rechnung ? `<button type="button" class="fb-badge ok fb-re-link" data-re="${esc(a.Rechnung)}" data-firma="${esc(a["Rechnung Firma"] || "")}" title="Rechnung ansehen${a["Rechnung vorher"] ? " · vorher schon: " + esc(a["Rechnung vorher"]) : ""}">✓ ${esc(a.Rechnung)}${a["Rechnung vorher"] ? " (2×)" : ""}</button>`
     : fbAbzurechnen(a) ? `<span class="fb-badge offen">offen</span>` : "";
   const cls = ["fb-e", notiz ? "notiz" : "", a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : "",
     fbAuswahl && fbAuswahl.has(a.ID) ? "gewaehlt" : "", fbAuswahl && !waehlbar ? "nicht-waehlbar" : ""].filter(Boolean).join(" ");
@@ -3909,8 +3920,7 @@ function fbEintragHtml(a){
   return `<tr class="${cls}" data-id="${esc(a.ID)}" tabindex="0"${a["Prüfen"] ? ` title="${esc(a["Prüfen"])}"` : ""}>
     <td class="c-datum">${fbAuswahl ? (waehlbar ? `<input type="checkbox" class="fb-wahl" ${fbAuswahl.has(a.ID) ? "checked" : ""} aria-label="auswählen" tabindex="-1">` : `<span class="fb-wahl-platz"></span>`) : ""}<b>${datum}</b><small>${esc(tag)}</small></td>
     <td class="c-mandant">${esc(mandant || "")}</td>
-    <td class="c-arbeit">${arbeit}${a["Prüfen"] ? " ⚠" : ""}<span class="c-klein">${menge || std ? " · " + esc([menge, std].filter(Boolean).join(" · ")) : ""}</span>${(() => { const z = [mandant, a["Ort / Schlag"], a["Mittel / Dünger"]].filter(Boolean).map(esc).join(" · "); return z ? `<span class="c-zeile2">${z}</span>` : ""; })()}${bem ? `<span class="c-bem">${esc(bem)}</span>` : ""}</td>
-    <td class="c-ort">${esc(a["Ort / Schlag"] || "")}</td>
+    <td class="c-arbeit">${arbeit}${a["Ort / Schlag"] ? `<span class="c-ort"> · ${esc(a["Ort / Schlag"])}</span>` : ""}${a["Prüfen"] ? " ⚠" : ""}<span class="c-klein">${menge || std ? " · " + esc([menge, std].filter(Boolean).join(" · ")) : ""}</span>${(() => { const z = [mandant, a["Mittel / Dünger"]].filter(Boolean).map(esc).join(" · "); return z ? `<span class="c-zeile2">${z}</span>` : ""; })()}${bem ? `<span class="c-bem">${esc(bem)}</span>` : ""}</td>
     <td class="num c-menge">${esc(menge)}</td>
     <td class="num c-std">${esc(std)}</td>
     <td class="c-mittel">${esc(a["Mittel / Dünger"] || "")}</td>
@@ -3956,7 +3966,7 @@ function fbRenderListe(){
     const [j, m] = (monat || "").split("-");
     const name = m ? `${FB_MONATSNAMEN[Number(m) - 1] || m} ${j}` : "Ohne Datum";
     const h = gruppe.reduce((s, a) => s + (fbIstNotiz(a) ? 0 : fbZahl(a.Stunden) || 0), 0);
-    html += `<tr class="fb-monat"><td colspan="8">${esc(name)}<small>${gruppe.length} ${gruppe.length === 1 ? "Eintrag" : "Einträge"}${h ? " · " + fbZahlText(h) + " Std." : ""}</small></td></tr>` + gruppe.map(fbEintragHtml).join("");
+    html += `<tr class="fb-monat"><td colspan="7">${esc(name)}<small>${gruppe.length} ${gruppe.length === 1 ? "Eintrag" : "Einträge"}${h ? " · " + fbZahlText(h) + " Std." : ""}</small></td></tr>` + gruppe.map(fbEintragHtml).join("");
     gruppe = [];
   };
   zeilen.forEach(a => {
@@ -3965,7 +3975,7 @@ function fbRenderListe(){
     gruppe.push(a);
   });
   flush();
-  $fb("fbListeBody").innerHTML = html ? `<table class="fb-tab"><thead><tr><th>Datum</th><th>Mandant</th><th>Arbeit</th><th>Ort / Schlag</th><th class="num">Menge</th><th class="num">Std.</th><th>Mittel / Dünger</th><th>Rechnung</th></tr></thead><tbody>${html}</tbody></table>` : `<div class="fb-leer">${basis.length ? "Hier gibt es nichts mit dieser Auswahl." : "Keine Einträge – Filter oben ändern oder etwas eintragen."}</div>`;
+  $fb("fbListeBody").innerHTML = html ? `<table class="fb-tab"><colgroup><col class="w-datum"><col class="w-mandant"><col><col class="w-menge"><col class="w-std"><col class="w-mittel"><col class="w-re"></colgroup><thead><tr><th>Datum</th><th>Mandant</th><th>Arbeit · Schlag</th><th class="num">Menge</th><th class="num">Std.</th><th>Mittel / Dünger</th><th>Rechnung</th></tr></thead><tbody>${html}</tbody></table>` : `<div class="fb-leer">${basis.length ? "Hier gibt es nichts mit dieser Auswahl." : "Keine Einträge – Filter oben ändern oder etwas eintragen."}</div>`;
 
   // Notizen aus der alten Liste: übernehmen oder verwerfen
   const alt = (fbDaten && fbDaten.notizen) || [];
@@ -4049,10 +4059,10 @@ function fbRenderAuswahlLeiste(){
   ids.forEach(id => { const a = fbArbeiten().find(x => x.ID === id); zaehl[a.Mandant] = (zaehl[a.Mandant] || 0) + 1; });
   const namen = Object.keys(zaehl);
   leiste.innerHTML = ids.length
-    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt · ${namen.map(n => `${esc(fbIstEigen(n) ? "eigen" : n)}${namen.length > 1 ? " " + zaehl[n] : ""}`).join(", ")}</span>
+    ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt · ${namen.map(n => `${esc(fbIstEigen(n) ? "eigen" : n)}${namen.length > 1 ? " " + zaehl[n] : ""}`).join(", ")}${(() => { const s = ids.map(id => fbArbeiten().find(a => a.ID === id)).filter(a => a.Rechnung); return s.length ? `<br><span class="fb-schon">⚠ ${s.length === 1 ? "1 davon ist" : s.length + " davon sind"} schon abgerechnet (${esc([...new Set(s.map(a => a.Rechnung))].join(", "))})</span>` : ""; })()}</span>
        <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbAuswahlNotiz">📝 Notiz hinzufügen</button>
        <button class="btn primary" type="button" id="fbAuswahlUebernehmen">🧾 Rechnung erstellen</button></span>`
-    : `<span>Arbeiten antippen – dann <b>Notiz hinzufügen</b> oder <b>Rechnung erstellen</b>. Schon abgerechnete (✓) sind ausgegraut.</span>
+    : `<span>Arbeiten antippen – dann <b>Notiz hinzufügen</b> oder <b>Rechnung erstellen</b>. Schon abgerechnete sind mit ✓ und Rechnungsnummer markiert.</span>
        <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbNotizNeu">📝 Notiz ohne Arbeit</button></span>`;
   if (!ids.length){ $fb("fbNotizNeu").addEventListener("click", () => fbNotizDialog()); return; }
   $fb("fbAuswahlNotiz").addEventListener("click", () => fbNotizZuDialog(ids));
@@ -4201,7 +4211,7 @@ function fbRenderRePositionen(){
   $fb("fbRePositionen").innerHTML = `<div class="table-scroll"><table class="fb-pos"><thead><tr><th></th><th>Datum</th><th>Leistung</th><th>Menge</th><th>Einheit</th><th>Preis/Einheit €</th><th class="r">Betrag</th></tr></thead><tbody>
     ${pos.map(a => { const p = fbRe.positionen[a.ID]; return `<tr data-id="${esc(a.ID)}" class="${p.an ? "" : "aus"}">
       <td><input type="checkbox" data-k="an" ${p.an ? "checked" : ""} aria-label="in die Rechnung"></td>
-      <td class="num">${esc(fbDatumAnzeige(p.datum))}${a.Mandant !== mandant ? `<br><small class="fb-umschreiben">stand bei „${esc(a.Mandant)}“</small>` : ""}</td>
+      <td class="num">${esc(fbDatumAnzeige(p.datum))}${a.Mandant !== mandant ? `<br><small class="fb-umschreiben">stand bei „${esc(fbIstEigen(a.Mandant) ? "eigen" : a.Mandant)}“</small>` : ""}${a.Rechnung ? `<br><small class="fb-umschreiben fb-schon">⚠ schon in Rechnung ${esc(a.Rechnung)}</small>` : ""}</td>
       <td><input data-k="text" value="${esc(p.text)}"></td>
       <td><input class="klein" data-k="menge" inputmode="decimal" value="${esc(p.menge)}" placeholder="Menge" aria-label="Menge"></td>
       <td><input class="klein" data-k="einheit" list="fbListeEinheiten" value="${esc(p.einheit)}" placeholder="Einheit" aria-label="Einheit"></td>
@@ -4219,7 +4229,8 @@ function fbRenderRePositionen(){
 // Positionen der Rechnung: offene Arbeiten des Mandanten + aus der Liste ausgewählte unter anderem Namen
 function fbRePosListe(){
   const eigene = fbOffeneFuer(fbRe.mandant);
-  const fremde = fbRe.vorauswahl ? fbArbeiten().filter(a => fbRe.vorauswahl.has(a.ID) && !a.Rechnung && a.Mandant !== fbRe.mandant) : [];
+  // aus der Liste ausgewählt: unter anderem Namen oder schon einmal abgerechnet
+  const fremde = fbRe.vorauswahl ? fbArbeiten().filter(a => fbRe.vorauswahl.has(a.ID) && !eigene.includes(a)) : [];
   return [...eigene, ...fremde].sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)));
 }
 function fbReAuswahl(){
@@ -4256,8 +4267,16 @@ function fbAdresseFormular(mandant, adr = {}){
     } catch(err) { $fb("fbAdrMeldung").textContent = "Nicht gespeichert: " + err.message; }
   });
 }
+// Hinweis beim Rechnung-Erstellen: groß und sichtbar (nicht klein neben dem Knopf)
+function fbReMeldung(text, ok = false){
+  const m = $fb("fbReMeldung");
+  m.hidden = !text; m.className = "bs-status " + (ok ? "ok" : "warn"); m.textContent = text || "";
+  if (text) m.scrollIntoView({behavior: "smooth", block: "center"});
+}
 async function fbRechnungErstellen(){
-  const info = $fb("fbReInfo");
+  fbReMeldung("");
+  $fb("fbRePositionen").querySelectorAll(".fehlt").forEach(x => x.classList.remove("fehlt"));
+  const info = {set textContent(t){ fbReMeldung(t, /^✓/.test(t)); }};
   const firma = $fb("fbReFirma").value, mandant = fbRe.mandant, datum = $fb("fbReDatum").value || fbHeuteIso();
   const adr = ((fbDaten && fbDaten.mandanten) || []).find(m => m.Kurzname === mandant);
   const auswahl = fbReAuswahl();
@@ -4265,15 +4284,27 @@ async function fbRechnungErstellen(){
   if (!adr || !adr.Name){ info.textContent = "Bitte zuerst die Adresse des Mandanten speichern."; return; }
   if (!auswahl.length){ info.textContent = "Mindestens eine Arbeit anhaken."; return; }
   const ohne = auswahl.filter(p => !(fbZahl(p.menge) > 0) || !(fbZahl(p.preis) > 0));
-  if (ohne.length){ info.textContent = `Bei ${ohne.length} Position(en) fehlt Menge oder Preis.`; return; }
+  if (ohne.length){
+    ohne.forEach(p => {
+      const tr = $fb("fbRePositionen").querySelector(`tr[data-id="${CSS.escape(String(p.id))}"]`);
+      if (!tr) return;
+      if (!(fbZahl(p.menge) > 0)) tr.querySelector('[data-k="menge"]').classList.add("fehlt");
+      if (!(fbZahl(p.preis) > 0)) tr.querySelector('[data-k="preis"]').classList.add("fehlt");
+    });
+    info.textContent = `Bei ${ohne.length === 1 ? "1 Position" : ohne.length + " Positionen"} fehlt noch Menge oder Preis – rot markiert. Bitte eintragen, dann nochmal „Rechnung erstellen“.`;
+    return;
+  }
   const nr = fbNaechsteNr(firma, datum);
-  if (!confirm(`Rechnung ${nr} an ${adr.Name} über ${auswahl.length} Position(en) erstellen?\n\nDie Arbeiten werden dabei im Feldbuch als abgerechnet markiert.`)) return;
-  info.textContent = "Erstelle Rechnung …";
+  const schon = auswahl.map(p => fbArbeiten().find(a => a.ID === p.id)).filter(a => a && a.Rechnung);
+  const warnung = schon.length ? `\n\n⚠ ACHTUNG: ${schon.length === 1 ? "1 Arbeit ist" : schon.length + " Arbeiten sind"} schon abgerechnet (${[...new Set(schon.map(a => a.Rechnung))].join(", ")}) und ${schon.length === 1 ? "kommt" : "kommen"} jetzt nochmal auf eine Rechnung. War die alte Rechnung falsch, sie danach unten unter „Bisherige Rechnungen“ stornieren.` : "";
+  if (!confirm(`Rechnung ${nr} an ${adr.Name} über ${auswahl.length} Position(en) erstellen?\n\nDie Arbeiten werden dabei im Feldbuch als abgerechnet markiert.${warnung}`)) return;
+  fbReMeldung("Erstelle Rechnung …", true);
   try {
-    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, mwst: (fbZahl($fb("fbReMwst").value) ?? 19) / 100,
+    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, mwst: (fbZahl($fb("fbReMwst").value) ?? 19) / 100, nochmal: schon.map(a => a.ID),
       positionen: auswahl.map(p => ({id: p.id, datum: p.datum, text: p.text, taetigkeit: p.taetigkeit, menge: fbZahl(p.menge), einheit: p.einheit, preis: fbZahl(p.preis)}))});
     fbRe.positionen = {};
-    $fb("fbReInfo").textContent = `✓ Rechnung ${rechnung.nr} erstellt.`;
+    $fb("fbReInfo").textContent = "";
+    fbReMeldung(`✓ Rechnung ${rechnung.nr} erstellt.`, true);
     fbRechnungZeigen(rechnung);
   } catch(err) { info.textContent = "Nicht erstellt: " + err.message; }
 }
