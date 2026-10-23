@@ -430,6 +430,9 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-vorschau-satz{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15.5px;line-height:1.4}
 .fb-vorschau-satz .fehlt{color:var(--warn);font-weight:600}
 .fb-vorschau-warn{margin-top:8px;font-size:13.5px;color:var(--warn);font-weight:500}
+.fb-vorschau-mandant{margin-top:9px;font-size:13.5px}
+.fb-schnell{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fb-schnell .btn{font-size:13px;padding:6px 11px}
 .fb-erkannt .fb-form-knoepfe{margin-top:10px}
 .fb-meldung{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
 .fb-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 12px;margin-top:10px}
@@ -459,6 +462,10 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
 .fb-badge.ok{background:var(--accent-soft);color:var(--accent)}
 .fb-badge.offen{background:var(--warn-soft);color:var(--warn)}
+.fb-badge.rot{background:#b3261e;color:#fff}
+.fb-sp-tabelle input{width:100%;min-width:0;padding:7px 8px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);color:var(--ink);font-size:15px;box-sizing:border-box}
+.fb-sp-tabelle td{padding:4px 4px}
+.fb-sp-tabelle .preis{width:110px}
 .fb-table tr.gewaehlt td{background:var(--accent-soft)!important}
 .fb-table tr.nicht-waehlbar{opacity:.45}
 .fb-table .fb-wahl{width:18px;height:18px;vertical-align:middle;margin:0 6px 0 0;pointer-events:none}
@@ -521,6 +528,8 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-kachel{padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border)}
 .fb-kachel b{display:block;font-family:"Newsreader",serif;font-size:24px}
 .fb-kachel small{color:var(--ink-dim);font-size:12.5px}
+.fb-doku{margin:14px 0 18px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:var(--accent-soft)}
+.fb-doku h3{font-size:16px;margin:0 0 4px;font-family:"IBM Plex Sans",system-ui,sans-serif}
 @media (max-width:640px){.fb-kacheln{grid-template-columns:1fr 1fr;gap:8px}.fb-kachel{padding:10px 12px}.fb-kachel b{font-size:21px}}
 dialog#fbDialog{border:none;padding:0;border-radius:16px;background:var(--surface);color:var(--ink);width:min(620px,calc(100vw - 24px));
   max-height:min(90vh,820px);box-shadow:0 12px 48px rgba(31,42,60,.28)}
@@ -724,6 +733,19 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <label>Jahr<select id="fbAwJahr"></select></label>
         <label>Flächen<select id="fbAwWer"><option value="alle">eigene + Lohnarbeit</option><option value="eigen">nur eigene</option><option value="fremd">nur Lohnarbeit</option></select></label>
       </div>
+      <div class="fb-doku">
+        <h3>📋 Dokumentation für Kontrollen</h3>
+        <p class="bs-help">Aufzeichnungen nach Pflanzenschutzgesetz (§ 11 PflSchG) und Düngeverordnung (§ 10 DüV) als PDF – für das gewählte Jahr. Bitte vor dem Abgeben kurz durchsehen: Fehlt bei einem Eintrag die Fläche oder das Mittel, steht dort „–“.</p>
+        <div class="fb-form">
+          <label>Flächen von<select id="fbDokuWer"></select></label>
+          <label>Anwender<input id="fbDokuAnwender" placeholder="Name"></label>
+        </div>
+        <div class="fb-form-knoepfe" style="margin-top:10px;flex-wrap:wrap">
+          <button class="btn primary" type="button" id="fbDokuPs">🌿 Pflanzenschutz-Dokumentation</button>
+          <button class="btn primary" type="button" id="fbDokuDuenger">🧪 Düngedokumentation</button>
+        </div>
+        <div id="fbDokuInfo" class="bs-erkannt" style="margin-top:6px"></div>
+      </div>
       <div id="fbAwInhalt"></div>
     </section>
 
@@ -732,6 +754,9 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
       <h2>Firmen</h2>
       <p class="bs-help">Absender, Steuernummer und Bankdaten für die Rechnungen. „Letzte Rechnungs-Nr.“ = die zuletzt vergebene Nummer dieser Firma (z. B. 2026-014) – die nächste Rechnung bekommt automatisch die folgende.</p>
       <div id="fbStFirmen"></div>
+      <h3 class="fb-zwischen">Standardpreise</h3>
+      <p class="bs-help">Vorschlag für neue Rechnungen. Hat ein Mandant schon einmal einen eigenen Preis bekommen, wird dieser vorgeschlagen. In der Rechnung kann jeder Preis weiter geändert werden.</p>
+      <div id="fbStPreise"></div>
       <h3 class="fb-zwischen">Mandanten</h3>
       <div id="fbStMandanten"></div>
       <button class="btn small" type="button" id="fbStMandantNeu" style="margin-top:8px">+ Neuer Mandant</button>
@@ -2764,6 +2789,15 @@ function fbAnwenden(d, op){
       if (m) Object.assign(m, op.mandant); else d.mandanten.push(fbKopie(op.mandant));
       return null;
     }
+    case "standardpreise":
+      d.standardpreise = fbKopie(op.liste || []);
+      return null;
+    case "bezahlt": {
+      const r = d.rechnungen.find(x => x["Rechnungs-Nr."] === op.nr && x.Firma === op.firma);
+      if (!r) throw new Error("Rechnung nicht gefunden");
+      r.Bezahlt = op.datum || "";
+      return null;
+    }
     case "mandantZusammen": {
       const von = d.mandanten.find(x => x.Kurzname === op.von), nach = d.mandanten.find(x => x.Kurzname === op.nach);
       if (!von || !nach) throw new Error("Mandant nicht gefunden");
@@ -3312,15 +3346,16 @@ function fbVerstehen(text){
     Object.assign(f, g);
   });
   void teile;
-  if (!f["Mandant"]) f["Mandant"] = "Eigen";
+  let angenommen = false;
+  if (!f["Mandant"]){ f["Mandant"] = "Eigen"; angenommen = true; }
   if (f.__mandantNeu){ hinweise.push(`„${f["Mandant"]}“ ist noch kein Mandant – Name richtig?`); }
   if (f.__mandantUnsicher){ hinweise.push(`Mandant als „${f["Mandant"]}“ erkannt – stimmt das?`); }
   delete f.__mandantNeu; delete f.__mandantUnsicher;
-  return {felder: f, hinweise};
+  return {felder: f, hinweise, mandantAngenommen: angenommen};
 }
 
 // --- Eintragen ---------------------------------------------------------
-let fbHinweise = [];
+let fbHinweise = [], fbMandantAngenommen = false;
 function fbFormularSetzen(felder, markieren){
   const form = $fb("fbForm");
   FB_FELDER.forEach(name => {
@@ -3335,12 +3370,12 @@ function fbFormularLeeren(){
   form.elements["Datum"].value = fbHeuteIso();
   form.querySelectorAll(".geaendert").forEach(x => x.classList.remove("geaendert"));
   $fb("fbText").value = "";
-  fbHinweise = [];
+  fbHinweise = []; fbMandantAngenommen = false;
   fbRenderVorschau();
 }
 function fbTextAuswerten(){
-  const {felder, hinweise} = fbVerstehen($fb("fbText").value);
-  fbHinweise = hinweise;
+  const {felder, hinweise, mandantAngenommen} = fbVerstehen($fb("fbText").value);
+  fbHinweise = hinweise; fbMandantAngenommen = !!mandantAngenommen;
   const form = $fb("fbForm");
   form.querySelectorAll(".geaendert").forEach(x => x.classList.remove("geaendert"));
   // Nicht Erkanntes leeren, damit kein alter Wert stehen bleibt
@@ -3353,6 +3388,13 @@ function fbFormularWerte(){
   FB_FELDER.forEach(n => { e[n] = (form.elements[n].value || "").trim(); });
   if (!e["Mandant"]) e["Mandant"] = "Eigen";
   return e;
+}
+// Die zuletzt verwendeten Mandanten (für die Schnellknöpfe)
+function fbLetzteMandanten(){
+  const namen = [];
+  fbArbeiten().slice().sort((a, b) => String(b.Datum).localeCompare(String(a.Datum)) || String(b.Erfasst || "").localeCompare(String(a.Erfasst || "")))
+    .forEach(a => { if (!fbIstEigen(a.Mandant) && !namen.includes(a.Mandant) && namen.length < 6) namen.push(a.Mandant); });
+  return namen;
 }
 // Bestätigung VOR dem Speichern: was genau eingetragen wird, als ein Satz
 function fbRenderVorschau(){
@@ -3381,9 +3423,17 @@ function fbRenderVorschau(){
       ${e["Ort / Schlag"] ? `<span>📍 ${esc(e["Ort / Schlag"])}</span>` : ""}
       ${e["Mittel / Dünger"] ? `<span>🧪 ${esc(e["Mittel / Dünger"])}</span>` : ""}
     </div>
+    ${fbIstEigen(e.Mandant) && fbMandantAngenommen ? `<div class="fb-vorschau-mandant">Kein Mandant genannt → <b>eigene Fläche</b>. Für jemand anderen?
+      <div class="fb-schnell">${fbLetzteMandanten().map(n => `<button class="btn small" type="button" data-schnell="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
     ${warnungen.length ? `<div class="fb-vorschau-warn">${warnungen.map(w => `⚠ ${esc(w)}`).join("<br>")}</div>` : ""}
     <div class="fb-form-knoepfe"><button class="btn primary" type="button" id="fbVorschauOk">✓ So speichern</button>
       <button class="btn ghost" type="button" id="fbVorschauAendern">Felder ändern ↓</button></div>`;
+  box.querySelectorAll("button[data-schnell]").forEach(b => b.addEventListener("click", () => {
+    const inp = $fb("fbForm").elements["Mandant"];
+    inp.value = b.dataset.schnell; inp.classList.add("geaendert");
+    fbMandantAngenommen = false;
+    fbRenderVorschau();
+  }));
   $fb("fbVorschauOk").addEventListener("click", () => $fb("fbForm").requestSubmit());
   $fb("fbVorschauAendern").addEventListener("click", () => { $fb("fbForm").scrollIntoView({behavior: "smooth", block: "start"}); });
 }
@@ -3655,8 +3705,12 @@ function fbOffeneFuer(mandant){
 function fbPreisVorschlag(taetigkeit, einheit, mandant){
   const preise = (fbDaten && fbDaten.preise) || [];
   const passend = preise.filter(p => p["Tätigkeit"] === taetigkeit && p.Einheit === einheit);
+  // 1. zuletzt bei genau diesem Mandanten  2. Standardpreis aus den Stammdaten  3. zuletzt bei irgendwem
   const genau = passend.find(p => p.Mandant === mandant);
-  const p = genau || passend[passend.length - 1];
+  if (genau) return fbZahl(genau["Preis (€)"]);
+  const standard = ((fbDaten && fbDaten.standardpreise) || []).find(p => p["Tätigkeit"] === taetigkeit && p.Einheit === einheit);
+  if (standard) return fbZahl(standard["Preis (€)"]);
+  const p = passend[passend.length - 1];
   return p ? fbZahl(p["Preis (€)"]) : null;
 }
 function fbNaechsteNr(firma, datum){
@@ -3783,11 +3837,21 @@ async function fbRechnungErstellen(){
     fbRechnungZeigen(rechnung);
   } catch(err) { info.textContent = "Nicht erstellt: " + err.message; }
 }
+// Zahlungsstatus einer Rechnung: bezahlt / offen seit x Tagen / überfällig (> 30 Tage)
+function fbZahlStatus(r){
+  if (r.Status === "storniert") return {art: "storno", html: ""};
+  if (r.Bezahlt) return {art: "bezahlt", html: `<span class="fb-badge ok">bezahlt ${esc(fbDatumAnzeige(r.Bezahlt))}</span>`};
+  const tage = Math.floor((new Date(fbHeuteIso() + "T12:00") - new Date(String(r.Datum).slice(0, 10) + "T12:00")) / 86400000);
+  return tage > 30 ? {art: "ueberfaellig", tage, html: `<span class="fb-badge rot">überfällig · ${tage} Tage</span>`}
+                   : {art: "offen", tage, html: `<span class="fb-badge offen">offen · ${Math.max(tage, 0)} Tage</span>`};
+}
 function fbRenderReListe(){
   const liste = ((fbDaten && fbDaten.rechnungen) || []).slice().sort((a, b) => String(b["Rechnungs-Nr."]).localeCompare(String(a["Rechnungs-Nr."])));
-  $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th></th></tr></thead><tbody>
-    ${liste.map(r => `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? " <small>(storniert)</small>" : ""}</td><td>${esc(fbDatumAnzeige(r.Datum))}</td><td>${esc(r.Mandant)}</td><td>${esc(r.Firma)}</td>
-      <td class="num">${fbEuro(fbZahl(r.Brutto))}</td><td class="fb-re-knoepfe"><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button>${r.Status === "storniert" ? "" : `<button class="btn small ghost" type="button" data-storno="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Stornieren</button>`}</td></tr>`).join("")}
+  $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th>Zahlung</th><th></th></tr></thead><tbody>
+    ${liste.map(r => { const st = fbZahlStatus(r); return `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? " <small>(storniert)</small>" : ""}</td><td>${esc(fbDatumAnzeige(r.Datum))}</td><td>${esc(r.Mandant)}</td><td>${esc(r.Firma)}</td>
+      <td class="num">${fbEuro(fbZahl(r.Brutto))}</td><td>${st.html}</td><td class="fb-re-knoepfe"><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button>${r.Status === "storniert" ? "" : r.Bezahlt
+        ? `<button class="btn small ghost" type="button" data-bezahlt="" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">↩ doch offen</button>`
+        : `<button class="btn small" type="button" data-bezahlt="${fbHeuteIso()}" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">✓ Bezahlt</button><button class="btn small ghost" type="button" data-storno="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Stornieren</button>`}</td></tr>`; }).join("")}
     </tbody></table></div>` : `<p class="bs-help">Noch keine Rechnungen aus der App.</p>`;
   $fb("fbReListe").querySelectorAll("button[data-nr]").forEach(b => b.addEventListener("click", () => {
     const r = fbDaten.rechnungen.find(x => x["Rechnungs-Nr."] === b.dataset.nr && x.Firma === b.dataset.firma);
@@ -3795,6 +3859,9 @@ function fbRenderReListe(){
     fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
       firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
       storniert: r.Status === "storniert"});
+  }));
+  $fb("fbReListe").querySelectorAll("button[data-bezahlt]").forEach(b => b.addEventListener("click", () => {
+    fbAendern({typ: "bezahlt", nr: b.dataset.re, firma: b.dataset.firma, datum: b.dataset.bezahlt});
   }));
   $fb("fbReListe").querySelectorAll("button[data-storno]").forEach(b => b.addEventListener("click", async () => {
     if (!confirm(`Rechnung ${b.dataset.storno} (${b.dataset.firma}) stornieren?\n\nDie Nummer bleibt vergeben, die Arbeiten werden wieder als „offen“ geführt und können neu abgerechnet werden.`)) return;
@@ -3835,8 +3902,9 @@ function fbRechnungZeigen(r){
   const name = `Rechnung ${r.nr} ${(m.Name || m.Kurzname || "").replace(/[\\/:*?"<>|]/g, "")}`.trim() + ".pdf";
   const knopf = $fb("rePdf"), hinweis = $fb("rePdfHinweis");
   let pdfDatei = null;
+  const beschriftung = () => fbSicherArt() === "auswahl" ? "📄 Als PDF speichern …" : fbSicherArt() === "teilen" ? "📄 PDF teilen / sichern" : "📄 PDF herunterladen";
   const fertig = fbRechnungPdf(el.querySelector(".re-blatt"), name)
-    .then(datei => { pdfDatei = datei; knopf.textContent = fbKannTeilen(datei) ? "📄 PDF teilen / sichern" : "📄 PDF herunterladen"; })
+    .then(datei => { pdfDatei = datei; knopf.textContent = beschriftung(); })
     .catch(err => { knopf.textContent = "📄 PDF nochmal versuchen"; hinweis.textContent = err.message; });
   knopf.addEventListener("click", async () => {
     hinweis.textContent = "";
@@ -3844,14 +3912,43 @@ function fbRechnungZeigen(r){
       knopf.textContent = "📄 PDF wird vorbereitet …";
       await fertig;
       if (!pdfDatei){ try { pdfDatei = await fbRechnungPdf(el.querySelector(".re-blatt"), name); } catch(err) { hinweis.textContent = err.message; return; } }
-      knopf.textContent = fbKannTeilen(pdfDatei) ? "📄 Jetzt teilen / sichern" : "📄 PDF herunterladen";
-      if (fbKannTeilen(pdfDatei)) return;   // neues Tippen nötig, damit das Teilen-Menü aufgehen darf
+      knopf.textContent = beschriftung();
+      return;   // nochmal tippen – Speichern-Fenster/Teilen-Menü dürfen nur direkt nach dem Tippen aufgehen
     }
-    if (fbKannTeilen(pdfDatei)){
-      try { await navigator.share({files: [pdfDatei], title: name.replace(/\.pdf$/, "")}); }
-      catch(err) { if (err.name !== "AbortError") { fbHerunterladen(name, pdfDatei, "application/pdf"); } }
-    } else fbHerunterladen(name, pdfDatei, "application/pdf");
+    const ergebnis = await fbSichern(name, pdfDatei, "application/pdf");
+    if (ergebnis === "gespeichert") hinweis.textContent = "✓ Gespeichert: " + name;
   });
+}
+// Dateien sichern: PC (Edge/Chrome) → "Speichern unter" mit Ordnerwahl,
+// Handy → Teilen-Menü (Dateien, Mail, WhatsApp …), sonst normaler Download
+const FB_MOBIL = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function fbSicherArt(){
+  if (!FB_MOBIL && window.showSaveFilePicker) return "auswahl";
+  if (FB_MOBIL && navigator.canShare && navigator.share) return "teilen";
+  return "download";
+}
+async function fbSichern(name, inhalt, typ){
+  const blob = inhalt instanceof Blob ? inhalt : new Blob([inhalt], {type: typ});
+  const art = fbSicherArt();
+  if (art === "auswahl"){
+    const endung = name.split(".").pop().toLowerCase();
+    try {
+      const griff = await window.showSaveFilePicker({suggestedName: name,
+        types: [{description: {pdf: "PDF-Dokument", csv: "Tabelle für Excel (CSV)", json: "Feldbuch-Sicherung"}[endung] || "Datei", accept: {[typ.split(";")[0]]: ["." + endung]}}]});
+      const schreiber = await griff.createWritable();
+      await schreiber.write(blob); await schreiber.close();
+      return "gespeichert";
+    } catch(e) { if (e.name === "AbortError") return "abgebrochen"; }   // sonst: unten normal herunterladen
+  }
+  if (art === "teilen"){
+    const datei = blob instanceof File ? blob : new File([blob], name, {type: typ});
+    if (fbKannTeilen(datei)){
+      try { await navigator.share({files: [datei], title: name.replace(/\.[a-z]+$/i, "")}); return "geteilt"; }
+      catch(e) { if (e.name === "AbortError") return "abgebrochen"; }
+    }
+  }
+  fbHerunterladen(name, blob, typ);
+  return "heruntergeladen";
 }
 function fbKannTeilen(datei){
   try { return !!(navigator.canShare && navigator.share && navigator.canShare({files: [datei]})); } catch(e) { return false; }
@@ -3950,12 +4047,35 @@ function fbRenderStamm(){
     FB_FIRMA_FELDER.forEach(n => { felder[n] = form.elements[n].value.trim(); });
     fbAendern({typ: "firma", alt: form.dataset.firma, felder});
   }));
+  fbRenderStandardpreise();
   const mandanten = ((fbDaten && fbDaten.mandanten) || []).slice().sort((a, b) => fbIstEigen(a.Kurzname) ? -1 : fbIstEigen(b.Kurzname) ? 1 : a.Kurzname.localeCompare(b.Kurzname, "de"));
   $fb("fbStMandanten").innerHTML = `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Kurzname</th><th>Name / Adresse</th><th></th></tr></thead><tbody>
     ${mandanten.map(m => `<tr><td><b>${esc(m.Kurzname)}</b>${m["Andere Namen"] ? `<br><small class="bs-erkannt">auch: ${esc(m["Andere Namen"])}</small>` : ""}</td><td>${m.Name ? esc([m.Name, m["Straße"], m["PLZ Ort"]].filter(Boolean).join(", ")) : `<span class="bs-erkannt">Adresse fehlt</span>`}</td>
       <td><button class="btn small" type="button" data-mandant="${esc(m.Kurzname)}">Bearbeiten</button></td></tr>`).join("")}
     </tbody></table></div>`;
   $fb("fbStMandanten").querySelectorAll("button[data-mandant]").forEach(b => b.addEventListener("click", () => fbMandantDialog(b.dataset.mandant)));
+}
+function fbRenderStandardpreise(){
+  const liste = ((fbDaten && fbDaten.standardpreise) || []).map(p => ({...p}));
+  const box = $fb("fbStPreise");
+  const zeile = (p, i) => `<tr data-i="${i}"><td><input data-k="Tätigkeit" list="fbListeTaetigkeiten" value="${esc(p["Tätigkeit"] || "")}" placeholder="Tätigkeit"></td>
+    <td><input data-k="Einheit" list="fbListeEinheiten" value="${esc(p.Einheit || "")}" placeholder="ha"></td>
+    <td class="preis"><input data-k="Preis (€)" inputmode="decimal" value="${esc(fbZahlText(fbZahl(p["Preis (€)"]), 2))}" placeholder="€"></td>
+    <td><button class="btn small ghost" type="button" data-weg="${i}" aria-label="Zeile löschen">✕</button></td></tr>`;
+  const zeichnen = () => {
+    box.innerHTML = `<div class="table-scroll"><table class="fb-aw fb-sp-tabelle"><thead><tr><th>Tätigkeit</th><th>Einheit</th><th>Preis je Einheit</th><th></th></tr></thead><tbody>
+      ${liste.map(zeile).join("") || `<tr><td colspan="4" class="bs-help">Noch keine Standardpreise.</td></tr>`}</tbody></table></div>
+      <div class="fb-form-knoepfe" style="margin-top:8px"><button class="btn small" type="button" id="fbSpNeu">+ Preis</button><button class="btn primary small" type="button" id="fbSpSpeichern">Preise speichern</button><span class="bs-erkannt" id="fbSpInfo"></span></div>`;
+    box.querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => { liste[inp.closest("tr").dataset.i][inp.dataset.k] = inp.value; }));
+    box.querySelectorAll("button[data-weg]").forEach(b => b.addEventListener("click", () => { liste.splice(Number(b.dataset.weg), 1); zeichnen(); }));
+    $fb("fbSpNeu").addEventListener("click", () => { liste.push({"Tätigkeit": "", Einheit: "ha", "Preis (€)": ""}); zeichnen(); box.querySelector("tr:last-child input").focus(); });
+    $fb("fbSpSpeichern").addEventListener("click", () => {
+      const sauber = liste.filter(p => String(p["Tätigkeit"]).trim() && fbZahl(p["Preis (€)"]) !== null)
+        .map(p => ({"Tätigkeit": p["Tätigkeit"].trim(), Einheit: String(p.Einheit || "").trim(), "Preis (€)": fbZahl(p["Preis (€)"])}));
+      fbAendern({typ: "standardpreise", liste: sauber});
+    });
+  };
+  zeichnen();
 }
 function fbMandantDialog(kurzname){
   const m = ((fbDaten && fbDaten.mandanten) || []).find(x => x.Kurzname === kurzname) || {};
@@ -4004,11 +4124,11 @@ function fbExportCsv(){
     if ((k === "Menge" || k === "Stunden") && a[k] !== "" && a[k] !== undefined) return feld(String(a[k]).replace(".", ","));
     return feld(a[k]);
   }).join(";"));
-  fbHerunterladen(`Feldbuch ${fbHeuteIso()}.csv`, "\ufeff" + [spalten.join(";"), ...zeilen].join("\r\n"), "text/csv;charset=utf-8");
+  fbSichern(`Feldbuch ${fbHeuteIso()}.csv`, "\ufeff" + [spalten.join(";"), ...zeilen].join("\r\n"), "text/csv;charset=utf-8");
 }
 function fbExportJson(){
   const {feldarbeiten, ...rest} = fbKopie(fbDaten || {});
-  fbHerunterladen(`Feldbuch Sicherung ${fbHeuteIso()}.json`,
+  fbSichern(`Feldbuch Sicherung ${fbHeuteIso()}.json`,
     JSON.stringify({art: "poolehof-feldbuch-startdaten", ...rest, feldarbeiten: (feldarbeiten || []).map(({__wartet, ...a}) => a)}, null, 1), "application/json");
 }
 
@@ -4070,6 +4190,95 @@ $fb("fbPwAendernForm").addEventListener("submit", async ev => {
   } catch(err) { meldung.style.color = ""; meldung.textContent = "Nicht geändert: " + err.message + " (das alte Passwort gilt weiter)"; }
 });
 
+// --- Dokumentation Pflanzenschutz / Düngung ---------------------------------
+const FB_DOKU = {
+  ps: {taetigkeiten: ["Pflanzenschutz"], titel: "Aufzeichnungen über die Anwendung von Pflanzenschutzmitteln",
+       grundlage: "nach § 11 PflSchG i. V. m. Art. 67 VO (EG) Nr. 1107/2009", datei: "Pflanzenschutz-Dokumentation"},
+  duenger: {taetigkeiten: ["Düngen", "Gülle fahren", "Mist streuen", "Kalken"], titel: "Aufzeichnungen über die Düngung",
+       grundlage: "nach § 10 Düngeverordnung (DüV)", datei: "Duengedokumentation"},
+};
+let fbDokuFertig = {};   // vorbereitete PDFs (am Handy/PC muss das Speichern direkt nach dem Tippen kommen)
+function fbRenderDokuAuswahl(){
+  const sel = $fb("fbDokuWer"), alt = sel.value || "Eigen";
+  const namen = [...new Set(fbArbeiten().filter(a => !fbIstEigen(a.Mandant) && FB_DOKU.ps.taetigkeiten.concat(FB_DOKU.duenger.taetigkeiten).includes(a["Tätigkeit"])).map(a => a.Mandant))].sort((a, b) => a.localeCompare(b, "de"));
+  sel.innerHTML = `<option value="Eigen">eigene Flächen</option>` + namen.map(n => `<option ${n === alt ? "selected" : ""}>${esc(n)}</option>`).join("");
+  if (alt === "Eigen") sel.value = "Eigen";
+  const anw = $fb("fbDokuAnwender");
+  if (!anw.value){ const f = ((fbDaten && fbDaten.firmen) || [])[0]; anw.value = (f && (f.Inhaber || f.Firma)) || ""; }
+}
+function fbDokuZeilen(art, jahr, wer){
+  return fbArbeiten().filter(a => String(a.Datum || "").startsWith(jahr) && FB_DOKU[art].taetigkeiten.includes(a["Tätigkeit"])
+      && (wer === "Eigen" ? fbIstEigen(a.Mandant) : a.Mandant === wer))
+    .sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)));
+}
+function fbStickstoff(a){
+  const m = `${a["Mittel / Dünger"] || ""} ${a.Bemerkung || ""}`.match(/(\d+(?:,\d+)?)\s*(?:kg\s*)?N(?![\p{L}+])/u);
+  return m ? m[1] : "";
+}
+async function fbDokuPdf(art){
+  await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf);
+  await fbSkriptLaden("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js", () => window.jspdf && window.jspdf.jsPDF.API.autoTable);
+  const jahr = $fb("fbAwJahr").value, wer = $fb("fbDokuWer").value, anwender = $fb("fbDokuAnwender").value.trim();
+  const zeilen = fbDokuZeilen(art, jahr, wer);
+  if (!zeilen.length) throw new Error(`Keine Einträge für ${art === "ps" ? "Pflanzenschutz" : "Düngung"} ${jahr} (${wer === "Eigen" ? "eigene Flächen" : wer}).`);
+  const firma = ((fbDaten && fbDaten.firmen) || [])[0] || {};
+  const mandant = wer === "Eigen" ? null : ((fbDaten && fbDaten.mandanten) || []).find(m => m.Kurzname === wer);
+  const pdf = new jspdf.jsPDF({orientation: "landscape", unit: "mm", format: "a4"});
+  const gruen = [63, 112, 89];
+  pdf.setFont("helvetica", "bold"); pdf.setFontSize(14);
+  pdf.text(`${FB_DOKU[art].titel} ${jahr}`, 14, 16);
+  pdf.setFont("helvetica", "normal"); pdf.setFontSize(9.5);
+  pdf.text(FB_DOKU[art].grundlage, 14, 22);
+  const betrieb = mandant ? `Betrieb: ${mandant.Name || mandant.Kurzname}${mandant["Straße"] ? ", " + mandant["Straße"] : ""}${mandant["PLZ Ort"] ? ", " + mandant["PLZ Ort"] : ""} · ausgeführt durch ${firma.Firma || ""}`
+                          : `Betrieb: ${firma.Firma || ""}${firma.Inhaber ? ", " + firma.Inhaber : ""}${firma["Straße"] ? ", " + firma["Straße"] : ""}${firma["PLZ Ort"] ? ", " + firma["PLZ Ort"] : ""}`;
+  pdf.text(betrieb, 14, 28);
+  const fl = a => a.Einheit === "ha" && fbZahl(a.Menge) !== null ? fbZahlText(fbZahl(a.Menge), 2) : "–";
+  let kopf, koerper;
+  if (art === "ps"){
+    kopf = [["Datum", "Schlag / Ort", "Kultur", "Fläche (ha)", "Pflanzenschutzmittel und Aufwandmenge", "Anwender", "Bemerkung"]];
+    koerper = zeilen.map(a => [fbDatumAnzeige(a.Datum), a["Ort / Schlag"] || "–", a.Kultur || "–", fl(a), a["Mittel / Dünger"] || "–", anwender || "–", a.Bemerkung || ""]);
+  } else {
+    kopf = [["Datum", "Schlag / Ort", "Kultur", "Fläche (ha)", "Maßnahme", "Düngemittel / Aufwand", "Menge gesamt", "kg N/ha", "Bemerkung"]];
+    koerper = zeilen.map(a => [fbDatumAnzeige(a.Datum), a["Ort / Schlag"] || "–", a.Kultur || "–", fl(a), a["Tätigkeit"],
+      a["Mittel / Dünger"] || (a["Tätigkeit"] === "Gülle fahren" ? "Gülle" : a["Tätigkeit"] === "Mist streuen" ? "Mist" : "–"),
+      a.Einheit && a.Einheit !== "ha" && fbZahl(a.Menge) !== null ? `${fbZahlText(fbZahl(a.Menge), 2)} ${a.Einheit}` : "–", fbStickstoff(a) || "–", a.Bemerkung || ""]);
+  }
+  pdf.autoTable({head: kopf, body: koerper, startY: 33, theme: "grid", styles: {fontSize: 8.5, cellPadding: 1.6, valign: "top"},
+    headStyles: {fillColor: gruen, textColor: 255, fontStyle: "bold"}, alternateRowStyles: {fillColor: [246, 244, 238]},
+    margin: {left: 14, right: 14, bottom: 16},
+    didDrawPage: () => {
+      const seite = pdf.internal.getNumberOfPages();
+      pdf.setFontSize(8); pdf.setTextColor(120);
+      pdf.text(`Erstellt mit der Poolehof-App am ${fbDatumAnzeige(fbHeuteIso())} · ${zeilen.length} Einträge`, 14, 203);
+      pdf.text(`Seite ${seite}`, 283, 203, {align: "right"});
+      pdf.setTextColor(0);
+    }});
+  const fehlen = zeilen.filter(a => !a["Ort / Schlag"] || fl(a) === "–" || (art === "ps" && !a["Mittel / Dünger"])).length;
+  const name = `${FB_DOKU[art].datei} ${jahr}${wer === "Eigen" ? "" : " " + wer}.pdf`;
+  return {datei: new File([pdf.output("blob")], name, {type: "application/pdf"}), name, anzahl: zeilen.length, fehlen};
+}
+async function fbDokuKlick(art){
+  const knopf = $fb(art === "ps" ? "fbDokuPs" : "fbDokuDuenger"), info = $fb("fbDokuInfo");
+  const schluessel = `${art}|${$fb("fbAwJahr").value}|${$fb("fbDokuWer").value}|${$fb("fbDokuAnwender").value}`;
+  const fertig = fbDokuFertig[art];
+  if (fertig && fertig.schluessel === schluessel){
+    const erg = await fbSichern(fertig.name, fertig.datei, "application/pdf");
+    if (erg === "gespeichert") info.textContent = "✓ Gespeichert: " + fertig.name;
+    return;
+  }
+  const text = knopf.textContent;
+  knopf.textContent = "⏳ wird erstellt …";
+  try {
+    const d = await fbDokuPdf(art);
+    fbDokuFertig[art] = {...d, schluessel};
+    knopf.textContent = (art === "ps" ? "🌿" : "🧪") + " Fertig – jetzt " + (fbSicherArt() === "auswahl" ? "speichern …" : fbSicherArt() === "teilen" ? "teilen / sichern" : "herunterladen");
+    info.textContent = `${d.anzahl} Einträge${d.fehlen ? ` · bei ${d.fehlen} fehlt Fläche, Ort oder Mittel („–“) – bitte ergänzen` : ""}`;
+    setTimeout(() => { knopf.textContent = text; delete fbDokuFertig[art]; }, 60000);
+  } catch(err) { knopf.textContent = text; info.textContent = err.message; }
+}
+$fb("fbDokuPs").addEventListener("click", () => fbDokuKlick("ps"));
+$fb("fbDokuDuenger").addEventListener("click", () => fbDokuKlick("duenger"));
+
 // --- Gesamt / Navigation -------------------------------------------------
 function fbZeigeTab(name){
   if (!FB_TABS.includes(name)) name = fbTab || "eintragen";
@@ -4083,7 +4292,7 @@ function fbZeigeTab(name){
 function fbRenderTab(){
   if (fbTab === "liste") fbRenderListe();
   else if (fbTab === "rechnung") fbRenderRechnung();
-  else if (fbTab === "auswertung") fbRenderAuswertung();
+  else if (fbTab === "auswertung"){ fbRenderAuswertung(); fbRenderDokuAuswahl(); }
   else if (fbTab === "stamm") fbRenderStamm();
 }
 function fbRenderStartKarte(){
@@ -4092,7 +4301,7 @@ function fbRenderStartKarte(){
   el.classList.remove("bald");
   const offen = fbArbeiten().filter(a => !a.Rechnung && !fbIstEigen(a.Mandant)).length;
   el.querySelector("small").textContent = fbDaten
-    ? `${fbArbeiten().length} Feldarbeiten · ${offen} Lohnarbeiten offen zum Abrechnen${fbOps.length ? ` · ${fbOps.length} warten auf Übertragung` : ""}`
+    ? `${fbArbeiten().length} Feldarbeiten · ${offen} Lohnarbeiten offen zum Abrechnen${(() => { const n = ((fbDaten && fbDaten.rechnungen) || []).filter(r => fbZahlStatus(r).art === "ueberfaellig").length; return n ? ` · ⚠ ${n} Rechnung${n === 1 ? "" : "en"} überfällig` : ""; })()}${fbOps.length ? ` · ${fbOps.length} warten auf Übertragung` : ""}`
     : "Eintragen per Sprache, Rechnungen per Klick";
 }
 function fbRenderAlles(){
@@ -4135,6 +4344,9 @@ fbZeigeTab((location.hash.match(/^#feld-(\w+)/) || [])[1] || fbTab);
 fbSichtBerechnen();
 fbRenderAlles();
 fbSync();
+
+// Offline-Helfer: App startet auch ohne Netz (siehe sw.js)
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 </script>
 
 </body>
