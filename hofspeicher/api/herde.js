@@ -15,9 +15,12 @@
 //   {"aktion":"speichern", "schluessel":"…","daten":{…}}  → {"ok":true}
 //   GET ?selbsttest=1   → prüft nur, ob der Speicher erreichbar ist (keine Daten)
 //
-// Optional "fach": "herde" (Standard, die Kuhliste) oder "konfig" (verschlüsselte
-// Einstellungen, z.B. die Adresse des Feldbuch-Skripts). Jedes Fach hat genau
-// einen gültigen Eintrag.
+// Optional "fach": "herde" (Standard, die Kuhliste) oder "feldbuch" (Feldarbeiten,
+// Mandanten, Rechnungen – ebenfalls im Browser verschlüsselt).
+// "laden" liefert zusätzlich "version". Wer beim Speichern "erwarteteVersion"
+// mitschickt, bekommt {"konflikt":true}, falls inzwischen ein anderes Gerät
+// gespeichert hat – dann neu laden, Änderungen darauf anwenden, nochmal speichern.
+// Beim Feldbuch bleiben die letzten 30 Stände als Sicherung liegen.
 const { put, list, del } = require("@vercel/blob");
 const crypto = require("crypto");
 
@@ -26,7 +29,10 @@ const ERLAUBTE_SEITEN = new Set([
   "http://127.0.0.1:8777",
   "http://localhost:8777",
 ]);
-const FAECHER = { herde: "herde/", konfig: "konfig/" };
+const FAECHER = {
+  herde: { ordner: "herde/", behalten: 1 },
+  feldbuch: { ordner: "feldbuch/", behalten: 30 },
+};
 const MAX_GROESSE = 3_000_000;          // ~3 MB – die Liste hat ~200 KB
 
 function pruefwert(text) {
@@ -80,14 +86,15 @@ module.exports = async (req, res) => {
     }
 
     const fach = body.fach || "herde";
-    const ordner = Object.prototype.hasOwnProperty.call(FAECHER, fach) ? FAECHER[fach] : null;
-    if (!ordner) return res.status(400).json({ ok: false, fehler: "Unbekanntes Fach" });
+    const fachInfo = Object.prototype.hasOwnProperty.call(FAECHER, fach) ? FAECHER[fach] : null;
+    if (!fachInfo) return res.status(400).json({ ok: false, fehler: "Unbekanntes Fach" });
+    const ordner = fachInfo.ordner;
 
     if (body.aktion === "laden") {
       const { neuester } = await aktuellerBlob(ordner);
-      if (!neuester) return res.status(200).json({ ok: true, daten: null });
+      if (!neuester) return res.status(200).json({ ok: true, daten: null, version: null });
       const antwort = await fetch(neuester.url, { cache: "no-store" });
-      return res.status(200).json({ ok: true, daten: await antwort.json() });
+      return res.status(200).json({ ok: true, daten: await antwort.json(), version: neuester.pathname });
     }
 
     if (body.aktion === "speichern") {
@@ -97,13 +104,22 @@ module.exports = async (req, res) => {
       }
       const text = JSON.stringify(daten);
       if (text.length > MAX_GROESSE) return res.status(413).json({ ok: false, fehler: "Liste zu groß" });
+      // Hat inzwischen ein anderes Gerät gespeichert? Dann nicht überschreiben.
+      if (Object.prototype.hasOwnProperty.call(body, "erwarteteVersion")) {
+        const { neuester } = await aktuellerBlob(ordner);
+        const aktuell = neuester ? neuester.pathname : null;
+        if (aktuell !== (body.erwarteteVersion || null)) {
+          return res.status(409).json({ ok: false, konflikt: true, fehler: "Inzwischen von einem anderen Gerät geändert" });
+        }
+      }
       // Zufälliger Dateiname, damit die (verschlüsselte) Datei nicht erraten werden kann
       const neu = await put(ordner + "liste.json", text, { access: "public", addRandomSuffix: true, contentType: "application/json" });
-      // ältere Versionen löschen – es gibt immer nur EINE gültige Liste
+      // ältere Stände löschen – bei der Herde gibt es nur EINE gültige Liste,
+      // beim Feldbuch bleiben die letzten Stände als Sicherung
       const { alle } = await aktuellerBlob(ordner);
-      const alt = alle.filter((b) => b.url !== neu.url).map((b) => b.url);
+      const alt = alle.filter((b) => b.url !== neu.url).slice(fachInfo.behalten - 1).map((b) => b.url);
       if (alt.length) await del(alt);
-      return res.status(200).json({ ok: true });
+      return res.status(200).json({ ok: true, version: neu.pathname });
     }
 
     return res.status(400).json({ ok: false, fehler: "Unbekannte Aktion" });

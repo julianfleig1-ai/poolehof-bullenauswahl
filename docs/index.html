@@ -393,8 +393,22 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 }
 
 /* ===================== Feldbuch ===================== */
-.fb-tabs{grid-template-columns:repeat(4,1fr)}
-@media (max-width:760px){.fb-tabs{grid-template-columns:1fr 1fr}}
+.fb-tabs{grid-template-columns:repeat(5,1fr)}
+@media (max-width:1100px){.fb-tabs .tab small{display:none}}
+@media (max-width:760px){.fb-tabs{grid-template-columns:1fr 1fr}.fb-tabs .tab:last-child{grid-column:span 2}}
+.fb-loeschen{margin-left:auto;color:var(--warn)}
+.fb-re-knoepfe{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.fb-aw tr.storniert td{color:var(--ink-dim);text-decoration:line-through}
+.fb-aw tr.storniert td:last-child{text-decoration:none}
+.re-storno{font-family:"IBM Plex Sans",Arial,sans-serif;font-size:15px;color:#b3261e;border:2px solid #b3261e;border-radius:4px;padding:1px 8px;margin-left:10px;vertical-align:middle}
+.fb-st-firma{border:1px solid var(--border);border-radius:12px;padding:4px 14px;margin:8px 0;background:var(--surface)}
+.fb-st-firma summary{cursor:pointer;padding:9px 0;font-weight:600}
+#fbStMandanten table{min-width:0!important;table-layout:auto}
+#fbStMandanten td{white-space:normal;word-break:break-word}
+#fbStMandanten td:last-child{width:1%;white-space:nowrap}
+.fb-notizen{margin:14px 16px 4px;font-size:13.5px}
+.fb-notizen summary{cursor:pointer;color:var(--ink-dim)}
+.fb-notizen li{margin:4px 0}
 .fb-card{padding:18px 18px 16px}
 .fb-card h2{font-size:19px;font-weight:600;margin-bottom:10px}
 .fb-sprach{display:flex;gap:10px;align-items:stretch}
@@ -570,15 +584,14 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 </section>
 
 <!-- ===================== Feldbuch ===================== -->
-<!-- Die Daten liegen im Google Sheet "Poolehof Feldbuch" in Julians Google Drive,
-     NICHT auf GitHub. Die App spricht über ein Google-Skript mit dem Sheet. -->
+<!-- Die Daten liegen verschlüsselt im Hof-Speicher (Vercel), NICHT auf GitHub. -->
 <section id="viewFeld" class="view" hidden>
   <div class="wrap">
     <header class="top">
       <div class="brand"><div>
         <div class="kicker">Poolehof</div>
         <h1>Feldbuch</h1>
-        <p class="sub">Feldarbeiten eintragen – auch per Sprache –, Rechnungen per Klick und Auswertungen. Alles landet im Google Sheet „Poolehof Feldbuch“.</p>
+        <p class="sub">Feldarbeiten eintragen – auch per Sprache –, Rechnungen per Klick und Auswertungen. Eine zentrale Liste für alle Geräte – verschlüsselt mit dem Hof-Passwort.</p>
       </div></div>
       <div class="top-actions"><div class="refresh-line">
         <span id="fbStandZeile"></span>
@@ -593,6 +606,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
       <button class="tab" role="tab" data-fbtab="liste" id="fbTabListe"><span class="tab-icon">📋</span><span><b>Liste</b><small>alle Feldarbeiten</small></span></button>
       <button class="tab" role="tab" data-fbtab="rechnung" id="fbTabRechnung"><span class="tab-icon">🧾</span><span><b>Rechnung</b><small>per Klick erstellen</small></span></button>
       <button class="tab" role="tab" data-fbtab="auswertung" id="fbTabAuswertung"><span class="tab-icon">📊</span><span><b>Auswertung</b><small>z. B. ha Mais gesät</small></span></button>
+      <button class="tab" role="tab" data-fbtab="stamm" id="fbTabStamm"><span class="tab-icon">🏠</span><span><b>Stammdaten</b><small>Firmen, Mandanten, Sicherung</small></span></button>
     </nav>
 
     <!-- Eintragen -->
@@ -641,6 +655,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         </table>
       </div>
       <p class="bs-note">Auf eine Zeile tippen zum Bearbeiten. Gelb = beim Übertragen der alten Liste unklar geblieben, bitte prüfen.</p>
+      <details class="fb-notizen" id="fbNotizenBox" hidden><summary id="fbNotizenTitel">Notizen aus der alten Liste</summary><ul id="fbNotizen"></ul></details>
     </section>
 
     <!-- Rechnung -->
@@ -671,6 +686,22 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
         <label>Flächen<select id="fbAwWer"><option value="alle">eigene + Lohnarbeit</option><option value="eigen">nur eigene</option><option value="fremd">nur Lohnarbeit</option></select></label>
       </div>
       <div id="fbAwInhalt"></div>
+    </section>
+
+    <!-- Stammdaten -->
+    <section id="fbStamm" class="panel fb-card" hidden>
+      <h2>Firmen</h2>
+      <p class="bs-help">Absender, Steuernummer und Bankdaten für die Rechnungen. „Letzte Rechnungs-Nr.“ = die zuletzt vergebene Nummer dieser Firma (z. B. 2026-014) – die nächste Rechnung bekommt automatisch die folgende.</p>
+      <div id="fbStFirmen"></div>
+      <h3 class="fb-zwischen">Mandanten</h3>
+      <div id="fbStMandanten"></div>
+      <button class="btn small" type="button" id="fbStMandantNeu" style="margin-top:8px">+ Neuer Mandant</button>
+      <h3 class="fb-zwischen">Sicherung</h3>
+      <p class="bs-help">Das Feldbuch liegt verschlüsselt im Hof-Speicher, die letzten 30 Stände werden dort aufbewahrt. Zusätzlich lässt sich hier jederzeit eine Kopie herunterladen (z. B. für Excel oder den Steuerberater).</p>
+      <div class="fb-form-knoepfe" style="flex-wrap:wrap">
+        <button class="btn" type="button" id="fbExportCsv">⬇ Feldarbeiten für Excel (CSV)</button>
+        <button class="btn" type="button" id="fbExportJson">⬇ Komplette Sicherung (JSON)</button>
+      </div>
     </section>
 
     <!-- Auswahllisten für die Eingabefelder -->
@@ -2430,7 +2461,13 @@ async function hsEntschluesseln(umschlag){
 
 // Text-Body ohne eigene Header = "einfache" Anfrage, der Browser braucht keine CORS-Vorabfrage
 async function hsAnfrage(nutzlast){
-  const r = await fetch(HOF_SPEICHER_URL, {method: "POST", body: JSON.stringify(nutzlast), cache: "no-store"});
+  // Zeitgrenze: im Funkloch hängt eine Anfrage sonst ewig
+  const abbruch = new AbortController();
+  const timer = setTimeout(() => abbruch.abort(), 30000);
+  let r;
+  try { r = await fetch(HOF_SPEICHER_URL, {method: "POST", body: JSON.stringify(nutzlast), cache: "no-store", signal: abbruch.signal}); }
+  catch(e) { throw new Error(e.name === "AbortError" ? "keine Verbindung (Zeitüberschreitung)" : "keine Verbindung"); }
+  finally { clearTimeout(timer); }
   let j = null;
   try { j = await r.json(); } catch(e) {}
   if (!j) throw new Error("keine gültige Antwort (HTTP " + r.status + ")");
@@ -2539,31 +2576,39 @@ hsAbgleichen();          // neuere Liste von einem anderen Gerät holen (falls v
 // ======================================================================
 // Feldbuch
 //
-// Die Feldarbeiten liegen im Google Sheet "Poolehof Feldbuch" in Julians
-// Google Drive (nicht auf GitHub). Die App spricht über ein kleines
-// Google-Skript mit dem Sheet (Code: feldbuch-skript/Code.gs), geschützt mit
-// dem Hof-Passwort. Die Adresse des Skripts steht NICHT im öffentlichen Code:
-// Sie wird einmal eingerichtet und dann verschlüsselt im Hof-Speicher abgelegt,
-// sodass jedes Gerät sie nach der Passwort-Eingabe automatisch bekommt.
+// Die Feldarbeiten (mit Mandanten, Firmen, Preisen, Rechnungen) sind EINE
+// Liste, die zentral im Hof-Speicher liegt – verschlüsselt mit dem
+// Hof-Passwort, genau wie die Kuhliste. Auf GitHub steht nur der Code, nie
+// die Daten. Jedes Gerät sieht nach der Passwort-Eingabe dieselbe Liste.
 //
-// Eintragen funktioniert auch ohne Netz: Einträge kommen erst in eine
-// Warteschlange auf dem Gerät und werden übertragen, sobald es wieder geht.
+// Änderungen (neuer Eintrag, Bearbeiten, Rechnung …) werden als kleine
+// "Änderungsaufträge" gesammelt und auf den neuesten Stand im Speicher
+// angewendet. Hat inzwischen ein anderes Gerät gespeichert, wird neu geladen
+// und nochmal angewendet – so geht nichts verloren. Ohne Netz bleiben die
+// Aufträge auf dem Gerät und werden später übertragen.
 // ======================================================================
-const FB_URL_KEY = "poolehof-feldbuch-url-v1";
-const FB_CACHE_KEY = "poolehof-feldbuch-cache-v1";
-const FB_QUEUE_KEY = "poolehof-feldbuch-warteschlange-v1";
+const FB_DATEN_KEY = "poolehof-feldbuch-daten-v2";        // zuletzt geladener Stand {daten, version}
+const FB_OPS_KEY = "poolehof-feldbuch-aenderungen-v1";    // noch nicht übertragene Änderungen
 const FB_TAB_KEY = "poolehof-feldbuch-tab-v1";
-const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung"];
+const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung", "stamm"];
 const FB_FELDER = ["Datum", "Mandant", "Tätigkeit", "Kultur", "Ort / Schlag", "Menge", "Einheit", "Stunden", "Mittel / Dünger", "Bemerkung"];
+const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Letzte Rechnungs-Nr."];
+const FB_MANDANT_FELDER = ["Kurzname", "Name", "Straße", "PLZ Ort", "Notiz"];
+const FB_STANDARD_LISTEN = {
+  "Tätigkeiten": ["Pflügen", "Grubbern", "Eggen", "Striegeln", "Walzen", "Mulchen", "Säen", "Düngen", "Kalken", "Gülle fahren", "Mist streuen",
+                  "Pflanzenschutz", "Mähen", "Kreiseln", "Schwaden", "Häckseln", "Pressen", "Ballen fahren", "Dreschen", "Transport", "Silo walzen",
+                  "Maschinenmiete", "Sonstiges"],
+  "Kulturen": ["Mais", "Winterweizen", "Triticale", "Wintergerste", "Sommergerste", "Getreide", "Raps", "Grünland", "Silphie", "Zwischenfrucht", "Sonstige"],
+  "Einheiten": ["ha", "m³", "h", "Ballen", "t", "dt", "l", "kg", "Wagen", "Fass", "Stück", "pauschal"],
+};
 
 function lsLesen(k){ try { return localStorage.getItem(k); } catch(e) { return null; } }
 function lsJson(k){ try { return JSON.parse(localStorage.getItem(k) || "null"); } catch(e) { return null; } }
 function lsSchreiben(k, v){ try { if (v === null || v === undefined) localStorage.removeItem(k); else localStorage.setItem(k, typeof v === "string" ? v : JSON.stringify(v)); } catch(e) {} }
 
-let fbUrl = (/^(127\.0\.0\.1|localhost)$/.test(location.hostname) && new URLSearchParams(location.search).get("feldbuch"))  // nur zum lokalen Testen
-  || lsLesen(FB_URL_KEY) || "";
-let fbDaten = lsJson(FB_CACHE_KEY);          // letzter Stand aus dem Sheet (für unterwegs)
-let fbQueue = lsJson(FB_QUEUE_KEY) || [];    // noch nicht übertragene Einträge
+let fbGeladen = lsJson(FB_DATEN_KEY);        // {daten, version} – letzter Stand aus dem Hof-Speicher
+let fbOps = lsJson(FB_OPS_KEY) || [];        // eigene, noch nicht übertragene Änderungen
+let fbDaten = null;                          // Anzeige = geladener Stand + eigene offene Änderungen
 let fbStatus = {zustand: "start"};
 let fbTab = lsLesen(FB_TAB_KEY) || "eintragen";
 
@@ -2579,106 +2624,205 @@ function fbHeuteIso(){ const d = new Date(); return `${d.getFullYear()}-${String
 function fbDatumAnzeige(iso){ if (!iso) return ""; const t = String(iso).slice(0, 10).split("-"); return t.length === 3 ? `${t[2]}.${t[1]}.${t[0]}` : iso; }
 function fbArbeiten(){ return (fbDaten && fbDaten.feldarbeiten) || []; }
 function fbIstEigen(m){ return !m || /^eigen$/i.test(String(m).trim()); }
+function fbKopie(x){ return JSON.parse(JSON.stringify(x)); }
+function fbJetztText(){ return new Date().toLocaleString("de-DE", {dateStyle: "short", timeStyle: "short"}); }
+function fbNeueId(){ return "F" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
-// --- Verbindung --------------------------------------------------------
-async function fbAnfrage(nutzlast){
-  if (!fbUrl) throw new Error("Feldbuch noch nicht eingerichtet");
-  if (!hsZugang) throw new Error("Hof-Passwort fehlt");
-  const abbruch = new AbortController();
-  const timer = setTimeout(() => abbruch.abort(), 30000);
-  try {
-    const r = await fetch(fbUrl, {method: "POST", body: JSON.stringify({...nutzlast, schluessel: hsZugang.auth}),
-                                  cache: "no-store", signal: abbruch.signal, redirect: "follow"});
-    const j = await r.json();
-    if (!j.ok) throw new Error(j.fehler || "Fehler im Google-Skript");
-    return j;
-  } catch(e) {
-    if (e.name === "AbortError") throw new Error("Zeitüberschreitung – Google Sheet antwortet nicht");
-    throw e;
-  } finally { clearTimeout(timer); }
+function fbLeer(){
+  return {v: 1, feldarbeiten: [], notizen: [], preise: [], rechnungen: [], listen: fbKopie(FB_STANDARD_LISTEN),
+    mandanten: [{Kurzname: "Eigen", Name: "Eigene Flächen", "Straße": "", "PLZ Ort": "", Notiz: "wird nie abgerechnet"}],
+    firmen: [{Firma: "Poolehof", "Letzte Rechnungs-Nr.": ""}]};
 }
 
-async function fbLaden(){
-  if (!fbUrl || !hsZugang) { fbRenderAlles(); return; }
-  fbStatus = {zustand: "laedt"}; fbRenderVerbindung();
-  try {
-    await fbQueueSenden(false);
-    const j = await fbAnfrage({aktion: "laden"});
-    fbDaten = j.daten;
-    lsSchreiben(FB_CACHE_KEY, fbDaten);
-    fbStatus = {zustand: "ok", zeit: new Date()};
-  } catch(e) {
-    fbStatus = {zustand: "fehler", text: e.message};
+// --- Änderungen anwenden ---------------------------------------------------
+function fbNaechsteNrVon(firma, datum){
+  const jahr = Number(String(datum || fbHeuteIso()).slice(0, 4));
+  const m = String((firma && firma["Letzte Rechnungs-Nr."]) || "").match(/^(\d{4})-(\d+)$/);
+  const n = m && Number(m[1]) === jahr ? Number(m[2]) + 1 : 1;
+  return `${jahr}-${String(n).padStart(3, "0")}`;
+}
+function fbRechnungAnwenden(d, a){
+  if (fbIstEigen(a.mandant)) throw new Error("Eigene Arbeiten werden nicht abgerechnet");
+  const firma = d.firmen.find(f => f.Firma === a.firma);
+  if (!firma) throw new Error(`Firma „${a.firma}“ fehlt in den Stammdaten`);
+  const pos = fbKopie(a.positionen || []);
+  if (!pos.length) throw new Error("Keine Positionen ausgewählt");
+  pos.forEach(p => {
+    const z = d.feldarbeiten.find(x => x.ID === p.id);
+    if (!z) throw new Error("Eine ausgewählte Arbeit wurde inzwischen gelöscht");
+    if (z.Rechnung) throw new Error(`Eine Arbeit ist inzwischen schon abgerechnet (Rechnung ${z.Rechnung})`);
+  });
+  const nr = fbNaechsteNrVon(firma, a.datum);
+  let netto = 0;
+  pos.forEach(p => { p.menge = Number(p.menge) || 0; p.preis = Number(p.preis) || 0; p.betrag = Math.round(p.menge * p.preis * 100) / 100; netto += p.betrag; });
+  netto = Math.round(netto * 100) / 100;
+  const satz = a.mwst === undefined || a.mwst === null ? 0.19 : Number(a.mwst);
+  const mwst = Math.round(netto * satz * 100) / 100, brutto = Math.round((netto + mwst) * 100) / 100;
+  firma["Letzte Rechnungs-Nr."] = nr;
+  d.rechnungen.push({"Rechnungs-Nr.": nr, Firma: a.firma, Datum: a.datum, Mandant: a.mandant, Netto: netto, "MwSt-Satz": satz, MwSt: mwst, Brutto: brutto,
+                     Positionen: pos, Erstellt: a.zeit, Status: ""});
+  pos.forEach(p => {
+    const z = d.feldarbeiten.find(x => x.ID === p.id);
+    z.Rechnung = nr; z["Rechnung Firma"] = a.firma;
+    if (!p.taetigkeit || !p.einheit) return;
+    const alt = d.preise.find(x => x["Tätigkeit"] === p.taetigkeit && x.Einheit === p.einheit && x.Mandant === a.mandant);
+    if (alt) Object.assign(alt, {"Preis (€)": p.preis, Stand: a.zeit});
+    else d.preise.push({"Tätigkeit": p.taetigkeit, Einheit: p.einheit, Mandant: a.mandant, "Preis (€)": p.preis, Stand: a.zeit});
+  });
+  return {nr, datum: a.datum, firma: fbKopie(firma), mandant: fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant}),
+          positionen: pos, netto, mwstSatz: satz, mwst, brutto};
+}
+function fbAnwenden(d, op){
+  switch (op.typ){
+    case "import":
+      if (d.feldarbeiten.length) throw new Error("Das Feldbuch hat schon Einträge – Startdaten gehen nur in ein leeres Feldbuch");
+      Object.assign(d, fbKopie(op.daten));
+      return null;
+    case "neu":
+      if (!d.feldarbeiten.some(a => a.ID === op.eintrag.ID)) d.feldarbeiten.push(fbKopie(op.eintrag));
+      return null;
+    case "aendern": {
+      const a = d.feldarbeiten.find(x => x.ID === op.id);
+      if (!a) throw new Error("Eintrag wurde inzwischen gelöscht");
+      Object.assign(a, op.felder, {"Geändert": op.zeit});
+      return null;
+    }
+    case "loeschen": {
+      const a = d.feldarbeiten.find(x => x.ID === op.id);
+      if (a && a.Rechnung) throw new Error("Abgerechnete Arbeiten können nicht gelöscht werden");
+      d.feldarbeiten = d.feldarbeiten.filter(x => x.ID !== op.id);
+      return null;
+    }
+    case "mandant": {
+      const m = d.mandanten.find(x => x.Kurzname === op.mandant.Kurzname);
+      if (m) Object.assign(m, op.mandant); else d.mandanten.push(fbKopie(op.mandant));
+      return null;
+    }
+    case "firma": {
+      const f = d.firmen.find(x => x.Firma === (op.alt || op.felder.Firma));
+      if (f) Object.assign(f, op.felder); else d.firmen.push(fbKopie(op.felder));
+      if (op.alt && op.felder.Firma && op.alt !== op.felder.Firma)
+        d.rechnungen.forEach(r => { if (r.Firma === op.alt) r.Firma = op.felder.Firma; });
+      return null;
+    }
+    case "rechnung":
+      return fbRechnungAnwenden(d, op);
+    case "storno": {
+      const r = d.rechnungen.find(x => x["Rechnungs-Nr."] === op.nr && x.Firma === op.firma);
+      if (!r) throw new Error("Rechnung nicht gefunden");
+      r.Status = "storniert"; r.Storniert = op.zeit;
+      (r.Positionen || []).forEach(p => {
+        const z = d.feldarbeiten.find(x => x.ID === p.id);
+        if (z && z.Rechnung === op.nr) { z.Rechnung = ""; z["Rechnung Firma"] = ""; }
+      });
+      return null;
+    }
   }
+  throw new Error("Unbekannte Änderung");
+}
+
+// Anzeige: geladener Stand + alles, was dieses Gerät noch nicht übertragen hat
+function fbSichtBerechnen(){
+  const basis = fbGeladen && fbGeladen.daten;
+  if (!basis && !fbOps.length){ fbDaten = null; return; }
+  const d = basis ? fbKopie(basis) : fbLeer();
+  const wartend = new Set();
+  fbOps.forEach(op => { try { fbAnwenden(d, op); if (op.typ === "neu") wartend.add(op.eintrag.ID); } catch(e) {} });
+  d.feldarbeiten.forEach(a => { if (wartend.has(a.ID)) a.__wartet = true; });
+  fbDaten = d;
+}
+
+// --- Abgleich mit dem Hof-Speicher -----------------------------------------
+let fbSyncLaeuft = null;
+function fbSync(){
+  if (!HOF_SPEICHER_URL || !hsZugang) return Promise.resolve();
+  if (fbSyncLaeuft) return fbSyncLaeuft;
+  fbSyncLaeuft = (async () => {
+    fbStatus = {...fbStatus, zustand: "laedt"}; fbRenderVerbindung();
+    try {
+      let fertig = false;
+      for (let versuch = 0; versuch < 6 && !fertig; versuch++){
+        const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth});
+        if (!j.ok){
+          if (/passwort/i.test(j.fehler || "")){ hsZugang = null; hsSpeichereZugang(); }
+          throw new Error(j.fehler || "Fehler beim Laden");
+        }
+        const daten = j.daten ? await hsEntschluesseln(j.daten) : null;
+        if (!fbOps.length){ fbGeladen = {daten, version: j.version || null}; fertig = true; break; }
+        const ops = fbOps.slice();
+        const neu = daten ? fbKopie(daten) : fbLeer();
+        ops.forEach(op => { try { op.ergebnis = fbAnwenden(neu, op); delete op.fehler; } catch(e) { op.fehler = e.message; } });
+        neu.stand = new Date().toISOString();
+        const s = await hsAnfrage({aktion: "speichern", fach: "feldbuch", schluessel: hsZugang.auth,
+                                   daten: await hsVerschluesseln({...neu, hochgeladen: neu.stand}), erwarteteVersion: j.version || null});
+        if (s.konflikt) continue;                 // anderes Gerät war schneller → neu laden, nochmal
+        if (!s.ok) throw new Error(s.fehler || "Speichern fehlgeschlagen");
+        fbOps = fbOps.filter(op => !ops.includes(op));
+        fbGeladen = {daten: neu, version: s.version || null};
+        fertig = true;
+      }
+      if (!fertig) throw new Error("Zu viele gleichzeitige Änderungen – bitte gleich nochmal");
+      lsSchreiben(FB_DATEN_KEY, fbGeladen);
+      fbStatus = {zustand: "ok", zeit: new Date(), leer: !fbGeladen.daten};
+    } catch(e) {
+      fbStatus = {zustand: "fehler", text: e.message};
+    } finally {
+      lsSchreiben(FB_OPS_KEY, fbOps);
+      fbSyncLaeuft = null;
+      fbSichtBerechnen();
+      fbRenderAlles();
+    }
+  })();
+  return fbSyncLaeuft;
+}
+
+// Änderung merken (geht auch ohne Netz) und im Hintergrund übertragen
+function fbAendern(op){
+  op.zeit = op.zeit || fbJetztText();
+  fbOps.push(op);
+  lsSchreiben(FB_OPS_KEY, fbOps);
+  fbSichtBerechnen();
   fbRenderAlles();
+  return fbSync().then(() => !fbOps.includes(op));   // true = schon im Hof-Speicher
 }
-
-// Einträge aus der Warteschlange ans Sheet schicken
-async function fbQueueSenden(neuLaden = true){
-  if (!fbQueue.length || !fbUrl || !hsZugang) return;
-  const j = await fbAnfrage({aktion: "eintragen", eintraege: fbQueue.map(q => q.eintrag)});
-  const erledigt = new Set([...(j.ergebnis.neu || []), ...(j.ergebnis.schonDa || [])]);
-  fbQueue = fbQueue.filter(q => !erledigt.has(q.eintrag.ID));
-  lsSchreiben(FB_QUEUE_KEY, fbQueue);
-  if (neuLaden) await fbLaden();
-}
-
-// Adresse des Google-Skripts im Hof-Speicher ablegen bzw. von dort holen
-async function fbKonfigHolen(){
-  try {
-    const j = await hsAnfrage({aktion: "laden", fach: "konfig", schluessel: hsZugang.auth});
-    if (!j.ok || !j.daten) return null;
-    return await hsEntschluesseln(j.daten);
-  } catch(e) { return null; }
-}
-async function fbKonfigSichern(konfig){
-  const umschlag = await hsVerschluesseln({...konfig, hochgeladen: new Date().toISOString()});
-  const j = await hsAnfrage({aktion: "speichern", fach: "konfig", schluessel: hsZugang.auth, daten: umschlag});
-  if (!j.ok) throw new Error(j.fehler || "Speichern fehlgeschlagen");
-}
-
-async function fbStart(){
-  if (hsZugang && !fbUrl && HOF_SPEICHER_URL){
-    const konfig = await fbKonfigHolen();
-    if (konfig && konfig.feldbuchUrl){ fbUrl = konfig.feldbuchUrl; lsSchreiben(FB_URL_KEY, fbUrl); }
+// Änderung, die sofort gelten muss (Rechnung, Storno): nur mit Netz
+async function fbSofort(op){
+  op.zeit = op.zeit || fbJetztText();
+  if (fbSyncLaeuft) await fbSyncLaeuft;
+  fbOps.push(op);
+  await fbSync();
+  if (fbOps.includes(op)){
+    fbOps = fbOps.filter(x => x !== op); lsSchreiben(FB_OPS_KEY, fbOps); fbSichtBerechnen(); fbRenderAlles();
+    throw new Error(fbStatus.text || "Hof-Speicher nicht erreichbar");
   }
-  fbRenderAlles();
-  if (fbUrl && hsZugang) fbLaden();
+  if (op.fehler) throw new Error(op.fehler);
+  return op.ergebnis;
 }
 
-async function fbEinrichten(e){
-  e.preventDefault();
-  const meldung = $fb("fbEinrichtenMeldung");
-  const url = $fb("fbSkriptUrl").value.trim();
-  const lokalerTest = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && /^http:\/\/127\.0\.0\.1:\d+\//.test(url);
-  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(url) && !lokalerTest){ meldung.textContent = "Das sieht nicht nach einer Google-Skript-Adresse aus (beginnt mit https://script.google.com/…)."; return; }
-  meldung.textContent = "Teste die Verbindung …";
-  const vorher = fbUrl; fbUrl = url;
-  try {
-    const j = await fbAnfrage({aktion: "laden"});
-    fbDaten = j.daten; lsSchreiben(FB_CACHE_KEY, fbDaten);
-    lsSchreiben(FB_URL_KEY, fbUrl);
-    try { await fbKonfigSichern({feldbuchUrl: fbUrl}); } catch(err) { /* lokal reicht notfalls */ }
-    fbStatus = {zustand: "ok", zeit: new Date()};
-    fbRenderAlles();
-  } catch(err) {
-    fbUrl = vorher;
-    meldung.textContent = "Verbindung klappt nicht: " + err.message;
-  }
-}
-
+// --- Verbindung / Startdaten -----------------------------------------------
 async function fbPasswortVerbinden(e){
   e.preventDefault();
   const meldung = $fb("fbPwMeldung");
   meldung.textContent = "Verbinde …";
   try {
     const zugang = await hsZugangAusPasswort($fb("fbPasswort").value);
-    const j = await hsAnfrage({aktion: "laden", schluessel: zugang.auth});
+    const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: zugang.auth});
     if (!j.ok){ meldung.textContent = /passwort/i.test(j.fehler || "") ? "Passwort falsch." : (j.fehler || "Fehler"); return; }
     hsZugang = zugang; hsSpeichereZugang();
     hsAbgleichen();          // Kuhliste gleich mit holen
-    fbStart();
+    fbSync();
   } catch(err) { meldung.textContent = "Nicht erreichbar: " + err.message; }
+}
+
+async function fbStartdatenDatei(datei){
+  const meldung = $fb("fbImportMeldung");
+  try {
+    const inhalt = JSON.parse(await datei.text());
+    if (inhalt.art !== "poolehof-feldbuch-startdaten" || !Array.isArray(inhalt.feldarbeiten)) throw new Error("Das ist keine Feldbuch-Startdaten-Datei");
+    const {art, ...daten} = inhalt;
+    meldung.textContent = `Übernehme ${daten.feldarbeiten.length} Feldarbeiten und ${(daten.mandanten || []).length} Mandanten …`;
+    await fbSofort({typ: "import", daten: {...fbLeer(), ...daten}});
+  } catch(err) { meldung.textContent = "Nicht übernommen: " + err.message; }
 }
 
 function fbRenderVerbindung(){
@@ -2687,7 +2831,7 @@ function fbRenderVerbindung(){
   if (!hsZugang){
     stand.textContent = "";
     el.innerHTML = `<div class="bs-hof"><div class="bs-hof-titel">🔒 Feldbuch öffnen</div>
-      <div class="bs-help">Einmal das Hof-Passwort eingeben (dasselbe wie bei der Kuhliste).</div>
+      <div class="bs-help">Einmal das Hof-Passwort eingeben (dasselbe wie bei der Kuhliste) – dann ist das Feldbuch auf diesem Gerät da.</div>
       <form id="fbPwForm" class="bs-hof-form" method="post" action="#">
         <input type="text" name="username" autocomplete="username" value="Poolehof" class="nur-fuer-browser" tabindex="-1" aria-hidden="true">
         <input type="password" name="password" id="fbPasswort" autocomplete="current-password" placeholder="Hof-Passwort" required>
@@ -2696,29 +2840,25 @@ function fbRenderVerbindung(){
     $fb("fbPwForm").addEventListener("submit", fbPasswortVerbinden);
     return;
   }
-  if (!fbUrl){
-    stand.textContent = "";
-    el.innerHTML = `<div class="bs-hof"><div class="bs-hof-titel">⚙ Einmalig einrichten: Verbindung zum Google Sheet</div>
-      <ol class="fb-schritte">
-        <li>Im Google Drive im Ordner <b>„Poolehof Feldbuch“</b> die Datei <b>„Poolehof Feldbuch.xlsx“</b> öffnen → <b>Datei → Als Google Tabellen speichern</b>. Im neuen Google Sheet: <b>Erweiterungen → Apps Script</b>.</li>
-        <li>Den Inhalt der Datei <b>„Feldbuch-Skript (in Apps Script einfügen).txt“</b> (liegt im selben Drive-Ordner) komplett einfügen, alten Inhalt ersetzen, speichern.</li>
-        <li><b>Bereitstellen → Neue Bereitstellung → Web-App</b>, „Ausführen als: Ich“, „Zugriff: Jeder“ → Bereitstellen, Zugriff erlauben.</li>
-        <li>Die angezeigte <b>Web-App-URL</b> hier einfügen. Das muss nur an einem Gerät passieren – die anderen bekommen sie automatisch.</li>
-      </ol>
-      <form id="fbEinrichtenForm" class="bs-hof-form">
-        <input id="fbSkriptUrl" type="url" placeholder="https://script.google.com/macros/s/…/exec" required>
-        <button class="btn primary small" type="submit">Verbinden</button>
-      </form><div id="fbEinrichtenMeldung" class="bs-hof-meldung"></div></div>`;
-    $fb("fbEinrichtenForm").addEventListener("submit", fbEinrichten);
-    return;
-  }
-  const warteschlange = fbQueue.length ? ` · ${fbQueue.length} ${fbQueue.length === 1 ? "Eintrag wartet" : "Einträge warten"} auf Übertragung` : "";
-  if (fbStatus.zustand === "laedt") stand.textContent = "Lade aus dem Google Sheet …";
-  else if (fbStatus.zustand === "ok") stand.textContent = `✓ Google Sheet · Stand ${fbStatus.zeit.toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"})}${warteschlange}`;
+  const n = fbOps.length;
+  const warteschlange = n ? ` · ${n} ${n === 1 ? "Änderung wartet" : "Änderungen warten"} auf Übertragung` : "";
+  if (fbStatus.zustand === "laedt") stand.textContent = "Gleiche ab …" + warteschlange;
+  else if (fbStatus.zustand === "ok") stand.textContent = `✓ Hof-Speicher · Stand ${fbStatus.zeit.toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"})}${warteschlange}`;
   else stand.textContent = fbDaten ? `Gespeicherter Stand${warteschlange}` : "";
-  el.innerHTML = fbStatus.zustand === "fehler"
-    ? `<div class="bs-status warn">Google Sheet gerade nicht erreichbar (${esc(fbStatus.text)}). ${fbDaten ? "Es wird der zuletzt geladene Stand angezeigt." : ""} Neue Einträge werden auf diesem Gerät gesammelt und später übertragen.</div>`
-    : "";
+
+  if (fbStatus.zustand === "fehler"){
+    el.innerHTML = `<div class="bs-status warn">Hof-Speicher gerade nicht erreichbar: ${esc(fbStatus.text)}. ${fbDaten ? "Es wird der zuletzt geladene Stand angezeigt." : ""} Neue Einträge werden auf diesem Gerät gesammelt und später übertragen.</div>`;
+  } else if (fbStatus.zustand === "ok" && fbStatus.leer && !fbOps.length){
+    el.innerHTML = `<div class="bs-hof"><div class="bs-hof-titel">📦 Das Feldbuch ist noch leer</div>
+      <div class="bs-help">Einmalig die Startdaten übernehmen: die bereinigte Liste 2026, die Mandanten mit Adressen und die Firmen.
+        Datei <b>„Feldbuch Startdaten.json“</b> auswählen – sie liegt in Google Drive im Ordner „Poolehof Feldbuch“ (am Handy über „Dateien“ erreichbar).</div>
+      <div class="bs-hof-form">
+        <label class="btn primary small" style="cursor:pointer">Datei auswählen<input type="file" id="fbImportDatei" accept=".json,application/json" hidden></label>
+        <button class="btn small" type="button" id="fbLeerStart">Ohne Startdaten beginnen</button>
+      </div><div id="fbImportMeldung" class="bs-hof-meldung"></div></div>`;
+    $fb("fbImportDatei").addEventListener("change", ev => { if (ev.target.files[0]) fbStartdatenDatei(ev.target.files[0]); });
+    $fb("fbLeerStart").addEventListener("click", () => { if (confirm("Mit einem leeren Feldbuch beginnen? (Startdaten lassen sich danach nicht mehr übernehmen.)")) fbSofort({typ: "import", daten: fbLeer()}).catch(err => alert(err.message)); });
+  } else el.innerHTML = "";
 }
 
 // --- Eingabe verstehen (Sprache oder Text) -------------------------------
@@ -2914,7 +3054,6 @@ function fbTextAuswerten(){
     : "";
 }
 
-function fbNeueId(){ return "F" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
 async function fbSpeichern(e){
   e.preventDefault();
@@ -2925,25 +3064,18 @@ async function fbSpeichern(e){
   ["Menge", "Stunden"].forEach(n => { if (eintrag[n]) eintrag[n] = String(fbZahl(eintrag[n]) ?? eintrag[n]); });
   const text = $fb("fbText").value.trim();
   if (text) eintrag["Original (alt)"] = "Spracheingabe: " + text;
-  eintrag["Erfasst"] = new Date().toLocaleString("de-DE", {dateStyle: "short", timeStyle: "short"}) + " · App";
+  eintrag["Erfasst"] = fbJetztText();
 
-  fbQueue.push({eintrag, zeit: Date.now()});
-  lsSchreiben(FB_QUEUE_KEY, fbQueue);
   const kurz = `${fbDatumAnzeige(eintrag.Datum)} · ${eintrag["Tätigkeit"]}${eintrag.Kultur ? " " + eintrag.Kultur : ""}${eintrag.Menge ? " · " + eintrag.Menge + " " + (eintrag.Einheit || "") : ""}${fbIstEigen(eintrag.Mandant) ? "" : " · für " + eintrag.Mandant}`;
   fbFormularLeeren();
   const meldung = document.createElement("div");
   meldung.className = "bs-status";
   meldung.textContent = "⏳ " + kurz + " – wird übertragen …";
   $fb("fbGespeichert").prepend(meldung);
-  try {
-    await fbQueueSenden(true);
-    meldung.className = "bs-status ok";
-    meldung.textContent = "✓ Im Feldbuch gespeichert: " + kurz;
-  } catch(err) {
-    meldung.className = "bs-status warn";
-    meldung.textContent = "📥 Auf dem Gerät gespeichert, wird übertragen, sobald das Google Sheet erreichbar ist: " + kurz;
-    fbRenderAlles();
-  }
+  const uebertragen = await fbAendern({typ: "neu", eintrag});
+  meldung.className = uebertragen ? "bs-status ok" : "bs-status warn";
+  meldung.textContent = uebertragen ? "✓ Im Feldbuch gespeichert: " + kurz
+    : "📥 Auf dem Gerät gespeichert, wird übertragen, sobald wieder Netz da ist: " + kurz;
 }
 
 // Spracheingabe: Chrome/Android und Safari können das direkt im Browser.
@@ -3013,8 +3145,8 @@ function fbRenderListe(){
   const q = $fb("fbSuche").value.trim().toLowerCase();
   const jahr = jahrSel.value, mand = $fb("fbFilterMandant").value, taet = $fb("fbFilterTaetigkeit").value;
   const nurOffen = $fb("fbNurOffen").checked, nurPruefen = $fb("fbNurPruefen").checked;
-  const wartend = fbQueue.map(x => ({...x.eintrag, __wartet: true}));
-  const zeilen = [...wartend, ...fbArbeiten()].filter(a => {
+  const wartend = fbArbeiten().filter(a => a.__wartet);
+  const zeilen = fbArbeiten().filter(a => {
     if (jahr && !String(a.Datum || "").startsWith(jahr)) return false;
     if (mand && a.Mandant !== mand) return false;
     if (taet && a["Tätigkeit"] !== taet) return false;
@@ -3023,6 +3155,10 @@ function fbRenderListe(){
     if (q && !Object.values(a).some(v => String(v).toLowerCase().includes(q))) return false;
     return true;
   }).sort((a, b) => String(b.Datum).localeCompare(String(a.Datum)) || String(b.ID).localeCompare(String(a.ID)));
+  const notizen = (fbDaten && fbDaten.notizen) || [];
+  $fb("fbNotizenBox").hidden = !notizen.length;
+  $fb("fbNotizenTitel").textContent = `Notizen aus der alten Liste (${notizen.length})`;
+  $fb("fbNotizen").innerHTML = notizen.map(n => `<li><b>${esc(n[1] || "")}</b> ${esc(n[2] || "")} <span class="bs-erkannt">(${esc(n[0] || "")})</span></li>`).join("");
   $fb("fbListeInfo").textContent = `${zeilen.length} Einträge${wartend.length ? ` · ${wartend.length} warten noch auf Übertragung` : ""}`;
   $fb("fbListeBody").innerHTML = zeilen.map(a => `<tr data-id="${esc(a.ID)}" class="${a.__wartet ? "wartet" : a["Prüfen"] ? "pruefen" : ""}" title="${esc(a["Prüfen"] || "")}">
       <td class="num">${esc(fbDatumAnzeige(a.Datum))}</td><td>${esc(a.Mandant || "")}</td><td>${esc(a["Tätigkeit"] || "")}</td>
@@ -3049,15 +3185,21 @@ function fbBearbeiten(id){
       <div class="fb-form-knoepfe breit">
         <button class="btn primary" type="submit">Speichern</button>
         ${a["Prüfen"] ? `<button class="btn" type="button" id="fbPruefenOk">Geprüft – Markierung entfernen</button>` : ""}
+        ${a.Rechnung ? "" : `<button class="btn ghost fb-loeschen" type="button" id="fbEintragLoeschen">Löschen</button>`}
       </div>
     </form><div id="fbDialogMeldung" class="bs-hof-meldung"></div></div>`;
   const zu = () => d.close();
   d.querySelector(".dlg-close").addEventListener("click", zu);
   const senden = async felder => {
     $fb("fbDialogMeldung").textContent = "Speichere …";
-    try { await fbAnfrage({aktion: "aendern", id: a.ID, felder}); zu(); await fbLaden(); }
-    catch(err) { $fb("fbDialogMeldung").textContent = "Nicht gespeichert: " + err.message; }
+    zu();
+    fbAendern({typ: "aendern", id: a.ID, felder});
   };
+  if ($fb("fbEintragLoeschen")) $fb("fbEintragLoeschen").addEventListener("click", () => {
+    if (!confirm(`Diesen Eintrag wirklich löschen?\n\n${fbDatumAnzeige(a.Datum)} · ${a["Tätigkeit"] || ""} ${a.Kultur || ""} · ${a.Mandant || ""}`)) return;
+    zu();
+    fbAendern({typ: "loeschen", id: a.ID});
+  });
   $fb("fbDialogForm").addEventListener("submit", ev => {
     ev.preventDefault();
     const felder = {};
@@ -3173,8 +3315,7 @@ function fbAdresseFormular(mandant, adr = {}){
     const f = e.target.elements;
     $fb("fbAdrMeldung").textContent = "Speichere …";
     try {
-      await fbAnfrage({aktion: "mandant", mandant: {Kurzname: mandant, Name: f["Name"].value.trim(), "Straße": f["Straße"].value.trim(), "PLZ Ort": f["PLZ Ort"].value.trim()}});
-      await fbLaden();
+      await fbAendern({typ: "mandant", mandant: {Kurzname: mandant, Name: f["Name"].value.trim(), "Straße": f["Straße"].value.trim(), "PLZ Ort": f["PLZ Ort"].value.trim()}});
     } catch(err) { $fb("fbAdrMeldung").textContent = "Nicht gespeichert: " + err.message; }
   });
 }
@@ -3192,25 +3333,30 @@ async function fbRechnungErstellen(){
   if (!confirm(`Rechnung ${nr} an ${adr.Name} über ${auswahl.length} Position(en) erstellen?\n\nDie Arbeiten werden dabei im Feldbuch als abgerechnet markiert.`)) return;
   info.textContent = "Erstelle Rechnung …";
   try {
-    const j = await fbAnfrage({aktion: "rechnung", firma, mandant, datum, mwst: (fbZahl($fb("fbReMwst").value) ?? 19) / 100,
+    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, mwst: (fbZahl($fb("fbReMwst").value) ?? 19) / 100,
       positionen: auswahl.map(p => ({id: p.id, datum: p.datum, text: p.text, taetigkeit: p.taetigkeit, menge: fbZahl(p.menge), einheit: p.einheit, preis: fbZahl(p.preis)}))});
-    info.textContent = `✓ Rechnung ${j.rechnung.nr} erstellt.`;
     fbRe.positionen = {};
-    fbRechnungZeigen(j.rechnung);
-    await fbLaden();
+    $fb("fbReInfo").textContent = `✓ Rechnung ${rechnung.nr} erstellt.`;
+    fbRechnungZeigen(rechnung);
   } catch(err) { info.textContent = "Nicht erstellt: " + err.message; }
 }
 function fbRenderReListe(){
   const liste = ((fbDaten && fbDaten.rechnungen) || []).slice().sort((a, b) => String(b["Rechnungs-Nr."]).localeCompare(String(a["Rechnungs-Nr."])));
   $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th></th></tr></thead><tbody>
-    ${liste.map(r => `<tr><td>${esc(r["Rechnungs-Nr."])}</td><td>${esc(fbDatumAnzeige(r.Datum))}</td><td>${esc(r.Mandant)}</td><td>${esc(r.Firma)}</td>
-      <td class="num">${fbEuro(fbZahl(r.Brutto))}</td><td><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button></td></tr>`).join("")}
+    ${liste.map(r => `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? " <small>(storniert)</small>" : ""}</td><td>${esc(fbDatumAnzeige(r.Datum))}</td><td>${esc(r.Mandant)}</td><td>${esc(r.Firma)}</td>
+      <td class="num">${fbEuro(fbZahl(r.Brutto))}</td><td class="fb-re-knoepfe"><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button>${r.Status === "storniert" ? "" : `<button class="btn small ghost" type="button" data-storno="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Stornieren</button>`}</td></tr>`).join("")}
     </tbody></table></div>` : `<p class="bs-help">Noch keine Rechnungen aus der App.</p>`;
   $fb("fbReListe").querySelectorAll("button[data-nr]").forEach(b => b.addEventListener("click", () => {
     const r = fbDaten.rechnungen.find(x => x["Rechnungs-Nr."] === b.dataset.nr && x.Firma === b.dataset.firma);
-    let pos = []; try { pos = JSON.parse(r.Positionen || "[]"); } catch(e) {}
+    let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
     fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
-      firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant}});
+      firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
+      storniert: r.Status === "storniert"});
+  }));
+  $fb("fbReListe").querySelectorAll("button[data-storno]").forEach(b => b.addEventListener("click", async () => {
+    if (!confirm(`Rechnung ${b.dataset.storno} (${b.dataset.firma}) stornieren?\n\nDie Nummer bleibt vergeben, die Arbeiten werden wieder als „offen“ geführt und können neu abgerechnet werden.`)) return;
+    try { await fbSofort({typ: "storno", nr: b.dataset.storno, firma: b.dataset.firma}); }
+    catch(err) { alert("Nicht storniert: " + err.message); }
   }));
 }
 function fbRechnungZeigen(r){
@@ -3223,7 +3369,7 @@ function fbRechnungZeigen(r){
       <div class="re-empf"><small>${esc(f.Firma || "")} · ${esc(f["Straße"] || "")} · ${esc(f["PLZ Ort"] || "")}</small><br><br>${esc(m.Name || m.Kurzname || "")}<br>${esc(m["Straße"] || "")}<br>${esc(m["PLZ Ort"] || "")}</div>
       <div class="re-meta"><div><span>Datum</span><b>${esc(fbDatumAnzeige(r.datum))}</b></div><div><span>Rechnungs-Nr.</span><b>${esc(r.nr)}</b></div>${f.Steuernummer ? `<div><span>Steuernummer</span><span>${esc(f.Steuernummer)}</span></div>` : ""}</div>
     </div>
-    <h2>Rechnung</h2>
+    <h2>Rechnung${r.storniert ? ' <span class="re-storno">STORNIERT</span>' : ""}</h2>
     <table class="re-pos"><thead><tr><th>Datum</th><th>Leistung</th><th class="r">Menge</th><th class="r">Einzelpreis</th><th class="r">Betrag</th></tr></thead><tbody>
       ${(r.positionen || []).map(p => `<tr><td>${esc(fbDatumAnzeige(p.datum))}</td><td>${esc(p.text || "")}</td><td class="r">${esc(fbZahlText(p.menge))} ${esc(p.einheit || "")}</td><td class="r">${fbEuro(p.preis)}</td><td class="r">${fbEuro(p.betrag ?? (p.menge * p.preis))}</td></tr>`).join("")}
     </tbody></table>
@@ -3285,6 +3431,71 @@ function fbRenderAuswertung(){
     <p class="bs-note" style="padding:0">Nur Einträge mit Menge in der jeweiligen Einheit zählen mit. Fehlt bei alten Einträgen die Fläche, fehlt sie auch hier.</p>`;
 }
 
+// --- Stammdaten ----------------------------------------------------------
+function fbRenderStamm(){
+  const firmen = (fbDaten && fbDaten.firmen) || [];
+  $fb("fbStFirmen").innerHTML = firmen.map((f, i) => `<details class="fb-st-firma"><summary>${esc(f.Firma)} <span class="bs-erkannt">· letzte Nr. ${esc(f["Letzte Rechnungs-Nr."] || "–")}</span></summary>
+    <form class="fb-form" data-firma="${esc(f.Firma)}">
+      ${FB_FIRMA_FELDER.map(n => `<label class="${["Firma", "Straße", "PLZ Ort", "IBAN"].includes(n) ? "breit" : ""}">${n}<input name="${n}" value="${esc(f[n] || "")}" ${n === "Firma" ? "required" : ""} ${n === "Letzte Rechnungs-Nr." ? 'placeholder="z. B. 2026-014" pattern="\\d{4}-\\d{1,4}|"' : ""}></label>`).join("")}
+      <div class="fb-form-knoepfe breit"><button class="btn primary small" type="submit">Speichern</button></div>
+    </form></details>`).join("");
+  $fb("fbStFirmen").querySelectorAll("form").forEach(form => form.addEventListener("submit", ev => {
+    ev.preventDefault();
+    const felder = {};
+    FB_FIRMA_FELDER.forEach(n => { felder[n] = form.elements[n].value.trim(); });
+    fbAendern({typ: "firma", alt: form.dataset.firma, felder});
+  }));
+  const mandanten = ((fbDaten && fbDaten.mandanten) || []).slice().sort((a, b) => fbIstEigen(a.Kurzname) ? -1 : fbIstEigen(b.Kurzname) ? 1 : a.Kurzname.localeCompare(b.Kurzname, "de"));
+  $fb("fbStMandanten").innerHTML = `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Kurzname</th><th>Name / Adresse</th><th></th></tr></thead><tbody>
+    ${mandanten.map(m => `<tr><td><b>${esc(m.Kurzname)}</b></td><td>${m.Name ? esc([m.Name, m["Straße"], m["PLZ Ort"]].filter(Boolean).join(", ")) : `<span class="bs-erkannt">Adresse fehlt</span>`}</td>
+      <td><button class="btn small" type="button" data-mandant="${esc(m.Kurzname)}">Bearbeiten</button></td></tr>`).join("")}
+    </tbody></table></div>`;
+  $fb("fbStMandanten").querySelectorAll("button[data-mandant]").forEach(b => b.addEventListener("click", () => fbMandantDialog(b.dataset.mandant)));
+}
+function fbMandantDialog(kurzname){
+  const m = ((fbDaten && fbDaten.mandanten) || []).find(x => x.Kurzname === kurzname) || {};
+  const neu = !kurzname;
+  const d = $fb("fbDialog");
+  d.innerHTML = `<div class="fb-card">
+    <div class="dlg-head" style="padding:0 0 10px;position:static"><div class="row1"><h2>${neu ? "Neuer Mandant" : "Mandant " + esc(kurzname)}</h2>
+      <button class="dlg-close" type="button" aria-label="Schließen">✕</button></div></div>
+    <form id="fbMandantForm" class="fb-form">
+      ${FB_MANDANT_FELDER.map(n => `<label class="breit">${n === "Kurzname" ? "Kurzname (wie er in der Liste steht)" : n}<input name="${n}" value="${esc(m[n] || "")}" ${n === "Kurzname" ? (neu ? "required" : "readonly") : ""}></label>`).join("")}
+      <div class="fb-form-knoepfe breit"><button class="btn primary" type="submit">Speichern</button></div>
+    </form><div id="fbMandantMeldung" class="bs-hof-meldung"></div></div>`;
+  d.querySelector(".dlg-close").addEventListener("click", () => d.close());
+  $fb("fbMandantForm").addEventListener("submit", ev => {
+    ev.preventDefault();
+    const daten = {};
+    FB_MANDANT_FELDER.forEach(n => { daten[n] = ev.target.elements[n].value.trim(); });
+    if (neu && fbDaten.mandanten.some(x => x.Kurzname.toLowerCase() === daten.Kurzname.toLowerCase())){ $fb("fbMandantMeldung").textContent = "Diesen Kurznamen gibt es schon."; return; }
+    d.close();
+    fbAendern({typ: "mandant", mandant: daten});
+  });
+  d.showModal();
+}
+function fbHerunterladen(name, inhalt, typ){
+  const url = URL.createObjectURL(new Blob([inhalt], {type: typ}));
+  const a = document.createElement("a"); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+function fbExportCsv(){
+  const spalten = ["ID", "Datum", ...FB_FELDER.slice(1), "Rechnung", "Rechnung Firma", "Prüfen", "Original (alt)", "Erfasst"];
+  const feld = v => { const t = String(v ?? ""); return /[;"\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+  const zeilen = fbArbeiten().slice().sort((a, b) => String(a.Datum).localeCompare(String(b.Datum))).map(a => spalten.map(k => {
+    if (k === "Datum") return fbDatumAnzeige(a.Datum);
+    if ((k === "Menge" || k === "Stunden") && a[k] !== "" && a[k] !== undefined) return feld(String(a[k]).replace(".", ","));
+    return feld(a[k]);
+  }).join(";"));
+  fbHerunterladen(`Feldbuch ${fbHeuteIso()}.csv`, "\ufeff" + [spalten.join(";"), ...zeilen].join("\r\n"), "text/csv;charset=utf-8");
+}
+function fbExportJson(){
+  const {feldarbeiten, ...rest} = fbKopie(fbDaten || {});
+  fbHerunterladen(`Feldbuch Sicherung ${fbHeuteIso()}.json`,
+    JSON.stringify({art: "poolehof-feldbuch-startdaten", ...rest, feldarbeiten: (feldarbeiten || []).map(({__wartet, ...a}) => a)}, null, 1), "application/json");
+}
+
 // --- Gesamt / Navigation -------------------------------------------------
 function fbZeigeTab(name){
   if (!FB_TABS.includes(name)) name = fbTab || "eintragen";
@@ -3299,6 +3510,7 @@ function fbRenderTab(){
   if (fbTab === "liste") fbRenderListe();
   else if (fbTab === "rechnung") fbRenderRechnung();
   else if (fbTab === "auswertung") fbRenderAuswertung();
+  else if (fbTab === "stamm") fbRenderStamm();
 }
 function fbRenderStartKarte(){
   const el = document.querySelector('.home-card[href="#feld"]');
@@ -3306,7 +3518,7 @@ function fbRenderStartKarte(){
   el.classList.remove("bald");
   const offen = fbArbeiten().filter(a => !a.Rechnung && !fbIstEigen(a.Mandant)).length;
   el.querySelector("small").textContent = fbDaten
-    ? `${fbArbeiten().length} Feldarbeiten · ${offen} Lohnarbeiten offen zum Abrechnen${fbQueue.length ? ` · ${fbQueue.length} warten auf Übertragung` : ""}`
+    ? `${fbArbeiten().length} Feldarbeiten · ${offen} Lohnarbeiten offen zum Abrechnen${fbOps.length ? ` · ${fbOps.length} warten auf Übertragung` : ""}`
     : "Eintragen per Sprache, Rechnungen per Klick";
 }
 function fbRenderAlles(){
@@ -3323,19 +3535,25 @@ $fb("fbLeeren").addEventListener("click", fbFormularLeeren);
 let fbTextTimer = null;
 $fb("fbText").addEventListener("input", () => { clearTimeout(fbTextTimer); fbTextTimer = setTimeout(fbTextAuswerten, 300); });
 $fb("fbMikro").addEventListener("click", fbMikroKlick);
-$fb("fbNeuLaden").addEventListener("click", fbLaden);
+$fb("fbNeuLaden").addEventListener("click", () => fbSync());
 ["fbSuche", "fbFilterJahr", "fbFilterMandant", "fbFilterTaetigkeit", "fbNurOffen", "fbNurPruefen"].forEach(id => $fb(id).addEventListener("input", fbRenderListe));
-$fb("fbListeBody").addEventListener("click", e => { const tr = e.target.closest("tr[data-id]"); if (tr && !tr.classList.contains("wartet")) fbBearbeiten(tr.dataset.id); });
+$fb("fbListeBody").addEventListener("click", e => { const tr = e.target.closest("tr[data-id]"); if (tr) fbBearbeiten(tr.dataset.id); });
 $fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRenderRePositionen(); });
 ["fbReFirma", "fbReDatum", "fbReMwst"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
 $fb("fbReErstellen").addEventListener("click", fbRechnungErstellen);
+$fb("fbStMandantNeu").addEventListener("click", () => fbMandantDialog(""));
+$fb("fbExportCsv").addEventListener("click", fbExportCsv);
+$fb("fbExportJson").addEventListener("click", fbExportJson);
 ["fbAwJahr", "fbAwWer"].forEach(id => $fb(id).addEventListener("input", fbRenderAuswertung));
 $fb("fbDialog").addEventListener("click", e => { if (e.target.id === "fbDialog") e.target.close(); });
-window.addEventListener("online", () => { if (fbQueue.length) fbQueueSenden(true).catch(() => {}); });
+window.addEventListener("online", () => { if (fbOps.length) fbSync(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && hsZugang) fbSync(); });   // beim Zurückkommen neuesten Stand holen
 
 $fb("fbForm").elements["Datum"].value = fbHeuteIso();
 fbZeigeTab((location.hash.match(/^#feld-(\w+)/) || [])[1] || fbTab);
-fbStart();
+fbSichtBerechnen();
+fbRenderAlles();
+fbSync();
 </script>
 
 </body>
