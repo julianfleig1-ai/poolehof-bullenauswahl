@@ -3380,6 +3380,21 @@ function fbTeilVerstehen(roh, k){
       && !fbW("heu(?![\\p{L}])|gras|wiese|grünland|schnitt|öhmd|ömd|emd(?![\\p{L}])|weide|silage").test(ohneNamen)) f["Tätigkeit"] = "Eggen";
   const kultur = FB_KULTUR_REGELN.find(([rx]) => rx.test(ohneNamen));
   if (kultur) f["Kultur"] = kultur[1];
+
+  // Gülle/Mist: "20 Kubik" ist meistens die Menge PRO HEKTAR (Gesamtmengen sind viel größer)
+  if (f["Tätigkeit"] === "Gülle fahren" || f["Tätigkeit"] === "Mist streuen"){
+    const art = f["Tätigkeit"] === "Gülle fahren" ? "Gülle" : "Mist";
+    const rate = (f["Mittel / Dünger"] || "").match(/(\d+(?:,\d+)?)\s*(m³|t)\/ha/);
+    if (rate && !/\p{L}{3,}/u.test(f["Mittel / Dünger"].replace(rate[0], ""))) f["Mittel / Dünger"] = `${art} ${rate[1]} ${rate[2]}/ha`;
+    const grenze = {"m³": 60, t: 40};
+    const klein = mengen.find(x => x.einheit in grenze && fbZahl(x.wert) <= grenze[x.einheit]);
+    if (!rate && klein){
+      f["Mittel / Dünger"] = `${art} ${klein.wert} ${klein.einheit}/ha`;
+      f.__hinweis = `${klein.wert} ${klein.einheit} als Menge pro Hektar verstanden`;
+      const flaeche = mengen.find(x => x.einheit === "ha");
+      if (flaeche){ f["Menge"] = flaeche.wert; f["Einheit"] = "ha"; } else { delete f["Menge"]; delete f["Einheit"]; }
+    }
+  }
   return f;
 }
 
@@ -3406,6 +3421,7 @@ function fbVerstehen(text){
       hinweise.push("Korrektur übernommen");
     }
     delete g.__zahl;
+    if (g.__hinweis){ hinweise.push(g.__hinweis); delete g.__hinweis; }
     if (g["Mandant"]){ delete f.__mandantNeu; delete f.__mandantUnsicher; }
     Object.assign(f, g);
   });
@@ -4313,7 +4329,7 @@ function fbMittelTeile(text, standardEinheit){
     const mengen = [...rest.matchAll(/(?<![\d\/])(\d+(?:,\d+)?)\s*(l|ml|kg|g|dt|t|Ztr|m³)?(\/ha)?(?![\d\/\p{L}])/gu)];
     const m = mengen.filter(x => x[2]).pop() || mengen.pop();
     let name = treffer || (m ? rest.replace(m[0], " ") : rest).replace(/\/ha/g, "").replace(/[,;:]+\s*$/, "").replace(/\s+/g, " ").trim();
-    if (!name) name = rest;
+    if (!name || !/\p{L}{2,}/u.test(name.replace(/\b(l|ml|kg|g|dt|t|Ztr|m³|ha)\b/g, ""))) name = "";
     return {name, menge: m ? fbZahl(m[1]) : null, einheit: m ? (m[2] || standardEinheit) : "", proHa: !!(m && (m[3] || standardEinheit === "l"))};
   });
 }
@@ -4348,6 +4364,7 @@ function fbDuengeZeilen(jahr, wer){
     const standard = a["Tätigkeit"] === "Gülle fahren" ? "Gülle" : a["Tätigkeit"] === "Mist streuen" ? "Mist" : a["Tätigkeit"] === "Kalken" ? "Kalk" : "";
     const teile = a["Mittel / Dünger"] ? fbMittelTeile(a["Mittel / Dünger"], "dt") : [{name: standard, menge: null, einheit: "", proHa: false}];
     teile.forEach(t => {
+      if (!t.name) t.name = standard;
       const st = fbMittelStamm(t.name) || (standard ? fbMittelStamm(standard) : null);
       // Menge je ha bestimmen (in kg bzw. m³/t)
       let jeHa = null, einheitJeHa = "", gesamt = null, einheitGesamt = "";
