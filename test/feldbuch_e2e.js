@@ -250,6 +250,21 @@
     $fb("reZu").click();
     fbZeigeTab("liste"); fbListeFilter = "alle"; fbRenderListe();
     pruef("Liste zeigt 2× abgerechnet", /\(2×\)/.test(L().querySelector('[data-id="L-1"]').innerText));
+    // Rechnung aus Auswahl: oben nur die ausgewählte, die übrigen offenen zugeklappt
+    fbZeigeTab("liste"); $fb("fbAuswahlKnopf").click();
+    const offeneMuster = fbOffeneFuer("Muster").map(a => a.ID);
+    fbAuswahlUmschalten(offeneMuster[0]);
+    $fb("fbAuswahlUebernehmen").click(); await warte(300);
+    const obenIds = () => [...$fb("fbRePositionen").querySelectorAll(":scope > .table-scroll tr[data-id]")].map(t => t.dataset.id);
+    const weitBox = $fb("fbReWeitere");
+    pruef("Rechnung: oben nur die ausgewählte Arbeit", obenIds().join() === offeneMuster[0], JSON.stringify(obenIds()));
+    pruef("Rechnung: übrige offene zugeklappt mit Anzahl", offeneMuster.length < 2 || (weitBox && !weitBox.open && weitBox.querySelector("summary").innerText.includes("(" + (offeneMuster.length - 1) + ")")), weitBox && weitBox.querySelector("summary").innerText);
+    if (weitBox && offeneMuster.length > 1){
+      const cb = weitBox.querySelector(`tr[data-id="${offeneMuster[1]}"] input[data-k="an"]`);
+      cb.checked = true; cb.dispatchEvent(new Event("input", {bubbles: true})); await warte(100);
+      pruef("Aufgeklappt anhaken holt die Arbeit nach oben", obenIds().includes(offeneMuster[1]) && fbReAuswahl().length === 2, JSON.stringify(obenIds()));
+    }
+    fbZeigeTab("liste");
     // zwei Änderungen direkt hintereinander: beide müssen ankommen
     const p1 = fbAendern({typ: "aendern", id: "T-001", felder: {"Ort / Schlag": "Testacker Nord"}});
     const p2 = fbAendern({typ: "aendern", id: "T-003", felder: {"Ort / Schlag": "Bachwiese"}});

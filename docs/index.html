@@ -552,6 +552,9 @@ button.fb-badge.ok:hover{text-decoration:underline}
   margin:10px 16px 0;padding:10px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--accent);font-size:14px}
 .fb-auswahl-leiste[hidden]{display:none}
 .fb-empf-liste{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fb-re-weitere{margin-top:12px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.fb-re-weitere summary{cursor:pointer;font-size:15px;font-weight:600;color:var(--accent)}
+.fb-re-weitere[open] summary{margin-bottom:8px}
 .fb-pos input.fehlt{border-color:#d9534f!important;box-shadow:0 0 0 2px rgba(217,83,79,.35)}
 .fb-schon{color:var(--warn);font-weight:600}
 .fb-umschreiben{color:var(--warn);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:11.5px}
@@ -4208,20 +4211,33 @@ function fbRenderRePositionen(){
       menge: menge === null ? "" : fbZahlText(menge, 2), preis: fbZahlText(fbPreisVorschlag(a["Tätigkeit"], einheit, mandant), 2),
     };
   });
-  $fb("fbRePositionen").innerHTML = `<div class="table-scroll"><table class="fb-pos"><thead><tr><th></th><th>Datum</th><th>Leistung</th><th>Menge</th><th>Einheit</th><th>Preis/Einheit €</th><th class="r">Betrag</th></tr></thead><tbody>
-    ${pos.map(a => { const p = fbRe.positionen[a.ID]; return `<tr data-id="${esc(a.ID)}" class="${p.an ? "" : "aus"}">
+  // Oben nur, was in die Rechnung kommt; alle übrigen offenen Arbeiten zugeklappt darunter
+  const zeile = a => { const p = fbRe.positionen[a.ID]; return `<tr data-id="${esc(a.ID)}" class="${p.an ? "" : "aus"}">
       <td><input type="checkbox" data-k="an" ${p.an ? "checked" : ""} aria-label="in die Rechnung"></td>
       <td class="num">${esc(fbDatumAnzeige(p.datum))}${a.Mandant !== mandant ? `<br><small class="fb-umschreiben">stand bei „${esc(fbIstEigen(a.Mandant) ? "eigen" : a.Mandant)}“</small>` : ""}${a.Rechnung ? `<br><small class="fb-umschreiben fb-schon">⚠ schon in Rechnung ${esc(a.Rechnung)}</small>` : ""}</td>
       <td><input data-k="text" value="${esc(p.text)}"></td>
       <td><input class="klein" data-k="menge" inputmode="decimal" value="${esc(p.menge)}" placeholder="Menge" aria-label="Menge"></td>
       <td><input class="klein" data-k="einheit" list="fbListeEinheiten" value="${esc(p.einheit)}" placeholder="Einheit" aria-label="Einheit"></td>
       <td><input class="klein" data-k="preis" inputmode="decimal" value="${esc(p.preis)}" placeholder="Preis €" aria-label="Preis je Einheit"></td>
-      <td class="betrag" data-betrag></td></tr>`; }).join("")}
-    </tbody></table></div>`;
+      <td class="betrag" data-betrag></td></tr>`; };
+  const kopf = `<thead><tr><th></th><th>Datum</th><th>Leistung</th><th>Menge</th><th>Einheit</th><th>Preis/Einheit €</th><th class="r">Betrag</th></tr></thead>`;
+  const drin = pos.filter(a => fbRe.positionen[a.ID].an), weitere = pos.filter(a => !fbRe.positionen[a.ID].an);
+  $fb("fbRePositionen").innerHTML = (drin.length
+      ? `<div class="table-scroll"><table class="fb-pos">${kopf}<tbody>${drin.map(zeile).join("")}</tbody></table></div>`
+      : `<div class="bs-status">Noch keine Arbeit in der Rechnung – unten aufklappen und Arbeiten anhaken.</div>`)
+    + (weitere.length ? `<details class="fb-re-weitere" id="fbReWeitere" ${fbRe.weitereOffen ? "open" : ""}>
+        <summary>Weitere noch nicht abgerechnete Arbeiten von ${esc(fbIstEigen(mandant) ? "eigen" : mandant)} <b>(${weitere.length})</b> – zum Hinzufügen aufklappen</summary>
+        <div class="table-scroll"><table class="fb-pos">${kopf}<tbody>${weitere.map(zeile).join("")}</tbody></table></div></details>` : "");
+  const weitBox = $fb("fbReWeitere");
+  if (weitBox) weitBox.addEventListener("toggle", () => { fbRe.weitereOffen = weitBox.open; });
   $fb("fbRePositionen").querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => {
-    const id = inp.closest("tr").dataset.id;
+    const tr = inp.closest("tr"), id = tr.dataset.id;
     fbRe.positionen[id][inp.dataset.k] = inp.type === "checkbox" ? inp.checked : inp.value;
-    if (inp.type === "checkbox") inp.closest("tr").classList.toggle("aus", !inp.checked);
+    if (inp.type === "checkbox"){
+      // aus "Weitere" angehakt → nach oben in die Rechnung; oben abgehakt bleibt die Zeile (grau) stehen
+      if (inp.checked && tr.closest("#fbReWeitere")) return fbRenderRePositionen();
+      tr.classList.toggle("aus", !inp.checked);
+    }
     fbRenderReSumme();
   }));
   fbRenderReSumme();
