@@ -227,9 +227,12 @@
     pruef("Eigene + fremde Arbeit: fragt nach Empfänger", !!empf);
     if (empf) empf.click(); await warte(200);
     pruef("Rechnung erstellen nimmt alle ausgewählten", fbTab === "rechnung" && fbRe.mandant === "Muster" && [...fbRe.vorauswahl].sort().join() === "T-001,T-003" && fbRePosListe().length >= 2, JSON.stringify([fbTab, fbRe.mandant, [...(fbRe.vorauswahl || [])]]));
+    pruef("Rechnungsseite zeigt „Zurück zur Liste“", !$fb("fbReZurueck").hidden);
     fbZeigeTab("liste");
+    pruef("Zurück zur Liste: Auswahl bleibt erhalten", fbAuswahl && fbAuswahl.has("T-001") && fbAuswahl.has("T-003"));
+    $fb("fbAuswahlKnopf").click();   // Auswahl beenden
+    pruef("Auswahl beenden vergisst die gemerkte Auswahl", !fbAuswahl && !fbAuswahlMerken);
     // Schon abgerechnete Arbeit nochmal abrechnen: auswählbar, deutlich markiert, mit Rückfrage
-    fbZeigeTab("liste");
     $fb("fbAuswahlKnopf").click();
     fbAuswahlUmschalten("L-1");
     const alteNr = fbArbeiten().find(a => a.ID === "L-1").Rechnung;
@@ -391,6 +394,55 @@
     pruef("Zweiter Screenshot ergänzt ohne Doppelte", lely.quellen.length === 2 && lely.tiere.length === 22 && /2 Bilder/.test(document.getElementById("erkanntInfo").innerText));
     document.getElementById("lelyLeeren").click();
     pruef("Lely-Liste leeren", document.getElementById("erkanntInfo").textContent === "" && document.getElementById("bsResult").hidden);
+  });
+  await schritt("MwSt, Nummern, Zurück", async () => {
+    const jahr = new Date().getFullYear();
+    // Standardpreis mit 7 % für Säen
+    await fbAendern({typ: "standardpreise", liste: [{"Tätigkeit": "Säen", Einheit: "ha", "Preis (€)": 60, "MwSt (%)": 7}, {"Tätigkeit": "Mähen", Einheit: "h", "Preis (€)": 70, "MwSt (%)": 19}]});
+    pruef("MwSt-Vorschlag aus den Standardpreisen", fbMwstVorschlag("Säen", "ha", "Muster") === 7 && fbMwstVorschlag("Mähen", "h", "Muster") === 19 && fbMwstVorschlag("Unbekannt", "h", "Muster") === 19);
+    pruef("Kein MwSt-Feld mehr oben, Spalte je Position", !$fb("fbReMwst"));
+    await fbAendern({typ: "neu", eintrag: {ID: "M-1", Datum: fbHeuteIso(), Mandant: "Muster", "Tätigkeit": "Säen", Kultur: "Mais", Menge: "10", Einheit: "ha", Stunden: "", Rechnung: "", "Prüfen": ""}});
+    await fbAendern({typ: "neu", eintrag: {ID: "M-2", Datum: fbHeuteIso(), Mandant: "Muster", "Tätigkeit": "Mähen", Kultur: "Grünland", Menge: "", Einheit: "", Stunden: "3", Rechnung: "", "Prüfen": ""}});
+    fbRe = {mandant: "Muster", positionen: {}, vorauswahl: new Set(["M-1", "M-2"])};
+    fbZeigeTab("rechnung"); await warte(100);
+    const mw = id => $fb("fbRePositionen").querySelector(`tr[data-id="${id}"] [data-k="mwst"]`);
+    pruef("Positionen bekommen die MwSt aus den Standardpreisen", mw("M-1") && mw("M-1").value === "7" && mw("M-2").value === "19", [mw("M-1") && mw("M-1").value, mw("M-2") && mw("M-2").value].join());
+    fbRe.positionen["M-1"].preis = "60"; fbRe.positionen["M-2"].preis = "70"; fbRenderRePositionen();
+    pruef("Summe zeigt MwSt je Satz", /MwSt 7 % auf 600,00/.test($fb("fbReSumme").innerText) && /MwSt 19 % auf 210,00/.test($fb("fbReSumme").innerText) && /Gesamt: 891,90/.test($fb("fbReSumme").innerText.replace(/\s/g, " ")), $fb("fbReSumme").innerText);
+    const echtConfirm = window.confirm; window.confirm = () => true;
+    // Rechnungsnummer nie doppelt: in den Stammdaten eine kleinere "letzte Nummer" eintragen
+    const testhof = fbDaten.firmen.find(f => f.Firma === "Testhof");
+    const vorher = fbDaten.rechnungen.filter(r => r.Firma === "Testhof").map(r => r["Rechnungs-Nr."]);
+    await fbAendern({typ: "firma", alt: "Testhof", felder: {...testhof, "Letzte Rechnungs-Nr.": jahr + "-001"}});
+    $fb("fbReFirma").value = "Testhof"; $fb("fbReDatum").value = fbHeuteIso();
+    await fbRechnungErstellen(); await warte(300);
+    window.confirm = echtConfirm;
+    const re = fbDaten.rechnungen[fbDaten.rechnungen.length - 1];
+    const alleNr = fbDaten.rechnungen.filter(r => r.Firma === "Testhof").map(r => r["Rechnungs-Nr."]);
+    pruef("Rechnungsnummer nie doppelt (trotz kleinerer „letzter Nr.“)", re && !vorher.includes(re["Rechnungs-Nr."]) && new Set(alleNr).size === alleNr.length, JSON.stringify([re && re["Rechnungs-Nr."], vorher]));
+    pruef("Rechnung speichert MwSt je Satz", re && re["MwSt je Satz"].length === 2 && re.MwSt === 81.9 && re.Brutto === 891.9 && re.Positionen.find(p => p.id === "M-1").mwst === 7, JSON.stringify(re && [re["MwSt je Satz"], re.MwSt, re.Brutto]));
+    pruef("Rechnungsansicht zeigt beide MwSt-Sätze", /MwSt 7 % auf/.test($fb("rechnungDruck").innerText) && /MwSt 19 % auf/.test($fb("rechnungDruck").innerText));
+    pruef("Preise merken den MwSt-Satz", fbDaten.preise.some(p => p["Tätigkeit"] === "Säen" && p["MwSt (%)"] === 7));
+    // Zurück: Rechnungsansicht schließt mit "Zurück", Seite bleibt
+    const tiefeVor = verlaufTiefe();
+    history.back(); await warte(400);
+    pruef("Zurück schließt zuerst die Rechnungsansicht", $fb("rechnungDruck").hidden && fbTab === "rechnung", JSON.stringify([$fb("rechnungDruck").hidden, fbTab, tiefeVor, verlaufTiefe()]));
+    // Zurück: Liste → Auswahl → Rechnung → Zurück → Liste mit Auswahl
+    geheZu("feld-liste"); await warte(50);
+    if (fbAuswahl) $fb("fbAuswahlKnopf").click();
+    $fb("fbAuswahlKnopf").click();
+    const offen = fbOffeneFuer("Muster").map(a => a.ID).slice(0, 1);
+    offen.forEach(fbAuswahlUmschalten);
+    $fb("fbAuswahlUebernehmen").click(); await warte(300);
+    pruef("Zurück-Knopf oben sichtbar", fbTab === "rechnung" && !document.getElementById("appZurueckLeiste").hidden, JSON.stringify([fbTab, verlaufTiefe()]));
+    document.getElementById("appZurueck").click(); await warte(400);
+    pruef("„← Zurück“ führt von der Rechnung zur Liste, Auswahl bleibt", fbTab === "liste" && location.hash === "#feld-liste" && fbAuswahl && offen.every(id => fbAuswahl.has(id)), JSON.stringify([fbTab, location.hash, fbAuswahl && [...fbAuswahl]]));
+    $fb("fbAuswahlKnopf").click();
+    // Zurück zwischen Ansichten: Feldbuch → Start → Zurück → Feldbuch
+    document.querySelector('.appnav-item[data-view="start"]').click(); await warte(200);
+    pruef("Menü-Link öffnet Start", !document.getElementById("viewStart").hidden);
+    history.back(); await warte(400);
+    pruef("Zurück-Taste führt wieder ins Feldbuch (Liste)", !document.getElementById("viewFeld").hidden && fbTab === "liste", location.hash);
   });
   await schritt("Passwort", async () => {
     await fbPasswortAendern("Test-Traktor-Wiese-17");

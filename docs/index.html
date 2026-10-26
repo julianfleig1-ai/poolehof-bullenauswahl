@@ -339,6 +339,10 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .appnav-item[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .appnav-punkt{width:9px;height:9px;border-radius:50%;background:var(--warn);margin-left:auto;flex:none}
 .appnav-einst{margin-top:auto}
+.app-zurueck-leiste{position:sticky;top:0;z-index:20;padding:8px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.app-zurueck-leiste[hidden]{display:none}
+.app-zurueck{font-size:16px;padding:8px 16px}
+@media print{.app-zurueck-leiste{display:none!important}}
 @media (max-width:900px){.appnav-einst{margin-top:0}}
 .einst-karte{padding:18px 18px 16px;margin-bottom:14px}
 .einst-karte h2{font-size:19px;font-weight:600;margin-bottom:8px}
@@ -558,6 +562,7 @@ button.fb-badge.ok:hover{text-decoration:underline}
   margin:10px 16px 0;padding:10px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--accent);font-size:14px}
 .fb-auswahl-leiste[hidden]{display:none}
 .fb-empf-liste{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fb-re-zurueck{margin-bottom:12px;font-size:15.5px}
 .fb-re-weitere{margin-top:12px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface)}
 .fb-re-weitere summary{cursor:pointer;font-size:15px;font-weight:600;color:var(--accent)}
 .fb-re-weitere[open] summary{margin-bottom:8px}
@@ -591,21 +596,23 @@ button.fb-badge.ok:hover{text-decoration:underline}
 .fb-pos td{padding:6px 6px;border-bottom:1px solid var(--border);vertical-align:middle}
 .fb-pos input[type=text],.fb-pos input:not([type]){width:100%;min-width:0;padding:7px 8px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);font-size:14px}
 .fb-pos input.klein{width:76px}
+.fb-pos input.klein.mwst{width:58px}
 .fb-pos td.betrag{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
 .fb-pos tr.aus td{opacity:.45}
 @media (max-width:640px){
   .fb-pos thead{display:none}
   .fb-pos,.fb-pos tbody{display:block}
-  .fb-pos tr{display:grid;grid-template-columns:26px 1fr 1fr 1fr;gap:7px 8px;padding:11px 0;border-bottom:1px solid var(--border)}
+  .fb-pos tr{display:grid;grid-template-columns:26px 1.2fr 1fr 1fr .8fr;gap:7px 8px;padding:11px 0;border-bottom:1px solid var(--border)}
   .fb-pos td{border:none;padding:0;min-width:0}
   .fb-pos td:nth-child(1){grid-column:1;grid-row:1;align-self:center}
-  .fb-pos td:nth-child(2){grid-column:2/4;grid-row:1;align-self:center}
-  .fb-pos td.betrag{grid-column:4;grid-row:1;align-self:center}
+  .fb-pos td:nth-child(2){grid-column:2/5;grid-row:1;align-self:center}
+  .fb-pos td.betrag{grid-column:5;grid-row:1;align-self:center}
   .fb-pos td:nth-child(3){grid-column:1/-1}
   .fb-pos td:nth-child(4){grid-column:1/3}
   .fb-pos td:nth-child(5){grid-column:3}
   .fb-pos td:nth-child(6){grid-column:4}
-  .fb-pos input.klein{width:100%}
+  .fb-pos td:nth-child(7){grid-column:5}
+  .fb-pos input.klein,.fb-pos input.klein.mwst{width:100%}
 }
 .fb-re-summe{display:grid;justify-content:end;gap:3px;margin:12px 0 4px;font-size:14.5px;text-align:right}
 .fb-re-summe b{font-size:17px}
@@ -697,6 +704,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 </nav>
 
 <main class="appmain">
+<div class="app-zurueck-leiste" id="appZurueckLeiste" hidden><button class="btn app-zurueck" type="button" id="appZurueck">← Zurück</button></div>
 <!-- ===================== Startseite ===================== -->
 <section id="viewStart" class="view" hidden>
   <div class="wrap">
@@ -821,12 +829,12 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 
     <!-- Rechnung -->
     <section id="fbRechnung" class="panel fb-card" hidden>
+      <button class="btn fb-re-zurueck" type="button" id="fbReZurueck" hidden>← Zurück zur Liste (Auswahl bleibt erhalten)</button>
       <h2>Rechnung erstellen</h2>
       <div class="fb-form fb-re-kopf">
         <label>Firma<select id="fbReFirma"></select></label>
         <label>Mandant<select id="fbReMandant"></select></label>
         <label>Rechnungsdatum<input type="date" id="fbReDatum"></label>
-        <label>MwSt in %<input id="fbReMwst" inputmode="decimal" value="19"></label>
       </div>
       <div id="fbReAdresse" class="fb-re-adresse"></div>
       <div id="fbRePositionen"></div>
@@ -909,7 +917,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 
     <!-- Auswahllisten für die Eingabefelder -->
     <datalist id="fbListeMandanten"></datalist><datalist id="fbListeTaetigkeiten"></datalist>
-    <datalist id="fbListeKulturen"></datalist><datalist id="fbListeEinheiten"></datalist>
+    <datalist id="fbListeKulturen"></datalist><datalist id="fbListeEinheiten"></datalist><datalist id="fbListeMwst"><option value="19"><option value="7"><option value="0"></datalist>
     <datalist id="fbListeOrte"></datalist><datalist id="fbListeMittel"></datalist>
   </div>
 </section>
@@ -1766,13 +1774,47 @@ function navigiere(ziel){
   });
   if (tab) zeigeTab(tab);
   const hash = "#" + (tab || (ansicht === "feld" && /^feld-\w+$/.test(ziel) ? ziel : ansicht));
-  if (location.hash !== hash) history.replaceState(null, "", hash);
+  if (location.hash !== hash) history.replaceState(history.state, "", hash);   // Verlaufs-Infos behalten
   document.title = TITEL[ansicht];
   if (ansicht === "einstellungen" && window.renderEinstellungen) renderEinstellungen();
 }
-document.querySelectorAll(".tabs .tab[data-tab]").forEach(b => b.addEventListener("click", () => navigiere(b.dataset.tab)));
-window.addEventListener("hashchange", () => { navigiere(location.hash.slice(1)); window.scrollTo(0, 0); });
+// --- Verlauf: "← Zurück" (Knopf oben, Zurück-Taste von Handy und Browser) ---------------
+// Jeder Schritt in der App (Ansicht, Reiter) bekommt einen Eintrag im Verlauf; "Zurück" geht genau einen Schritt zurück.
+function verlaufTiefe(){ return (history.state && history.state.tiefe) || 0; }
+function renderZurueck(){
+  const l = document.getElementById("appZurueckLeiste");
+  if (l) l.hidden = verlaufTiefe() < 1 || !!(history.state && history.state.modal);
+}
+function zeigeAdresse(ziel){
+  navigiere(ziel || "start");
+  const m = String(ziel || "").match(/^feld-(\w+)$/);
+  if (m && typeof fbZeigeTab === "function" && fbTab !== m[1]) fbZeigeTab(m[1]);
+  renderZurueck();
+}
+function geheZu(ziel){
+  if (location.hash === "#" + ziel) return;
+  history.pushState({tiefe: verlaufTiefe() + 1, von: location.hash.slice(1)}, "", "#" + ziel);
+  zeigeAdresse(ziel);
+  window.scrollTo(0, 0);
+}
+document.getElementById("appZurueck").addEventListener("click", () => history.back());
+// Links innerhalb der App (#…) über den Verlauf öffnen
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest('a[href^="#"]');
+  if (!a || a.getAttribute("href") === "#" || e.defaultPrevented || e.ctrlKey || e.metaKey) return;
+  e.preventDefault();
+  geheZu(a.getAttribute("href").slice(1));
+});
+document.querySelectorAll(".tabs .tab[data-tab]").forEach(b => b.addEventListener("click", () => geheZu(b.dataset.tab)));
+window.addEventListener("hashchange", () => { zeigeAdresse(location.hash.slice(1)); window.scrollTo(0, 0); });
+window.addEventListener("popstate", e => {
+  // Zurück bei offener Rechnungsansicht: nur die Ansicht schließen
+  const druck = document.getElementById("rechnungDruck");
+  if (druck && !druck.hidden && !(e.state && e.state.modal)){ druck.hidden = true; druck.innerHTML = ""; }
+  renderZurueck();
+});
 navigiere(location.hash.slice(1) || "start");
+renderZurueck();
 
 // ======================================================================
 // Holstein oder British Blue
@@ -3594,11 +3636,18 @@ function fbLeer(){
 }
 
 // --- Änderungen anwenden ---------------------------------------------------
-function fbNaechsteNrVon(firma, datum){
+// Nächste Rechnungsnummer einer Firma: höchste schon vergebene Nummer des Jahres (auch stornierte –
+// die bleiben vergeben) bzw. die in den Stammdaten eingetragene letzte Nummer, je nachdem was größer ist, + 1.
+// So kann keine Nummer doppelt vorkommen, auch wenn in den Stammdaten eine kleinere Zahl steht.
+function fbNaechsteNrVon(firma, datum, rechnungen = []){
   const jahr = Number(String(datum || fbHeuteIso()).slice(0, 4));
-  const m = String((firma && firma["Letzte Rechnungs-Nr."]) || "").match(/^(\d{4})-(\d+)$/);
-  const n = m && Number(m[1]) === jahr ? Number(m[2]) + 1 : 1;
-  return `${jahr}-${String(n).padStart(3, "0")}`;
+  let hoechste = 0;
+  const zaehle = nr => { const m = String(nr || "").match(/^(\d{4})-(\d+)$/); if (m && Number(m[1]) === jahr) hoechste = Math.max(hoechste, Number(m[2])); };
+  zaehle(firma && firma["Letzte Rechnungs-Nr."]);
+  (rechnungen || []).filter(x => firma && x.Firma === firma.Firma).forEach(x => zaehle(x["Rechnungs-Nr."]));
+  let n = hoechste + 1, nr;
+  do { nr = `${jahr}-${String(n++).padStart(3, "0")}`; } while ((rechnungen || []).some(x => firma && x.Firma === firma.Firma && x["Rechnungs-Nr."] === nr));
+  return nr;
 }
 function fbRechnungAnwenden(d, a){
   if (fbIstEigen(a.mandant)) throw new Error("Eigene Arbeiten werden nicht abgerechnet");
@@ -3612,14 +3661,24 @@ function fbRechnungAnwenden(d, a){
     // Nochmal abrechnen geht nur, wenn es beim Erstellen ausdrücklich bestätigt wurde
     if (z.Rechnung && !(a.nochmal || []).includes(p.id)) throw new Error(`Eine Arbeit ist inzwischen schon abgerechnet (Rechnung ${z.Rechnung})`);
   });
-  const nr = fbNaechsteNrVon(firma, a.datum);
+  const nr = fbNaechsteNrVon(firma, a.datum, d.rechnungen);
+  if (d.rechnungen.some(x => x.Firma === a.firma && x["Rechnungs-Nr."] === nr)) throw new Error("Rechnungsnummer wäre doppelt – bitte nochmal");   // Sicherheitsnetz
+  // MwSt je Position (Prozent); ältere Rechnungen hatten einen Satz für alles (a.mwst als Bruch)
+  const standardSatz = a.mwst === undefined || a.mwst === null ? 19 : Number(a.mwst) * 100;
   let netto = 0;
-  pos.forEach(p => { p.menge = Number(p.menge) || 0; p.preis = Number(p.preis) || 0; p.betrag = Math.round(p.menge * p.preis * 100) / 100; netto += p.betrag; });
+  pos.forEach(p => {
+    p.menge = Number(p.menge) || 0; p.preis = Number(p.preis) || 0; p.betrag = Math.round(p.menge * p.preis * 100) / 100;
+    p.mwst = p.mwst === undefined || p.mwst === null || p.mwst === "" ? standardSatz : Number(p.mwst);
+    if (!(p.mwst >= 0 && p.mwst <= 100)) throw new Error("Ungültiger MwSt-Satz bei einer Position");
+    netto += p.betrag;
+  });
   netto = Math.round(netto * 100) / 100;
-  const satz = a.mwst === undefined || a.mwst === null ? 0.19 : Number(a.mwst);
-  const mwst = Math.round(netto * satz * 100) / 100, brutto = Math.round((netto + mwst) * 100) / 100;
+  // Steuer je Satz: Summe der Nettobeträge × Satz, gerundet (so wie es auch die E-Rechnung verlangt)
+  const gruppen = fbMwstGruppen(pos);
+  const mwst = Math.round(gruppen.reduce((s, g) => s + g.steuer, 0) * 100) / 100, brutto = Math.round((netto + mwst) * 100) / 100;
+  const satz = gruppen.length === 1 ? gruppen[0].satz / 100 : null;
   firma["Letzte Rechnungs-Nr."] = nr;
-  d.rechnungen.push({"Rechnungs-Nr.": nr, Firma: a.firma, Datum: a.datum, Mandant: a.mandant, Netto: netto, "MwSt-Satz": satz, MwSt: mwst, Brutto: brutto,
+  d.rechnungen.push({"Rechnungs-Nr.": nr, Firma: a.firma, Datum: a.datum, Mandant: a.mandant, Netto: netto, "MwSt-Satz": satz, "MwSt je Satz": gruppen, MwSt: mwst, Brutto: brutto,
                      Positionen: pos, Erstellt: a.zeit, Status: ""});
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
@@ -3628,11 +3687,17 @@ function fbRechnungAnwenden(d, a){
     if (z.Mandant !== a.mandant){ z["Mandant (vorher)"] = z.Mandant; z.Mandant = a.mandant; }   // stand unter falschem Namen
     if (!p.taetigkeit || !p.einheit) return;
     const alt = d.preise.find(x => x["Tätigkeit"] === p.taetigkeit && x.Einheit === p.einheit && x.Mandant === a.mandant);
-    if (alt) Object.assign(alt, {"Preis (€)": p.preis, Stand: a.zeit});
-    else d.preise.push({"Tätigkeit": p.taetigkeit, Einheit: p.einheit, Mandant: a.mandant, "Preis (€)": p.preis, Stand: a.zeit});
+    if (alt) Object.assign(alt, {"Preis (€)": p.preis, "MwSt (%)": p.mwst, Stand: a.zeit});
+    else d.preise.push({"Tätigkeit": p.taetigkeit, Einheit: p.einheit, Mandant: a.mandant, "Preis (€)": p.preis, "MwSt (%)": p.mwst, Stand: a.zeit});
   });
   return {nr, datum: a.datum, firma: fbKopie(firma), mandant: fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant}),
-          positionen: pos, netto, mwstSatz: satz, mwst, brutto};
+          positionen: pos, netto, mwstSatz: satz, gruppen, mwst, brutto};
+}
+// Positionen nach MwSt-Satz zusammenfassen: [{satz (Prozent), netto, steuer}]
+function fbMwstGruppen(pos){
+  const m = new Map();
+  pos.forEach(p => { const sz = Number(p.mwst); const b = Math.round((Number(p.betrag ?? (p.menge * p.preis)) || 0) * 100) / 100; m.set(sz, (m.get(sz) || 0) + b); });
+  return [...m.entries()].sort((x, y) => x[0] - y[0]).map(([satz, n]) => ({satz, netto: Math.round(n * 100) / 100, steuer: Math.round(n * satz) / 100}));
 }
 function fbAnwenden(d, op){
   switch (op.typ){
@@ -4658,6 +4723,7 @@ function fbNotizDialog(vorgabe = {}, altNotiz = null){
 
 // --- Auswahl in der Liste → Rechnung -------------------------------------
 let fbAuswahl = null;           // null = normale Liste, Set = Auswahl für Rechnung
+let fbAuswahlMerken = null;     // Auswahl, aus der gerade eine Rechnung vorbereitet wird
 function fbAuswahlUmschalten(id){
   const a = fbArbeiten().find(x => x.ID === id);
   if (!a || !fbWaehlbar(a)) return;
@@ -4700,8 +4766,10 @@ function fbRenderAuswahlLeiste(){
     const fremd = namen.filter(n => !fbIstEigen(n));
     const weiter = mandant => {
       fbRe = {mandant, positionen: {}, vorauswahl: new Set(ids)};
+      fbAuswahlMerken = new Set(ids);           // für "Zurück zur Liste": Auswahl bleibt erhalten
       fbAuswahl = null;
-      fbZeigeTab("rechnung");
+      geheZu("feld-rechnung");
+      if (fbTab !== "rechnung") fbZeigeTab("rechnung");
       window.scrollTo({top: 0, behavior: "smooth"});
     };
     // Alles unter einem fremden Namen → direkt; sonst fragen, wer die Rechnung bekommt
@@ -4782,6 +4850,16 @@ function fbOffeneFuer(mandant){
   return fbArbeiten().filter(a => a.Mandant === mandant && fbAbzurechnen(a))
     .sort((a, b) => String(a.Datum).localeCompare(String(b.Datum)));
 }
+// MwSt-Vorschlag: 1. Standardpreis (Stammdaten)  2. zuletzt bei diesem Mandanten  3. zuletzt bei irgendwem  4. 19 %
+function fbMwstVorschlag(taetigkeit, einheit, mandant){
+  const ok = v => v !== undefined && v !== null && v !== "" && fbZahl(v) !== null;
+  const standard = ((fbDaten && fbDaten.standardpreise) || []).find(p => p["Tätigkeit"] === taetigkeit && p.Einheit === einheit && ok(p["MwSt (%)"]))
+    || ((fbDaten && fbDaten.standardpreise) || []).find(p => p["Tätigkeit"] === taetigkeit && ok(p["MwSt (%)"]));
+  if (standard) return fbZahl(standard["MwSt (%)"]);
+  const preise = ((fbDaten && fbDaten.preise) || []).filter(p => p["Tätigkeit"] === taetigkeit && ok(p["MwSt (%)"]));
+  const genau = preise.filter(p => p.Mandant === mandant).pop() || preise.pop();
+  return genau ? fbZahl(genau["MwSt (%)"]) : 19;
+}
 function fbPreisVorschlag(taetigkeit, einheit, mandant){
   const preise = (fbDaten && fbDaten.preise) || [];
   const passend = preise.filter(p => p["Tätigkeit"] === taetigkeit && p.Einheit === einheit);
@@ -4794,13 +4872,11 @@ function fbPreisVorschlag(taetigkeit, einheit, mandant){
   return p ? fbZahl(p["Preis (€)"]) : null;
 }
 function fbNaechsteNr(firma, datum){
-  const f = ((fbDaten && fbDaten.firmen) || []).find(x => x.Firma === firma);
-  const jahr = Number(String(datum || fbHeuteIso()).slice(0, 4));
-  const m = String((f && f["Letzte Rechnungs-Nr."]) || "").match(/^(\d{4})-(\d+)$/);
-  const n = m && Number(m[1]) === jahr ? Number(m[2]) + 1 : 1;
-  return `${jahr}-${String(n).padStart(3, "0")}`;
+  const f = ((fbDaten && fbDaten.firmen) || []).find(x => x.Firma === firma) || {Firma: firma};
+  return fbNaechsteNrVon(f, datum, (fbDaten && fbDaten.rechnungen) || []);
 }
 function fbRenderRechnung(){
+  $fb("fbReZurueck").hidden = !fbAuswahlMerken;
   const firmen = (fbDaten && fbDaten.firmen) || [];
   const fSel = $fb("fbReFirma"), fAlt = fSel.value;
   fSel.innerHTML = firmen.map(f => `<option ${f.Firma === fAlt ? "selected" : ""}>${esc(f.Firma)}</option>`).join("");
@@ -4836,6 +4912,7 @@ function fbRenderRePositionen(){
       an: fbRe.vorauswahl ? fbRe.vorauswahl.has(a.ID) : true, datum: String(a.Datum || "").slice(0, 10), taetigkeit: a["Tätigkeit"] || "", einheit,
       text: [a["Tätigkeit"], a.Kultur].filter(Boolean).join(" ") + (a["Ort / Schlag"] ? ", " + a["Ort / Schlag"] : "") + (a["Mittel / Dünger"] ? " (" + a["Mittel / Dünger"] + ")" : ""),
       menge: menge === null ? "" : fbZahlText(menge, 2), preis: fbZahlText(fbPreisVorschlag(a["Tätigkeit"], einheit, mandant), 2),
+      mwst: fbZahlText(fbMwstVorschlag(a["Tätigkeit"], einheit, mandant), 1),
     };
   });
   // Oben nur, was in die Rechnung kommt; alle übrigen offenen Arbeiten zugeklappt darunter
@@ -4846,8 +4923,9 @@ function fbRenderRePositionen(){
       <td><input class="klein" data-k="menge" inputmode="decimal" value="${esc(p.menge)}" placeholder="Menge" aria-label="Menge"></td>
       <td><input class="klein" data-k="einheit" list="fbListeEinheiten" value="${esc(p.einheit)}" placeholder="Einheit" aria-label="Einheit"></td>
       <td><input class="klein" data-k="preis" inputmode="decimal" value="${esc(p.preis)}" placeholder="Preis €" aria-label="Preis je Einheit"></td>
+      <td><input class="klein mwst" data-k="mwst" inputmode="decimal" list="fbListeMwst" value="${esc(p.mwst ?? "19")}" placeholder="%" aria-label="MwSt in Prozent"></td>
       <td class="betrag" data-betrag></td></tr>`; };
-  const kopf = `<thead><tr><th></th><th>Datum</th><th>Leistung</th><th>Menge</th><th>Einheit</th><th>Preis/Einheit €</th><th class="r">Betrag</th></tr></thead>`;
+  const kopf = `<thead><tr><th></th><th>Datum</th><th>Leistung</th><th>Menge</th><th>Einheit</th><th>Preis/Einheit €</th><th>MwSt %</th><th class="r">Betrag netto</th></tr></thead>`;
   const drin = pos.filter(a => fbRe.positionen[a.ID].an), weitere = pos.filter(a => !fbRe.positionen[a.ID].an);
   $fb("fbRePositionen").innerHTML = (drin.length
       ? `<div class="table-scroll"><table class="fb-pos">${kopf}<tbody>${drin.map(zeile).join("")}</tbody></table></div>`
@@ -4881,15 +4959,16 @@ function fbReAuswahl(){
 }
 function fbRenderReSumme(){
   let netto = 0;
+  const pos = [];
   $fb("fbRePositionen").querySelectorAll("tr[data-id]").forEach(tr => {
     const p = fbRe.positionen[tr.dataset.id];
-    const betrag = (fbZahl(p.menge) || 0) * (fbZahl(p.preis) || 0);
+    const betrag = Math.round((fbZahl(p.menge) || 0) * (fbZahl(p.preis) || 0) * 100) / 100;
     tr.querySelector("[data-betrag]").textContent = p.an && betrag ? fbEuro(betrag) : "";
-    if (p.an) netto += Math.round(betrag * 100) / 100;
+    if (p.an){ netto += betrag; pos.push({betrag, mwst: fbZahl(p.mwst) ?? 19}); }
   });
-  const satz = (fbZahl($fb("fbReMwst").value) ?? 19) / 100;
-  const mwst = Math.round(netto * satz * 100) / 100;
-  $fb("fbReSumme").innerHTML = `<div>Netto: ${fbEuro(netto)}</div><div>MwSt ${fbZahlText(satz * 100, 1)} %: ${fbEuro(mwst)}</div><div><b>Gesamt: ${fbEuro(netto + mwst)}</b></div>`;
+  const gruppen = fbMwstGruppen(pos);
+  const mwst = gruppen.reduce((s, g) => s + g.steuer, 0);
+  $fb("fbReSumme").innerHTML = `<div>Netto: ${fbEuro(netto)}</div>${gruppen.map(g => `<div>MwSt ${fbZahlText(g.satz, 1)} %${gruppen.length > 1 ? ` auf ${fbEuro(g.netto)}` : ""}: ${fbEuro(g.steuer)}</div>`).join("") || "<div>MwSt: 0,00 €</div>"}<div><b>Gesamt: ${fbEuro(netto + mwst)}</b></div>`;
   $fb("fbReInfo").textContent = $fb("fbReFirma").value ? `wird Rechnung Nr. ${fbNaechsteNr($fb("fbReFirma").value, $fb("fbReDatum").value)}` : "";
 }
 function fbAdresseFormular(mandant, adr = {}){
@@ -4926,6 +5005,8 @@ async function fbRechnungErstellen(){
   if (!firma || !mandant){ info.textContent = "Firma und Mandant auswählen."; return; }
   if (!adr || !adr.Name){ info.textContent = "Bitte zuerst die Adresse des Mandanten speichern."; return; }
   if (!auswahl.length){ info.textContent = "Mindestens eine Arbeit anhaken."; return; }
+  const mwstFalsch = auswahl.filter(p => !(fbZahl(p.mwst) >= 0 && fbZahl(p.mwst) <= 100));
+  if (mwstFalsch.length){ info.textContent = "Bei einer Position stimmt die MwSt nicht (0 bis 100 %)."; return; }
   const ohne = auswahl.filter(p => !(fbZahl(p.menge) > 0) || !(fbZahl(p.preis) > 0));
   if (ohne.length){
     ohne.forEach(p => {
@@ -4943,9 +5024,9 @@ async function fbRechnungErstellen(){
   if (!confirm(`Rechnung ${nr} an ${adr.Name} über ${auswahl.length} Position(en) erstellen?\n\nDie Arbeiten werden dabei im Feldbuch als abgerechnet markiert.${warnung}`)) return;
   fbReMeldung("Erstelle Rechnung …", true);
   try {
-    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, mwst: (fbZahl($fb("fbReMwst").value) ?? 19) / 100, nochmal: schon.map(a => a.ID),
-      positionen: auswahl.map(p => ({id: p.id, datum: p.datum, text: p.text, taetigkeit: p.taetigkeit, menge: fbZahl(p.menge), einheit: p.einheit, preis: fbZahl(p.preis)}))});
-    fbRe.positionen = {};
+    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, nochmal: schon.map(a => a.ID),
+      positionen: auswahl.map(p => ({id: p.id, datum: p.datum, text: p.text, taetigkeit: p.taetigkeit, menge: fbZahl(p.menge), einheit: p.einheit, preis: fbZahl(p.preis), mwst: fbZahl(p.mwst) ?? 19}))});
+    fbRe.positionen = {}; fbRe.vorauswahl = null; fbAuswahlMerken = null;
     $fb("fbReInfo").textContent = "";
     fbReMeldung(`✓ Rechnung ${rechnung.nr} erstellt.`, true);
     fbRechnungZeigen(rechnung);
@@ -4966,7 +5047,7 @@ function fbGespeicherteRechnungZeigen(nr, firma){
     || (!firma && alle.filter(x => x["Rechnungs-Nr."] === nr && x.Status !== "storniert").length === 1 ? alle.find(x => x["Rechnungs-Nr."] === nr && x.Status !== "storniert") : null);
   if (!r){ alert(`Rechnung ${nr} ist in der App nicht gespeichert (vermutlich aus der alten Liste).`); return; }
   let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
-  fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
+  fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), gruppen: r["MwSt je Satz"] || null, mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
     firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
     storniert: r.Status === "storniert"});
 }
@@ -5000,15 +5081,20 @@ function fbRechnungZeigen(r){
       <div class="re-meta"><div><span>Datum</span><b>${esc(fbDatumAnzeige(r.datum))}</b></div><div><span>Rechnungs-Nr.</span><b>${esc(r.nr)}</b></div>${f.Steuernummer ? `<div><span>Steuernummer</span><span>${esc(f.Steuernummer)}</span></div>` : ""}</div>
     </div>
     <h2>Rechnung${r.storniert ? ' <span class="re-storno">STORNIERT</span>' : ""}</h2>
-    <table class="re-pos"><thead><tr><th>Datum</th><th>Leistung</th><th class="r">Menge</th><th class="r">Einzelpreis</th><th class="r">Betrag</th></tr></thead><tbody>
-      ${(r.positionen || []).map(p => `<tr><td>${esc(fbDatumAnzeige(p.datum))}</td><td>${esc(p.text || "")}</td><td class="r">${esc(fbZahlText(p.menge))} ${esc(p.einheit || "")}</td><td class="r">${fbEuro(p.preis)}</td><td class="r">${fbEuro(p.betrag ?? (p.menge * p.preis))}</td></tr>`).join("")}
+    <table class="re-pos"><thead><tr><th>Datum</th><th>Leistung</th><th class="r">Menge</th><th class="r">Einzelpreis</th><th class="r">MwSt</th><th class="r">Betrag netto</th></tr></thead><tbody>
+      ${(r.positionen || []).map(p => `<tr><td>${esc(fbDatumAnzeige(p.datum))}</td><td>${esc(p.text || "")}</td><td class="r">${esc(fbZahlText(p.menge))} ${esc(p.einheit || "")}</td><td class="r">${fbEuro(p.preis)}</td><td class="r">${esc(fbZahlText(p.mwst ?? (r.mwstSatz ?? 0.19) * 100, 1))} %</td><td class="r">${fbEuro(p.betrag ?? (p.menge * p.preis))}</td></tr>`).join("")}
     </tbody></table>
-    <div class="re-summen"><div><span>Netto</span><span>${fbEuro(r.netto)}</span></div><div><span>MwSt ${fbZahlText((r.mwstSatz ?? 0.19) * 100, 1)} %</span><span>${fbEuro(r.mwst)}</span></div><div class="gesamt"><span>Gesamtbetrag</span><span>${fbEuro(r.brutto)}</span></div></div>
+    <div class="re-summen"><div><span>Summe netto</span><span>${fbEuro(r.netto)}</span></div>${(r.gruppen && r.gruppen.length ? r.gruppen : [{satz: (r.mwstSatz ?? 0.19) * 100, netto: r.netto, steuer: r.mwst}]).map(g => `<div><span>MwSt ${esc(fbZahlText(g.satz, 1))} %${(r.gruppen || []).length > 1 ? ` auf ${fbEuro(g.netto)}` : ""}</span><span>${fbEuro(g.steuer)}</span></div>`).join("")}<div class="gesamt"><span>Gesamtbetrag</span><span>${fbEuro(r.brutto)}</span></div></div>
     <p style="margin-top:24px">Bitte überweisen Sie den Betrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer. Vielen Dank für den Auftrag!</p>
     <div class="re-fuss"><div>${f.Bank ? esc(f.Bank) + "<br>" : ""}IBAN ${esc(f.IBAN || "")}<br>BIC ${esc(f.BIC || "")}</div><div style="text-align:right">${esc(f.Telefon || "")}<br>${esc(f["E-Mail"] || "")}</div></div>
   </div>`;
   el.hidden = false;
-  $fb("reZu").addEventListener("click", () => { el.hidden = true; el.innerHTML = ""; });
+  if (!(history.state && history.state.modal)) history.pushState({...(history.state || {}), tiefe: verlaufTiefe() + 1, modal: "rechnung"}, "", location.hash);
+  renderZurueck();
+  $fb("reZu").addEventListener("click", () => {
+    el.hidden = true; el.innerHTML = "";
+    if (history.state && history.state.modal) history.back();
+  });
   $fb("reDrucken").addEventListener("click", () => {
     document.body.classList.add("druck-rechnung");
     const weg = () => { document.body.classList.remove("druck-rechnung"); window.removeEventListener("afterprint", weg); };
@@ -5180,17 +5266,19 @@ function fbRenderStandardpreise(){
   const zeile = (p, i) => `<tr data-i="${i}"><td><input data-k="Tätigkeit" list="fbListeTaetigkeiten" value="${esc(p["Tätigkeit"] || "")}" placeholder="Tätigkeit"></td>
     <td><input data-k="Einheit" list="fbListeEinheiten" value="${esc(p.Einheit || "")}" placeholder="ha"></td>
     <td class="preis"><input data-k="Preis (€)" inputmode="decimal" value="${esc(fbZahlText(fbZahl(p["Preis (€)"]), 2))}" placeholder="€"></td>
+    <td class="preis"><input data-k="MwSt (%)" inputmode="decimal" list="fbListeMwst" value="${esc(fbZahlText(fbZahl(p["MwSt (%)"] ?? 19), 1))}" placeholder="%"></td>
     <td><button class="btn small ghost" type="button" data-weg="${i}" aria-label="Zeile löschen">✕</button></td></tr>`;
   const zeichnen = () => {
-    box.innerHTML = `<div class="table-scroll"><table class="fb-aw fb-sp-tabelle"><thead><tr><th>Tätigkeit</th><th>Einheit</th><th>Preis je Einheit</th><th></th></tr></thead><tbody>
-      ${liste.map(zeile).join("") || `<tr><td colspan="4" class="bs-help">Noch keine Standardpreise.</td></tr>`}</tbody></table></div>
+    box.innerHTML = `<div class="table-scroll"><table class="fb-aw fb-sp-tabelle"><thead><tr><th>Tätigkeit</th><th>Einheit</th><th>Preis je Einheit</th><th>MwSt %</th><th></th></tr></thead><tbody>
+      ${liste.map(zeile).join("") || `<tr><td colspan="5" class="bs-help">Noch keine Standardpreise.</td></tr>`}</tbody></table></div>
       <div class="fb-form-knoepfe" style="margin-top:8px"><button class="btn small" type="button" id="fbSpNeu">+ Preis</button><button class="btn primary small" type="button" id="fbSpSpeichern">Preise speichern</button><span class="bs-erkannt" id="fbSpInfo"></span></div>`;
     box.querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => { liste[inp.closest("tr").dataset.i][inp.dataset.k] = inp.value; }));
     box.querySelectorAll("button[data-weg]").forEach(b => b.addEventListener("click", () => { liste.splice(Number(b.dataset.weg), 1); zeichnen(); }));
-    $fb("fbSpNeu").addEventListener("click", () => { liste.push({"Tätigkeit": "", Einheit: "ha", "Preis (€)": ""}); zeichnen(); box.querySelector("tr:last-child input").focus(); });
+    $fb("fbSpNeu").addEventListener("click", () => { liste.push({"Tätigkeit": "", Einheit: "ha", "Preis (€)": "", "MwSt (%)": 19}); zeichnen(); box.querySelector("tr:last-child input").focus(); });
     $fb("fbSpSpeichern").addEventListener("click", () => {
       const sauber = liste.filter(p => String(p["Tätigkeit"]).trim() && fbZahl(p["Preis (€)"]) !== null)
-        .map(p => ({"Tätigkeit": p["Tätigkeit"].trim(), Einheit: String(p.Einheit || "").trim(), "Preis (€)": fbZahl(p["Preis (€)"])}));
+        .map(p => ({"Tätigkeit": p["Tätigkeit"].trim(), Einheit: String(p.Einheit || "").trim(), "Preis (€)": fbZahl(p["Preis (€)"]),
+                    "MwSt (%)": Math.max(0, Math.min(100, fbZahl(p["MwSt (%)"]) ?? 19))}));
       fbAendern({typ: "standardpreise", liste: sauber});
     });
   };
@@ -5722,6 +5810,8 @@ $fb("fbDokuAnwender").addEventListener("change", () => {
 // --- Gesamt / Navigation -------------------------------------------------
 function fbZeigeTab(name){
   if (!FB_TABS.includes(name)) name = fbTab || "eintragen";
+  // zurück in die Liste, ohne dass die Rechnung erstellt wurde → Auswahl wiederherstellen
+  if (name === "liste" && fbAuswahlMerken && !fbAuswahl) fbAuswahl = new Set(fbAuswahlMerken);
   FB_TABS.forEach(t => { const p = $fb("fb" + t[0].toUpperCase() + t.slice(1)); if (p) delete p.dataset.ungespeichert; });
   fbTab = name; lsSchreiben(FB_TAB_KEY, name);
   FB_TABS.forEach(t => {
@@ -5769,7 +5859,10 @@ function fbRenderAlles(){
   $fb(id).addEventListener("input", ev => { if (ev.target.closest("table, details")) $fb(id).dataset.ungespeichert = "1"; });
   $fb(id).addEventListener("click", ev => { const b = ev.target.closest("button"); if (b && /speichern/i.test(b.textContent)) delete $fb(id).dataset.ungespeichert; }, true);
 });
-FB_TABS.forEach(t => $fb("fbTab" + t[0].toUpperCase() + t.slice(1)).addEventListener("click", () => fbZeigeTab(t)));
+FB_TABS.forEach(t => $fb("fbTab" + t[0].toUpperCase() + t.slice(1)).addEventListener("click", () => {
+  if (fbTab === t){ if (location.hash !== "#feld-" + t) history.replaceState(history.state, "", "#feld-" + t); return; }   // schon offen: kein neuer Schritt
+  geheZu("feld-" + t); if (fbTab !== t) fbZeigeTab(t);
+}));
 $fb("fbForm").addEventListener("submit", fbSpeichern);
 $fb("fbForm").addEventListener("input", () => { fbPsFelderZeigen(); fbRenderVorschau(); });
 $fb("fbLeeren").addEventListener("click", fbFormularLeeren);
@@ -5794,10 +5887,14 @@ $fb("fbListeBody").addEventListener("click", e => {
 $fb("fbListeBody").addEventListener("keydown", e => {
   if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-id]")){ e.preventDefault(); e.target.click(); }
 });
-$fb("fbAuswahlKnopf").addEventListener("click", () => { fbAuswahl = fbAuswahl ? null : new Set(); fbRenderListe(); });
+$fb("fbAuswahlKnopf").addEventListener("click", () => { fbAuswahl = fbAuswahl ? null : new Set(); fbAuswahlMerken = null; fbRenderListe(); });
 $fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRe.vorauswahl = null; fbRe.positionen = {}; fbRenderRePositionen(); });
-["fbReFirma", "fbReDatum", "fbReMwst"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
+["fbReFirma", "fbReDatum"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
 $fb("fbReErstellen").addEventListener("click", fbRechnungErstellen);
+$fb("fbReZurueck").addEventListener("click", () => {
+  if (history.state && history.state.von === "feld-liste") history.back();
+  else { geheZu("feld-liste"); if (fbTab !== "liste") fbZeigeTab("liste"); }
+});
 $fb("fbStMandantNeu").addEventListener("click", () => fbMandantDialog(""));
 $fb("fbExportCsv").addEventListener("click", fbExportCsv);
 $fb("fbExportJson").addEventListener("click", fbExportJson);
