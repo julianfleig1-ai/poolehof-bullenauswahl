@@ -2498,7 +2498,7 @@ function werteAus(){
   info.innerHTML = lely.quellen.length
     ? (keys.length
         ? `✓ ${esc(quelle)}: <b>${keys.length} Ohrmarke${keys.length === 1 ? "" : "n"} erkannt</b>`
-          + (lely.gesamt ? (lely.gesamt === keys.length ? ` · Lely zeigt ${lely.gesamt} Datensätze ✓` : ` · <span class="warn">⚠ Lely zeigt ${lely.gesamt} Datensätze – ${lely.gesamt > keys.length ? "fehlende mit einem weiteren Screenshot ergänzen" : "bitte prüfen"}</span>`) : "")
+          + (lely.gesamt ? (lely.gesamt === keys.length ? ` · Lely zeigt ${lely.gesamt} Datensätze ✓` : ` · <span class="bs-erkannt">(Lely-Liste hat insgesamt ${lely.gesamt})</span>`) : "")
           + (ohneNr ? ` · <span class="warn">⚠ ${ohneNr} Kuhnummer${ohneNr === 1 ? "" : "n"} unsicher – orange markiert, im Lely prüfen</span>` : "")
           + (lely.ocr && !herde ? `<br><span class="warn">⚠ Ohne Netrind-Liste (Schritt 1) kann die App die gelesenen Nummern nicht gegenprüfen – alles ist unsicher markiert.</span>` : "")
           + (lely.ocr ? `<br><span class="bs-erkannt">Weitere Screenshots einfach dazu einfügen (Strg + V) – Kopfzeile mit „Kuhnummer“ und „Lebensnummer“ am besten jeweils mit drauf.</span>` : "")
@@ -3224,10 +3224,12 @@ async function tiereAusBild(datei, fortschritt){
       nr = (zeile.words || []).map(w => alsZahl(w.text)).find(Boolean) || "";
       hinweis = "Kopfzeile „Kuhnummer“ fehlt im Bild";
     }
-    // mit dem Gedächtnis abgleichen
+    // Gedächtnis (gehört zur Ohrmarke, nicht zum Halsband): sicher gelesene neue Nummer gilt – nur ein Hinweis;
+    // eine knappe Lesung, die mit der früheren Nummer übereinstimmt, ist damit bestätigt
     if (bekannt[key] && ohrSicher !== false){
-      if (!sicher){ nr = bekannt[key]; sicher = true; hinweis = "Kuhnummer aus früherer Liste"; }
-      else if (bekannt[key] !== nr){ hinweis = `bisher Kuh-Nr. ${bekannt[key]} – bitte prüfen`; sicher = false; }
+      if (sicher && bekannt[key] !== nr) hinweis = `Kuh-Nr. geändert (bisher ${bekannt[key]})`;
+      else if (!sicher && nr && bekannt[key] === nr){ sicher = true; hinweis = ""; }
+      else if (!sicher) hinweis = (hinweis ? hinweis + " · " : "") + `früher Kuh-Nr. ${bekannt[key]}`;
     }
     if (kalibriert && !ohrSicher) sicher = false;
     if (window.__ocrLog) window.__ocrLog.push({key, nr, sicher, hinweis, ohrSicher, protOhr: z.protOhr, ...dbg});   // nur für Tests

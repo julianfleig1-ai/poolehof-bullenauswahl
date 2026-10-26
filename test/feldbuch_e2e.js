@@ -380,9 +380,9 @@
     const nf = [...document.querySelectorAll("#bsBody tr.nf")];
     pruef("Screenshot: 2 erfundene Ohrmarken als „nicht in Liste“ markiert", nf.length === 2 && nf.every(tr => /falsch gelesen/.test(tr.innerText)), nf.map(tr => tr.innerText).join(" | "));
     const konflikt = lely.tiere.find(t => t.key === "0812345678");
-    pruef("Gedächtnis: abweichende Kuhnummer wird gemeldet", konflikt && !konflikt.sicher && /bisher Kuh-Nr\. 12/.test(konflikt.hinweis), JSON.stringify(konflikt));
-    pruef("Screenshot: alle übrigen Kuhnummern sicher (keine orange)", lely.tiere.filter(t => t.key !== "0812345678").every(t => t.sicher), JSON.stringify(lely.tiere.filter(t => !t.sicher && t.key !== "0812345678")));
-    pruef("Sicher gelesene Paare werden gemerkt", herde.kuhnummern["0812345670"] === "167" && herde.kuhnummern["0812345678"] === "12", JSON.stringify(herde.kuhnummern).slice(0, 200));
+    pruef("Gedächtnis: neue Kuhnummer (z. B. neues Halsband) wird übernommen, nur Hinweis", konflikt && konflikt.sicher && konflikt.nr === "189" && /geändert \(bisher 12\)/.test(konflikt.hinweis), JSON.stringify(konflikt));
+    pruef("Screenshot: alle Kuhnummern sicher (keine orange)", lely.tiere.every(t => t.sicher), JSON.stringify(lely.tiere.filter(t => !t.sicher)));
+    pruef("Sicher gelesene Paare werden gemerkt (auch die geänderte)", herde.kuhnummern["0812345670"] === "167" && herde.kuhnummern["0812345678"] === "189", JSON.stringify(herde.kuhnummern).slice(0, 200));
     // nicht lesbare Zeile: Bildausschnitt + von Hand nachtragen
     lely.unlesbar = [{y: 1, bild: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="}]; werteAus();
     const ub = document.querySelector("#lelyUnlesbar .bs-unlesbar");
