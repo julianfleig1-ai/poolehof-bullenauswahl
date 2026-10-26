@@ -258,7 +258,7 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .bs-hof-titel{font-weight:600;font-size:13.5px}
 .bs-hof-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .bs-hof-form input{flex:1 1 150px;min-width:0;padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:15px}
-.nur-fuer-browser{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
+.nur-fuer-browser{position:absolute!important;width:1px!important;height:1px!important;min-width:0!important;padding:0!important;border:0!important;opacity:0;pointer-events:none;overflow:hidden}
 .bs-hof-meldung{font-size:12.5px;margin-top:6px;color:var(--warn)}
 .bs-anleitung{margin-top:12px;font-size:13.5px;border:1px solid var(--border);border-radius:10px;padding:10px 13px;background:var(--surface)}
 .bs-anleitung summary{cursor:pointer;font-weight:600}
@@ -674,14 +674,15 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 .re-pos{width:100%;border-collapse:collapse}
 .re-pos th{background:#3F7059;color:#fff;text-align:left;padding:6px 8px;font-size:12.5px}
 .re-pos td{padding:6px 8px;border-bottom:1px solid #e3dfd3;vertical-align:top}
+.re-pos td{white-space:normal;overflow-wrap:break-word;word-break:normal}   /* lange Leistungstexte umbrechen (allgemeine Tabellenregel aufheben) */
 .re-pos .r{text-align:right;white-space:nowrap}
 .re-summen{margin:12px 0 0 auto;width:280px}
 .re-summen div{display:flex;justify-content:space-between;padding:3px 8px}
 .re-summen .gesamt{border-top:2px solid #3F7059;font-weight:700;font-size:15px;margin-top:4px;padding-top:6px}
 .re-fuss{margin-top:40px;border-top:1px solid #c7c2b2;padding-top:10px;display:flex;justify-content:space-between;gap:20px;font-size:12px;color:#5B6472}
-@media (max-width:640px){.re-blatt{padding:26px 14px;font-size:12.5px}.re-mitte{flex-direction:column}
+@media (max-width:640px){.re-blatt{padding:22px 10px;font-size:12.5px}.re-mitte{flex-direction:column}
   .re-pos th,.re-pos td{padding:5px 4px;font-size:11.5px}
-  .re-pos td:nth-child(2){overflow-wrap:anywhere}
+  .re-pos td:nth-child(2){hyphens:auto;-webkit-hyphens:auto}
   #rechnungDruck{padding-bottom:calc(110px + env(safe-area-inset-bottom))}}
 @media print{
   body.druck-rechnung .app{display:none!important}
@@ -1799,6 +1800,9 @@ function zeigeAdresse(ziel){
 }
 function geheZu(ziel){
   if (location.hash === "#" + ziel) return;
+  const jetzt = location.hash.slice(1);
+  if (ziel === "feld" && /^feld(-\w+)?$/.test(jetzt)) return;                        // schon im Feldbuch
+  if (ziel === "zucht" && /^(zucht|bullen|besamung)$/.test(jetzt)) return;           // schon in der Zuchtplanung
   history.pushState({tiefe: verlaufTiefe() + 1, von: location.hash.slice(1)}, "", "#" + ziel);
   zeigeAdresse(ziel);
   window.scrollTo(0, 0);
@@ -1958,7 +1962,8 @@ function speichereBsSettings(){
 // Neuester Stand einer Liste: Hochladen ODER zuletzt geänderte Einstellungen
 function herdeStand(h){
   if (!h) return 0;
-  return Math.max(new Date(h.hochgeladen || 0).getTime() || 0, new Date((h.einstellungen && h.einstellungen.stand) || 0).getTime() || 0);
+  return Math.max(new Date(h.hochgeladen || 0).getTime() || 0, new Date((h.einstellungen && h.einstellungen.stand) || 0).getTime() || 0,
+                  new Date(h.kuhnummernStand || 0).getTime() || 0);
 }
 // Einstellungen aus der (evtl. von einem anderen Gerät geladenen) Liste übernehmen, wenn sie neuer sind
 function bsSettingsAusHerde(){
@@ -2667,8 +2672,8 @@ function uebernehmeTabelle(rows, quelle){
   if (!daten.some(r => ohrKey(r[mapping.ohr]) !== null)) throw new Error("Es wurden keine Tiere mit Ohrmarke gefunden.");
 
   const alt = herde ? {datum: herde.hochgeladen, anzahl: herdenTiere().length} : null;
-  const kuhnummern = herde && herde.kuhnummern ? herde.kuhnummern : undefined;
-  herde = {datei: quelle, hochgeladen: new Date().toISOString(), header, rows: daten, mapping, kuhnummern,
+  const kuhnummern = herde && herde.kuhnummern ? herde.kuhnummern : undefined, kuhnummernStand = herde && herde.kuhnummernStand;
+  herde = {datei: quelle, hochgeladen: new Date().toISOString(), header, rows: daten, mapping, kuhnummern, kuhnummernStand,
            einstellungen: {v: bsSettings.v, quote: bsSettings.quote, gewichte: {...bsSettings.gewichte}, stand: bsSettings.stand}};   // Einstellungen bleiben
   speichereHerde();
   const neu = herdenTiere().length;
@@ -2871,7 +2876,7 @@ function lelyMerken(tiere){
   tiere.forEach(t => { if (t.nr && t.sicher && m[t.key] !== t.nr){ m[t.key] = t.nr; neu = true; } });
   if (!neu) return;
   herde.kuhnummern = m;
-  herde.einstellungen = {...(herde.einstellungen || {}), stand: new Date().toISOString()};   // damit andere Geräte es übernehmen
+  herde.kuhnummernStand = new Date().toISOString();   // damit andere Geräte es übernehmen
   speichereHerde();
   if (typeof hsSpeichern === "function") hsSpeichern();
 }
@@ -3270,8 +3275,15 @@ async function lelyDateiTiere(file, fortschritt){
   if (/\.xml$/i.test(file.name) || /^\s*<\?xml|^\s*</.test(text)) return {tiere: tiereAusXml(text)};
   return {tiere: tiereAusTabelle(parseCSV(text))};
 }
-// Bilder ergänzen sich (mehrere Screenshots einer langen Liste), Dateien ersetzen die Liste
-async function lelyDatei(file){
+// Bilder ergänzen sich (mehrere Screenshots einer langen Liste), Dateien ersetzen die Liste.
+// Immer eins nach dem anderen – zwei Erkennungen gleichzeitig würden sich gegenseitig stören.
+let lelyKette = Promise.resolve();
+function lelyDatei(file){
+  const lauf = lelyKette.then(() => lelyDateiEinlesen(file));
+  lelyKette = lauf.catch(() => {});
+  return lauf;
+}
+async function lelyDateiEinlesen(file){
   const drop = document.getElementById("lelyDrop"), info = document.getElementById("erkanntInfo");
   drop.classList.add("busy");
   const bild = /^image\//.test(file.type) || /\.(png|jpe?g|bmp|gif|webp)$/i.test(file.name);
@@ -4769,9 +4781,11 @@ function fbRenderAuswahlLeiste(){
   leiste.innerHTML = ids.length
     ? `<span><b>${ids.length}</b> ${ids.length === 1 ? "Arbeit" : "Arbeiten"} ausgewählt · ${namen.map(n => `${esc(fbIstEigen(n) ? "eigen" : n)}${namen.length > 1 ? " " + zaehl[n] : ""}`).join(", ")}${(() => { const s = ids.map(id => fbArbeiten().find(a => a.ID === id)).filter(a => a.Rechnung); return s.length ? `<br><span class="fb-schon">⚠ ${s.length === 1 ? "1 davon ist" : s.length + " davon sind"} schon abgerechnet (${esc([...new Set(s.map(a => a.Rechnung))].join(", "))})</span>` : ""; })()}</span>
        <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbAuswahlNotiz">📝 Notiz hinzufügen</button>
-       <button class="btn primary" type="button" id="fbAuswahlUebernehmen">🧾 Rechnung erstellen</button></span>`
+       <button class="btn primary" type="button" id="fbAuswahlUebernehmen">🧾 Rechnung erstellen</button>
+       <button class="btn ghost" type="button" data-auswahl-ende>✕ Beenden</button></span>`
     : `<span>Arbeiten antippen – dann <b>Notiz hinzufügen</b> oder <b>Rechnung erstellen</b>. Schon abgerechnete sind mit ✓ und Rechnungsnummer markiert.</span>
-       <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbNotizNeu">📝 Notiz ohne Arbeit</button></span>`;
+       <span class="fb-liste-knoepfe"><button class="btn" type="button" id="fbNotizNeu">📝 Notiz ohne Arbeit</button><button class="btn ghost" type="button" data-auswahl-ende>✕ Beenden</button></span>`;
+  leiste.querySelector("[data-auswahl-ende]").addEventListener("click", () => $fb("fbAuswahlKnopf").click());
   if (!ids.length){ $fb("fbNotizNeu").addEventListener("click", () => fbNotizDialog()); return; }
   $fb("fbAuswahlNotiz").addEventListener("click", () => fbNotizZuDialog(ids));
   $fb("fbAuswahlUebernehmen").addEventListener("click", () => {
@@ -5052,6 +5066,17 @@ function fbZahlStatus(r){
   return tage > 30 ? {art: "ueberfaellig", tage, html: `<span class="fb-badge rot">überfällig · ${tage} Tage</span>`}
                    : {art: "offen", tage, html: `<span class="fb-badge offen">offen · ${Math.max(tage, 0)} Tage</span>`};
 }
+// Daten vom Erstellungstag gelten; nur damals LEERE Felder (z. B. E-Mail für die E-Rechnung) kommen aus den aktuellen Stammdaten
+function fbErgaenzt(damals, jetzt){
+  if (!damals) return jetzt || {};
+  const out = {...damals};
+  // leer – oder ungültig (dann wäre keine E-Rechnung möglich) – zählt als "fehlt damals"
+  const ungueltig = (k, v) => v === undefined || v === "" ||
+    (k === "IBAN" && !String(v).replace(/\s/g, "").match(/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/i)) ||
+    (k === "E-Mail" && !/^\S+@\S+\.\S+$/.test(v)) || (k === "PLZ Ort" && !fbPlzOrt(v).plz);
+  Object.entries(jetzt || {}).forEach(([k, v]) => { if (ungueltig(k, out[k]) && !ungueltig(k, v)) out[k] = v; });
+  return out;
+}
 function fbGespeicherteRechnungZeigen(nr, firma){
   const alle = (fbDaten && fbDaten.rechnungen) || [];
   // Firma unbekannt (ältere Einträge)? Dann die einzige nicht stornierte Rechnung mit der Nummer
@@ -5060,7 +5085,8 @@ function fbGespeicherteRechnungZeigen(nr, firma){
   if (!r){ alert(`Rechnung ${nr} ist in der App nicht gespeichert (vermutlich aus der alten Liste).`); return; }
   let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
   fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), gruppen: r["MwSt je Satz"] || null, mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
-    firma: r["Firma-Daten"] || fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: r["Mandant-Daten"] || fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
+    firma: fbErgaenzt(r["Firma-Daten"], fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}),
+    mandant: fbErgaenzt(r["Mandant-Daten"], fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant}),
     storniert: r.Status === "storniert"});
 }
 function fbRenderReListe(){
@@ -5135,7 +5161,7 @@ function fbRechnungZeigen(r){
     const zeigen = t => { hinweis.innerHTML = t; xh.innerHTML = t; (unten ? xh : hinweis).scrollIntoView({block: "center", behavior: "smooth"}); };
     if (r.storniert){ zeigen("Diese Rechnung ist storniert – dafür keine E-Rechnung erstellen."); return; }
     const fehlt = fbERechnungFehlt(f, m);
-    if (fehlt.length){ zeigen(`<b>Für die E-Rechnung fehlt noch:</b> ${fehlt.map(esc).join(" · ")}<br>Bitte in <b>Stammdaten</b> ergänzen (Firma bzw. Mandant), dann die Rechnung unter „Bisherige Rechnungen“ nochmal anzeigen.`); return; }
+    if (fehlt.length){ zeigen(`<b>Für die E-Rechnung fehlt noch:</b> ${fehlt.map(esc).join(" · ")}<br>Bitte in <b>Stammdaten</b> ergänzen (Firma bzw. Mandant), dann die Rechnung unter „Rechnung → Bisherige Rechnungen → Anzeigen“ nochmal öffnen.`); return; }
     const xmlName = name.replace(/\.pdf$/, "") + " (E-Rechnung).xml";
     const erg = await fbSichern(xmlName, fbXRechnungXml(r), "application/xml");
     if (erg === "gespeichert" || erg === "heruntergeladen") zeigen("✓ E-Rechnung gespeichert: " + esc(xmlName) + " – diese Datei per E-Mail an den Kunden schicken (am besten zusammen mit der PDF).");

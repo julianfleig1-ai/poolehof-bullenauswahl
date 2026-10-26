@@ -232,6 +232,9 @@
     pruef("Zurück zur Liste: Auswahl bleibt erhalten", fbAuswahl && fbAuswahl.has("T-001") && fbAuswahl.has("T-003"));
     $fb("fbAuswahlKnopf").click();   // Auswahl beenden
     pruef("Auswahl beenden vergisst die gemerkte Auswahl", !fbAuswahl && !fbAuswahlMerken);
+    $fb("fbAuswahlKnopf").click();
+    $fb("fbAuswahlLeiste").querySelector("[data-auswahl-ende]").click();
+    pruef("„✕ Beenden“ in der Auswahl-Leiste beendet die Auswahl", !fbAuswahl && $fb("fbAuswahlLeiste").hidden);
     // Schon abgerechnete Arbeit nochmal abrechnen: auswählbar, deutlich markiert, mit Rückfrage
     $fb("fbAuswahlKnopf").click();
     fbAuswahlUmschalten("L-1");
@@ -391,6 +394,11 @@
     ub.querySelector("[data-ok]").click();
     pruef("Von Hand nachgetragen übernommen", document.getElementById("lelyUnlesbar").hidden && lely.tiere.some(t => t.key === "0812345670"), JSON.stringify(lely.tiere.find(t => t.key === "0812345670")));
     await lelyDatei(new File([png], "image.png", {type: "image/png"}));
+    await Promise.all([lelyDatei(new File([png], "a.png", {type: "image/png"})), lelyDatei(new File([png], "b.png", {type: "image/png"}))]);
+    pruef("Zwei Screenshots gleichzeitig: sauber nacheinander gelesen", lely.tiere.length === 22 && lely.tiere.filter(t => t.key !== "0812345678").every(t => t.sicher), JSON.stringify(lely.tiere.filter(t => !t.sicher)).slice(0, 200));
+    lely = {tiere: [], quellen: [], ocr: false, gesamt: null, unlesbar: []};
+    await lelyDatei(new File([png], "image.png", {type: "image/png"}));
+    await lelyDatei(new File([png], "image.png", {type: "image/png"}));
     pruef("Zweiter Screenshot ergänzt ohne Doppelte", lely.quellen.length === 2 && lely.tiere.length === 22 && /2 Bilder/.test(document.getElementById("erkanntInfo").innerText));
     document.getElementById("lelyLeeren").click();
     pruef("Lely-Liste leeren", document.getElementById("erkanntInfo").textContent === "" && document.getElementById("bsResult").hidden);
@@ -455,6 +463,7 @@
       document.querySelector("#rechnungDruck .re-unten [data-re-xml]").click(); await warte(100);
       pruef("Fehlende Angaben werden genannt statt ungültiger Datei", !gesichert && /fehlt noch/.test($fb("reXmlHinweis").innerText) && /E-Mail/.test($fb("reXmlHinweis").innerText), $fb("reXmlHinweis").innerText);
       $fb("reZu").click(); await warte(300);
+      const altNr = alt["Rechnungs-Nr."];
       // Angaben ergänzen, neue Rechnung, E-Rechnung herunterladen
       const th = fbDaten.firmen.find(f => f.Firma === "Testhof");
       await fbAendern({typ: "firma", alt: "Testhof", felder: {...th, "PLZ Ort": "12345 Testdorf", IBAN: "DE02120300000000202051", Telefon: "+49 7000 1", "E-Mail": "hof@example.com", Steuernummer: "00000/00000", "Hinweis auf Rechnung": "Testhinweis"}});
@@ -469,6 +478,15 @@
       $fb("reZu").click(); await warte(300);
       // spätere Adressänderung ändert eine erstellte Rechnung nicht
       await fbAendern({typ: "mandant", mandant: {...fbDaten.mandanten.find(m => m.Kurzname === "Muster"), "Straße": "Neue Straße 99"}});
+      gesichert = null;
+      fbGespeicherteRechnungZeigen(r.nr, "Testhof"); await warte(200);
+      document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(100);
+      // ältere Rechnung (damals ohne E-Mail): nach dem Ergänzen in den Stammdaten geht die E-Rechnung
+      gesichert = null;
+      fbGespeicherteRechnungZeigen(altNr, "Testhof"); await warte(200);
+      document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(100);
+      pruef("Alte Rechnung: nachgetragene E-Mail/Telefon werden ergänzt", gesichert && gesichert.inhalt.includes("muster@example.com") && gesichert.inhalt.includes("hof@example.com"), $fb("reXmlHinweis").innerText);
+      $fb("reZu").click(); await warte(300);
       gesichert = null;
       fbGespeicherteRechnungZeigen(r.nr, "Testhof"); await warte(200);
       document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(100);
