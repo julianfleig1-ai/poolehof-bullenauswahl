@@ -651,12 +651,15 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 /* Rechnung als druckfertiges Blatt (Vorschau am Bildschirm + Druck/PDF) */
 #rechnungDruck{position:fixed;inset:0;z-index:100;background:rgba(20,24,18,.55);overflow:auto;padding:20px 12px 40px}
 .re-werkzeug{max-width:794px;margin:0 auto 10px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
-.re-pdf-hinweis{max-width:794px;margin:0 auto 8px;color:#fff;font-size:13.5px;text-align:right}
+.re-werkzeug.re-unten{margin:14px auto 6px;justify-content:center}
+.re-pdf-hinweis{max-width:794px;margin:0 auto 8px;color:#fff;font-size:14px;text-align:right;line-height:1.45}
+#reXmlHinweis{text-align:center}
 .re-pdf-hinweis:empty{display:none}
 /* Unsichtbare Kopie in fester A4-Breite fürs PDF (auch am Handy Desktop-Layout) */
 .re-pdf{position:fixed;left:-10000px;top:0;width:794px;background:#fff}
 .re-pdf .re-blatt{max-width:none;width:794px;min-height:1123px;box-sizing:border-box;border-radius:0;padding:48px 52px!important;font-size:13.5px!important}
 .re-pdf .re-mitte{flex-direction:row!important}
+.re-pdf .re-pos th{font-size:12.5px!important;padding:6px 8px!important}.re-pdf .re-pos td{font-size:13.5px!important;padding:6px 8px!important}
 .re-pdf .re-blatt{display:flex;flex-direction:column}
 .re-pdf .re-fuss{margin-top:auto}
 .re-blatt{max-width:794px;margin:0 auto;background:#fff;color:#1f2a3c;padding:48px 52px;border-radius:6px;font-family:"IBM Plex Sans",Arial,sans-serif;font-size:13.5px;line-height:1.45}
@@ -676,11 +679,14 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 .re-summen div{display:flex;justify-content:space-between;padding:3px 8px}
 .re-summen .gesamt{border-top:2px solid #3F7059;font-weight:700;font-size:15px;margin-top:4px;padding-top:6px}
 .re-fuss{margin-top:40px;border-top:1px solid #c7c2b2;padding-top:10px;display:flex;justify-content:space-between;gap:20px;font-size:12px;color:#5B6472}
-@media (max-width:640px){.re-blatt{padding:26px 18px;font-size:12.5px}.re-mitte{flex-direction:column}}
+@media (max-width:640px){.re-blatt{padding:26px 14px;font-size:12.5px}.re-mitte{flex-direction:column}
+  .re-pos th,.re-pos td{padding:5px 4px;font-size:11.5px}
+  .re-pos td:nth-child(2){overflow-wrap:anywhere}
+  #rechnungDruck{padding-bottom:calc(110px + env(safe-area-inset-bottom))}}
 @media print{
   body.druck-rechnung .app{display:none!important}
   body.druck-rechnung #rechnungDruck{position:static;background:none;padding:0;overflow:visible}
-  body.druck-rechnung .re-werkzeug{display:none}
+  body.druck-rechnung .re-werkzeug,body.druck-rechnung .re-pdf-hinweis{display:none}
   body.druck-rechnung .re-blatt{max-width:none;padding:0;border-radius:0}
 }
 
@@ -3591,8 +3597,8 @@ const FB_OPS_KEY = "poolehof-feldbuch-aenderungen-v1";    // noch nicht übertra
 const FB_TAB_KEY = "poolehof-feldbuch-tab-v1";
 const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung", "doku", "stamm"];
 const FB_FELDER = ["Datum", "Mandant", "Tätigkeit", "Kultur", "Ort / Schlag", "Menge", "Einheit", "Stunden", "Mittel / Dünger", "Bemerkung", "BBCH", "Uhrzeit", "Anwender"];
-const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Letzte Rechnungs-Nr."];
-const FB_MANDANT_FELDER = ["Kurzname", "Name", "Andere Namen", "Straße", "PLZ Ort", "Notiz"];
+const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "USt-IdNr.", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Hinweis auf Rechnung", "Letzte Rechnungs-Nr."];
+const FB_MANDANT_FELDER = ["Kurzname", "Name", "Andere Namen", "Straße", "PLZ Ort", "E-Mail", "Notiz"];
 const FB_STANDARD_LISTEN = {
   "Tätigkeiten": ["Pflügen", "Grubbern", "Eggen", "Striegeln", "Walzen", "Mulchen", "Säen", "Düngen", "Kalken", "Gülle fahren", "Mist streuen",
                   "Pflanzenschutz", "Mähen", "Kreiseln", "Schwaden", "Häckseln", "Pressen", "Ballen fahren", "Dreschen", "Transport", "Silo walzen",
@@ -3680,8 +3686,12 @@ function fbRechnungAnwenden(d, a){
   const mwst = Math.round(gruppen.reduce((s, g) => s + g.steuer, 0) * 100) / 100, brutto = Math.round((netto + mwst) * 100) / 100;
   const satz = gruppen.length === 1 ? gruppen[0].satz / 100 : null;
   firma["Letzte Rechnungs-Nr."] = nr;
+  // Firmen- und Kundendaten so festhalten, wie sie beim Erstellen waren – die Rechnung (PDF und E-Rechnung)
+  // bleibt dadurch genau gleich, auch wenn sich später eine Adresse ändert
+  const {"Letzte Rechnungs-Nr.": _letzte, ...firmaDaten} = firma;
+  const mandantDaten = fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant});
   d.rechnungen.push({"Rechnungs-Nr.": nr, Firma: a.firma, Datum: a.datum, Mandant: a.mandant, Netto: netto, "MwSt-Satz": satz, "MwSt je Satz": gruppen, MwSt: mwst, Brutto: brutto,
-                     Positionen: pos, Erstellt: a.zeit, Status: ""});
+                     Positionen: pos, Erstellt: a.zeit, Status: "", "Firma-Daten": fbKopie(firmaDaten), "Mandant-Daten": mandantDaten});
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
     if (z.Rechnung) z["Rechnung vorher"] = [z["Rechnung vorher"], z.Rechnung + (z["Rechnung Firma"] ? " (" + z["Rechnung Firma"] + ")" : "")].filter(Boolean).join(", ");
@@ -5050,7 +5060,7 @@ function fbGespeicherteRechnungZeigen(nr, firma){
   if (!r){ alert(`Rechnung ${nr} ist in der App nicht gespeichert (vermutlich aus der alten Liste).`); return; }
   let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
   fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), gruppen: r["MwSt je Satz"] || null, mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
-    firma: fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
+    firma: r["Firma-Daten"] || fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}, mandant: r["Mandant-Daten"] || fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant},
     storniert: r.Status === "storniert"});
 }
 function fbRenderReListe(){
@@ -5074,7 +5084,7 @@ function fbRenderReListe(){
 function fbRechnungZeigen(r){
   const f = r.firma || {}, m = r.mandant || {};
   const el = $fb("rechnungDruck");
-  el.innerHTML = `<div class="re-werkzeug"><button class="btn primary" type="button" id="rePdf">📄 PDF wird vorbereitet …</button><button class="btn" type="button" id="reDrucken">🖨 Drucken</button><button class="btn" type="button" id="reZu">Schließen</button></div>
+  el.innerHTML = `<div class="re-werkzeug"><button class="btn primary" type="button" data-re-pdf>📄 PDF wird vorbereitet …</button><button class="btn primary" type="button" data-re-xml>🧾 E-Rechnung herunterladen</button><button class="btn" type="button" id="reDrucken">🖨 Drucken</button><button class="btn" type="button" id="reZu">Schließen</button></div>
   <div class="re-pdf-hinweis" id="rePdfHinweis"></div>
   <div class="re-blatt">
     <div class="re-kopf"><div class="re-absender"><b>${esc(f.Firma || "")}</b><br>${esc(f.Inhaber || "")}<br>${esc(f["Straße"] || "")}<br>${esc(f["PLZ Ort"] || "")}</div><img src="img/logo.png" alt=""></div>
@@ -5083,13 +5093,16 @@ function fbRechnungZeigen(r){
       <div class="re-meta"><div><span>Datum</span><b>${esc(fbDatumAnzeige(r.datum))}</b></div><div><span>Rechnungs-Nr.</span><b>${esc(r.nr)}</b></div>${f.Steuernummer ? `<div><span>Steuernummer</span><span>${esc(f.Steuernummer)}</span></div>` : ""}</div>
     </div>
     <h2>Rechnung${r.storniert ? ' <span class="re-storno">STORNIERT</span>' : ""}</h2>
-    <table class="re-pos"><thead><tr><th>Datum</th><th>Leistung</th><th class="r">Menge</th><th class="r">Einzelpreis</th><th class="r">MwSt</th><th class="r">Betrag netto</th></tr></thead><tbody>
+    <table class="re-pos"><thead><tr><th>Datum</th><th>Leistung</th><th class="r">Menge</th><th class="r">Einzelpreis</th><th class="r">MwSt</th><th class="r">Netto</th></tr></thead><tbody>
       ${(r.positionen || []).map(p => `<tr><td>${esc(fbDatumAnzeige(p.datum))}</td><td>${esc(p.text || "")}</td><td class="r">${esc(fbZahlText(p.menge))} ${esc(p.einheit || "")}</td><td class="r">${fbEuro(p.preis)}</td><td class="r">${esc(fbZahlText(p.mwst ?? (r.mwstSatz ?? 0.19) * 100, 1))} %</td><td class="r">${fbEuro(p.betrag ?? (p.menge * p.preis))}</td></tr>`).join("")}
     </tbody></table>
     <div class="re-summen"><div><span>Summe netto</span><span>${fbEuro(r.netto)}</span></div>${(r.gruppen && r.gruppen.length ? r.gruppen : [{satz: (r.mwstSatz ?? 0.19) * 100, netto: r.netto, steuer: r.mwst}]).map(g => `<div><span>MwSt ${esc(fbZahlText(g.satz, 1))} %${(r.gruppen || []).length > 1 ? ` auf ${fbEuro(g.netto)}` : ""}</span><span>${fbEuro(g.steuer)}</span></div>`).join("")}<div class="gesamt"><span>Gesamtbetrag</span><span>${fbEuro(r.brutto)}</span></div></div>
-    <p style="margin-top:24px">Bitte überweisen Sie den Betrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer. Vielen Dank für den Auftrag!</p>
-    <div class="re-fuss"><div>${f.Bank ? esc(f.Bank) + "<br>" : ""}IBAN ${esc(f.IBAN || "")}<br>BIC ${esc(f.BIC || "")}</div><div style="text-align:right">${esc(f.Telefon || "")}<br>${esc(f["E-Mail"] || "")}</div></div>
-  </div>`;
+    ${f["Hinweis auf Rechnung"] ? `<p style="margin-top:18px">${esc(f["Hinweis auf Rechnung"])}</p>` : ""}
+    <p style="margin-top:${f["Hinweis auf Rechnung"] ? 8 : 24}px">Bitte überweisen Sie den Betrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer. Vielen Dank für den Auftrag!</p>
+    <div class="re-fuss"><div>${f.Bank ? esc(f.Bank) + "<br>" : ""}IBAN ${esc(f.IBAN || "")}<br>BIC ${esc(f.BIC || "")}</div><div style="text-align:right">${esc(f.Telefon || "")}<br>${esc(f["E-Mail"] || "")}${f["USt-IdNr."] ? "<br>USt-IdNr. " + esc(f["USt-IdNr."]) : ""}</div></div>
+  </div>
+  <div class="re-werkzeug re-unten"><button class="btn primary" type="button" data-re-pdf>📄 PDF herunterladen</button><button class="btn primary" type="button" data-re-xml>🧾 E-Rechnung herunterladen</button><button class="btn" type="button" data-re-zu>Schließen</button></div>
+  <div class="re-pdf-hinweis" id="reXmlHinweis"></div>`;
   el.hidden = false;
   if (!(history.state && history.state.modal)) history.pushState({...(history.state || {}), tiefe: verlaufTiefe() + 1, modal: "rechnung"}, "", location.hash);
   renderZurueck();
@@ -5107,13 +5120,27 @@ function fbRechnungZeigen(r){
   // PDF gleich im Hintergrund erzeugen – am iPhone muss das Teilen-Menü direkt
   // nach dem Tippen aufgehen, sonst blockiert Safari es
   const name = `Rechnung ${r.nr} ${(m.Name || m.Kurzname || "").replace(/[\\/:*?"<>|]/g, "")}`.trim() + ".pdf";
-  const knopf = $fb("rePdf"), hinweis = $fb("rePdfHinweis");
+  const knoepfe = [...el.querySelectorAll("[data-re-pdf]")], hinweis = $fb("rePdfHinweis");
+  const knopf = {set textContent(t){ knoepfe.forEach(k => k.textContent = t); }};
   let pdfDatei = null;
   const beschriftung = () => fbSicherArt() === "auswahl" ? "📄 Als PDF speichern …" : fbSicherArt() === "teilen" ? "📄 PDF teilen / sichern" : "📄 PDF herunterladen";
   const fertig = fbRechnungPdf(el.querySelector(".re-blatt"), name)
     .then(datei => { pdfDatei = datei; knopf.textContent = beschriftung(); })
     .catch(err => { knopf.textContent = "📄 PDF nochmal versuchen"; hinweis.textContent = err.message; });
-  knopf.addEventListener("click", async () => {
+  el.querySelector("[data-re-zu]").addEventListener("click", () => $fb("reZu").click());
+  // E-Rechnung (XRechnung) – nur wenn alle Pflichtangaben da sind
+  el.querySelectorAll("[data-re-xml]").forEach(k => k.addEventListener("click", async () => {
+    const xh = $fb("reXmlHinweis"); hinweis.textContent = ""; xh.textContent = "";
+    const unten = !!k.closest(".re-unten");
+    const zeigen = t => { hinweis.innerHTML = t; xh.innerHTML = t; (unten ? xh : hinweis).scrollIntoView({block: "center", behavior: "smooth"}); };
+    if (r.storniert){ zeigen("Diese Rechnung ist storniert – dafür keine E-Rechnung erstellen."); return; }
+    const fehlt = fbERechnungFehlt(f, m);
+    if (fehlt.length){ zeigen(`<b>Für die E-Rechnung fehlt noch:</b> ${fehlt.map(esc).join(" · ")}<br>Bitte in <b>Stammdaten</b> ergänzen (Firma bzw. Mandant), dann die Rechnung unter „Bisherige Rechnungen“ nochmal anzeigen.`); return; }
+    const xmlName = name.replace(/\.pdf$/, "") + " (E-Rechnung).xml";
+    const erg = await fbSichern(xmlName, fbXRechnungXml(r), "application/xml");
+    if (erg === "gespeichert" || erg === "heruntergeladen") zeigen("✓ E-Rechnung gespeichert: " + esc(xmlName) + " – diese Datei per E-Mail an den Kunden schicken (am besten zusammen mit der PDF).");
+  }));
+  knoepfe.forEach(kn => kn.addEventListener("click", async () => {
     hinweis.textContent = "";
     if (!pdfDatei){
       knopf.textContent = "📄 PDF wird vorbereitet …";
@@ -5124,8 +5151,140 @@ function fbRechnungZeigen(r){
     }
     const ergebnis = await fbSichern(name, pdfDatei, "application/pdf");
     if (ergebnis === "gespeichert") hinweis.textContent = "✓ Gespeichert: " + name;
-  });
+  }));
 }
+// --- E-Rechnung (XRechnung 3.0, Syntax CII – Norm EN 16931) ------------------
+// Ab 2027/2028 Pflicht zwischen Unternehmen. Die Datei enthält alle Rechnungsangaben
+// maschinenlesbar; Buchhaltungsprogramme lesen sie direkt ein. Geprüft mit dem
+// amtlichen KoSIT-Prüfprogramm (siehe test/erechnung.sh).
+function fbPlzOrt(t){
+  const m = String(t || "").trim().match(/^(?:D-?)?(\d{5})\s+(.+)$/);
+  return m ? {plz: m[1], ort: m[2].trim()} : {plz: "", ort: String(t || "").trim()};
+}
+function fbERechnungFehlt(f, m){
+  const fehlt = [];
+  f = f || {}; m = m || {};
+  if (!f.Firma) fehlt.push("Firma: Name");
+  if (!f["Straße"]) fehlt.push("Firma: Straße");
+  if (!fbPlzOrt(f["PLZ Ort"]).plz) fehlt.push("Firma: PLZ und Ort (z. B. „78727 Oberndorf“)");
+  if (!f.Steuernummer && !f["USt-IdNr."]) fehlt.push("Firma: Steuernummer oder USt-IdNr.");
+  if (!/^\S+@\S+\.\S+$/.test(f["E-Mail"] || "")) fehlt.push("Firma: E-Mail");
+  if (!String(f.Telefon || "").trim()) fehlt.push("Firma: Telefon");
+  if (!String(f.IBAN || "").replace(/\s/g, "").match(/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/i)) fehlt.push("Firma: IBAN");
+  if (!(m.Name || m.Kurzname)) fehlt.push("Mandant: Name");
+  if (!m["Straße"]) fehlt.push(`Mandant ${m.Kurzname || ""}: Straße`);
+  if (!fbPlzOrt(m["PLZ Ort"]).plz) fehlt.push(`Mandant ${m.Kurzname || ""}: PLZ und Ort`);
+  if (!/^\S+@\S+\.\S+$/.test(m["E-Mail"] || "")) fehlt.push(`Mandant ${m.Kurzname || ""}: E-Mail`);
+  return fehlt;
+}
+// Einheiten nach UN/ECE-Empfehlung 20 (so verlangt es die E-Rechnung)
+function fbEinheitCode(e){
+  const t = String(e || "").trim().toLowerCase().replace(/\.$/, "");
+  const tab = {"ha": "H18", "hektar": "H18",   // Hektar = Quadrathektometer (H18) – das alte "HAR" ist nicht mehr gültig "h": "HUR", "std": "HUR", "stunde": "HUR", "stunden": "HUR", "m³": "MTQ", "m3": "MTQ", "cbm": "MTQ", "kubik": "MTQ",
+    "t": "TNE", "tonne": "TNE", "tonnen": "TNE", "dt": "DTN", "doppelzentner": "DTN", "kg": "KGM", "l": "LTR", "liter": "LTR", "km": "KMT", "m": "MTR",
+    "stk": "H87", "stück": "H87", "ballen": "H87", "pauschal": "LS", "psch": "LS", "tag": "DAY", "tage": "DAY"};
+  return tab[t] || "C62";
+}
+function fbXRechnungXml(r){
+  const f = r.firma || {}, m = r.mandant || {};
+  const x = v => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const betrag = n => (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
+  const zahl = (n, st = 4) => { const v = Math.round((Number(n) || 0) * 10 ** st) / 10 ** st; return String(v); };
+  const datum = d => String(d || "").slice(0, 10).replace(/-/g, "");
+  const tag = d => `<udt:DateTimeString format="102">${datum(d)}</udt:DateTimeString>`;
+  const pos = (r.positionen || []).map(p => ({...p, mwst: Number(p.mwst ?? (r.mwstSatz ?? 0.19) * 100), betrag: Math.round((Number(p.betrag ?? p.menge * p.preis) || 0) * 100) / 100}));
+  const gruppen = fbMwstGruppen(pos);
+  const netto = Math.round(pos.reduce((a, p) => a + p.betrag, 0) * 100) / 100;
+  const steuer = Math.round(gruppen.reduce((a, g) => a + g.steuer, 0) * 100) / 100;
+  const brutto = Math.round((netto + steuer) * 100) / 100;
+  const kat = satz => satz > 0 ? "S" : "E";
+  const fa = fbPlzOrt(f["PLZ Ort"]), ma = fbPlzOrt(m["PLZ Ort"]);
+  const daten = pos.map(p => String(p.datum || r.datum).slice(0, 10)).filter(Boolean).sort();
+  const faellig = (() => { const d = new Date(String(r.datum).slice(0, 10) + "T12:00"); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
+  const notizen = [f["Hinweis auf Rechnung"]].filter(Boolean);
+  const steuerReg = [f["USt-IdNr."] ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">${x(String(f["USt-IdNr."]).replace(/\s/g, ""))}</ram:ID></ram:SpecifiedTaxRegistration>` : "",
+                     f.Steuernummer ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="FC">${x(f.Steuernummer)}</ram:ID></ram:SpecifiedTaxRegistration>` : ""].join("");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+  <rsm:ExchangedDocumentContext>
+    <ram:BusinessProcessSpecifiedDocumentContextParameter><ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID></ram:BusinessProcessSpecifiedDocumentContextParameter>
+    <ram:GuidelineSpecifiedDocumentContextParameter><ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID></ram:GuidelineSpecifiedDocumentContextParameter>
+  </rsm:ExchangedDocumentContext>
+  <rsm:ExchangedDocument>
+    <ram:ID>${x(r.nr)}</ram:ID>
+    <ram:TypeCode>380</ram:TypeCode>
+    <ram:IssueDateTime>${tag(r.datum)}</ram:IssueDateTime>
+${notizen.map(n => `    <ram:IncludedNote><ram:Content>${x(n)}</ram:Content></ram:IncludedNote>`).join("\n")}
+  </rsm:ExchangedDocument>
+  <rsm:SupplyChainTradeTransaction>
+${pos.map((p, i) => `    <ram:IncludedSupplyChainTradeLineItem>
+      <ram:AssociatedDocumentLineDocument><ram:LineID>${i + 1}</ram:LineID></ram:AssociatedDocumentLineDocument>
+      <ram:SpecifiedTradeProduct><ram:Name>${x(p.text || p.taetigkeit || "Leistung")}</ram:Name></ram:SpecifiedTradeProduct>
+      <ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>${zahl(p.preis)}</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement>
+      <ram:SpecifiedLineTradeDelivery><ram:BilledQuantity unitCode="${fbEinheitCode(p.einheit)}">${zahl(p.menge)}</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery>
+      <ram:SpecifiedLineTradeSettlement>
+        <ram:ApplicableTradeTax><ram:TypeCode>VAT</ram:TypeCode><ram:CategoryCode>${kat(p.mwst)}</ram:CategoryCode><ram:RateApplicablePercent>${zahl(p.mwst, 2)}</ram:RateApplicablePercent></ram:ApplicableTradeTax>
+        <ram:BillingSpecifiedPeriod><ram:StartDateTime>${tag(p.datum || r.datum)}</ram:StartDateTime><ram:EndDateTime>${tag(p.datum || r.datum)}</ram:EndDateTime></ram:BillingSpecifiedPeriod>
+        <ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>${betrag(p.betrag)}</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation>
+      </ram:SpecifiedLineTradeSettlement>
+    </ram:IncludedSupplyChainTradeLineItem>`).join("\n")}
+    <ram:ApplicableHeaderTradeAgreement>
+      <ram:BuyerReference>${x(m.Kurzname || m.Name || "-")}</ram:BuyerReference>
+      <ram:SellerTradeParty>${f["USt-IdNr."] ? "" : `
+        <ram:ID>${x(f.Steuernummer || f.Firma)}</ram:ID>`}
+        <ram:Name>${x(f.Firma)}</ram:Name>
+        <ram:DefinedTradeContact>
+          <ram:PersonName>${x(f.Inhaber || f.Firma)}</ram:PersonName>
+          <ram:TelephoneUniversalCommunication><ram:CompleteNumber>${x(f.Telefon)}</ram:CompleteNumber></ram:TelephoneUniversalCommunication>
+          <ram:EmailURIUniversalCommunication><ram:URIID>${x(f["E-Mail"])}</ram:URIID></ram:EmailURIUniversalCommunication>
+        </ram:DefinedTradeContact>
+        <ram:PostalTradeAddress><ram:PostcodeCode>${x(fa.plz)}</ram:PostcodeCode><ram:LineOne>${x(f["Straße"])}</ram:LineOne><ram:CityName>${x(fa.ort)}</ram:CityName><ram:CountryID>DE</ram:CountryID></ram:PostalTradeAddress>
+        <ram:URIUniversalCommunication><ram:URIID schemeID="EM">${x(f["E-Mail"])}</ram:URIID></ram:URIUniversalCommunication>
+        ${steuerReg}
+      </ram:SellerTradeParty>
+      <ram:BuyerTradeParty>
+        <ram:Name>${x(m.Name || m.Kurzname)}</ram:Name>
+        <ram:PostalTradeAddress><ram:PostcodeCode>${x(ma.plz)}</ram:PostcodeCode><ram:LineOne>${x(m["Straße"])}</ram:LineOne><ram:CityName>${x(ma.ort)}</ram:CityName><ram:CountryID>DE</ram:CountryID></ram:PostalTradeAddress>
+        <ram:URIUniversalCommunication><ram:URIID schemeID="EM">${x(m["E-Mail"])}</ram:URIID></ram:URIUniversalCommunication>
+      </ram:BuyerTradeParty>
+    </ram:ApplicableHeaderTradeAgreement>
+    <ram:ApplicableHeaderTradeDelivery>${daten.length && daten[0] === daten[daten.length - 1] ? `
+      <ram:ActualDeliverySupplyChainEvent><ram:OccurrenceDateTime>${tag(daten[0])}</ram:OccurrenceDateTime></ram:ActualDeliverySupplyChainEvent>
+    ` : ""}</ram:ApplicableHeaderTradeDelivery>
+    <ram:ApplicableHeaderTradeSettlement>
+      <ram:PaymentReference>${x(r.nr)}</ram:PaymentReference>
+      <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+      <ram:SpecifiedTradeSettlementPaymentMeans>
+        <ram:TypeCode>58</ram:TypeCode>
+        <ram:PayeePartyCreditorFinancialAccount><ram:IBANID>${x(String(f.IBAN || "").replace(/\s/g, "").toUpperCase())}</ram:IBANID></ram:PayeePartyCreditorFinancialAccount>${f.BIC ? `
+        <ram:PayeeSpecifiedCreditorFinancialInstitution><ram:BICID>${x(String(f.BIC).replace(/\s/g, "").toUpperCase())}</ram:BICID></ram:PayeeSpecifiedCreditorFinancialInstitution>` : ""}
+      </ram:SpecifiedTradeSettlementPaymentMeans>
+${gruppen.map(g => `      <ram:ApplicableTradeTax>
+        <ram:CalculatedAmount>${betrag(g.steuer)}</ram:CalculatedAmount>
+        <ram:TypeCode>VAT</ram:TypeCode>${g.satz > 0 ? "" : `
+        <ram:ExemptionReason>${x(f["Grund Steuerbefreiung"] || "Umsatzsteuerfrei")}</ram:ExemptionReason>`}
+        <ram:BasisAmount>${betrag(g.netto)}</ram:BasisAmount>
+        <ram:CategoryCode>${kat(g.satz)}</ram:CategoryCode>
+        <ram:RateApplicablePercent>${zahl(g.satz, 2)}</ram:RateApplicablePercent>
+      </ram:ApplicableTradeTax>`).join("\n")}${daten.length && daten[0] !== daten[daten.length - 1] ? `
+      <ram:BillingSpecifiedPeriod><ram:StartDateTime>${tag(daten[0])}</ram:StartDateTime><ram:EndDateTime>${tag(daten[daten.length - 1])}</ram:EndDateTime></ram:BillingSpecifiedPeriod>` : ""}
+      <ram:SpecifiedTradePaymentTerms>
+        <ram:Description>Zahlbar innerhalb von 14 Tagen ohne Abzug unter Angabe der Rechnungsnummer.</ram:Description>
+        <ram:DueDateDateTime>${tag(faellig)}</ram:DueDateDateTime>
+      </ram:SpecifiedTradePaymentTerms>
+      <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        <ram:LineTotalAmount>${betrag(netto)}</ram:LineTotalAmount>
+        <ram:TaxBasisTotalAmount>${betrag(netto)}</ram:TaxBasisTotalAmount>
+        <ram:TaxTotalAmount currencyID="EUR">${betrag(steuer)}</ram:TaxTotalAmount>
+        <ram:GrandTotalAmount>${betrag(brutto)}</ram:GrandTotalAmount>
+        <ram:DuePayableAmount>${betrag(brutto)}</ram:DuePayableAmount>
+      </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+    </ram:ApplicableHeaderTradeSettlement>
+  </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>
+`;
+}
+
 // Dateien sichern: PC (Edge/Chrome) → "Speichern unter" mit Ordnerwahl,
 // Handy → Teilen-Menü (Dateien, Mail, WhatsApp …), sonst normaler Download
 const FB_MOBIL = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -5245,7 +5404,7 @@ function fbRenderStamm(){
   const firmen = (fbDaten && fbDaten.firmen) || [];
   $fb("fbStFirmen").innerHTML = firmen.map((f, i) => `<details class="fb-st-firma"><summary>${esc(f.Firma)} <span class="bs-erkannt">· letzte Nr. ${esc(f["Letzte Rechnungs-Nr."] || "–")}</span></summary>
     <form class="fb-form" data-firma="${esc(f.Firma)}">
-      ${FB_FIRMA_FELDER.map(n => `<label class="${["Firma", "Straße", "PLZ Ort", "IBAN"].includes(n) ? "breit" : ""}">${n}<input name="${n}" value="${esc(f[n] || "")}" ${n === "Firma" ? "required" : ""} ${n === "Letzte Rechnungs-Nr." ? 'placeholder="z. B. 2026-014" pattern="\\d{4}-\\d{1,4}|"' : ""}></label>`).join("")}
+      ${FB_FIRMA_FELDER.map(n => `<label class="${["Firma", "Straße", "PLZ Ort", "IBAN", "Hinweis auf Rechnung"].includes(n) ? "breit" : ""}">${{"E-Mail": "E-Mail (Pflicht für die E-Rechnung)", "Telefon": "Telefon (Pflicht für die E-Rechnung)", "Hinweis auf Rechnung": "Hinweis auf jeder Rechnung (optional, z. B. „Durchschnittssatz nach § 24 UStG“)", "USt-IdNr.": "USt-IdNr. (falls vorhanden)"}[n] || n}<input name="${n}" value="${esc(f[n] || "")}" ${n === "Firma" ? "required" : ""} ${n === "E-Mail" ? 'type="email"' : ""} ${n === "Letzte Rechnungs-Nr." ? 'placeholder="z. B. 2026-014" pattern="\\d{4}-\\d{1,4}|"' : ""}></label>`).join("")}
       <div class="fb-form-knoepfe breit"><button class="btn primary small" type="submit">Speichern</button></div>
     </form></details>`).join("");
   $fb("fbStFirmen").querySelectorAll("form").forEach(form => form.addEventListener("submit", ev => {
@@ -5294,7 +5453,7 @@ function fbMandantDialog(kurzname){
     <div class="dlg-head" style="padding:0 0 10px;position:static"><div class="row1"><h2>${neu ? "Neuer Mandant" : "Mandant " + esc(kurzname)}</h2>
       <button class="dlg-close" type="button" aria-label="Schließen">✕</button></div></div>
     <form id="fbMandantForm" class="fb-form">
-      ${FB_MANDANT_FELDER.map(n => `<label class="breit">${{"Kurzname": "Kurzname (wie er in der Liste steht)", "Andere Namen": "Andere Namen (Hofname, Spitzname … mit Komma trennen)"}[n] || n}<input name="${n}" value="${esc(m[n] || "")}" ${n === "Kurzname" ? (neu ? "required" : "readonly") : ""} ${n === "Andere Namen" ? 'placeholder="z. B. Schillerhof, Bernd"' : ""}></label>`).join("")}
+      ${FB_MANDANT_FELDER.map(n => `<label class="breit">${{"Kurzname": "Kurzname (wie er in der Liste steht)", "Andere Namen": "Andere Namen (Hofname, Spitzname … mit Komma trennen)", "E-Mail": "E-Mail (für die E-Rechnung)"}[n] || n}<input name="${n}" value="${esc(m[n] || "")}" ${n === "E-Mail" ? 'type="email"' : ""} ${n === "Kurzname" ? (neu ? "required" : "readonly") : ""} ${n === "Andere Namen" ? 'placeholder="z. B. Schillerhof, Bernd"' : ""}></label>`).join("")}
       ${neu ? "" : `<div class="breit fb-zusammen"><b>Doppelt angelegt?</b> Alle Arbeiten von „${esc(kurzname)}“ zu einem anderen Mandanten verschieben:
         <div class="bs-hof-form"><select id="fbZusammenZiel"><option value="">– Mandant wählen –</option>${((fbDaten && fbDaten.mandanten) || []).filter(x => x.Kurzname !== kurzname && !fbIstEigen(x.Kurzname)).map(x => `<option>${esc(x.Kurzname)}</option>`).join("")}</select>
         <button class="btn small" type="button" id="fbZusammenKnopf">Zusammenführen</button></div></div>`}

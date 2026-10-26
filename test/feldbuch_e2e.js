@@ -444,6 +444,38 @@
     history.back(); await warte(400);
     pruef("Zurück-Taste führt wieder ins Feldbuch (Liste)", !document.getElementById("viewFeld").hidden && fbTab === "liste", location.hash);
   });
+  await schritt("E-Rechnung", async () => {
+    const echtSichern = fbSichern; let gesichert = null;
+    fbSichern = async (name, inhalt, typ) => { gesichert = {name, inhalt: String(inhalt), typ}; return "heruntergeladen"; };
+    try {
+      // Firma ohne E-Mail/Telefon → klare Liste, was fehlt
+      const alt = fbDaten.rechnungen.find(r => r.Firma === "Testhof" && r.Status !== "storniert");
+      fbGespeicherteRechnungZeigen(alt["Rechnungs-Nr."], "Testhof"); await warte(200);
+      pruef("Knöpfe PDF + E-Rechnung oben und am Ende", document.querySelectorAll("#rechnungDruck [data-re-pdf]").length === 2 && document.querySelectorAll("#rechnungDruck [data-re-xml]").length === 2);
+      document.querySelector("#rechnungDruck .re-unten [data-re-xml]").click(); await warte(100);
+      pruef("Fehlende Angaben werden genannt statt ungültiger Datei", !gesichert && /fehlt noch/.test($fb("reXmlHinweis").innerText) && /E-Mail/.test($fb("reXmlHinweis").innerText), $fb("reXmlHinweis").innerText);
+      $fb("reZu").click(); await warte(300);
+      // Angaben ergänzen, neue Rechnung, E-Rechnung herunterladen
+      const th = fbDaten.firmen.find(f => f.Firma === "Testhof");
+      await fbAendern({typ: "firma", alt: "Testhof", felder: {...th, "PLZ Ort": "12345 Testdorf", IBAN: "DE02120300000000202051", Telefon: "+49 7000 1", "E-Mail": "hof@example.com", Steuernummer: "00000/00000", "Hinweis auf Rechnung": "Testhinweis"}});
+      const mu = fbDaten.mandanten.find(m => m.Kurzname === "Muster");
+      await fbAendern({typ: "mandant", mandant: {...mu, "E-Mail": "muster@example.com"}});
+      await fbAendern({typ: "neu", eintrag: {ID: "X-1", Datum: fbHeuteIso(), Mandant: "Muster", "Tätigkeit": "Säen", Kultur: "Mais", Menge: "2", Einheit: "ha", Stunden: "", Rechnung: "", "Prüfen": ""}});
+      const r = await fbSofort({typ: "rechnung", firma: "Testhof", mandant: "Muster", datum: fbHeuteIso(), positionen: [{id: "X-1", datum: fbHeuteIso(), text: "Säen Mais", menge: 2, einheit: "ha", preis: 60, mwst: 7}]});
+      fbRechnungZeigen(r); await warte(200);
+      pruef("Hinweis der Firma steht auf der Rechnung", /Testhinweis/.test($fb("rechnungDruck").innerText));
+      document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(100);
+      pruef("E-Rechnung (XRechnung) wird erzeugt", gesichert && /\(E-Rechnung\)\.xml$/.test(gesichert.name) && gesichert.inhalt.includes("urn:xeinkauf.de:kosit:xrechnung_3.0") && gesichert.inhalt.includes(`<ram:ID>${r.nr}</ram:ID>`) && gesichert.inhalt.includes('unitCode="H18"'), gesichert && gesichert.name);
+      $fb("reZu").click(); await warte(300);
+      // spätere Adressänderung ändert eine erstellte Rechnung nicht
+      await fbAendern({typ: "mandant", mandant: {...fbDaten.mandanten.find(m => m.Kurzname === "Muster"), "Straße": "Neue Straße 99"}});
+      gesichert = null;
+      fbGespeicherteRechnungZeigen(r.nr, "Testhof"); await warte(200);
+      document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(100);
+      pruef("Rechnung bleibt wie erstellt (alte Adresse)", gesichert && gesichert.inhalt.includes("Musterweg 1") && !gesichert.inhalt.includes("Neue Straße 99") && /Musterweg 1/.test($fb("rechnungDruck").innerText), gesichert && gesichert.inhalt.slice(0, 50));
+      $fb("reZu").click(); await warte(300);
+    } finally { fbSichern = echtSichern; }
+  });
   await schritt("Passwort", async () => {
     await fbPasswortAendern("Test-Traktor-Wiese-17");
     pruef("Passwort ändern", hsZugang.verfahren === "v2" && fbStatus.zustand === "ok");
