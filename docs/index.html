@@ -268,6 +268,12 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .zws-hinweis{margin-bottom:16px}
 .zws-hinweis ol{margin:8px 0 10px;padding-left:20px;display:grid;gap:4px}
 .zws-hinweis .btn{margin-top:2px}
+.bs-unlesbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:8px 0;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.bs-unlesbar img{max-width:100%;image-rendering:pixelated;border:1px solid var(--border);background:#fff}
+.bs-unlesbar-felder{display:flex;gap:6px;flex-wrap:wrap}
+.bs-unlesbar-felder input{width:150px}
+.bs-unlesbar-felder input[data-k="nr"]{width:90px}
+.bs-nr-unsicher{color:var(--warn);background:var(--warn-soft);padding:0 4px;border-radius:4px}
 .bs-erkannt{font-size:13px;color:var(--ink-dim)}
 .bs-settings{margin-top:14px;font-size:13.5px}
 /* Aufklapp-Knopf im selben Stil wie "Auswerten", damit man ihn findet */
@@ -1059,7 +1065,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
             <li>Die Stall-Liste <b>„Zuchtwerte wbl“</b> bzw. <b>„Genomische Zuchtwerte wbl“</b> öffnen. Kälber dürfen mit drin sein.</li>
             <li>Oben links in der Tabelle das Häkchen <b>„alle auswählen“</b> setzen.</li>
             <li>Oben auf das <b>Drucker-Symbol</b> klicken – es sitzt neben „Buchen“, links von „ZWS“. Netrind erstellt eine <b>PDF</b> zum Herunterladen.</li>
-            <li>Die PDF hier oben ins Feld <b>hineinziehen</b> (oder anklicken und die Datei aus „Downloads“ wählen) – fertig. Die alte Liste wird automatisch gelöscht und ersetzt. Alle Spalten der PDF werden übernommen, nicht nur RZG und Milch.</li>
+            <li>Die PDF hier oben ins Feld <b>hineinziehen</b> (oder anklicken und die Datei aus „Downloads“ wählen) – fertig. Die alte Liste wird automatisch gelöscht und ersetzt. Alle Spalten der PDF werden übernommen. Wichtig: In der Netrind-Liste muss die Spalte <b>Stärke</b> eingeblendet sein.</li>
           </ol>
         </details>
         <div class="bs-actions">
@@ -1075,21 +1081,23 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
           <span class="bs-num">2</span>
           <div>
             <h2>Kühe zum Besamen: Liste aus Lely</h2>
-            <p class="bs-help">In Lely Horizon die Liste „Offene Kühe Reproduktion“ öffnen → Menü <b>⋮</b> → <b>Exportieren als EXCEL</b> (CSV, XML oder „Als PDF exportieren“ geht genauso) und die Datei hier hineinziehen. Die Ohrmarken (DE …) werden automatisch erkannt, alle anderen Spalten stören nicht.</p>
+            <p class="bs-help">In Lely Horizon die Liste „Offene Kühe Reproduktion“ öffnen, mit dem <b>Snipping-Tool</b> (Windows + Umschalt + S) einen Ausschnitt mit den Spalten <b>Kuhnummer</b> und <b>Lebensnummer</b> machen und hier <b>Strg + V</b> drücken. Die App liest Kuhnummer und Ohrmarke selbst ab (direkt auf dem Gerät). Passt nicht alles auf ein Bild: einfach weitere Screenshots einfügen – sie werden ergänzt.</p>
           </div>
         </div>
         <label class="bs-drop" id="lelyDrop">
-          <input type="file" id="lelyFile" accept=".xlsx,.xls,.csv,.txt,.xml,.pdf" hidden>
+          <input type="file" id="lelyFile" accept="image/*,.png,.jpg,.jpeg,.xlsx,.xls,.csv,.txt,.xml,.pdf" multiple hidden>
           <span class="bs-drop-icon">🐄</span>
           <span>
-            <b id="lelyDropTitel">Lely-Liste hier hineinziehen</b>
-            <span class="bs-drop-sub">oder klicken und Datei auswählen · Excel, CSV, XML oder PDF aus Lely Horizon</span>
+            <b id="lelyDropTitel">Screenshot der Lely-Liste einfügen: Strg + V</b>
+            <span class="bs-drop-sub">oder Bild hier hineinziehen / klicken und auswählen · geht auch mit Excel, CSV, XML oder PDF aus Lely</span>
           </span>
         </label>
         <div class="bs-actions">
+          <button class="btn small" id="lelyEinfuegen" type="button">📋 Screenshot aus Zwischenablage einfügen</button>
           <span id="erkanntInfo" class="bs-erkannt"></span>
           <button class="btn ghost small" id="lelyLeeren" type="button" hidden>Liste leeren</button>
         </div>
+        <div id="lelyUnlesbar" hidden></div>
         <details class="bs-settings" id="bsEinstellungen">
           <summary><span class="btn primary bs-settings-btn">⚙ Kriterien &amp; Gewichtung <span class="pfeil">▾</span></span><span id="gewichtKurz" class="bs-gew-kurz"></span></summary>
           <div class="bs-settings-grid">
@@ -1102,7 +1110,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
               <div id="gewichtListe" class="bs-gew-liste"></div>
               <div class="bs-gew-fuss">
                 <span id="gewichtSumme"></span>
-                <button class="btn ghost small" type="button" id="gewichtReset">Standard (Milch 40 · Zellzahl 20 · RZG 20 · Strichlänge 7 · Melkbarkeit 7 · Fruchtbarkeit 6)</button>
+                <button class="btn ghost small" type="button" id="gewichtReset">Standard (Milch 40 · Zellzahl 20 · Strichlänge 10 · Melkbarkeit 10 · Fruchtbarkeit 10 · Stärke 10)</button>
               </div>
             </div>
           </div>
@@ -1120,7 +1128,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
       <div class="table-scroll">
         <table class="bs-table">
           <thead><tr id="bsKopf">
-            <th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th><th title="Gewichteter Gesamtwert aller Kriterien, relativ zur eigenen Herde: 100 = Herdendurchschnitt">Index</th>
+            <th>#</th><th>Kuh-Nr.</th><th>Ohrmarke</th><th>Empfehlung</th><th title="Gewichteter Gesamtwert aller Kriterien, relativ zur eigenen Herde: 100 = Herdendurchschnitt">Index</th>
           </tr></thead>
           <tbody id="bsBody"></tbody>
         </table>
@@ -1837,23 +1845,24 @@ let herde = ladeHerde();            // {datei, hochgeladen, header, rows, mappin
 // (auch RZS: über 100 = weniger Zellen). "erkenne" bewertet, wie gut ein
 // Spaltenname der Netrind-Liste passt (0 = gar nicht).
 const KUH_KRITERIEN = [
-  {id: "rzg",     label: "Gesamtzuchtwert",            netrind: "RZG",    standard: 20,
-   erkenne: h => /^\s*g?rzg\s*$/i.test(h) ? 3 : (/rzg/i.test(h) ? 1 : 0)},
   {id: "milch",   label: "Milchmenge",                 netrind: "M-kg",   standard: 40,
    erkenne: h => /^\s*m[\s.\-]*kg\s*$/i.test(h) ? 3 : (/milch/i.test(h) ? 1 : 0)},
-  // Stärke gibt es in der Netrind-Zuchtwertliste nicht → hier bewusst weggelassen
-  {id: "stl",     label: "Strichlänge",                netrind: "stl",    standard: 7,
-   erkenne: h => /^\s*stl\s*$/i.test(h) ? 3 : (/strichl/i.test(h) ? 2 : 0)},
-  {id: "rzd",     label: "Melkbarkeit",                netrind: "RZD",    standard: 7,
-   erkenne: h => /^\s*rzd\s*$/i.test(h) ? 3 : (/melkbar/i.test(h) ? 1 : 0)},
-  {id: "rzr",     label: "Töchterfruchtbarkeit",       netrind: "RZR",    standard: 6,
-   erkenne: h => /^\s*rzr\s*$/i.test(h) ? 3 : (/fruchtb/i.test(h) ? 1 : 0)},
   {id: "rzs",     label: "Zellzahl / Eutergesundheit", netrind: "RZS",    standard: 20,
    erkenne: h => /^\s*rzs\s*$/i.test(h) ? 3 : (/zellz|euterges/i.test(h) ? 1 : 0)},
+  {id: "stl",     label: "Strichlänge",                netrind: "stl",    standard: 10,
+   erkenne: h => /^\s*stl\s*$/i.test(h) ? 3 : (/strichl/i.test(h) ? 2 : 0)},
+  {id: "rzd",     label: "Melkbarkeit",                netrind: "RZD",    standard: 10,
+   erkenne: h => /^\s*rzd\s*$/i.test(h) ? 3 : (/melkbar/i.test(h) ? 1 : 0)},
+  {id: "rzr",     label: "Töchterfruchtbarkeit",       netrind: "RZR",    standard: 10,
+   erkenne: h => /^\s*rzr\s*$/i.test(h) ? 3 : (/fruchtb/i.test(h) ? 1 : 0)},
+  // Stärke: lineares Merkmal, in Netrind meist als Kürzel "stä" (wie "stl" für Strichlänge)
+  {id: "sta",     label: "Stärke",                     netrind: "stä",    standard: 10,
+   erkenne: h => /^\s*st(ä|ae|a)\.?\s*$/i.test(h) ? 3 : (/st(ä|ae)rke/i.test(h) ? 2 : 0)},
 ];
 const STANDARD_GEWICHTE = Object.fromEntries(KUH_KRITERIEN.map(k => [k.id, k.standard]));
 
-let bsSettings = ladeBsSettings();  // {quote, gewichte:{rzg, milch, …}}
+const BS_VERSION = 2;               // v2: ohne RZG, mit Stärke
+let bsSettings = ladeBsSettings();  // {v, quote, gewichte:{milch, rzs, …}, stand}
 
 function ladeHerde(){
   try { const raw = localStorage.getItem(HERDE_KEY); return raw ? JSON.parse(raw) : null; }
@@ -1869,17 +1878,52 @@ function speichereHerde(){
     return false;
   }
 }
+// Einstellungen (Holstein-Anteil + Gewichtung) bleiben dauerhaft: im Browser UND verschlüsselt
+// im Hof-Speicher (zusammen mit der Netrind-Liste) – damit gelten sie auf allen Geräten
+// und auch nach dem Hochladen einer neuen Liste.
+function bsSettingsBereinigen(g){
+  g = g || {};
+  const neu = {v: BS_VERSION, quote: Math.min(95, Math.max(5, parseInt(g.quote, 10) || 25)), stand: g.stand || null, gewichte: {...STANDARD_GEWICHTE}};
+  // ältere Fassung (mit RZG) → neue Standardwerte, eigene Werte erst ab v2 übernehmen
+  if (g.v === BS_VERSION && g.gewichte) KUH_KRITERIEN.forEach(k => {
+    const w = parseFloat(g.gewichte[k.id]);
+    if (!isNaN(w)) neu.gewichte[k.id] = Math.max(0, Math.min(100, w));
+  });
+  return neu;
+}
 function ladeBsSettings(){
   let gespeichert = {};
   try { gespeichert = JSON.parse(localStorage.getItem(BS_SETTINGS_KEY) || "{}"); } catch(e) {}
-  return {
-    quote: gespeichert.quote || 25,
-    gewichte: Object.assign({}, STANDARD_GEWICHTE, gespeichert.gewichte || {}),
-  };
+  return bsSettingsBereinigen(gespeichert);
 }
+let bsSettingsTimer = null;
 function speichereBsSettings(){
+  bsSettings.stand = new Date().toISOString();
   try { localStorage.setItem(BS_SETTINGS_KEY, JSON.stringify(bsSettings)); } catch(e) {}
+  if (herde){
+    herde.einstellungen = {v: bsSettings.v, quote: bsSettings.quote, gewichte: {...bsSettings.gewichte}, stand: bsSettings.stand};
+    speichereHerde();
+    clearTimeout(bsSettingsTimer);
+    bsSettingsTimer = setTimeout(() => { if (typeof hsSpeichern === "function") hsSpeichern(); }, 1200);   // für alle Geräte sichern
+  }
 }
+// Neuester Stand einer Liste: Hochladen ODER zuletzt geänderte Einstellungen
+function herdeStand(h){
+  if (!h) return 0;
+  return Math.max(new Date(h.hochgeladen || 0).getTime() || 0, new Date((h.einstellungen && h.einstellungen.stand) || 0).getTime() || 0);
+}
+// Einstellungen aus der (evtl. von einem anderen Gerät geladenen) Liste übernehmen, wenn sie neuer sind
+function bsSettingsAusHerde(){
+  if (!herde || !herde.einstellungen || herde.einstellungen.v !== BS_VERSION) return false;
+  const fern = new Date(herde.einstellungen.stand || 0).getTime(), hier = new Date(bsSettings.stand || 0).getTime();
+  if (fern <= hier) return false;
+  bsSettings = bsSettingsBereinigen(herde.einstellungen);
+  try { localStorage.setItem(BS_SETTINGS_KEY, JSON.stringify(bsSettings)); } catch(e) {}
+  const q = document.getElementById("quoteInput"); if (q) q.value = bsSettings.quote;
+  if (document.getElementById("gewichtListe")) renderGewichte();
+  return true;
+}
+bsSettingsAusHerde();
 
 // --- Ohrmarken -------------------------------------------------------
 // Deutsche Ohrmarke = "DE" + 10 Ziffern, geschrieben z.B. "DE 08 123 45678",
@@ -2345,11 +2389,11 @@ function renderHerdeStatus(){
     return;
   }
   const tiere = herdenTiere();
-  const mitRzg = tiere.filter(t => t.werte.rzg !== null).length;
+  const mitWerten = tiere.filter(t => KUH_KRITERIEN.some(k => t.werte[k.id] !== null)).length;
   const gefunden = KUH_KRITERIEN.filter(k => herde.mapping[k.id] >= 0);
   const fehlend = KUH_KRITERIEN.filter(k => !(herde.mapping[k.id] >= 0));
   const alt = herdeVeraltet();
-  el.className = "bs-status " + (alt || !mitRzg ? "warn" : "ok");
+  el.className = "bs-status " + (alt || !mitWerten ? "warn" : "ok");
   el.innerHTML =
     `<b>${alt ? "⚠ Veraltet" : "✓ Aktuell"}: ${tiere.length} Tiere, ${herde.header.filter(Boolean).length} Spalten</b> (alle gespeichert)<br>` +
     `Kriterien gefunden: ${gefunden.map(k => esc(herde.header[herde.mapping[k.id]])).join(", ") || "keine"}` +
@@ -2358,7 +2402,8 @@ function renderHerdeStatus(){
     (alt
       ? `<br>Enthält die Zuchtwertschätzung ${zwsName(letzterZwsStichtag())} noch nicht.`
       : `<br>Nächste Zuchtwertschätzung voraussichtlich Anfang ${zwsName(naechsterZwsStichtag())} – die Seite erinnert dann automatisch.`) +
-    (!mitRzg ? `<br><b>Keine RZG-Werte erkannt</b> – unten die richtige Spalte auswählen.` : "") +
+    (!mitWerten ? `<br><b>Keine Zuchtwerte erkannt</b> – unter „Spalten prüfen“ die richtigen Spalten auswählen.` : "") +
+    (herde.mapping.sta >= 0 ? "" : `<br>Stärke fehlt in dieser Liste – in Netrind die Spalte „Stärke“ einblenden und die Liste neu hochladen.`) +
     ` · <a href="#" id="spaltenLink">Spalten prüfen</a>`;
   document.getElementById("spaltenLink").addEventListener("click", e => {
     e.preventDefault();
@@ -2397,17 +2442,29 @@ function renderMapping(){
   }));
 }
 
-// Lely-Liste: kommt als Datei (Excel/CSV/XML/PDF); daraus werden nur die Ohrmarken gelesen
-var lely = {text: "", quelle: ""};   // var: wird evtl. schon vor dieser Zeile gebraucht
+// Lely-Liste: Screenshot (Texterkennung) oder Datei. Gemerkt wird pro Kuh Ohrmarke + Kuhnummer (Halsband).
+var lely = {tiere: [], quellen: [], ocr: false, gesamt: null, unlesbar: []};   // var: wird evtl. schon vor dieser Zeile gebraucht
+function lelyTiere(){ return (lely && lely.tiere) || []; }
 function werteAus(){
-  const text = (lely && lely.text) || "";
-  const keys = ohrmarkenAusText(text);
+  const tiere = lelyTiere();
+  const keys = tiere.map(t => t.key);
+  const nrVon = new Map(tiere.map(t => [t.key, t.nr || ""]));
+  const tierVon = new Map(tiere.map(t => [t.key, t]));
   const info = document.getElementById("erkanntInfo");
-  info.textContent = text.trim()
-    ? (keys.length ? `✓ ${lely.quelle ? "„" + lely.quelle + "“: " : ""}${keys.length} Ohrmarke${keys.length === 1 ? "" : "n"} erkannt` : `In ${lely.quelle ? "„" + lely.quelle + "“" : "der Liste"} wurden keine Ohrmarken (DE …) gefunden – ist es die Liste „Offene Kühe Reproduktion“?`)
+  const quelle = lely.quellen.length > 1 ? `${lely.quellen.length} ${lely.ocr ? "Bilder" : "Dateien"}` : (lely.quellen[0] ? "„" + lely.quellen[0] + "“" : "");
+  const ohneNr = tiere.filter(t => !t.nr || t.sicher === false).length;
+  info.innerHTML = lely.quellen.length
+    ? (keys.length
+        ? `✓ ${esc(quelle)}: <b>${keys.length} Ohrmarke${keys.length === 1 ? "" : "n"} erkannt</b>`
+          + (lely.gesamt ? (lely.gesamt === keys.length ? ` · Lely zeigt ${lely.gesamt} Datensätze ✓` : ` · <span class="warn">⚠ Lely zeigt ${lely.gesamt} Datensätze – ${lely.gesamt > keys.length ? "fehlende mit einem weiteren Screenshot ergänzen" : "bitte prüfen"}</span>`) : "")
+          + (ohneNr ? ` · <span class="warn">⚠ ${ohneNr} Kuhnummer${ohneNr === 1 ? "" : "n"} unsicher – orange markiert, im Lely prüfen</span>` : "")
+          + (lely.ocr && !herde ? `<br><span class="warn">⚠ Ohne Netrind-Liste (Schritt 1) kann die App die gelesenen Nummern nicht gegenprüfen – alles ist unsicher markiert.</span>` : "")
+          + (lely.ocr ? `<br><span class="bs-erkannt">Weitere Screenshots einfach dazu einfügen (Strg + V) – Kopfzeile mit „Kuhnummer“ und „Lebensnummer“ am besten jeweils mit drauf.</span>` : "")
+        : `In ${esc(quelle || "der Liste")} wurden keine Ohrmarken (DE …) gefunden – ist die Spalte „Lebensnummer“ mit im Bild bzw. in der Datei?`)
     : "";
-  document.getElementById("lelyLeeren").hidden = !text.trim();
-  document.getElementById("lelyDropTitel").textContent = text.trim() ? "Andere Lely-Liste hier hineinziehen" : "Lely-Liste hier hineinziehen";
+  document.getElementById("lelyLeeren").hidden = !lely.quellen.length;
+  renderLelyUnlesbar();
+  document.getElementById("lelyDropTitel").textContent = lely.quellen.length ? "Weiteren Screenshot einfügen (Strg + V) oder andere Liste hineinziehen" : "Screenshot der Lely-Liste einfügen: Strg + V";
   const result = document.getElementById("bsResult");
   if (!keys.length){ result.hidden = true; return; }
   result.hidden = false;
@@ -2425,8 +2482,8 @@ function werteAus(){
   const alleKeys = new Set(herdenTiere().map(t => t.key));
   const zeilen = keys.map(key => {
     const t = bewertung.get(key);
-    if (t) return {key, t, rec: null};
-    return {key, t: null, rec: alleKeys.has(key) ? "nz" : "nf"};
+    if (t) return {key, nr: nrVon.get(key), t, rec: null};
+    return {key, nr: nrVon.get(key), t: null, rec: alleKeys.has(key) ? "nz" : "nf"};
   });
   // Beste zuerst, nicht gefundene ans Ende
   zeilen.sort((a, b) => (b.t ? b.t.index : -Infinity) - (a.t ? a.t.index : -Infinity));
@@ -2447,7 +2504,7 @@ function werteAus(){
 
   // Spalten: feste + je ein aktives Kriterium (mit dem Spaltennamen aus Netrind)
   document.getElementById("bsKopf").innerHTML =
-    `<th>#</th><th>Ohrmarke</th><th>Empfehlung</th><th>Name</th>` +
+    `<th>#</th><th title="Kuhnummer aus Lely (Halsband)">Kuh-Nr.</th><th>Ohrmarke</th><th>Empfehlung</th>` +
     `<th class="krit" title="Gewichteter Gesamtwert, relativ zur eigenen Herde: 100 = Herdendurchschnitt">Index</th>` +
     krit.map(k => `<th class="krit" title="${esc(k.label)} – zählt ${Math.round(bsSettings.gewichte[k.id] / gesamt * 100)} %">${esc(herde.header[herde.mapping[k.id]] || k.netrind)}</th>`).join("") +
     `<th>Platz in Netrind-Liste</th>`;
@@ -2462,9 +2519,11 @@ function werteAus(){
     };
     return `<tr class="${z.rec}">
       <td class="num">${t ? ++nr : ""}</td>
+      <td class="num">${(() => { const lt = tierVon.get(z.key) || {}; const unsicher = lt.sicher === false || !z.nr;
+        return unsicher ? `<b class="bs-nr-unsicher" title="${esc(lt.hinweis || "nicht gelesen")} – im Lely prüfen">${esc(z.nr || "?")}${z.nr ? "?" : ""}</b><br><small class="bs-erkannt">${esc(lt.hinweis || "nicht gelesen")}</small>`
+          : `<b>${esc(z.nr)}</b>${lt.hinweis ? `<br><small class="bs-erkannt">${esc(lt.hinweis)}</small>` : ""}`; })()}</td>
       <td class="num">${ohrAnzeige(z.key)}</td>
-      <td><span class="rec ${z.rec}">${REC_TEXT[z.rec]}</span></td>
-      <td>${t ? esc(t.name) : ""}</td>
+      <td><span class="rec ${z.rec}">${REC_TEXT[z.rec]}</span>${z.rec === "nf" && lely.ocr ? `<br><small class="bs-erkannt">Ohrmarke evtl. falsch gelesen – im Lely prüfen</small>` : ""}</td>
       <td class="num krit"><b>${t ? t.indexRZ : "–"}</b></td>
       ${krit.map(k => `<td class="num krit">${wert(k)}</td>`).join("")}
       <td class="num">${t ? `${t.platz} von ${n} <span class="bs-erkannt">(Top ${top} %)</span>` : ""}</td>
@@ -2560,7 +2619,9 @@ function uebernehmeTabelle(rows, quelle){
   if (!daten.some(r => ohrKey(r[mapping.ohr]) !== null)) throw new Error("Es wurden keine Tiere mit Ohrmarke gefunden.");
 
   const alt = herde ? {datum: herde.hochgeladen, anzahl: herdenTiere().length} : null;
-  herde = {datei: quelle, hochgeladen: new Date().toISOString(), header, rows: daten, mapping};
+  const kuhnummern = herde && herde.kuhnummern ? herde.kuhnummern : undefined;
+  herde = {datei: quelle, hochgeladen: new Date().toISOString(), header, rows: daten, mapping, kuhnummern,
+           einstellungen: {v: bsSettings.v, quote: bsSettings.quote, gewichte: {...bsSettings.gewichte}, stand: bsSettings.stand}};   // Einstellungen bleiben
   speichereHerde();
   const neu = herdenTiere().length;
 
@@ -2573,7 +2634,7 @@ function uebernehmeTabelle(rows, quelle){
   // Spalten nur dann zum Prüfen aufklappen, wenn sich der Aufbau geändert hat
   // oder etwas nicht erkannt wurde
   const box = document.getElementById("herdeMapping");
-  box.hidden = gleicherAufbau && mapping.rzg >= 0 && mapping.milch >= 0;
+  box.hidden = gleicherAufbau && mapping.milch >= 0;
   if (!box.hidden) renderMapping();
   werteAus();
   hsSpeichern();                 // neue Liste auch für alle anderen Geräte sichern
@@ -2609,65 +2670,625 @@ document.getElementById("herdeLoeschen").addEventListener("click", () => {
   werteAus();
 });
 
-// Text aus einer Lely-Datei holen – egal welches Format, gesucht wird danach nur nach "DE …"
-async function lelyDateiText(file){
+// Zeilen, die im Screenshot nicht sicher lesbar waren: Bildausschnitt zeigen + von Hand nachtragen
+function renderLelyUnlesbar(){
+  const box = document.getElementById("lelyUnlesbar");
+  const liste = (lely && lely.unlesbar) || [];
+  box.hidden = !liste.length;
+  if (!liste.length){ box.innerHTML = ""; return; }
+  box.innerHTML = `<div class="bs-status warn"><b>⚠ ${liste.length === 1 ? "1 Zeile" : liste.length + " Zeilen"} im Bild nicht sicher lesbar</b> – lieber nachfragen als raten. Bitte im Bild nachsehen und eintragen (oder einen schärferen Screenshot einfügen):</div>
+    ${liste.map((u, i) => `<div class="bs-unlesbar" data-i="${i}"><img src="${u.bild}" alt="nicht lesbare Zeile">
+      <span class="bs-unlesbar-felder"><input placeholder="Kuh-Nr." inputmode="numeric" data-k="nr"><input placeholder="Ohrmarke (DE …)" data-k="ohr">
+      <button class="btn small primary" type="button" data-ok>Übernehmen</button><button class="btn small ghost" type="button" data-weg>Ignorieren</button></span>
+      <span class="bs-erkannt" data-meldung></span></div>`).join("")}`;
+  box.querySelectorAll(".bs-unlesbar").forEach(el => {
+    const i = Number(el.dataset.i);
+    el.querySelector("[data-weg]").addEventListener("click", () => { lely.unlesbar.splice(i, 1); werteAus(); });
+    el.querySelector("[data-ok]").addEventListener("click", () => {
+      const nr = el.querySelector('[data-k="nr"]').value.trim().replace(/\D/g, ""), ohr = el.querySelector('[data-k="ohr"]').value;
+      const key = ohrKey(ohr), m = el.querySelector("[data-meldung]");
+      if (!key){ m.textContent = "Ohrmarke: DE und 10 Ziffern eingeben."; return; }
+      if (herde && !herdenTiere().some(t => t.key === key) && !confirm(`${ohrAnzeige(key)} steht nicht in der Netrind-Liste. Trotzdem übernehmen?`)) return;
+      lely.tiere = lelyEindeutig([...lely.tiere, {key, nr, sicher: !!nr, ohrSicher: true, hinweis: "von Hand eingetragen"}]);
+      lely.unlesbar.splice(i, 1);
+      werteAus();
+    });
+  });
+}
+
+// --- Lely-Liste einlesen ------------------------------------------------
+// Ergebnis immer: [{key (letzte 10 Ziffern der Ohrmarke), nr (Kuhnummer/Halsband)}]
+const RX_KUHNR_SPALTE = /kuh\s*-?\s*n(umme)?r|kuhnum|halsband|tier\s*-?\s*nr|stall\s*-?\s*nr/i;
+function lelyEindeutig(liste){
+  const m = new Map();
+  liste.forEach(t => {
+    if (!t.key) return;
+    const alt = m.get(t.key);
+    if (!alt) m.set(t.key, {...t, nr: t.nr || ""});
+    else if ((!alt.nr && t.nr) || (!alt.sicher && t.sicher)) m.set(t.key, {...alt, ...t});
+  });
+  return [...m.values()];
+}
+// Zeilen aus Text (PDF, eingefügter Text): Kuhnummer = erste ganze Zahl vor der Ohrmarke
+function tiereAusZeilen(zeilen){
+  const out = [];
+  zeilen.forEach(z => {
+    const re = /(?<![A-Za-z])DE[\s.\-]*(\d(?:[\s.\-]?\d){9})(?!\d)/gi;
+    let m, erster = true;
+    while ((m = re.exec(z))){
+      const key = m[1].replace(/\D/g, "");
+      let nr = "";
+      if (erster){ const v = z.slice(0, m.index).match(/(?:^|\s)(\d{1,5})(?=\s|$)/); if (v) nr = v[1]; }
+      out.push({key, nr}); erster = false;
+    }
+  });
+  if (!out.length) ohrmarkenAusText(zeilen.join("\n")).forEach(key => out.push({key, nr: ""}));   // z. B. 276…-Schreibweise
+  return lelyEindeutig(out);
+}
+// Tabelle (CSV/Excel): Spalten "Kuhnummer" und "Lebensnummer" suchen
+function tiereAusTabelle(rows){
+  const kopf = rows.findIndex(r => r.some(c => RX_KUHNR_SPALTE.test(c)) && r.some(c => /lebensn|ohrmarke|ohr-?nr/i.test(c)));
+  if (kopf >= 0){
+    const h = rows[kopf];
+    const nrI = h.findIndex(c => RX_KUHNR_SPALTE.test(c) && !/lebens/i.test(c));
+    const ohrI = h.findIndex(c => /lebensn|ohrmarke|ohr-?nr/i.test(c));
+    const mitDe = rows.slice(kopf + 1).map(r => ({key: (ohrmarkenAusText(String(r[ohrI] || ""))[0]) || null, nr: String(r[nrI] || "").trim()})).filter(t => t.key);
+    if (mitDe.length) return lelyEindeutig(mitDe);
+  }
+  return tiereAusZeilen(rows.map(r => r.join("  ")));
+}
+// XML: Datensatz = Element, das eine Ohrmarke enthält; Kuhnummer aus Nachbar-Element oder Attribut
+function tiereAusXml(text){
+  try {
+    const doc = new DOMParser().parseFromString(text, "application/xml");
+    if (doc.querySelector("parsererror")) throw new Error("kein XML");
+    const out = [];
+    doc.querySelectorAll("*").forEach(el => {
+      if (el.children.length) return;
+      const key = ohrmarkenAusText(el.textContent)[0];
+      if (!key) return;
+      let nr = "";
+      for (let rec = el.parentElement; rec && !nr; rec = rec.parentElement){
+        for (const att of rec.attributes) if (RX_KUHNR_SPALTE.test(att.name) || /^nummer$|^nr$/i.test(att.name)) { if (/^\d{1,5}$/.test(att.value.trim())) { nr = att.value.trim(); break; } }
+        if (!nr) for (const kind of rec.children) if (kind !== el && (RX_KUHNR_SPALTE.test(kind.tagName) || /^(nummer|nr)$/i.test(kind.tagName)) && /^\s*\d{1,5}\s*$/.test(kind.textContent)) { nr = kind.textContent.trim(); break; }
+        if (rec.parentElement === doc.documentElement) break;
+      }
+      out.push({key, nr});
+    });
+    if (out.length) return lelyEindeutig(out);
+  } catch(e) {}
+  return tiereAusZeilen(text.replace(/[<>"]/g, " ").split(/\n/));
+}
+
+// --- Screenshot lesen (Texterkennung mit Tesseract, läuft komplett im Browser) ---
+let lelyOcrWorker = null;
+function ladeTesseract(){
+  return new Promise((res, rej) => {
+    if (window.Tesseract) return res(window.Tesseract);
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+    s.onload = () => res(window.Tesseract);
+    s.onerror = () => rej(new Error("Die Texterkennung konnte nicht geladen werden – beim ersten Mal braucht es Internet."));
+    document.head.appendChild(s);
+  });
+}
+async function lelyOcr(fortschritt){
+  if (lelyOcrWorker) return lelyOcrWorker;
+  const T = await ladeTesseract();
+  lelyOcrWorker = await T.createWorker("eng", 1, {logger: m => { if (m.status === "recognizing text" && fortschritt) fortschritt(m.progress); }});
+  await lelyOcrWorker.setParameters({tessedit_pageseg_mode: "6", preserve_interword_spaces: "1"});
+  return lelyOcrWorker;
+}
+// Bild vergrößern + in Graustufen mit kräftigem Kontrast → deutlich weniger Lesefehler
+async function lelyBildVorbereiten(datei){
+  const bild = await createImageBitmap(datei);
+  const f = bild.width < 1400 ? 2.5 : bild.width < 2400 ? 2 : 1;
+  const c = document.createElement("canvas");
+  c.width = Math.round(bild.width * f); c.height = Math.round(bild.height * f);
+  const g = c.getContext("2d", {willReadFrequently: true});
+  g.imageSmoothingQuality = "high";
+  g.drawImage(bild, 0, 0, c.width, c.height);
+  const d = g.getImageData(0, 0, c.width, c.height), p = d.data;
+  let summe = 0;
+  for (let i = 0; i < p.length; i += 4) summe += (p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114);
+  const dunkel = summe / (p.length / 4) < 110;              // dunkler Hintergrund → umdrehen
+  for (let i = 0; i < p.length; i += 4){
+    let y = p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114;
+    if (dunkel) y = 255 - y;
+    y = Math.max(0, Math.min(255, (y - 128) * 1.6 + 150));   // Kontrast: Schrift dunkler, Hintergrund heller
+    p[i] = p[i + 1] = p[i + 2] = y;
+  }
+  g.putImageData(d, 0, 0);
+  c.roh = bild; c.faktor = f;
+  return c;
+}
+// Ohrmarke in erkanntem Text: typische Verwechsler (O→0, I/l→1, S→5, B→8) nur hinter "DE" korrigieren
+function ocrOhrmarken(text){
+  const out = [];
+  const re = /D\s?[E€F]\s*[:.\-]?\s*([0-9OoIl|SB](?:[\s.]?[0-9OoIl|SB]){9,11})/g;
+  let m;
+  while ((m = re.exec(text))){
+    const z = m[1].replace(/[\s.]/g, "").replace(/[Oo]/g, "0").replace(/[Il|]/g, "1").replace(/S/g, "5").replace(/B/g, "8");
+    if (/^\d{10}$/.test(z)) out.push({key: z, index: m.index});
+    else if (/^\d{11,12}$/.test(z)) out.push({key: z.slice(0, 10), index: m.index});
+  }
+  return out;
+}
+// Kuhnummern-Gedächtnis: sicher gelesene Paare Ohrmarke → Kuhnummer (verschlüsselt mit der Netrind-Liste gespeichert)
+function lelyBekannt(){ return (herde && herde.kuhnummern) || {}; }
+function lelyMerken(tiere){
+  if (!herde) return;
+  const m = {...lelyBekannt()};
+  let neu = false;
+  tiere.forEach(t => { if (t.nr && t.sicher && m[t.key] !== t.nr){ m[t.key] = t.nr; neu = true; } });
+  if (!neu) return;
+  herde.kuhnummern = m;
+  herde.einstellungen = {...(herde.einstellungen || {}), stand: new Date().toISOString()};   // damit andere Geräte es übernehmen
+  speichereHerde();
+  if (typeof hsSpeichern === "function") hsSpeichern();
+}
+// --- Ziffern-Vergleich: Selbst-Kalibrierung am Screenshot ---------------------
+// Ein Screenshot zeigt jede Ziffer immer in exakt derselben Form. Aus den Ohrmarken,
+// die die Texterkennung gelesen hat UND die es in der Netrind-Liste gibt, werden die
+// Ziffern 0–9 ausgeschnitten ("Vorlagen"). Damit wird danach jede Kuhnummer und jede
+// Ohrmarke Ziffer für Ziffer per Pixelvergleich nachgelesen.
+function lelyGrau(bitmap){
+  const c = document.createElement("canvas");
+  c.width = bitmap.width; c.height = bitmap.height;
+  const g = c.getContext("2d", {willReadFrequently: true});
+  g.drawImage(bitmap, 0, 0);
+  const d = g.getImageData(0, 0, c.width, c.height).data;
+  const y = new Float32Array(c.width * c.height);
+  for (let i = 0, j = 0; i < d.length; i += 4, j++) y[j] = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+  return {w: c.width, h: c.height, y};
+}
+// Ziffern in einem Bildausschnitt finden: Spalten mit "Tinte" = Ziffer, Lücken trennen
+function lelyGlyphen(gb, x0, y0, x1, y1, opt = {}){
+  x0 = Math.max(0, Math.floor(x0)); y0 = Math.max(0, Math.floor(y0)); x1 = Math.min(gb.w, Math.ceil(x1)); y1 = Math.min(gb.h, Math.ceil(y1));
+  const W = x1 - x0, H = y1 - y0;
+  if (W < 3 || H < 5) return [];
+  const hist = new Uint32Array(64);
+  for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) hist[Math.min(63, gb.y[y * gb.w + x] >> 2)]++;
+  let bgI = 0; for (let i = 1; i < 64; i++) if (hist[i] > hist[bgI]) bgI = i;
+  const bg = bgI * 4 + 2;                                          // häufigste Helligkeit = Hintergrund
+  const t = new Float32Array(W * H);
+  for (let y = 0; y < H; y++){
+    let zeileTinte = 0;
+    for (let x = 0; x < W; x++){
+      const d = Math.abs(gb.y[(y + y0) * gb.w + x + x0] - bg);
+      const v = d < 28 ? 0 : Math.min(1, (d - 28) / 90);
+      t[y * W + x] = v; if (v > 0.3) zeileTinte++;
+    }
+    if (zeileTinte > W * 0.8) for (let x = 0; x < W; x++) t[y * W + x] = 0;   // durchgehende Linie, keine Schrift
+  }
+  // Spalten: Summe und stärkster Punkt. Lücke = nirgends kräftige Tinte (leichtes Grau vom Kantenglätten zählt nicht)
+  const summe = new Float32Array(W), stark = new Float32Array(W);
+  for (let x = 0; x < W; x++){ let sum = 0, mx = 0; for (let y = 0; y < H; y++){ const v = t[y * W + x]; sum += v; if (v > mx) mx = v; } summe[x] = sum; stark[x] = mx; }
+  let stuecke = [];
+  for (let x = 0; x < W;){
+    if (stark[x] < 0.45){ x++; continue; }
+    let xe = x; while (xe < W && stark[xe] >= 0.45) xe++;
+    stuecke.push([x, xe]);
+    x = xe;
+  }
+  // an der dünnsten Stelle teilen
+  const teile = st => {
+    const [xa, xe] = st; let bi = -1, bv = Infinity;
+    for (let x = xa + 2; x < xe - 2; x++) if (summe[x] < bv){ bv = summe[x]; bi = x; }
+    return bi < 0 ? null : [[xa, bi], [bi + 1, xe]];
+  };
+  const breite = st => st[1] - st[0];
+  if (opt.anzahl){
+    for (let n = 0; stuecke.length < opt.anzahl && n < 20; n++){
+      const i = stuecke.reduce((bi, st, j) => breite(st) > breite(stuecke[bi]) ? j : bi, 0);
+      const t2 = teile(stuecke[i]); if (!t2) break;
+      stuecke.splice(i, 1, ...t2);
+    }
+  } else if (opt.maxBreite){
+    for (let n = 0; n < 20; n++){
+      const i = stuecke.findIndex(st => breite(st) > opt.maxBreite);
+      if (i < 0) break;
+      const t2 = teile(stuecke[i]); if (!t2) break;
+      stuecke.splice(i, 1, ...t2);
+    }
+  }
+  const out = [];
+  for (const [x, xe] of stuecke){
+    let ya = H, ye = -1;
+    for (let y = 0; y < H; y++) for (let xx = x; xx < xe; xx++) if (t[y * W + xx] > 0.3){ if (y < ya) ya = y; if (y > ye) ye = y; }
+    if (ye >= ya){
+      const gw = xe - x, gh = ye - ya + 1;
+      const map = new Float32Array(gw * gh);
+      for (let yy = 0; yy < gh; yy++) for (let xx = 0; xx < gw; xx++) map[yy * gw + xx] = t[(yy + ya) * W + xx + x];
+      out.push(lelyGlyphFein({x: x + x0, w: gw, h: gh, y: ya + y0, map}));
+    }
+  }
+  return out;
+}
+// Feinbild einer Ziffer: am Tinten-Schwerpunkt ausgerichtet und im Halb-Pixel-Raster neu abgetastet.
+// Dadurch sieht dieselbe Ziffer gleich aus, auch wenn der Bildschirm sie um Bruchteile eines Pixels versetzt zeichnet.
+const GLYPH_STEP = 0.5, GLYPH_FW = 28, GLYPH_FH = 40;      // Fenster 14 × 20 Pixel
+function lelyGlyphFein(g){
+  let sx = 0, sy = 0, sm = 0;
+  for (let y = 0; y < g.h; y++) for (let x = 0; x < g.w; x++){ const v = g.map[y * g.w + x]; sx += v * x; sy += v * y; sm += v; }
+  const cx = sm ? sx / sm : g.w / 2, cy = sm ? sy / sm : g.h / 2;
+  const wert = (x, y) => (x < 0 || y < 0 || x >= g.w || y >= g.h) ? 0 : g.map[y * g.w + x];
+  const fein = new Float32Array(GLYPH_FW * GLYPH_FH);
+  for (let j = 0; j < GLYPH_FH; j++) for (let i = 0; i < GLYPH_FW; i++){
+    const px = cx + (i - GLYPH_FW / 2 + 0.5) * GLYPH_STEP, py = cy + (j - GLYPH_FH / 2 + 0.5) * GLYPH_STEP;
+    const x0 = Math.floor(px), y0 = Math.floor(py), fx = px - x0, fy = py - y0;
+    fein[j * GLYPH_FW + i] = wert(x0, y0) * (1 - fx) * (1 - fy) + wert(x0 + 1, y0) * fx * (1 - fy) + wert(x0, y0 + 1) * (1 - fx) * fy + wert(x0 + 1, y0 + 1) * fx * fy;
+  }
+  return {...g, fein};
+}
+// Abstand zweier Ziffern (0 = gleich, 1 = nichts gemeinsam); kleine Rest-Verschiebung erlaubt
+function lelyGlyphAbstand(a, b){
+  if (Math.abs(a.w - b.w) > 3 || Math.abs(a.h - b.h) > 2) return 1;
+  let best = Infinity;
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++){
+    let diff = 0, tinte = 0;
+    for (let j = 1; j < GLYPH_FH - 1; j++){
+      const jb = j - dy;
+      for (let i = 1; i < GLYPH_FW - 1; i++){
+        const va = a.fein[j * GLYPH_FW + i], vb = b.fein[jb * GLYPH_FW + i - dx];
+        diff += Math.abs(va - vb); tinte += va > vb ? va : vb;
+      }
+    }
+    const d = tinte ? diff / tinte : 1;
+    if (d < best) best = d;
+  }
+  return best;
+}
+// Vorlagen je Ziffer: Beispiele von möglichst verschiedenen Stellen der Ohrmarke (jede Stelle ist
+// anders versetzt gezeichnet) – erst eins je Stelle, dann weitere, die sich deutlich unterscheiden
+function lelyVorlagen(proben){
+  const v = {};
+  for (const [ziffer, liste] of Object.entries(proben)){
+    if (!liste.length) continue;
+    const gewaehlt = [], stellen = new Set();
+    for (const p of liste) if (!stellen.has(p.pos)){ stellen.add(p.pos); gewaehlt.push(p); }
+    for (const p of liste){
+      if (gewaehlt.length >= 16) break;
+      if (!gewaehlt.includes(p) && gewaehlt.every(q => lelyGlyphAbstand(p, q) > 0.08)) gewaehlt.push(p);
+    }
+    v[ziffer] = gewaehlt.slice(0, 16);
+  }
+  return v;
+}
+// Ziffer = Klasse mit dem nächsten Beispiel (Abstand 0 = gleich, 1 = passt gar nicht/andere Größe).
+//  exakt:     < 0,10 – praktisch pixelgleich
+//  eindeutig: < 0,30 UND mind. 0,22 besser als die zweitbeste Ziffer; ist die zweitbeste nur wegen
+//             anderer Größe "weit weg" (1,0), zählt das nicht als Beleg → dann nur bei exakt
+//  plausibel: < 0,35 – reicht nur, wenn die Texterkennung dieselbe Ziffer liest
+function lelyLesenMitVorlagen(glyphen, vorlagen, protokoll){
+  const ziffern = Object.keys(vorlagen);
+  if (!glyphen.length || ziffern.length < 10) return {text: "", sicher: false, plausibel: false, exakt: false};
+  let text = "", sicher = true, plausibel = true, exakt = true;
+  for (const g of glyphen){
+    const ab = ziffern.map(z => ({z, d: Math.min(...vorlagen[z].map(v => lelyGlyphAbstand(g, v)))})).sort((x, y) => x.d - y.d);
+    text += ab[0].z;
+    if (protokoll) protokoll.push(`${ab[0].z}:${ab[0].d.toFixed(2)}/${ab[1].z}:${ab[1].d.toFixed(2)}`);
+    const d1 = ab[0].d, d2 = ab[1].d;
+    if (!(d1 < 0.35)) plausibel = false;
+    if (!(d1 < 0.10)) exakt = false;
+    // Sonderfall "1": die einzige schmale Ziffer – alle anderen sind zu breit (Abstand 1,0); passt sie gut, ist das eindeutig
+    const eins = ab[0].z === "1" && d1 < 0.30 && ab.slice(1).every(x => x.d - d1 >= 0.22);
+    if (!(d1 < 0.10 || eins || (d1 < 0.30 && d2 - d1 >= 0.22 && d2 < 1))) sicher = false;
+  }
+  return {text, sicher, plausibel, exakt};
+}
+
+async function tiereAusBild(datei, fortschritt){
+  const worker = await lelyOcr(fortschritt);
+  const bild = await lelyBildVorbereiten(datei);
+  const f = bild.faktor, gb = lelyGrau(bild.roh);
+  const {data} = await worker.recognize(bild);
+  const woerter = (data.words || []);
+  const mitte = b => (b.y0 + b.y1) / 2;
+  const ziffern = async (canvas, psm) => {
+    try {
+      await worker.setParameters({tessedit_char_whitelist: "0123456789", tessedit_pageseg_mode: psm});
+      return (await worker.recognize(canvas)).data;
+    } finally {
+      await worker.setParameters({tessedit_char_whitelist: "", tessedit_pageseg_mode: "6"});
+    }
+  };
+  const herdeKeys = new Set(herdenTiere().map(t => t.key));
+  // Zeilen mit Ohrmarke + Lage der Ohrmarke im Bild
+  const zeilen = (data.lines || []).map(l => {
+    const treffer = ocrOhrmarken(l.text);
+    if (!treffer.length) return null;
+    const norm = t => t.replace(/[Oo]/g, "0").replace(/[Il|]/g, "1").replace(/S/g, "5").replace(/B/g, "8");
+    const wort = (l.words || []).find(w => /^(D\s?E)?\d{10,12}$/.test(norm(w.text.replace(/[^\dA-Za-z|]/g, ""))) && norm(w.text).replace(/\D/g, "").slice(0, 10) === treffer[0].key)
+      || (l.words || []).find(w => norm(w.text).replace(/\D/g, "").length >= 10);
+    return {l, key: treffer[0].key, wort};
+  }).filter(Boolean);
+  // 1) Kalibrieren: Ziffern aus bestätigten Ohrmarken ausschneiden
+  const glyphenVonOhr = z => {
+    if (!z.wort) return [];
+    const mitDe = /^\s*D/i.test(z.wort.text);
+    let g = lelyGlyphen(gb, z.wort.bbox.x0 / f - 1, z.wort.bbox.y0 / f - 1, z.wort.bbox.x1 / f + 1, z.wort.bbox.y1 / f + 1, {anzahl: mitDe ? 12 : 10});
+    if (mitDe && g.length === 12) g = g.slice(2);                    // "DE" hing mit dran
+    return g;
+  };
+  const proben = {};
+  for (const z of zeilen){
+    if (!herdeKeys.has(z.key)) continue;
+    const g = glyphenVonOhr(z);
+    if (g.length !== 10) continue;
+    g.forEach((gl, i) => (proben[z.key[i]] = proben[z.key[i]] || []).push({...gl, pos: i}));
+  }
+  if (window.__ocrLog) window.__ocrKal = zeilen.map(z => ({key: z.key, wort: z.wort && z.wort.text, bbox: z.wort && z.wort.bbox, n: glyphenVonOhr(z).length, inHerde: herdeKeys.has(z.key)}));   // nur für Tests
+  const vorlagen = lelyVorlagen(proben);
+  const kalibriert = Object.keys(vorlagen).length === 10;
+  const maxBreite = kalibriert ? Math.max(...Object.values(vorlagen).flat().map(v => v.w)) + 1 : null;
+
+  // Lage der Lebensnummer-Spalte (Ziffern) und Texthöhe im Rohbild – aus den bestätigten Zeilen
+  const median = arr => { const a = arr.filter(v => isFinite(v)).sort((x, y) => x - y); return a.length ? a[Math.floor(a.length / 2)] : null; };
+  const ohrLage = [];
+  for (const z of zeilen){
+    if (!herdeKeys.has(z.key)) continue;
+    const g = glyphenVonOhr(z);
+    if (g.length === 10) ohrLage.push({x0: g[0].x, x1: g[9].x + g[9].w, h: Math.max(...g.map(q => q.h))});
+  }
+  const ohrX0 = median(ohrLage.map(o => o.x0)), ohrX1 = median(ohrLage.map(o => o.x1)), textH = median(ohrLage.map(o => o.h));
+
+  // 2) Spalte "Kuhnummer": über die Kopfzeile finden – oder (Screenshot ohne Kopfzeile) über den
+  //    gemerkten Abstand zur Lebensnummer-Spalte vom letzten Screenshot mit Kopfzeile
+  const LAYOUT_KEY = "poolehof-lely-layout-v1";
+  const kopf = woerter.find(w => /^kuhn/i.test(w.text));
+  let links = null, rechtsX = null, oben = 0, spalteQuelle = "";
+  if (kopf){
+    const hoehe = kopf.bbox.y1 - kopf.bbox.y0;
+    const rechts = woerter.filter(w => w !== kopf && w.bbox.x0 > kopf.bbox.x1 && Math.abs(mitte(w.bbox) - mitte(kopf.bbox)) < hoehe * 2)
+      .sort((x, y) => x.bbox.x0 - y.bbox.x0)[0];
+    links = Math.max(0, kopf.bbox.x0 - Math.round(hoehe * 0.4));
+    rechtsX = rechts ? rechts.bbox.x0 - Math.round(hoehe * 0.3) : kopf.bbox.x1 + hoehe * 2;
+    oben = kopf.bbox.y1 + 2; spalteQuelle = "kopf";
+    if (ohrX0 !== null && textH) try { localStorage.setItem(LAYOUT_KEY, JSON.stringify({dl: ohrX0 - links / f, dr: ohrX0 - rechtsX / f, h: textH})); } catch(e) {}
+  } else if (ohrX0 !== null && textH){
+    let lay = null; try { lay = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "null"); } catch(e) {}
+    if (lay && Math.abs(lay.h - textH) / lay.h < 0.15 && ohrX0 - lay.dl >= 0){
+      links = (ohrX0 - lay.dl) * f; rechtsX = (ohrX0 - lay.dr) * f; spalteQuelle = "gemerkt";
+    }
+  }
+  let streifenWerte = [], zelle = null, spalteX = null;
+  if (links !== null){
+    spalteX = [links, rechtsX];
+    const streifen = document.createElement("canvas");
+    streifen.width = Math.max(10, rechtsX - links); streifen.height = Math.max(10, bild.height - oben);
+    streifen.getContext("2d").drawImage(bild, links, oben, streifen.width, streifen.height, 0, 0, streifen.width, streifen.height);
+    const d2 = await ziffern(streifen, "6");
+    streifenWerte = (d2.lines || []).map(l => ({nr: l.text.replace(/\D/g, ""), y: mitte(l.bbox) + oben})).filter(z => z.nr && z.nr.length <= 5);
+    zelle = async (yMitte, h, art) => {
+      const pad = 16;
+      const quelle = art === "B" ? bild.roh : bild, sc = art === "B" ? 1 / f : 1;
+      const zoom = art === "B" ? 4 : 3 / f;
+      const sx = links * sc, sw = (rechtsX - links) * sc, sh = h * 1.5 * sc, sy = Math.max(0, (yMitte - h * 0.75) * sc);
+      const c = document.createElement("canvas");
+      c.width = Math.round(sw * zoom) + pad * 2; c.height = Math.round(sh * zoom) + pad * 2;
+      const g = c.getContext("2d");
+      g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.imageSmoothingQuality = "high";
+      g.drawImage(quelle, sx, sy, sw, sh, pad, pad, c.width - pad * 2, c.height - pad * 2);
+      const z = ((await ziffern(c, "7")).text || "").replace(/\D/g, "");
+      return z.length >= 1 && z.length <= 5 ? z : "";
+    };
+  }
+
+  const unlesbar = [];
+  // Nachsuche: Zeilen, die die Texterkennung übersehen hat. Die Lebensnummer-Spalte wird von oben
+  // bis unten abgesucht; aufgenommen wird nur, was der Pixelvergleich eindeutig liest UND in Netrind steht.
+  if (kalibriert && ohrX0 !== null){
+    const xa = Math.floor(ohrX0 - 2), xe = Math.ceil(ohrX1 + 2);
+    const zeileTinte = new Uint16Array(gb.h);
+    // Hintergrund je Zeile = häufigster Wert; Tinte = deutlich anders
+    for (let y = 0; y < gb.h; y++){
+      let mn = 255, mx = 0;
+      for (let x = xa; x < xe; x++){ const v = gb.y[y * gb.w + x]; if (v < mn) mn = v; if (v > mx) mx = v; }
+      zeileTinte[y] = mx - mn > 70 ? 1 : 0;
+    }
+    const baender = [];
+    for (let y = 0; y < gb.h;){
+      if (!zeileTinte[y]){ y++; continue; }
+      let ye = y; while (ye < gb.h && zeileTinte[ye]) ye++;
+      if (ye - y >= textH * 0.6 && ye - y <= textH * 1.6) baender.push([y, ye]);
+      y = ye;
+    }
+    const bekannteY = zeilen.map(z => mitte((z.wort || z.l).bbox) / f);
+    const ausschnitt = (y0, y1) => {
+      const xl = spalteX ? Math.max(0, spalteX[0] / f - 4) : 0, c = document.createElement("canvas");
+      const sw = Math.min(gb.w, xe + 6) - xl, sh = (y1 - y0) + 10;
+      c.width = sw; c.height = sh;
+      c.getContext("2d").drawImage(bild.roh, xl, y0 - 5, sw, sh, 0, 0, sw, sh);
+      return c.toDataURL("image/png");
+    };
+    for (const [y0, y1] of baender){
+      const ym = (y0 + y1) / 2;
+      if (bekannteY.some(y => Math.abs(y - ym) < textH * 0.8)) continue;
+      // sieht nach einer Ohrmarken-Zeile aus (ca. 10–12 Ziffern breit)? Dann merken, falls sie unlesbar bleibt
+      const roh = lelyGlyphen(gb, xa, y0 - 2, xe, y1 + 2, {anzahl: 10});
+      const alle = Object.values(vorlagen).flat();
+      const zifferArtig = roh.filter(g => Math.min(...alle.map(v => lelyGlyphAbstand(g, v))) < 0.35).length;
+      if (roh.length >= 8 && zifferArtig >= 7) unlesbar.push({y: ym, bild: ausschnitt(y0, y1)});   // überwiegend Ziffern, aber nicht lesbar
+      const protN = window.__ocrLog ? [] : null;
+      const te = lelyLesenMitVorlagen(lelyGlyphen(gb, xa, y0 - 2, xe, y1 + 2, {anzahl: 10}), vorlagen, protN);
+      if (protN) (window.__ocrNach = window.__ocrNach || []).push({ym, text: te.text, sicher: te.sicher, prot: protN.join(" ")});   // nur für Tests
+      if (!(te.text.length === 10 && herdeKeys.has(te.text) && te.plausibel)) continue;
+      if (!te.exakt){
+        // Gegenprobe: Texterkennung liest genau diesen Streifen – beide müssen dieselbe Ohrmarke lesen
+        const pad = 16, zoom = 4, c = document.createElement("canvas");
+        const sx = xa - textH * 2.5, sw = (xe - sx) + 4, sy = y0 - 3, sh = (y1 - y0) + 6;
+        c.width = Math.round(sw * zoom) + pad * 2; c.height = Math.round(sh * zoom) + pad * 2;
+        const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.imageSmoothingQuality = "high";
+        g.drawImage(bild.roh, Math.max(0, sx), sy, sw, sh, pad, pad, c.width - pad * 2, c.height - pad * 2);
+        let R = "";
+        try {
+          await worker.setParameters({tessedit_char_whitelist: "DE0123456789 ", tessedit_pageseg_mode: "7"});
+          R = (((await worker.recognize(c)).data.text) || "").replace(/\D/g, "").slice(-10);
+        } finally { await worker.setParameters({tessedit_char_whitelist: "", tessedit_pageseg_mode: "6"}); }
+        if (R !== te.text) continue;
+      }
+      if (unlesbar.length && unlesbar[unlesbar.length - 1].y === ym) unlesbar.pop();   // doch gelesen
+      if (zeilen.some(z => z.key === te.text)) continue;
+      zeilen.push({nachsuche: true, key: te.text, l: {bbox: {x0: xa * f, x1: xe * f, y0: (y0 - 1) * f, y1: (y1 + 1) * f}, words: [], text: ""},
+                   wort: {text: te.text, bbox: {x0: xa * f, x1: xe * f, y0: (y0 - 1) * f, y1: (y1 + 1) * f}}});
+    }
+    zeilen.sort((p, q) => mitte(p.l.bbox) - mitte(q.l.bbox));
+  }
+
+  // 3) jede Zeile: Ohrmarke gegenlesen, Kuhnummer lesen
+  if (window.__ocrLog) window.__ocrInfo = {ohrX0, ohrX1, textH, nZeilen: zeilen.length, spalteQuelle};   // nur für Tests
+  const bekannt = lelyBekannt();
+  const out = [];
+  for (let i = 0; i < zeilen.length; i++){
+    const z = zeilen[i], zeile = z.l;
+    if (fortschritt) fortschritt(0.5 + 0.5 * i / zeilen.length);
+    let key = z.key, ohrSicher = false, hinweis = "";
+    if (kalibriert){
+      const protOhr = window.__ocrLog ? [] : null;
+      const te = lelyLesenMitVorlagen(glyphenVonOhr(z), vorlagen, protOhr);
+      if (protOhr) z.protOhr = te.text + " " + protOhr.join(" ");
+      // Texterkennung und Pixelvergleich müssen alle 10 Ziffern gleich lesen
+      if (te.plausibel && te.text === key) ohrSicher = true;
+      else if (te.exakt && te.text.length === 10 && herdeKeys.has(te.text) && !herdeKeys.has(key)){ key = te.text; ohrSicher = true; }
+      else hinweis = "Ohrmarke unsicher gelesen";
+    }
+    // Höhe/Lage der Zeile von der Ohrmarke selbst (die Zeilen-Box der Texterkennung kann zwei Zeilen umfassen)
+    const lage = z.wort ? z.wort.bbox : zeile.bbox;
+    const zh = lage.y1 - lage.y0, zy = mitte(lage);
+    let nr = "", sicher = false, dbg = {};
+    if (zelle){
+      // Vorlagen-Lesung der Kuhnummer (Pixelvergleich)
+      const prot = window.__ocrLog ? [] : null;
+      const T = kalibriert ? lelyLesenMitVorlagen(lelyGlyphen(gb, spalteX[0] / f, lage.y0 / f - 2, spalteX[1] / f, lage.y1 / f + 2, {maxBreite}), vorlagen, prot) : {text: "", sicher: false};
+      const nah = streifenWerte.length ? streifenWerte.reduce((x, y) => Math.abs(y.y - zy) < Math.abs(x.y - zy) ? y : x) : null;
+      const A = nah && Math.abs(nah.y - zy) < zh * 0.7 ? nah.nr : "";
+      const B = await zelle(zy, zh, "B");
+      dbg = {T: T.text + (T.sicher ? "" : "~"), A, B, prot: prot && prot.join(" ")};
+      if (T.exakt && T.text){ nr = T.text; sicher = true; }                                     // pixelgleich mit bestätigten Ziffern – stärkster Beleg
+      else if (T.sicher && T.text && !(A && A === B && A !== T.text)){ nr = T.text; sicher = true; }   // Pixelvergleich eindeutig (und kein Widerspruch)
+      else if (A && A === B && T.plausibel && T.text === A){ nr = A; sicher = true; }           // alle drei Verfahren einig
+      else if (A && A === B && !kalibriert){ nr = A; sicher = false; }
+      else {
+        const C = await zelle(zy, zh, "C"); dbg.C = C;
+        const stimmen = [A, B, C, T.text].filter(Boolean);
+        const mehrheit = stimmen.find(v => stimmen.filter(x => x === v).length >= 2);
+        nr = mehrheit || B || A || C || T.text;
+        sicher = false;
+      }
+      if (!sicher && !hinweis) hinweis = "Kuhnummer unsicher gelesen";
+    } else {
+      const alsZahl = t => /^[\dOoIl]{1,5}$/.test(t) && /\d/.test(t) ? t.replace(/[Oo]/g, "0").replace(/[Il]/g, "1") : null;
+      nr = (zeile.words || []).map(w => alsZahl(w.text)).find(Boolean) || "";
+      hinweis = "Kopfzeile „Kuhnummer“ fehlt im Bild";
+    }
+    // mit dem Gedächtnis abgleichen
+    if (bekannt[key] && ohrSicher !== false){
+      if (!sicher){ nr = bekannt[key]; sicher = true; hinweis = "Kuhnummer aus früherer Liste"; }
+      else if (bekannt[key] !== nr){ hinweis = `bisher Kuh-Nr. ${bekannt[key]} – bitte prüfen`; sicher = false; }
+    }
+    if (kalibriert && !ohrSicher) sicher = false;
+    if (window.__ocrLog) window.__ocrLog.push({key, nr, sicher, hinweis, ohrSicher, protOhr: z.protOhr, ...dbg});   // nur für Tests
+    out.push({key, nr, sicher, ohrSicher, hinweis});
+  }
+  const ges = (data.text || "").match(/Gesamt\s*:?\s*(\d{1,4})\s*Daten/i);
+  return {tiere: lelyEindeutig(out), gesamt: ges ? Number(ges[1]) : null, ohneKopf: !kopf, spalteQuelle, kalibriert, unlesbar};
+}
+
+async function lelyDateiTiere(file, fortschritt){
+  if (/^image\//.test(file.type) || /\.(png|jpe?g|bmp|gif|webp)$/i.test(file.name)) return {...(await tiereAusBild(file, fortschritt)), ocr: true};
   const buf = await file.arrayBuffer();
   if (/\.pdf$/i.test(file.name) || file.type === "application/pdf"){
     const pdfjs = await ladePdfJs();
     const pdf = await pdfjs.getDocument({data: buf}).promise;
-    const teile = [];
+    const zeilen = [];
     for (let i = 1; i <= pdf.numPages; i++){
       const inhalt = await (await pdf.getPage(i)).getTextContent();
-      teile.push(inhalt.items.map(t => t.str).join(" "));
+      const nachY = new Map();
+      inhalt.items.forEach(t => { const y = Math.round(t.transform[5] / 3); if (!nachY.has(y)) nachY.set(y, []); nachY.get(y).push(t); });
+      [...nachY.entries()].sort((a, b) => b[0] - a[0]).forEach(([, teile]) => zeilen.push(teile.sort((a, b) => a.transform[4] - b.transform[4]).map(t => t.str).join("  ")));
     }
-    return teile.join("\n");
+    return {tiere: tiereAusZeilen(zeilen)};
   }
   if (/\.xlsx?$/i.test(file.name)){
     const XLSX = await ladeSheetJS();
     const wb = XLSX.read(buf, {type: "array"});
-    return wb.SheetNames.map(n => XLSX.utils.sheet_to_json(wb.Sheets[n], {header: 1, raw: false, defval: ""})
-      .map(r => r.join("\t")).join("\n")).join("\n");
+    const rows = [].concat(...wb.SheetNames.map(n => XLSX.utils.sheet_to_json(wb.Sheets[n], {header: 1, raw: false, defval: ""}).map(r => r.map(c => String(c).trim()))));
+    return {tiere: tiereAusTabelle(rows)};
   }
-  // CSV, TXT, XML: einfach als Text; bei XML die Zeichen < > " trennen
-  return dekodiere(buf).replace(/[<>"]/g, " ");
+  const text = dekodiere(buf);
+  if (/\.xml$/i.test(file.name) || /^\s*<\?xml|^\s*</.test(text)) return {tiere: tiereAusXml(text)};
+  return {tiere: tiereAusTabelle(parseCSV(text))};
 }
+// Bilder ergänzen sich (mehrere Screenshots einer langen Liste), Dateien ersetzen die Liste
 async function lelyDatei(file){
-  const drop = document.getElementById("lelyDrop");
+  const drop = document.getElementById("lelyDrop"), info = document.getElementById("erkanntInfo");
   drop.classList.add("busy");
+  const bild = /^image\//.test(file.type) || /\.(png|jpe?g|bmp|gif|webp)$/i.test(file.name);
+  if (bild) info.textContent = "Lese den Screenshot … (beim ersten Mal lädt die Texterkennung kurz)";
   try {
-    const text = await lelyDateiText(file);
-    lely = {text, quelle: file.name};
+    const erg = await lelyDateiTiere(file, p => { info.textContent = `Lese den Screenshot … ${Math.round(p * 100)} %`; });
+    const name = file.name && !/^image\.(png|jpe?g)$/i.test(file.name) ? file.name : "Screenshot";
+    if (bild && lely.ocr){
+      lely = {tiere: lelyEindeutig([...lely.tiere, ...erg.tiere]), quellen: [...lely.quellen, name], ocr: true, gesamt: erg.gesamt || lely.gesamt,
+              unlesbar: [...(lely.unlesbar || []), ...(erg.unlesbar || [])]};
+    } else lely = {tiere: erg.tiere, quellen: [name], ocr: !!erg.ocr, gesamt: erg.gesamt || null, unlesbar: erg.unlesbar || []};
+    if (bild && erg.ocr && !erg.kalibriert && herde) lely.hinweis = "kalibrierung";
+    lelyMerken(erg.tiere.map(t => ({...t, sicher: t.sicher !== false})));   // Dateien gelten als sicher, Bilder nur bei Übereinstimmung
     werteAus();
-    if (ohrmarkenAusText(text).length) document.getElementById("bsResult").scrollIntoView({behavior: "smooth", block: "start"});
+    if (erg.tiere.length) document.getElementById("bsResult").scrollIntoView({behavior: "smooth", block: "start"});
   } catch(err) {
-    alert("Die Lely-Datei konnte nicht gelesen werden.\n\n" + err.message);
+    info.textContent = "";
+    alert("Die Lely-Liste konnte nicht gelesen werden.\n\n" + err.message);
   } finally {
     drop.classList.remove("busy");
   }
 }
-document.getElementById("lelyFile").addEventListener("change", e => {
-  const file = e.target.files[0];
+document.getElementById("lelyFile").addEventListener("change", async e => {
+  const dateien = [...e.target.files];
   e.target.value = "";
-  if (file) lelyDatei(file);
+  for (const f of dateien) await lelyDatei(f);
 });
 (function(){
   const drop = document.getElementById("lelyDrop");
   ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
   ["dragleave", "dragend"].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove("drag")));
-  drop.addEventListener("drop", e => {
+  drop.addEventListener("drop", async e => {
     e.preventDefault(); drop.classList.remove("drag");
-    const file = e.dataTransfer.files[0];
-    if (file) lelyDatei(file);
+    for (const f of [...e.dataTransfer.files]) await lelyDatei(f);
   });
 })();
-document.getElementById("lelyLeeren").addEventListener("click", () => { lely = {text: "", quelle: ""}; werteAus(); });
-// Falls doch einmal Text mit Ohrmarken kopiert wurde: einfach irgendwo in der Zuchtplanung einfügen
+document.getElementById("lelyLeeren").addEventListener("click", () => { lely = {tiere: [], quellen: [], ocr: false, gesamt: null, unlesbar: []}; werteAus(); });
+// Knopf "aus Zwischenablage" (Chrome/Edge; sonst einfach Strg + V)
+document.getElementById("lelyEinfuegen").addEventListener("click", async () => {
+  try {
+    if (!navigator.clipboard || !navigator.clipboard.read) throw new Error("nicht unterstützt");
+    const teile = await navigator.clipboard.read();
+    for (const t of teile){
+      const typ = t.types.find(x => x.startsWith("image/"));
+      if (typ){ const blob = await t.getType(typ); await lelyDatei(new File([blob], "Screenshot", {type: typ})); return; }
+    }
+    alert("In der Zwischenablage ist kein Bild. Erst mit dem Snipping-Tool (Windows + Umschalt + S) einen Ausschnitt machen.");
+  } catch(e) {
+    alert("Bitte einfach Strg + V drücken (am Mac ⌘ + V) – dann wird der Screenshot eingefügt.");
+  }
+});
+// Strg + V irgendwo in der Zuchtplanung: Screenshot (Bild) oder kopierter Text mit Ohrmarken
 document.addEventListener("paste", e => {
   if (document.getElementById("viewZucht").hidden || (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]"))) return;
-  const text = (e.clipboardData || window.clipboardData).getData("text");
-  if (!ohrmarkenAusText(text).length) return;
+  const cd = e.clipboardData || window.clipboardData;
+  const bild = [...(cd.items || [])].find(i => i.kind === "file" && /^image\//.test(i.type));
+  if (bild){
+    e.preventDefault();
+    if (location.hash !== "#besamung") navigiere("besamung");
+    lelyDatei(new File([bild.getAsFile()], "Screenshot", {type: bild.type}));
+    return;
+  }
+  const text = cd.getData("text");
+  const tiere = tiereAusZeilen(String(text).split(/\r?\n/));
+  if (!tiere.length) return;
   e.preventDefault();
-  lely = {text, quelle: "eingefügt"};
+  lely = {tiere, quellen: ["eingefügt"], ocr: false, gesamt: null, unlesbar: []};
   if (location.hash !== "#besamung") navigiere("besamung");
   werteAus();
 });
@@ -2817,7 +3438,9 @@ async function hsSpeichern(){
   if (!HOF_SPEICHER_URL || !hsZugang || !herde) return;
   hsStatus = {zustand: "verbinde", text: "Speichere die Liste für alle Geräte …"}; renderHofSpeicher();
   try {
-    const j = await hsAnfrage({aktion: "speichern", schluessel: hsZugang.auth, daten: await hsVerschluesseln(herde)});
+    const umschlag = await hsVerschluesseln(herde);
+    umschlag.stand = new Date(herdeStand(herde)).toISOString();     // Liste oder Einstellungen – was neuer ist
+    const j = await hsAnfrage({aktion: "speichern", schluessel: hsZugang.auth, daten: umschlag});
     if (!j.ok) throw new Error(j.fehler || "Fehler");
     hsStatus = {zustand: "ok", text: `Für alle Geräte gespeichert (Liste vom ${fmtDatum(herde.hochgeladen)})`};
   } catch(e) {
@@ -2840,11 +3463,15 @@ async function hsAbgleichen(){
       throw new Error(j.fehler || "Fehler");
     }
     const fern = j.daten;
-    const lokalZeit = herde ? new Date(herde.hochgeladen).getTime() : 0;
-    const fernZeit = fern ? new Date(fern.hochgeladen).getTime() : 0;
+    const lokalZeit = herde ? herdeStand(herde) : 0;
+    const fernZeit = fern ? new Date(fern.stand || fern.hochgeladen).getTime() : 0;
     if (fern && fernZeit > lokalZeit){
-      herde = await hsEntschluesseln(fern);       // neuere Liste von einem anderen Gerät
+      const neu = await hsEntschluesseln(fern);   // neuere Liste/Einstellungen von einem anderen Gerät
+      // Liste unverändert, nur Einstellungen neu? Dann die (evtl. hier angepasste) Spaltenzuordnung behalten
+      if (herde && neu.hochgeladen === herde.hochgeladen) neu.mapping = {...neu.mapping, ...herde.mapping};
+      herde = neu;
       ergaenzeMapping(herde); speichereHerde();
+      bsSettingsAusHerde();
       hsStatus = {zustand: "ok", text: `Neueste Liste geladen (vom ${fmtDatum(herde.hochgeladen)}) – auf allen Geräten gleich`};
       renderHerdeStatus(); werteAus();
       return;
@@ -4646,7 +5273,7 @@ async function fbPasswortAendern(pw){
     const herdeKlar = h.daten ? await hsEntschluesseln(h.daten) : null;
     const fbKlar = f.daten ? await hsEntschluesseln(f.daten) : null;
     const daten = {
-      herde: herdeKlar ? await hsVerschluesseln({...herdeKlar, hochgeladen: herdeKlar.hochgeladen || h.daten.hochgeladen}, neu) : null,
+      herde: herdeKlar ? Object.assign(await hsVerschluesseln({...herdeKlar, hochgeladen: herdeKlar.hochgeladen || h.daten.hochgeladen}, neu), {stand: h.daten.stand || h.daten.hochgeladen}) : null,
       feldbuch: fbKlar ? await hsVerschluesseln({...fbKlar, hochgeladen: new Date().toISOString()}, neu) : null,
     };
     const r = await hsAnfrage({aktion: "passwortAendern", schluessel: hsZugang.auth, neu: {pruefwert: await sha256hex(neu.auth), verfahren: "v2"},

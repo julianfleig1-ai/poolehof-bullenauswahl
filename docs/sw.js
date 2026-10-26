@@ -17,7 +17,8 @@ const BIBLIOTHEKEN = [
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js",
 ];
-const FREMD_CACHEN = /^https:\/\/(cdnjs\.cloudflare\.com|fonts\.googleapis\.com|fonts\.gstatic\.com)\//;
+// cdn.jsdelivr.net + tessdata: Texterkennung für Lely-Screenshots (nach dem ersten Mal auch ohne Netz)
+const FREMD_CACHEN = /^https:\/\/(cdnjs\.cloudflare\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net\/npm\/tesseract[^/]*|tessdata\.projectnaptha\.com)\//;
 
 self.addEventListener("install", ev => {
   ev.waitUntil((async () => {

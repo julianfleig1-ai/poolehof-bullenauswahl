@@ -318,8 +318,10 @@
     pruef("Lely: Einfügefeld entfernt, Datei-Feld da", !document.getElementById("lelyInput") && document.getElementById("lelyFile"));
     await lelyDatei(new File([zeilen.map(r => r.join(";")).join("\r\n")], "Offene Kühe.csv", {type: "text/csv"}));
     pruef("Lely CSV: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
+    pruef("Lely CSV: Kuhnummer je Kuh", lely.tiere.map(t => t.nr).join() === "12,13,14", JSON.stringify(lely.tiere));
     await lelyDatei(new File([`<?xml version="1.0"?><Liste>${zeilen.slice(1).map(r => `<Kuh Nummer="${r[0]}"><Lebensnummer>${r[2]}</Lebensnummer></Kuh>`).join("")}</Liste>`], "Offene Kühe.xml", {type: "text/xml"}));
     pruef("Lely XML: 3 Ohrmarken", anzahl() === "3", document.getElementById("erkanntInfo").textContent);
+    pruef("Lely XML: Kuhnummer je Kuh", lely.tiere.map(t => t.nr).join() === "12,13,14", JSON.stringify(lely.tiere));
     const XLSX = await ladeSheetJS();
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(zeilen), "Offene Kühe");
     await lelyDatei(new File([XLSX.write(wb, {type: "array", bookType: "xlsx"})], "Offene Kühe.xlsx"));
@@ -332,13 +334,61 @@
     pruef("Lely ohne Ohrmarken: klare Meldung", /keine Ohrmarken/.test(document.getElementById("erkanntInfo").textContent));
     // Netrind-Liste als Datei (erfundene Tiere), dann Lely-Datei → Empfehlung Holstein/British Blue
     pruef("Netrind: Einfügefeld entfernt", !document.getElementById("herdePaste"));
-    const netrind = ["Ohrmarke;Name;RZG;M-kg;RZS;stl;RZD;RZR",
-      ...Array.from({length: 20}, (_, i) => `DE 08 123 456${String(70 + i).padStart(2, "0")};Kuh${i};${100 + i * 2};${200 + i * 40};${95 + i};${100 + (i % 5)};${98 + (i % 7)};${97 + (i % 4)}`)].join("\r\n");
+    const netrind = ["Ohrmarke;Name;RZG;M-kg;RZS;stl;RZD;RZR;stä",
+      ...Array.from({length: 20}, (_, i) => `DE 08 123 456${String(70 + i).padStart(2, "0")};Kuh${i};${100 + i * 2};${200 + i * 40};${95 + i};${100 + (i % 5)};${98 + (i % 7)};${97 + (i % 4)};${96 + (i % 6)}`)].join("\r\n");
     await uebernehmeDatei(new File([netrind], "Zuchtwerte wbl.csv", {type: "text/csv"}));
     pruef("Netrind-Datei übernommen (20 Tiere)", herde && herdenTiere().length === 20, herde && herdenTiere().length);
+    pruef("Kriterien: kein RZG mehr, Stärke erkannt", !KUH_KRITERIEN.some(k => k.id === "rzg") && herde.mapping.sta >= 0 && herde.header[herde.mapping.sta] === "stä", JSON.stringify(herde.mapping));
     await lelyDatei(new File([zeilen.map(r => r.join(";")).join("\r\n")], "Offene Kühe.csv"));
     const empf = [...document.querySelectorAll("#bsBody tr")].map(tr => tr.innerText);
     pruef("Auswertung: 3 Kühe mit Empfehlung", empf.length === 3 && empf.every(t => /Holstein|British Blue|Grenzfall/.test(t)), JSON.stringify(empf).slice(0, 300));
+    pruef("Ergebnis zeigt Kuh-Nr. statt Name", /Kuh-Nr/.test(document.getElementById("bsKopf").innerText) && !/Name/.test(document.getElementById("bsKopf").innerText) && empf.some(t => /\b12\b/.test(t)), document.getElementById("bsKopf").innerText);
+    // Gewichtung bleibt gespeichert – im Browser und im Hof-Speicher
+    const feld = document.querySelector('#gewichtListe [data-gewicht="sta"]');
+    feld.value = "25"; feld.dispatchEvent(new Event("input", {bubbles: true}));
+    const q = document.getElementById("quoteInput"); q.value = "30"; q.dispatchEvent(new Event("change"));
+    pruef("Gewicht + Holstein-Anteil im Browser gespeichert", ladeBsSettings().gewichte.sta === 25 && ladeBsSettings().quote === 30);
+    await warte(1800);   // Sicherung im Hof-Speicher läuft kurz verzögert
+    const fern = await hsAnfrage({aktion: "laden", schluessel: hsZugang.auth});
+    const fernKlar = await hsEntschluesseln(fern.daten);
+    pruef("Gewichtung verschlüsselt im Hof-Speicher (für alle Geräte)", fernKlar.einstellungen && fernKlar.einstellungen.gewichte.sta === 25 && fernKlar.einstellungen.quote === 30, JSON.stringify(fernKlar.einstellungen));
+    // anderes Gerät: kennt die Einstellungen nicht, holt sie aus dem Hof-Speicher
+    localStorage.removeItem(BS_SETTINGS_KEY); bsSettings = ladeBsSettings();
+    pruef("Ohne eigene Einstellungen: Standard ohne RZG", bsSettings.gewichte.sta === 10 && !("rzg" in bsSettings.gewichte));
+    herde.hochgeladen = new Date(Date.now() - 60000).toISOString(); herde.einstellungen = {stand: new Date(0).toISOString()}; speichereHerde();
+    await hsAbgleichen();
+    pruef("Anderes Gerät übernimmt Gewichtung aus dem Hof-Speicher", bsSettings.gewichte.sta === 25 && bsSettings.quote === 30 && document.querySelector('#gewichtListe [data-gewicht="sta"]').value === "25", JSON.stringify(bsSettings));
+    // neue Netrind-Liste hochladen: Einstellungen bleiben
+    await uebernehmeDatei(new File([netrind], "Zuchtwerte wbl neu.csv", {type: "text/csv"}));
+    pruef("Neue Netrind-Liste: Gewichtung bleibt", bsSettings.gewichte.sta === 25 && herde.einstellungen.gewichte.sta === 25);
+    // alte Einstellungen mit RZG werden auf die neuen Kriterien umgestellt
+    pruef("Alte Einstellungen mit RZG → neue Standardwerte", (() => { const b = bsSettingsBereinigen({quote: 20, gewichte: {rzg: 20, milch: 40}}); return !("rzg" in b.gewichte) && b.gewichte.sta === 10 && b.quote === 20; })());
+    // Lely-Screenshot (erfundene Kühe) per Texterkennung lesen
+    const soll = await (await fetch("http://127.0.0.1:8778/lely_tabelle_soll.json")).json();
+    const png = await (await fetch("http://127.0.0.1:8778/lely_screenshot.png")).blob();
+    // Gedächtnis: für eine Kuh ist schon eine ANDERE Kuhnummer bekannt → muss auffallen
+    herde.kuhnummern = {"0812345678": "12"};
+    const t0 = Date.now();
+    await lelyDatei(new File([png], "image.png", {type: "image/png"}));
+    const ist = new Map(lely.tiere.map(t => [t.key, t.nr]));
+    const falsch = soll.filter(z => ist.get(z.ohr.replace(/\D/g, "")) !== z.nr).map(z => `${z.ohr}/${z.nr}→${ist.get(z.ohr.replace(/\D/g, ""))}`);
+    pruef("Screenshot: alle 22 Ohrmarken + Kuhnummern richtig gelesen", lely.ocr && lely.tiere.length === 22 && !falsch.length, `${lely.tiere.length} gelesen, falsch: ${falsch.join(" ")} (${Math.round((Date.now() - t0) / 1000)} s)`);
+    pruef("Screenshot: „Gesamt: 22 Datensätze“ erkannt und bestätigt", lely.gesamt === 22 && /Lely zeigt 22 Datensätze ✓/.test(document.getElementById("erkanntInfo").innerText), document.getElementById("erkanntInfo").innerText);
+    const nf = [...document.querySelectorAll("#bsBody tr.nf")];
+    pruef("Screenshot: 2 erfundene Ohrmarken als „nicht in Liste“ markiert", nf.length === 2 && nf.every(tr => /falsch gelesen/.test(tr.innerText)), nf.map(tr => tr.innerText).join(" | "));
+    const konflikt = lely.tiere.find(t => t.key === "0812345678");
+    pruef("Gedächtnis: abweichende Kuhnummer wird gemeldet", konflikt && !konflikt.sicher && /bisher Kuh-Nr\. 12/.test(konflikt.hinweis), JSON.stringify(konflikt));
+    pruef("Screenshot: alle übrigen Kuhnummern sicher (keine orange)", lely.tiere.filter(t => t.key !== "0812345678").every(t => t.sicher), JSON.stringify(lely.tiere.filter(t => !t.sicher && t.key !== "0812345678")));
+    pruef("Sicher gelesene Paare werden gemerkt", herde.kuhnummern["0812345670"] === "167" && herde.kuhnummern["0812345678"] === "12", JSON.stringify(herde.kuhnummern).slice(0, 200));
+    // nicht lesbare Zeile: Bildausschnitt + von Hand nachtragen
+    lely.unlesbar = [{y: 1, bild: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="}]; werteAus();
+    const ub = document.querySelector("#lelyUnlesbar .bs-unlesbar");
+    pruef("Unlesbare Zeile wird mit Bild angezeigt", ub && ub.querySelector("img") && !document.getElementById("lelyUnlesbar").hidden);
+    ub.querySelector('[data-k="nr"]').value = "999"; ub.querySelector('[data-k="ohr"]').value = "DE 08 123 45670";
+    ub.querySelector("[data-ok]").click();
+    pruef("Von Hand nachgetragen übernommen", document.getElementById("lelyUnlesbar").hidden && lely.tiere.some(t => t.key === "0812345670"), JSON.stringify(lely.tiere.find(t => t.key === "0812345670")));
+    await lelyDatei(new File([png], "image.png", {type: "image/png"}));
+    pruef("Zweiter Screenshot ergänzt ohne Doppelte", lely.quellen.length === 2 && lely.tiere.length === 22 && /2 Bilder/.test(document.getElementById("erkanntInfo").innerText));
     document.getElementById("lelyLeeren").click();
     pruef("Lely-Liste leeren", document.getElementById("erkanntInfo").textContent === "" && document.getElementById("bsResult").hidden);
   });
