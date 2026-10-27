@@ -119,8 +119,13 @@
     $fb("reZu").click();
     await fbAendern({typ: "bezahlt", nr: re["Rechnungs-Nr."], firma: re.Firma, datum: fbHeuteIso()});
     pruef("Als bezahlt markiert", fbZahlStatus(fbDaten.rechnungen.find(r => r["Rechnungs-Nr."] === re["Rechnungs-Nr."])).art === "bezahlt");
-    await fbSofort({typ: "storno", nr: re["Rechnungs-Nr."], firma: re.Firma});
+    const st = await fbSofort({typ: "storno", nr: re["Rechnungs-Nr."], firma: re.Firma, datum: fbHeuteIso()});
     pruef("Storno: Arbeiten wieder offen", ["T-002", "T-003"].every(id => !fbArbeiten().find(a => a.ID === id).Rechnung));
+    const sr = fbDaten.rechnungen.find(x => x["Rechnungs-Nr."] === st.nr && x.Firma === re.Firma);
+    pruef("Storno: Stornorechnung mit eigener Nummer", sr && sr.Art === "Storno" && sr["Storno zu"] === re["Rechnungs-Nr."] && st.nr === new Date().getFullYear() + "-006" && sr.Brutto === -re.Brutto, JSON.stringify(st));
+    pruef("Storno: Original verweist auf Stornorechnung", fbDaten.rechnungen.find(x => x["Rechnungs-Nr."] === re["Rechnungs-Nr."])["Storniert durch"] === st.nr);
+    const nochmal = await fbSofort({typ: "storno", nr: re["Rechnungs-Nr."], firma: re.Firma, datum: fbHeuteIso()});
+    pruef("Storno doppelt (Wiederholung) → keine zweite Stornorechnung", nochmal.nr === st.nr && fbDaten.rechnungen.filter(x => x.Art === "Storno").length === 1);
     let fehler = "";
     try { await fbSofort({typ: "rechnung", firma: "Testhof", mandant: "Eigen", datum: fbHeuteIso(), positionen: [{id: "T-001", menge: 1, preis: 1}]}); } catch(e) { fehler = e.message; }
     pruef("Eigene Arbeiten nicht abrechenbar", /nicht abgerechnet/.test(fehler), fehler);
@@ -493,6 +498,53 @@
       pruef("Rechnung bleibt wie erstellt (alte Adresse)", gesichert && gesichert.inhalt.includes("Musterweg 1") && !gesichert.inhalt.includes("Neue Straße 99") && /Musterweg 1/.test($fb("rechnungDruck").innerText), gesichert && gesichert.inhalt.slice(0, 50));
       $fb("reZu").click(); await warte(300);
     } finally { fbSichern = echtSichern; }
+  });
+  await schritt("Storno + Testphase", async () => {
+    const echtConfirm = window.confirm, echtAlert = window.alert, echtSichern = fbSichern;
+    let gesichert = null, gemeldet = "";
+    window.confirm = () => true; window.alert = t => { gemeldet = t; };
+    fbSichern = async (name, inhalt) => { gesichert = {name, inhalt: typeof inhalt === "string" ? inhalt : ""}; return "heruntergeladen"; };
+    try {
+      geheZu("feld-rechnung"); fbZeigeTab("rechnung"); await warte(200);
+      pruef("Testphase-Hinweis sichtbar", /Testphase/.test($fb("fbTestphase").innerText));
+      const offen = fbDaten.rechnungen.find(x => x.Art !== "Storno" && x.Status !== "storniert");
+      const knopf = document.querySelector(`#fbReListe button[data-storno="${offen["Rechnungs-Nr."]}"]`);
+      pruef("Liste: Stornieren-Knopf da", !!knopf);
+      knopf.click(); await warte(1500);
+      const txt = $fb("rechnungDruck").innerText;
+      pruef("Stornorechnung wird gleich angezeigt", !$fb("rechnungDruck").hidden && /Stornorechnung/.test(txt) && txt.includes("Storno zu") && txt.includes(offen["Rechnungs-Nr."]) && /-\s?[\d.]+,\d\d\s?€|−/.test(txt), txt.slice(0, 300));
+      pruef("TEST-Stempel in der Testphase", /TEST – nicht gültig/.test(txt));
+      gesichert = null; document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(200);
+      pruef("Storno-E-Rechnung: Belegart 381 + Verweis", gesichert && gesichert.inhalt.includes("<ram:TypeCode>381</ram:TypeCode>") && gesichert.inhalt.includes(`<ram:IssuerAssignedID>${offen["Rechnungs-Nr."]}</ram:IssuerAssignedID>`) && /^Stornorechnung /.test(gesichert.name), gesichert && gesichert.name);
+      $fb("reZu").click(); await warte(300);
+      pruef("Liste: Stornorechnung ohne Bezahlt/Storno-Knöpfe", (() => { const z = [...document.querySelectorAll("#fbReListe tr")].find(t => /Stornorechnung/.test(t.innerText)); return z && !z.querySelector("[data-storno]") && !z.querySelector("[data-bezahlt]"); })());
+      // Testphase beenden mit neuer Liste
+      const appIds = fbArbeiten().filter(a => /^F/.test(a.ID)).map(a => a.ID);
+      fbNeustartDaten = {art: "poolehof-feldbuch-startdaten", feldarbeiten: [{ID: "N26-001", Datum: "2026-04-01", Mandant: "Muster", "Tätigkeit": "Säen", Kultur: "Mais", Menge: "5", Einheit: "ha", Rechnung: "", "Prüfen": ""}],
+        mandanten: [{Kurzname: "Neukunde", Name: "Neu GmbH", "Straße": "Weg 3", "PLZ Ort": "12345 Ort"}], firmen: [{Firma: "Testhof", "Letzte Rechnungs-Nr.": ""}]};
+      fbRenderTestphase();
+      pruef("Neustart: Zusammenfassung", /1<\/b> Feldarbeiten|1 Feldarbeiten/.test($fb("fbTestphase").innerHTML) && /Probe-Rechnungen werden gelöscht/.test($fb("fbTestphase").innerText));
+      $fb("fbNeustartLos").click(); await warte(1500);
+      pruef("Neustart: Probe-Rechnungen weg, offiziell", fbDaten.rechnungen.length === 0 && !!fbDaten.offiziellSeit && !fbTestphase(), gemeldet + " " + $fb("fbTestphase").innerText);
+      pruef("Neustart: neue Liste + App-Einträge behalten", fbArbeiten().some(a => a.ID === "N26-001") && appIds.every(id => fbArbeiten().some(a => a.ID === id && !a.Rechnung)) && !fbArbeiten().some(a => a.ID === "T-002"), appIds.join(","));
+      pruef("Neustart: Stammdaten bleiben + ergänzt", fbDaten.mandanten.some(m => m.Kurzname === "Muster" && m["E-Mail"]) && fbDaten.mandanten.some(m => m.Kurzname === "Neukunde"));
+      pruef("Neustart: Nummern starten neu", fbNaechsteNr("Testhof", fbHeuteIso()) === new Date().getFullYear() + "-001", fbNaechsteNr("Testhof", fbHeuteIso()));
+      pruef("Neustart: Hinweis verschwunden", $fb("fbTestphase").innerHTML === "");
+      const echt = await fbSofort({typ: "rechnung", firma: "Testhof", mandant: "Muster", datum: fbHeuteIso(), positionen: [{id: "N26-001", datum: "2026-04-01", text: "Säen Mais", menge: 5, einheit: "ha", preis: 60, mwst: 7}]});
+      pruef("Nach Testphase: echte Rechnung ohne TEST", echt.nr === new Date().getFullYear() + "-001" && !echt.test && !fbXRechnungXml(echt).includes("TESTRECHNUNG") && fbDaten.rechnungen[0].Test === false);
+      // E-Rechnung herunterladen friert die Daten ein → später gleiche Datei, auch nach Adressänderung
+      fbGespeicherteRechnungZeigen(echt.nr, "Testhof"); await warte(200);
+      gesichert = null; document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(1500);
+      const xml1 = gesichert && gesichert.inhalt; $fb("reZu").click(); await warte(300);
+      pruef("E-Rechnung: Daten festgeschrieben", !!fbDaten.rechnungen.find(x => x["Rechnungs-Nr."] === echt.nr)["E-Rechnung erstellt"]);
+      await fbAendern({typ: "mandant", mandant: {...fbDaten.mandanten.find(m => m.Kurzname === "Muster"), "E-Mail": "ganz-neu@example.com"}});
+      fbGespeicherteRechnungZeigen(echt.nr, "Testhof"); await warte(200);
+      gesichert = null; document.querySelector("#rechnungDruck [data-re-xml]").click(); await warte(300);
+      pruef("E-Rechnung: nochmal herunterladen = gleiche Datei", xml1 && gesichert && gesichert.inhalt === xml1 && !xml1.includes("ganz-neu@"));
+      $fb("reZu").click(); await warte(300);
+      let fehler = ""; try { await fbSofort({typ: "neustart", daten: fbNeustartDaten || {feldarbeiten: [{ID: "x"}]}}); } catch(e) { fehler = e.message; }
+      pruef("Neustart nur einmal möglich", /schon beendet/.test(fehler), fehler);
+    } finally { window.confirm = echtConfirm; window.alert = echtAlert; fbSichern = echtSichern; }
   });
   await schritt("Passwort", async () => {
     await fbPasswortAendern("Test-Traktor-Wiese-17");

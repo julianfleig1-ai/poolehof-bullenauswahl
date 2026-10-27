@@ -411,6 +411,26 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .fb-re-knoepfe{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .fb-aw tr.storniert td{color:var(--ink-dim);text-decoration:line-through}
 .fb-aw tr.storniert td:last-child{text-decoration:none}
+/* Bisherige Rechnungen am Handy als Karten statt breiter Tabelle */
+@media (max-width:640px){
+  .fb-re-scroll{overflow:visible}
+  .fb-re-tab thead{display:none}
+  .fb-re-tab, .fb-re-tab tbody, .fb-re-tab tr, .fb-re-tab td{display:block;width:auto;min-width:0}
+  .fb-re-tab tr{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:0 0 10px;background:var(--surface-2)}
+  .fb-re-tab td{border:0!important;padding:2px 0!important;text-align:left!important;white-space:normal}
+  .fb-re-tab td:first-child{font-weight:700;font-size:1.05em;padding-bottom:4px!important}
+  .fb-re-tab td[data-l]::before{content:attr(data-l) ": ";color:var(--ink-dim);font-weight:400}
+  .fb-re-tab td.fb-re-zahl:empty{display:none}
+  .fb-re-tab .fb-re-knoepfe{justify-content:flex-start;padding-top:8px!important}
+  .fb-re-tab .fb-re-knoepfe .btn{min-height:40px}
+  .fb-aw.fb-re-tab tr.storniert td{text-decoration:none}
+  .fb-aw.fb-re-tab tr.storniert td:first-child{text-decoration:line-through}
+}
+.re-test{color:#a15c00;border-color:#a15c00}
+.fb-testphase ul{margin:6px 0 6px 20px;padding:0}
+.fb-neustart-check{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.fb-neustart-check input{margin-top:3px;width:20px;height:20px;flex:none}
+.fb-test{display:inline-block;font-weight:700;color:#a15c00;border:1px solid #a15c00;border-radius:4px;padding:0 4px;font-size:11px}
 .re-storno{font-family:"IBM Plex Sans",Arial,sans-serif;font-size:15px;color:#b3261e;border:2px solid #b3261e;border-radius:4px;padding:1px 8px;margin-left:10px;vertical-align:middle}
 .fb-st-firma{border:1px solid var(--border);border-radius:12px;padding:4px 14px;margin:8px 0;background:var(--surface)}
 .fb-st-firma summary{cursor:pointer;padding:9px 0;font-weight:600}
@@ -837,6 +857,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
     <!-- Rechnung -->
     <section id="fbRechnung" class="panel fb-card" hidden>
       <button class="btn fb-re-zurueck" type="button" id="fbReZurueck" hidden>← Zurück zur Liste (Auswahl bleibt erhalten)</button>
+      <div id="fbTestphase"></div>
       <h2>Rechnung erstellen</h2>
       <div class="fb-form fb-re-kopf">
         <label>Firma<select id="fbReFirma"></select></label>
@@ -3609,7 +3630,7 @@ const FB_OPS_KEY = "poolehof-feldbuch-aenderungen-v1";    // noch nicht übertra
 const FB_TAB_KEY = "poolehof-feldbuch-tab-v1";
 const FB_TABS = ["eintragen", "liste", "rechnung", "auswertung", "doku", "stamm"];
 const FB_FELDER = ["Datum", "Mandant", "Tätigkeit", "Kultur", "Ort / Schlag", "Menge", "Einheit", "Stunden", "Mittel / Dünger", "Bemerkung", "BBCH", "Uhrzeit", "Anwender"];
-const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "USt-IdNr.", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Hinweis auf Rechnung", "Letzte Rechnungs-Nr."];
+const FB_FIRMA_FELDER = ["Firma", "Inhaber", "Straße", "PLZ Ort", "Steuernummer", "USt-IdNr.", "Bank", "IBAN", "BIC", "Telefon", "E-Mail", "Hinweis auf Rechnung", "Grund Steuerbefreiung", "Letzte Rechnungs-Nr."];
 const FB_MANDANT_FELDER = ["Kurzname", "Name", "Andere Namen", "Straße", "PLZ Ort", "E-Mail", "Notiz"];
 const FB_STANDARD_LISTEN = {
   "Tätigkeiten": ["Pflügen", "Grubbern", "Eggen", "Striegeln", "Walzen", "Mulchen", "Säen", "Düngen", "Kalken", "Gülle fahren", "Mist streuen",
@@ -3703,7 +3724,7 @@ function fbRechnungAnwenden(d, a){
   const {"Letzte Rechnungs-Nr.": _letzte, ...firmaDaten} = firma;
   const mandantDaten = fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant});
   d.rechnungen.push({"Rechnungs-Nr.": nr, Firma: a.firma, Datum: a.datum, Mandant: a.mandant, Netto: netto, "MwSt-Satz": satz, "MwSt je Satz": gruppen, MwSt: mwst, Brutto: brutto,
-                     Positionen: pos, Erstellt: a.zeit, Status: "", "Firma-Daten": fbKopie(firmaDaten), "Mandant-Daten": mandantDaten});
+                     Positionen: pos, Erstellt: a.zeit, Status: "", Test: !d.offiziellSeit, "Firma-Daten": fbKopie(firmaDaten), "Mandant-Daten": mandantDaten});
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
     if (z.Rechnung) z["Rechnung vorher"] = [z["Rechnung vorher"], z.Rechnung + (z["Rechnung Firma"] ? " (" + z["Rechnung Firma"] + ")" : "")].filter(Boolean).join(", ");
@@ -3714,9 +3735,68 @@ function fbRechnungAnwenden(d, a){
     if (alt) Object.assign(alt, {"Preis (€)": p.preis, "MwSt (%)": p.mwst, Stand: a.zeit});
     else d.preise.push({"Tätigkeit": p.taetigkeit, Einheit: p.einheit, Mandant: a.mandant, "Preis (€)": p.preis, "MwSt (%)": p.mwst, Stand: a.zeit});
   });
-  return {nr, datum: a.datum, firma: fbKopie(firma), mandant: fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant}),
-          positionen: pos, netto, mwstSatz: satz, gruppen, mwst, brutto};
+  return {nr, firmaName: a.firma, datum: a.datum, firma: fbKopie(firma), mandant: fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant}),
+          positionen: pos, netto, mwstSatz: satz, gruppen, mwst, brutto, test: !d.offiziellSeit};
 }
+// Storno: Die Rechnung bleibt (als „storniert“) stehen, dazu kommt eine Stornorechnung mit
+// eigener, fortlaufender Nummer und denselben Positionen mit umgekehrtem Vorzeichen.
+// Die Beträge der Stornorechnung sind negativ gespeichert – so ergibt die Summe aller Belege immer den richtigen Umsatz.
+function fbStornoAnwenden(d, op){
+  const r = d.rechnungen.find(x => x["Rechnungs-Nr."] === op.nr && x.Firma === op.firma);
+  if (!r) throw new Error("Rechnung nicht gefunden");
+  if (r.Art === "Storno") throw new Error("Eine Stornorechnung selbst kann nicht storniert werden");
+  if (r.Status === "storniert"){
+    // schon storniert (z. B. Wiederholung nach Funkloch) → vorhandene Stornorechnung zurückgeben, keine zweite
+    const s = d.rechnungen.find(x => x.Art === "Storno" && x["Storno zu"] === r["Rechnungs-Nr."] && x.Firma === r.Firma);
+    if (s) return {nr: s["Rechnungs-Nr."], firma: s.Firma};
+    throw new Error("Rechnung ist schon storniert");
+  }
+  const firma = d.firmen.find(f => f.Firma === r.Firma);
+  if (!firma) throw new Error(`Firma „${r.Firma}“ fehlt in den Stammdaten`);
+  const datum = op.datum || fbHeuteIso();
+  const nr = fbNaechsteNrVon(firma, datum, d.rechnungen);
+  if (d.rechnungen.some(x => x.Firma === r.Firma && x["Rechnungs-Nr."] === nr)) throw new Error("Rechnungsnummer wäre doppelt – bitte nochmal");
+  const minus = n => n === null || n === undefined || n === "" ? n : -Math.abs(Number(n) || 0);
+  let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) { pos = []; } }
+  const gruppen = (r["MwSt je Satz"] || []).map(g => ({satz: g.satz, netto: minus(g.netto), steuer: minus(g.steuer)}));
+  firma["Letzte Rechnungs-Nr."] = nr;
+  d.rechnungen.push({"Rechnungs-Nr.": nr, Art: "Storno", "Storno zu": r["Rechnungs-Nr."], "Storno zu Datum": r.Datum, Firma: r.Firma, Datum: datum, Mandant: r.Mandant,
+                     Netto: minus(r.Netto), "MwSt-Satz": r["MwSt-Satz"], "MwSt je Satz": gruppen, MwSt: minus(r.MwSt), Brutto: minus(r.Brutto),
+                     Positionen: fbKopie(pos), Erstellt: op.zeit, Status: "", Test: r.Test,
+                     "Firma-Daten": fbKopie(r["Firma-Daten"] || null), "Mandant-Daten": fbKopie(r["Mandant-Daten"] || null)});
+  r.Status = "storniert"; r.Storniert = op.zeit; r["Storniert durch"] = nr;
+  pos.forEach(p => {
+    const z = d.feldarbeiten.find(x => x.ID === p.id);
+    if (z && z.Rechnung === r["Rechnungs-Nr."]) { z.Rechnung = ""; z["Rechnung Firma"] = ""; }
+  });
+  return {nr, firma: r.Firma};
+}
+// Ende der Testphase: neue Feldarbeiten-Liste rein, alle Probe-Rechnungen raus, Nummern starten neu.
+// Stammdaten (Adressen, E-Mails, Preise, Firmen) aus der App bleiben erhalten und werden nur ergänzt.
+function fbNeustartAnwenden(d, op){
+  const n = op.daten || {};
+  if (!Array.isArray(n.feldarbeiten) || !n.feldarbeiten.length) throw new Error("Die Datei enthält keine Feldarbeiten");
+  if (d.offiziellSeit) throw new Error("Die Testphase ist schon beendet");
+  const neueIds = new Set(n.feldarbeiten.map(a => a.ID));
+  const behalten = (op.behalten || []).map(id => d.feldarbeiten.find(a => a.ID === id)).filter(a => a && !neueIds.has(a.ID))
+    .map(a => ({...fbKopie(a), Rechnung: "", "Rechnung Firma": "", "Rechnung vorher": ""}));
+  d.feldarbeiten = [...fbKopie(n.feldarbeiten), ...behalten];
+  d.notizen = fbKopie(n.notizen || []);
+  d.rechnungen = [];
+  const ergaenze = (liste, neu, gleich) => { (neu || []).forEach(x => { const da = liste.find(y => gleich(x, y));
+    if (!da) liste.push(fbKopie(x)); else Object.entries(x).forEach(([k, v]) => { if ((da[k] === undefined || da[k] === "") && v !== "") da[k] = v; }); }); };
+  ergaenze(d.mandanten, n.mandanten, (a, b) => a.Kurzname === b.Kurzname);
+  ergaenze(d.firmen, n.firmen, (a, b) => a.Firma === b.Firma);
+  ergaenze(d.preise, n.preise, (a, b) => a["Tätigkeit"] === b["Tätigkeit"] && a.Einheit === b.Einheit && a.Mandant === b.Mandant);
+  // Nummern: was in der neuen Liste als letzte Nummer steht (sonst leer = Start bei …-001)
+  d.firmen.forEach(f => { const nf = (n.firmen || []).find(x => x.Firma === f.Firma); f["Letzte Rechnungs-Nr."] = (nf && nf["Letzte Rechnungs-Nr."]) || ""; });
+  if (!d.standardpreise && n.standardpreise) d.standardpreise = fbKopie(n.standardpreise);
+  if (n.listen) Object.entries(n.listen).forEach(([k, v]) => { d.listen[k] = [...new Set([...(d.listen[k] || []), ...v])]; });
+  d.offiziellSeit = op.zeit;
+  return {arbeiten: d.feldarbeiten.length, behalten: behalten.length};
+}
+// Testphase = bis die neue Feldarbeiten-Liste eingespielt ist; Rechnungen bis dahin sind Proberechnungen
+function fbTestphase(){ return !!(fbDaten && fbDaten.feldarbeiten && !fbDaten.offiziellSeit); }
 // Positionen nach MwSt-Satz zusammenfassen: [{satz (Prozent), netto, steuer}]
 function fbMwstGruppen(pos){
   const m = new Map();
@@ -3809,16 +3889,19 @@ function fbAnwenden(d, op){
     }
     case "rechnung":
       return fbRechnungAnwenden(d, op);
-    case "storno": {
+    case "storno":
+      return fbStornoAnwenden(d, op);
+    case "belegFest": {
+      // E-Rechnung wurde erzeugt: die dabei verwendeten (ergänzten) Daten festschreiben – dann ergibt
+      // jedes spätere Herunterladen genau dieselbe Datei wie die verschickte
       const r = d.rechnungen.find(x => x["Rechnungs-Nr."] === op.nr && x.Firma === op.firma);
-      if (!r) throw new Error("Rechnung nicht gefunden");
-      r.Status = "storniert"; r.Storniert = op.zeit;
-      (r.Positionen || []).forEach(p => {
-        const z = d.feldarbeiten.find(x => x.ID === p.id);
-        if (z && z.Rechnung === op.nr) { z.Rechnung = ""; z["Rechnung Firma"] = ""; }
-      });
+      if (!r || r["E-Rechnung erstellt"]) return null;
+      r["Firma-Daten"] = fbKopie(op.firmaDaten); r["Mandant-Daten"] = fbKopie(op.mandantDaten);
+      r["E-Rechnung erstellt"] = op.zeit;
       return null;
     }
+    case "neustart":
+      return fbNeustartAnwenden(d, op);
   }
   throw new Error("Unbekannte Änderung");
 }
@@ -4903,6 +4986,7 @@ function fbNaechsteNr(firma, datum){
 }
 function fbRenderRechnung(){
   $fb("fbReZurueck").hidden = !fbAuswahlMerken;
+  fbRenderTestphase();
   const firmen = (fbDaten && fbDaten.firmen) || [];
   const fSel = $fb("fbReFirma"), fAlt = fSel.value;
   fSel.innerHTML = firmen.map(f => `<option ${f.Firma === fAlt ? "selected" : ""}>${esc(f.Firma)}</option>`).join("");
@@ -4917,6 +5001,50 @@ function fbRenderRechnung(){
   if (!$fb("fbReDatum").value) $fb("fbReDatum").value = fbHeuteIso();
   fbRenderRePositionen();
   fbRenderReListe();
+}
+// Hinweis „Testphase“ + Umstellen auf die neue Feldarbeiten-Liste
+let fbNeustartDaten = null;
+function fbRenderTestphase(){
+  const box = $fb("fbTestphase");
+  if (!fbTestphase()){ box.innerHTML = ""; fbNeustartDaten = null; return; }
+  const appEintraege = fbArbeiten().filter(a => /^F/.test(String(a.ID || "")));   // in der App erfasst (Arbeiten und Notizen)
+  const re = ((fbDaten && fbDaten.rechnungen) || []).length;
+  if (!fbNeustartDaten){
+    box.innerHTML = `<div class="bs-status warn fb-testphase"><b>🧪 Testphase</b> – Rechnungen sind gerade Proberechnungen und tragen „TEST – nicht gültig“ (auch in der E-Rechnung).
+      Sobald die neue Feldarbeiten-Liste eingespielt ist, werden alle ${re} Probe-Rechnungen gelöscht und die Nummern starten neu. Adressen, E-Mails und Preise bleiben.
+      <div class="bs-actions"><label class="btn small">📥 Neue Feldarbeiten-Liste einspielen …<input type="file" accept=".json,application/json" id="fbNeustartDatei" hidden></label></div>
+      <div id="fbNeustartMeldung" class="bs-erkannt"></div></div>`;
+    $fb("fbNeustartDatei").addEventListener("change", async e => {
+      const datei = e.target.files[0]; if (!datei) return;
+      try {
+        const inhalt = JSON.parse(await datei.text());
+        if (inhalt.art !== "poolehof-feldbuch-startdaten" || !Array.isArray(inhalt.feldarbeiten) || !inhalt.feldarbeiten.length) throw new Error("Das ist keine Feldarbeiten-Liste für die App");
+        fbNeustartDaten = inhalt; fbRenderTestphase();
+      } catch(err) { $fb("fbNeustartMeldung").textContent = "Nicht übernommen: " + err.message; }
+    });
+    return;
+  }
+  const n = fbNeustartDaten;
+  box.innerHTML = `<div class="bs-status warn fb-testphase"><b>Testphase beenden – bitte prüfen:</b>
+    <ul><li>Neue Liste: <b>${n.feldarbeiten.length}</b> Feldarbeiten</li>
+    <li><b>${re}</b> Probe-Rechnungen werden gelöscht, Rechnungsnummern starten neu${(n.firmen || []).filter(f => f["Letzte Rechnungs-Nr."]).map(f => ` (${esc(f.Firma)}: nach ${esc(f["Letzte Rechnungs-Nr."])})`).join("")}</li>
+    <li>Bisherige Feldarbeiten der Testphase werden durch die neue Liste ersetzt</li></ul>
+    ${appEintraege.length ? `<label class="fb-neustart-check"><input type="checkbox" id="fbNeustartBehalten" ${n.__ohneApp ? "" : "checked"}> Die <b>${appEintraege.length}</b> in der App eingetragenen Einträge behalten (Arbeiten und Notizen, z. B. vom Handy erfasst)</label>` : ""}
+    <div class="bs-actions"><button class="btn primary small" type="button" id="fbNeustartLos">Jetzt umstellen</button><button class="btn small ghost" type="button" id="fbNeustartAbbruch">Abbrechen</button></div>
+    <div id="fbNeustartMeldung" class="bs-erkannt"></div></div>`;
+  if ($fb("fbNeustartBehalten")) $fb("fbNeustartBehalten").addEventListener("change", e => { n.__ohneApp = !e.target.checked; });
+  $fb("fbNeustartAbbruch").addEventListener("click", () => { fbNeustartDaten = null; fbRenderTestphase(); });
+  $fb("fbNeustartLos").addEventListener("click", async () => {
+    if (!confirm("Testphase jetzt beenden? Ab dann sind alle Rechnungen echt.\n\n(Der alte Stand bleibt im Hof-Speicher als ältere Version erhalten.)")) return;
+    const behalten = $fb("fbNeustartBehalten") && $fb("fbNeustartBehalten").checked ? appEintraege.map(a => a.ID) : [];
+    $fb("fbNeustartMeldung").textContent = "Stelle um …";
+    try {
+      const {art, __ohneApp, ...daten} = n;
+      const erg = await fbSofort({typ: "neustart", daten, behalten});
+      fbNeustartDaten = null; fbRe.positionen = {};
+      alert(`✓ Umgestellt: ${erg.arbeiten} Feldarbeiten${erg.behalten ? ` (davon ${erg.behalten} aus der App behalten)` : ""}. Ab jetzt sind Rechnungen echt.`);
+    } catch(err) { const el = $fb("fbNeustartMeldung"); if (el) el.textContent = "Nicht umgestellt: " + err.message; }
+  });
 }
 function fbRenderRePositionen(){
   const mandant = fbRe.mandant;
@@ -5044,6 +5172,11 @@ async function fbRechnungErstellen(){
     info.textContent = `Bei ${ohne.length === 1 ? "1 Position" : ohne.length + " Positionen"} fehlt noch Menge oder Preis – rot markiert. Bitte eintragen, dann nochmal „Rechnung erstellen“.`;
     return;
   }
+  const firmaDs = ((fbDaten && fbDaten.firmen) || []).find(x => x.Firma === firma) || {};
+  if (auswahl.some(p => fbZahl(p.mwst) === 0) && !String(firmaDs["Grund Steuerbefreiung"] || "").trim()){
+    info.textContent = `Eine Position hat 0 % MwSt. Dann muss auf der Rechnung stehen, warum (Pflicht). Bitte in Stammdaten → Firma „${firma}“ das Feld „Grund Steuerbefreiung“ ausfüllen – oder den MwSt-Satz korrigieren.`;
+    return;
+  }
   const nr = fbNaechsteNr(firma, datum);
   const schon = auswahl.map(p => fbArbeiten().find(a => a.ID === p.id)).filter(a => a && a.Rechnung);
   const warnung = schon.length ? `\n\n⚠ ACHTUNG: ${schon.length === 1 ? "1 Arbeit ist" : schon.length + " Arbeiten sind"} schon abgerechnet (${[...new Set(schon.map(a => a.Rechnung))].join(", ")}) und ${schon.length === 1 ? "kommt" : "kommen"} jetzt nochmal auf eine Rechnung. War die alte Rechnung falsch, sie danach unten unter „Bisherige Rechnungen“ stornieren.` : "";
@@ -5060,11 +5193,12 @@ async function fbRechnungErstellen(){
 }
 // Zahlungsstatus einer Rechnung: bezahlt / offen seit x Tagen / überfällig (> 30 Tage)
 function fbZahlStatus(r){
+  if (r.Art === "Storno") return {art: "stornobeleg", html: `<span class="fb-badge">Storno zu ${esc(r["Storno zu"])}</span>`};
   if (r.Status === "storniert") return {art: "storno", html: ""};
   if (r.Bezahlt) return {art: "bezahlt", html: `<span class="fb-badge ok">bezahlt ${esc(fbDatumAnzeige(r.Bezahlt))}</span>`};
   const tage = Math.floor((new Date(fbHeuteIso() + "T12:00") - new Date(String(r.Datum).slice(0, 10) + "T12:00")) / 86400000);
   return tage > 30 ? {art: "ueberfaellig", tage, html: `<span class="fb-badge rot">überfällig · ${tage} Tage</span>`}
-                   : {art: "offen", tage, html: `<span class="fb-badge offen">offen · ${Math.max(tage, 0)} Tage</span>`};
+                   : {art: "offen", tage, html: `<span class="fb-badge offen">offen · ${Math.max(tage, 0) === 1 ? "1 Tag" : Math.max(tage, 0) + " Tage"}</span>`};
 }
 // Daten vom Erstellungstag gelten; nur damals LEERE Felder (z. B. E-Mail für die E-Rechnung) kommen aus den aktuellen Stammdaten
 function fbErgaenzt(damals, jetzt){
@@ -5083,17 +5217,23 @@ function fbGespeicherteRechnungZeigen(nr, firma){
   const r = alle.find(x => x["Rechnungs-Nr."] === nr && x.Firma === firma)
     || (!firma && alle.filter(x => x["Rechnungs-Nr."] === nr && x.Status !== "storniert").length === 1 ? alle.find(x => x["Rechnungs-Nr."] === nr && x.Status !== "storniert") : null);
   if (!r){ alert(`Rechnung ${nr} ist in der App nicht gespeichert (vermutlich aus der alten Liste).`); return; }
+  fbRechnungZeigen(fbBelegAusSpeicher(r));
+}
+// Gespeicherten Beleg (Rechnung oder Stornorechnung) in die Form für Anzeige/PDF/E-Rechnung bringen
+function fbBelegAusSpeicher(r){
   let pos = Array.isArray(r.Positionen) ? r.Positionen : []; if (typeof r.Positionen === "string") { try { pos = JSON.parse(r.Positionen); } catch(e) {} }
-  fbRechnungZeigen({nr: r["Rechnungs-Nr."], datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), gruppen: r["MwSt je Satz"] || null, mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
+  return ({nr: r["Rechnungs-Nr."], firmaName: r.Firma, datum: r.Datum, positionen: pos, netto: fbZahl(r.Netto), mwstSatz: fbZahl(r["MwSt-Satz"]), gruppen: r["MwSt je Satz"] || null, mwst: fbZahl(r.MwSt), brutto: fbZahl(r.Brutto),
     firma: fbErgaenzt(r["Firma-Daten"], fbDaten.firmen.find(f => f.Firma === r.Firma) || {Firma: r.Firma}),
     mandant: fbErgaenzt(r["Mandant-Daten"], fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant}),
-    storniert: r.Status === "storniert"});
+    storniert: r.Status === "storniert", stornoDurch: r["Storniert durch"] || "",
+    art: r.Art === "Storno" ? "storno" : "", bezug: r.Art === "Storno" ? {nr: r["Storno zu"], datum: r["Storno zu Datum"]} : null,
+    test: r.Test ?? !fbDaten.offiziellSeit});
 }
 function fbRenderReListe(){
   const liste = ((fbDaten && fbDaten.rechnungen) || []).slice().sort((a, b) => String(b["Rechnungs-Nr."]).localeCompare(String(a["Rechnungs-Nr."])));
-  $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll"><table class="fb-aw"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th>Zahlung</th><th></th></tr></thead><tbody>
-    ${liste.map(r => { const st = fbZahlStatus(r); return `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? " <small>(storniert)</small>" : ""}</td><td>${esc(fbDatumAnzeige(r.Datum))}</td><td>${esc(r.Mandant)}</td><td>${esc(r.Firma)}</td>
-      <td class="num">${fbEuro(fbZahl(r.Brutto))}</td><td>${st.html}</td><td class="fb-re-knoepfe"><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button>${r.Status === "storniert" ? "" : r.Bezahlt
+  $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll fb-re-scroll"><table class="fb-aw fb-re-tab"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th>Zahlung</th><th></th></tr></thead><tbody>
+    ${liste.map(r => { const st = fbZahlStatus(r); return `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? ` <small>(storniert${r["Storniert durch"] ? " durch " + esc(r["Storniert durch"]) : ""})</small>` : ""}${r.Art === "Storno" ? " <small>Stornorechnung</small>" : ""}${(r.Test ?? fbTestphase()) ? ' <small class="fb-test">TEST</small>' : ""}</td><td data-l="Datum">${esc(fbDatumAnzeige(r.Datum))}</td><td data-l="Mandant">${esc(r.Mandant)}</td><td data-l="Firma">${esc(r.Firma)}</td>
+      <td class="num" data-l="Brutto">${fbEuro(fbZahl(r.Brutto))}</td><td class="fb-re-zahl">${st.html}</td><td class="fb-re-knoepfe"><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button>${r.Status === "storniert" || r.Art === "Storno" ? "" : r.Bezahlt
         ? `<button class="btn small ghost" type="button" data-bezahlt="" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">↩ doch offen</button>`
         : `<button class="btn small" type="button" data-bezahlt="${fbHeuteIso()}" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">✓ Bezahlt</button><button class="btn small ghost" type="button" data-storno="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Stornieren</button>`}</td></tr>`; }).join("")}
     </tbody></table></div>` : `<p class="bs-help">Noch keine Rechnungen aus der App.</p>`;
@@ -5102,13 +5242,18 @@ function fbRenderReListe(){
     fbAendern({typ: "bezahlt", nr: b.dataset.re, firma: b.dataset.firma, datum: b.dataset.bezahlt});
   }));
   $fb("fbReListe").querySelectorAll("button[data-storno]").forEach(b => b.addEventListener("click", async () => {
-    if (!confirm(`Rechnung ${b.dataset.storno} (${b.dataset.firma}) stornieren?\n\nDie Nummer bleibt vergeben, die Arbeiten werden wieder als „offen“ geführt und können neu abgerechnet werden.`)) return;
-    try { await fbSofort({typ: "storno", nr: b.dataset.storno, firma: b.dataset.firma}); }
-    catch(err) { alert("Nicht storniert: " + err.message); }
+    const nr = fbNaechsteNr(b.dataset.firma, fbHeuteIso());
+    if (!confirm(`Rechnung ${b.dataset.storno} (${b.dataset.firma}) stornieren?\n\nDabei entsteht eine Stornorechnung mit der Nummer ${nr} (PDF und E-Rechnung). Die bekommt der Kunde, wenn er die Rechnung schon hat.\n\nDie Arbeiten sind danach wieder „offen“ und können neu – richtig – abgerechnet werden.`)) return;
+    try {
+      const s = await fbSofort({typ: "storno", nr: b.dataset.storno, firma: b.dataset.firma, datum: fbHeuteIso()});
+      fbGespeicherteRechnungZeigen(s.nr, s.firma);
+    } catch(err) { alert("Nicht storniert: " + err.message); }
   }));
 }
 function fbRechnungZeigen(r){
   const f = r.firma || {}, m = r.mandant || {};
+  const storno = r.art === "storno", vz = storno ? -1 : 1;   // Stornorechnung: Positionen mit Minus
+  const titel = storno ? "Stornorechnung" : "Rechnung";
   const el = $fb("rechnungDruck");
   el.innerHTML = `<div class="re-werkzeug"><button class="btn primary" type="button" data-re-pdf>📄 PDF wird vorbereitet …</button><button class="btn primary" type="button" data-re-xml>🧾 E-Rechnung herunterladen</button><button class="btn" type="button" id="reDrucken">🖨 Drucken</button><button class="btn" type="button" id="reZu">Schließen</button></div>
   <div class="re-pdf-hinweis" id="rePdfHinweis"></div>
@@ -5116,15 +5261,18 @@ function fbRechnungZeigen(r){
     <div class="re-kopf"><div class="re-absender"><b>${esc(f.Firma || "")}</b><br>${esc(f.Inhaber || "")}<br>${esc(f["Straße"] || "")}<br>${esc(f["PLZ Ort"] || "")}</div><img src="img/logo.png" alt=""></div>
     <div class="re-mitte">
       <div class="re-empf"><small>${esc(f.Firma || "")} · ${esc(f["Straße"] || "")} · ${esc(f["PLZ Ort"] || "")}</small><br><br>${esc(m.Name || m.Kurzname || "")}<br>${esc(m["Straße"] || "")}<br>${esc(m["PLZ Ort"] || "")}</div>
-      <div class="re-meta"><div><span>Datum</span><b>${esc(fbDatumAnzeige(r.datum))}</b></div><div><span>Rechnungs-Nr.</span><b>${esc(r.nr)}</b></div>${f.Steuernummer ? `<div><span>Steuernummer</span><span>${esc(f.Steuernummer)}</span></div>` : ""}</div>
+      <div class="re-meta"><div><span>Datum</span><b>${esc(fbDatumAnzeige(r.datum))}</b></div><div><span>Rechnungs-Nr.</span><b>${esc(r.nr)}</b></div>${storno && r.bezug ? `<div><span>Storno zu</span><span>${esc(r.bezug.nr)} vom ${esc(fbDatumAnzeige(r.bezug.datum))}</span></div>` : ""}${f.Steuernummer ? `<div><span>Steuernummer</span><span>${esc(f.Steuernummer)}</span></div>` : ""}</div>
     </div>
-    <h2>Rechnung${r.storniert ? ' <span class="re-storno">STORNIERT</span>' : ""}</h2>
+    <h2>${titel}${r.storniert ? ' <span class="re-storno">STORNIERT</span>' : ""}${r.test ? ' <span class="re-storno re-test">TEST – nicht gültig</span>' : ""}</h2>
+    ${storno && r.bezug ? `<p style="margin:0 0 12px">Hiermit stornieren wir unsere Rechnung Nr. <b>${esc(r.bezug.nr)}</b> vom ${esc(fbDatumAnzeige(r.bezug.datum))} vollständig.</p>` : ""}
+    ${r.storniert && r.stornoDurch ? `<p style="margin:0 0 12px;color:#b3261e">Diese Rechnung wurde mit der Stornorechnung Nr. ${esc(r.stornoDurch)} storniert.</p>` : ""}
     <table class="re-pos"><thead><tr><th>Datum</th><th>Leistung</th><th class="r">Menge</th><th class="r">Einzelpreis</th><th class="r">MwSt</th><th class="r">Netto</th></tr></thead><tbody>
-      ${(r.positionen || []).map(p => `<tr><td>${esc(fbDatumAnzeige(p.datum))}</td><td>${esc(p.text || "")}</td><td class="r">${esc(fbZahlText(p.menge))} ${esc(p.einheit || "")}</td><td class="r">${fbEuro(p.preis)}</td><td class="r">${esc(fbZahlText(p.mwst ?? (r.mwstSatz ?? 0.19) * 100, 1))} %</td><td class="r">${fbEuro(p.betrag ?? (p.menge * p.preis))}</td></tr>`).join("")}
+      ${(r.positionen || []).map(p => `<tr><td>${esc(fbDatumAnzeige(p.datum))}</td><td>${esc(p.text || "")}</td><td class="r">${esc(fbZahlText(vz * p.menge))} ${esc(p.einheit || "")}</td><td class="r">${fbEuro(p.preis)}</td><td class="r">${esc(fbZahlText(p.mwst ?? (r.mwstSatz ?? 0.19) * 100, 1))} %</td><td class="r">${fbEuro(vz * (p.betrag ?? (p.menge * p.preis)))}</td></tr>`).join("")}
     </tbody></table>
     <div class="re-summen"><div><span>Summe netto</span><span>${fbEuro(r.netto)}</span></div>${(r.gruppen && r.gruppen.length ? r.gruppen : [{satz: (r.mwstSatz ?? 0.19) * 100, netto: r.netto, steuer: r.mwst}]).map(g => `<div><span>MwSt ${esc(fbZahlText(g.satz, 1))} %${(r.gruppen || []).length > 1 ? ` auf ${fbEuro(g.netto)}` : ""}</span><span>${fbEuro(g.steuer)}</span></div>`).join("")}<div class="gesamt"><span>Gesamtbetrag</span><span>${fbEuro(r.brutto)}</span></div></div>
     ${f["Hinweis auf Rechnung"] ? `<p style="margin-top:18px">${esc(f["Hinweis auf Rechnung"])}</p>` : ""}
-    <p style="margin-top:${f["Hinweis auf Rechnung"] ? 8 : 24}px">Bitte überweisen Sie den Betrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer. Vielen Dank für den Auftrag!</p>
+    ${(r.positionen || []).some(p => Number(p.mwst) === 0) ? `<p style="margin-top:${f["Hinweis auf Rechnung"] ? 4 : 18}px">Positionen mit 0 % MwSt: ${esc(f["Grund Steuerbefreiung"] || "steuerfrei")}</p>` : ""}
+    <p style="margin-top:${f["Hinweis auf Rechnung"] ? 8 : 24}px">${storno ? `Der Rechnungsbetrag der Rechnung ${esc(r.bezug ? r.bezug.nr : "")} ist damit nicht mehr zu zahlen. Ein bereits gezahlter Betrag wird erstattet.` : "Bitte überweisen Sie den Betrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer. Vielen Dank für den Auftrag!"}</p>
     <div class="re-fuss"><div>${f.Bank ? esc(f.Bank) + "<br>" : ""}IBAN ${esc(f.IBAN || "")}<br>BIC ${esc(f.BIC || "")}</div><div style="text-align:right">${esc(f.Telefon || "")}<br>${esc(f["E-Mail"] || "")}${f["USt-IdNr."] ? "<br>USt-IdNr. " + esc(f["USt-IdNr."]) : ""}</div></div>
   </div>
   <div class="re-werkzeug re-unten"><button class="btn primary" type="button" data-re-pdf>📄 PDF herunterladen</button><button class="btn primary" type="button" data-re-xml>🧾 E-Rechnung herunterladen</button><button class="btn" type="button" data-re-zu>Schließen</button></div>
@@ -5145,7 +5293,7 @@ function fbRechnungZeigen(r){
   });
   // PDF gleich im Hintergrund erzeugen – am iPhone muss das Teilen-Menü direkt
   // nach dem Tippen aufgehen, sonst blockiert Safari es
-  const name = `Rechnung ${r.nr} ${(m.Name || m.Kurzname || "").replace(/[\\/:*?"<>|]/g, "")}`.trim() + ".pdf";
+  const name = `${titel} ${r.nr} ${(m.Name || m.Kurzname || "").replace(/[\\/:*?"<>|]/g, "")}`.trim() + ".pdf";
   const knoepfe = [...el.querySelectorAll("[data-re-pdf]")], hinweis = $fb("rePdfHinweis");
   const knopf = {set textContent(t){ knoepfe.forEach(k => k.textContent = t); }};
   let pdfDatei = null;
@@ -5159,12 +5307,16 @@ function fbRechnungZeigen(r){
     const xh = $fb("reXmlHinweis"); hinweis.textContent = ""; xh.textContent = "";
     const unten = !!k.closest(".re-unten");
     const zeigen = t => { hinweis.innerHTML = t; xh.innerHTML = t; (unten ? xh : hinweis).scrollIntoView({block: "center", behavior: "smooth"}); };
-    if (r.storniert){ zeigen("Diese Rechnung ist storniert – dafür keine E-Rechnung erstellen."); return; }
-    const fehlt = fbERechnungFehlt(f, m);
+    if (r.storniert){ zeigen(`Diese Rechnung ist storniert – dafür keine neue E-Rechnung erstellen.${r.stornoDurch ? ` Die E-Rechnung zum Storno gibt es bei der Stornorechnung <b>${esc(r.stornoDurch)}</b> (Bisherige Rechnungen → Anzeigen).` : ""}`); return; }
+    const fehlt = fbERechnungFehlt(f, m, r.positionen);
     if (fehlt.length){ zeigen(`<b>Für die E-Rechnung fehlt noch:</b> ${fehlt.map(esc).join(" · ")}<br>Bitte in <b>Stammdaten</b> ergänzen (Firma bzw. Mandant), dann die Rechnung unter „Rechnung → Bisherige Rechnungen → Anzeigen“ nochmal öffnen.`); return; }
     const xmlName = name.replace(/\.pdf$/, "") + " (E-Rechnung).xml";
     const erg = await fbSichern(xmlName, fbXRechnungXml(r), "application/xml");
-    if (erg === "gespeichert" || erg === "heruntergeladen") zeigen("✓ E-Rechnung gespeichert: " + esc(xmlName) + " – diese Datei per E-Mail an den Kunden schicken (am besten zusammen mit der PDF).");
+    if ((erg === "gespeichert" || erg === "heruntergeladen" || erg === "geteilt") && r.firmaName){
+      const {"Letzte Rechnungs-Nr.": _l, ...firmaDaten} = f;
+      fbAendern({typ: "belegFest", nr: r.nr, firma: r.firmaName, firmaDaten, mandantDaten: m});
+    }
+    if (erg === "gespeichert" || erg === "heruntergeladen") zeigen("✓ E-Rechnung gespeichert: " + esc(xmlName) + " – diese Datei per E-Mail an den Kunden schicken (am besten zusammen mit der PDF). Die verschickte Mail nicht löschen – sie ist dein Beleg.");
   }));
   knoepfe.forEach(kn => kn.addEventListener("click", async () => {
     hinweis.textContent = "";
@@ -5187,9 +5339,10 @@ function fbPlzOrt(t){
   const m = String(t || "").trim().match(/^(?:D-?)?(\d{5})\s+(.+)$/);
   return m ? {plz: m[1], ort: m[2].trim()} : {plz: "", ort: String(t || "").trim()};
 }
-function fbERechnungFehlt(f, m){
+function fbERechnungFehlt(f, m, pos){
   const fehlt = [];
   f = f || {}; m = m || {};
+  if ((pos || []).some(p => Number(p.mwst) === 0) && !String(f["Grund Steuerbefreiung"] || "").trim()) fehlt.push("Firma: Grund Steuerbefreiung (eine Position hat 0 % MwSt)");
   if (!f.Firma) fehlt.push("Firma: Name");
   if (!f["Straße"]) fehlt.push("Firma: Straße");
   if (!fbPlzOrt(f["PLZ Ort"]).plz) fehlt.push("Firma: PLZ und Ort (z. B. „78727 Oberndorf“)");
@@ -5206,7 +5359,8 @@ function fbERechnungFehlt(f, m){
 // Einheiten nach UN/ECE-Empfehlung 20 (so verlangt es die E-Rechnung)
 function fbEinheitCode(e){
   const t = String(e || "").trim().toLowerCase().replace(/\.$/, "");
-  const tab = {"ha": "H18", "hektar": "H18",   // Hektar = Quadrathektometer (H18) – das alte "HAR" ist nicht mehr gültig "h": "HUR", "std": "HUR", "stunde": "HUR", "stunden": "HUR", "m³": "MTQ", "m3": "MTQ", "cbm": "MTQ", "kubik": "MTQ",
+  // Hektar = Quadrathektometer (H18) – das alte "HAR" ist nicht mehr gültig
+  const tab = {"ha": "H18", "hektar": "H18", "h": "HUR", "std": "HUR", "stunde": "HUR", "stunden": "HUR", "m³": "MTQ", "m3": "MTQ", "cbm": "MTQ", "kubik": "MTQ",
     "t": "TNE", "tonne": "TNE", "tonnen": "TNE", "dt": "DTN", "doppelzentner": "DTN", "kg": "KGM", "l": "LTR", "liter": "LTR", "km": "KMT", "m": "MTR",
     "stk": "H87", "stück": "H87", "ballen": "H87", "pauschal": "LS", "psch": "LS", "tag": "DAY", "tage": "DAY"};
   return tab[t] || "C62";
@@ -5227,7 +5381,11 @@ function fbXRechnungXml(r){
   const fa = fbPlzOrt(f["PLZ Ort"]), ma = fbPlzOrt(m["PLZ Ort"]);
   const daten = pos.map(p => String(p.datum || r.datum).slice(0, 10)).filter(Boolean).sort();
   const faellig = (() => { const d = new Date(String(r.datum).slice(0, 10) + "T12:00"); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
-  const notizen = [f["Hinweis auf Rechnung"]].filter(Boolean);
+  // Stornorechnung = Belegart 381 mit positiven Beträgen und Verweis auf die stornierte Rechnung (BT-25/26)
+  const storno = r.art === "storno" && r.bezug;
+  const notizen = [r.test ? "TESTRECHNUNG – nur zur Probe erstellt, nicht gültig." : "",
+                   storno ? `Stornorechnung: Die Rechnung ${r.bezug.nr} vom ${fbDatumAnzeige(r.bezug.datum)} wird hiermit vollständig storniert.` : "",
+                   f["Hinweis auf Rechnung"]].filter(Boolean);
   const steuerReg = [f["USt-IdNr."] ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">${x(String(f["USt-IdNr."]).replace(/\s/g, ""))}</ram:ID></ram:SpecifiedTaxRegistration>` : "",
                      f.Steuernummer ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="FC">${x(f.Steuernummer)}</ram:ID></ram:SpecifiedTaxRegistration>` : ""].join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -5238,7 +5396,7 @@ function fbXRechnungXml(r){
   </rsm:ExchangedDocumentContext>
   <rsm:ExchangedDocument>
     <ram:ID>${x(r.nr)}</ram:ID>
-    <ram:TypeCode>380</ram:TypeCode>
+    <ram:TypeCode>${storno ? "381" : "380"}</ram:TypeCode>
     <ram:IssueDateTime>${tag(r.datum)}</ram:IssueDateTime>
 ${notizen.map(n => `    <ram:IncludedNote><ram:Content>${x(n)}</ram:Content></ram:IncludedNote>`).join("\n")}
   </rsm:ExchangedDocument>
@@ -5294,9 +5452,10 @@ ${gruppen.map(g => `      <ram:ApplicableTradeTax>
         <ram:RateApplicablePercent>${zahl(g.satz, 2)}</ram:RateApplicablePercent>
       </ram:ApplicableTradeTax>`).join("\n")}${daten.length && daten[0] !== daten[daten.length - 1] ? `
       <ram:BillingSpecifiedPeriod><ram:StartDateTime>${tag(daten[0])}</ram:StartDateTime><ram:EndDateTime>${tag(daten[daten.length - 1])}</ram:EndDateTime></ram:BillingSpecifiedPeriod>` : ""}
-      <ram:SpecifiedTradePaymentTerms>
+      <ram:SpecifiedTradePaymentTerms>${storno ? `
+        <ram:Description>Storno der Rechnung ${x(r.bezug.nr)} – dieser Betrag ist nicht mehr zu zahlen; ein bereits gezahlter Betrag wird erstattet.</ram:Description>` : `
         <ram:Description>Zahlbar innerhalb von 14 Tagen ohne Abzug unter Angabe der Rechnungsnummer.</ram:Description>
-        <ram:DueDateDateTime>${tag(faellig)}</ram:DueDateDateTime>
+        <ram:DueDateDateTime>${tag(faellig)}</ram:DueDateDateTime>`}
       </ram:SpecifiedTradePaymentTerms>
       <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
         <ram:LineTotalAmount>${betrag(netto)}</ram:LineTotalAmount>
@@ -5304,7 +5463,11 @@ ${gruppen.map(g => `      <ram:ApplicableTradeTax>
         <ram:TaxTotalAmount currencyID="EUR">${betrag(steuer)}</ram:TaxTotalAmount>
         <ram:GrandTotalAmount>${betrag(brutto)}</ram:GrandTotalAmount>
         <ram:DuePayableAmount>${betrag(brutto)}</ram:DuePayableAmount>
-      </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+      </ram:SpecifiedTradeSettlementHeaderMonetarySummation>${storno ? `
+      <ram:InvoiceReferencedDocument>
+        <ram:IssuerAssignedID>${x(r.bezug.nr)}</ram:IssuerAssignedID>
+        <ram:FormattedIssueDateTime><qdt:DateTimeString format="102">${datum(r.bezug.datum)}</qdt:DateTimeString></ram:FormattedIssueDateTime>
+      </ram:InvoiceReferencedDocument>` : ""}
     </ram:ApplicableHeaderTradeSettlement>
   </rsm:SupplyChainTradeTransaction>
 </rsm:CrossIndustryInvoice>
@@ -5430,7 +5593,7 @@ function fbRenderStamm(){
   const firmen = (fbDaten && fbDaten.firmen) || [];
   $fb("fbStFirmen").innerHTML = firmen.map((f, i) => `<details class="fb-st-firma"><summary>${esc(f.Firma)} <span class="bs-erkannt">· letzte Nr. ${esc(f["Letzte Rechnungs-Nr."] || "–")}</span></summary>
     <form class="fb-form" data-firma="${esc(f.Firma)}">
-      ${FB_FIRMA_FELDER.map(n => `<label class="${["Firma", "Straße", "PLZ Ort", "IBAN", "Hinweis auf Rechnung"].includes(n) ? "breit" : ""}">${{"E-Mail": "E-Mail (Pflicht für die E-Rechnung)", "Telefon": "Telefon (Pflicht für die E-Rechnung)", "Hinweis auf Rechnung": "Hinweis auf jeder Rechnung (optional, z. B. „Durchschnittssatz nach § 24 UStG“)", "USt-IdNr.": "USt-IdNr. (falls vorhanden)"}[n] || n}<input name="${n}" value="${esc(f[n] || "")}" ${n === "Firma" ? "required" : ""} ${n === "E-Mail" ? 'type="email"' : ""} ${n === "Letzte Rechnungs-Nr." ? 'placeholder="z. B. 2026-014" pattern="\\d{4}-\\d{1,4}|"' : ""}></label>`).join("")}
+      ${FB_FIRMA_FELDER.map(n => `<label class="${["Firma", "Straße", "PLZ Ort", "IBAN", "Hinweis auf Rechnung", "Grund Steuerbefreiung"].includes(n) ? "breit" : ""}">${{"E-Mail": "E-Mail (Pflicht für die E-Rechnung)", "Telefon": "Telefon (Pflicht für die E-Rechnung)", "Hinweis auf Rechnung": "Hinweis auf jeder Rechnung (optional, z. B. „Durchschnittssatz nach § 24 UStG“)", "USt-IdNr.": "USt-IdNr. (falls vorhanden)", "Grund Steuerbefreiung": "Grund, wenn eine Position 0 % MwSt hat (Pflicht, z. B. „Steuerfreie Leistung nach § 4 Nr. … UStG“)"}[n] || n}<input name="${n}" value="${esc(f[n] || "")}" ${n === "Firma" ? "required" : ""} ${n === "E-Mail" ? 'type="email"' : ""} ${n === "Letzte Rechnungs-Nr." ? 'placeholder="z. B. 2026-014" pattern="\\d{4}-\\d{1,4}|"' : ""}></label>`).join("")}
       <div class="fb-form-knoepfe breit"><button class="btn primary small" type="submit">Speichern</button></div>
     </form></details>`).join("");
   $fb("fbStFirmen").querySelectorAll("form").forEach(form => form.addEventListener("submit", ev => {
