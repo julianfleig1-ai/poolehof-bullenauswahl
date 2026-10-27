@@ -9,7 +9,7 @@ if [ ! -f "$W/validator-standalone.jar" ]; then
   curl -sL -o "$W/conf.zip" "https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/v2026-08-31/xrechnung-3.0.2-validator-configuration-2026-08-31.zip" && unzip -q -o "$W/conf.zip" -d "$W/conf"
 fi
 python3 "$T/cors_srv.py" "$R/docs" 8777 >/dev/null 2>&1 & S=$!
-python3 "$T/hofspeicher_mock.py" >/dev/null 2>&1 & H=$!
+NODE="$(zsh "$T/node_holen.sh")"; "$NODE" "$T/hofspeicher_server.js" >/dev/null 2>&1 & H=$!   # echter Server-Code mit nachgebautem Speicher
 "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" --headless=new --remote-debugging-port=9333 --user-data-dir="$P" --no-first-run about:blank >/dev/null 2>&1 & E=$!
 sleep 4
 python3 "$T/erechnung.py" "$O" "$W"; ERG=$?

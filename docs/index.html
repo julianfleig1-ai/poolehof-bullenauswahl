@@ -427,9 +427,11 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
   .fb-aw.fb-re-tab tr.storniert td:first-child{text-decoration:line-through}
 }
 .re-test{color:#a15c00;border-color:#a15c00}
+.re-art-hinweis{max-width:794px;margin:0 auto 10px;padding:10px 14px;border-radius:8px;background:var(--teal-soft);color:var(--ink);font-size:15px}
 .fb-testphase ul{margin:6px 0 6px 20px;padding:0}
 .fb-neustart-check{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
 .fb-neustart-check input{margin-top:3px;width:20px;height:20px;flex:none}
+.fb-e{display:inline-block;font-weight:700;color:var(--teal);border:1px solid var(--teal);border-radius:4px;padding:0 4px;font-size:11px}
 .fb-test{display:inline-block;font-weight:700;color:#a15c00;border:1px solid #a15c00;border-radius:4px;padding:0 4px;font-size:11px}
 .re-storno{font-family:"IBM Plex Sans",Arial,sans-serif;font-size:15px;color:#b3261e;border:2px solid #b3261e;border-radius:4px;padding:1px 8px;margin-left:10px;vertical-align:middle}
 .fb-st-firma{border:1px solid var(--border);border-radius:12px;padding:4px 14px;margin:8px 0;background:var(--surface)}
@@ -868,7 +870,8 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
       <div id="fbRePositionen"></div>
       <div id="fbReSumme" class="fb-re-summe"></div>
       <div class="bs-actions">
-        <button class="btn primary" type="button" id="fbReErstellen">Rechnung erstellen</button>
+        <button class="btn primary" type="button" id="fbReErstellen" data-format="pdf">📄 Rechnung als PDF</button>
+        <button class="btn primary" type="button" id="fbReErstellenE" data-format="e-rechnung">🧾 E-Rechnung (XML + PDF)</button>
         <span class="bs-erkannt" id="fbReInfo"></span>
       </div>
       <div id="fbReMeldung" class="bs-status warn" hidden></div>
@@ -2477,7 +2480,9 @@ function renderHerdeStatus(){
       ? `<br>Enthält die Zuchtwertschätzung ${zwsName(letzterZwsStichtag())} noch nicht.`
       : `<br>Nächste Zuchtwertschätzung voraussichtlich Anfang ${zwsName(naechsterZwsStichtag())} – die Seite erinnert dann automatisch.`) +
     (!mitWerten ? `<br><b>Keine Zuchtwerte erkannt</b> – unter „Spalten prüfen“ die richtigen Spalten auswählen.` : "") +
-    (herde.mapping.sta >= 0 ? "" : `<br>Stärke fehlt in dieser Liste – in Netrind die Spalte „Stärke“ einblenden und die Liste neu hochladen.`) +
+    (herde.mapping.sta >= 0 ? "" : `<br><b>Stärke fehlt in dieser Liste vom ${fmtDatum(herde.hochgeladen)}</b> (in Netrind heißt die Spalte „sta“). ${hsStatus.zustand === "fehler"
+        ? "Hast du auf einem anderen Gerät schon eine neuere Liste hochgeladen? Die kommt hier an, sobald der Hof-Speicher wieder erreichbar ist – oder die PDF hier nochmal hochladen."
+        : "In Netrind die Spalte „sta“ (Stärke) einblenden und die Liste neu hochladen."}`) +
     ` · <a href="#" id="spaltenLink">Spalten prüfen</a>`;
   document.getElementById("spaltenLink").addEventListener("click", e => {
     e.preventDefault();
@@ -3517,14 +3522,18 @@ function hsAbmelden(){
   if (typeof renderEinstellungen === "function") renderEinstellungen();
 }
 
+// Zuletzt bekannter Stand der Kuhliste im Hof-Speicher (spart Abfragen)
+const HS_HERDE_STAND_KEY = "poolehof-herde-stand-v2";
+function hsHerdeStand(){ try { return JSON.parse(lsLesen(HS_HERDE_STAND_KEY) || "null") || {}; } catch(e) { return {}; } }
 async function hsSpeichern(){
   if (!HOF_SPEICHER_URL || !hsZugang || !herde) return;
   hsStatus = {zustand: "verbinde", text: "Speichere die Liste für alle Geräte …"}; renderHofSpeicher();
   try {
     const umschlag = await hsVerschluesseln(herde);
     umschlag.stand = new Date(herdeStand(herde)).toISOString();     // Liste oder Einstellungen – was neuer ist
-    const j = await hsAnfrage({aktion: "speichern", schluessel: hsZugang.auth, daten: umschlag});
+    const j = await hsAnfrage({aktion: "speichern", schluessel: hsZugang.auth, daten: umschlag, bekannt: hsHerdeStand().version});
     if (!j.ok) throw new Error(j.fehler || "Fehler");
+    if (j.version) lsSchreiben(HS_HERDE_STAND_KEY, {version: j.version, stand: new Date(umschlag.stand).getTime()});
     hsStatus = {zustand: "ok", text: `Für alle Geräte gespeichert (Liste vom ${fmtDatum(herde.hochgeladen)})`};
   } catch(e) {
     hsStatus = {zustand: "fehler", text: `Konnte nicht für alle Geräte speichern (${e.message}) – die Liste gilt vorerst nur auf diesem Gerät.`};
@@ -3536,7 +3545,9 @@ async function hsAbgleichen(){
   if (!HOF_SPEICHER_URL || !hsZugang) return;
   hsStatus = {zustand: "verbinde", text: "Gleiche mit dem Hof-Speicher ab …"}; renderHofSpeicher();
   try {
-    const j = await hsAnfrage({aktion: "laden", schluessel: hsZugang.auth});
+    const gemerkt = hsHerdeStand();
+    // "nur wenn neu" nur, wenn dieses Gerät mindestens den zuletzt bekannten Stand hat – sonst immer komplett holen
+    const j = await hsAnfrage({aktion: "laden", schluessel: hsZugang.auth, bekannt: gemerkt.version, nurWennNeu: !!(herde && gemerkt.version && herdeStand(herde) >= (gemerkt.stand || 0))});
     if (!j.ok){
       if (hsPasswortAbgelehnt(j)){
         hsZugang = null; hsSpeichereZugang();
@@ -3545,9 +3556,17 @@ async function hsAbgleichen(){
       }
       throw new Error(j.fehler || "Fehler");
     }
-    const fern = j.daten;
+    hsAbgleichen.fehler = 0;
     const lokalZeit = herde ? herdeStand(herde) : 0;
+    if (j.unveraendert){
+      // Im Hof-Speicher liegt noch genau der Stand, den dieses Gerät kennt
+      if (herde && lokalZeit > (gemerkt.stand || 0)){ await hsSpeichern(); return; }
+      hsStatus = {zustand: "ok", text: `Verbunden – alle Geräte haben die Liste vom ${fmtDatum(herde.hochgeladen)}`};
+      renderHofSpeicher(); return;
+    }
+    const fern = j.daten;
     const fernZeit = fern ? new Date(fern.stand || fern.hochgeladen).getTime() : 0;
+    lsSchreiben(HS_HERDE_STAND_KEY, j.version ? {version: j.version, stand: fernZeit} : null);
     if (fern && fernZeit > lokalZeit){
       const neu = await hsEntschluesseln(fern);   // neuere Liste/Einstellungen von einem anderen Gerät
       // Liste unverändert, nur Einstellungen neu? Dann die (evtl. hier angepasste) Spaltenzuordnung behalten
@@ -3565,10 +3584,12 @@ async function hsAbgleichen(){
       : {zustand: "ok", text: "Verbunden – noch keine Liste gespeichert. Einfach die PDF hochladen, dann gilt sie für alle Geräte."};
   } catch(e) {
     hsStatus = {zustand: "fehler", text: "Hof-Speicher gerade nicht erreichbar – es wird mit der Liste auf diesem Gerät gerechnet. Neuer Versuch in Kürze."};
+    hsAbgleichen.fehler = (hsAbgleichen.fehler || 0) + 1;
     clearTimeout(hsAbgleichen.nochmal);
-    hsAbgleichen.nochmal = setTimeout(() => { if (hsZugang && navigator.onLine !== false) hsAbgleichen(); }, 20000);
+    hsAbgleichen.nochmal = setTimeout(() => { if (hsZugang && navigator.onLine !== false && document.visibilityState !== "hidden") hsAbgleichen(); },
+      /gesperrt/.test(e.message) ? 1800000 : Math.min(20000 * 2 ** (hsAbgleichen.fehler - 1), 300000));
   }
-  renderHofSpeicher();
+  if (herde) renderHerdeStatus(); else renderHofSpeicher();   // Hinweise zur Liste hängen auch vom Verbindungsstatus ab
 }
 
 async function hsVerbinden(e){
@@ -3724,7 +3745,7 @@ function fbRechnungAnwenden(d, a){
   const {"Letzte Rechnungs-Nr.": _letzte, ...firmaDaten} = firma;
   const mandantDaten = fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant});
   d.rechnungen.push({"Rechnungs-Nr.": nr, Firma: a.firma, Datum: a.datum, Mandant: a.mandant, Netto: netto, "MwSt-Satz": satz, "MwSt je Satz": gruppen, MwSt: mwst, Brutto: brutto,
-                     Positionen: pos, Erstellt: a.zeit, Status: "", Test: !d.offiziellSeit, "Firma-Daten": fbKopie(firmaDaten), "Mandant-Daten": mandantDaten});
+                     Positionen: pos, Erstellt: a.zeit, Status: "", Format: a.format === "e-rechnung" ? "e-rechnung" : "pdf", Test: !d.offiziellSeit, "Firma-Daten": fbKopie(firmaDaten), "Mandant-Daten": mandantDaten});
   pos.forEach(p => {
     const z = d.feldarbeiten.find(x => x.ID === p.id);
     if (z.Rechnung) z["Rechnung vorher"] = [z["Rechnung vorher"], z.Rechnung + (z["Rechnung Firma"] ? " (" + z["Rechnung Firma"] + ")" : "")].filter(Boolean).join(", ");
@@ -3736,7 +3757,7 @@ function fbRechnungAnwenden(d, a){
     else d.preise.push({"Tätigkeit": p.taetigkeit, Einheit: p.einheit, Mandant: a.mandant, "Preis (€)": p.preis, "MwSt (%)": p.mwst, Stand: a.zeit});
   });
   return {nr, firmaName: a.firma, datum: a.datum, firma: fbKopie(firma), mandant: fbKopie(d.mandanten.find(m => m.Kurzname === a.mandant) || {Kurzname: a.mandant}),
-          positionen: pos, netto, mwstSatz: satz, gruppen, mwst, brutto, test: !d.offiziellSeit};
+          positionen: pos, netto, mwstSatz: satz, gruppen, mwst, brutto, test: !d.offiziellSeit, format: a.format === "e-rechnung" ? "e-rechnung" : "pdf"};
 }
 // Storno: Die Rechnung bleibt (als „storniert“) stehen, dazu kommt eine Stornorechnung mit
 // eigener, fortlaufender Nummer und denselben Positionen mit umgekehrtem Vorzeichen.
@@ -3762,7 +3783,7 @@ function fbStornoAnwenden(d, op){
   firma["Letzte Rechnungs-Nr."] = nr;
   d.rechnungen.push({"Rechnungs-Nr.": nr, Art: "Storno", "Storno zu": r["Rechnungs-Nr."], "Storno zu Datum": r.Datum, Firma: r.Firma, Datum: datum, Mandant: r.Mandant,
                      Netto: minus(r.Netto), "MwSt-Satz": r["MwSt-Satz"], "MwSt je Satz": gruppen, MwSt: minus(r.MwSt), Brutto: minus(r.Brutto),
-                     Positionen: fbKopie(pos), Erstellt: op.zeit, Status: "", Test: r.Test,
+                     Positionen: fbKopie(pos), Erstellt: op.zeit, Status: "", Format: r.Format || "pdf", Test: r.Test,
                      "Firma-Daten": fbKopie(r["Firma-Daten"] || null), "Mandant-Daten": fbKopie(r["Mandant-Daten"] || null)});
   r.Status = "storniert"; r.Storniert = op.zeit; r["Storniert durch"] = nr;
   pos.forEach(p => {
@@ -3929,7 +3950,12 @@ function fbSync(){
     try {
       let fertig = false;
       for (let versuch = 0; versuch < 6 && !fertig; versuch++){
-        const j = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth});
+        // Kennt dieses Gerät den Stand schon (Version 2 des Speichers)? Dann nur Neues holen bzw.
+        // Änderungen direkt darauf speichern – spart Vorgänge im (begrenzten) Speicher-Kontingent
+        const kenntStand = !!(fbGeladen && fbGeladen.daten && /^v2:/.test(fbGeladen.version || ""));
+        const j = versuch === 0 && fbOps.length && kenntStand
+          ? {ok: true, unveraendert: true, version: fbGeladen.version}   // bei Konflikt wird unten neu geladen
+          : await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth, bekannt: (fbGeladen && fbGeladen.version) || undefined, nurWennNeu: kenntStand});
         if (!j.ok){
           if (hsPasswortAbgelehnt(j)){
             // Passwort wurde geändert: abmelden und die Kopie auf diesem Gerät nicht mehr zeigen
@@ -3938,13 +3964,15 @@ function fbSync(){
           }
           throw new Error(j.fehler || "Fehler beim Laden");
         }
-        if (!j.daten && fbGeladen && fbGeladen.daten && fbGeladen.version){
+        if (j.unveraendert && !kenntStand) throw new Error("unerwartete Antwort vom Hof-Speicher");
+        if (!j.unveraendert && !j.daten && fbGeladen && fbGeladen.daten && fbGeladen.version){
           // Sicherheitsbremse: Der Speicher meldet "leer", obwohl dieses Gerät schon ein Feldbuch kannte.
           // Dann lieber nichts tun als womöglich alles mit einem leeren Stand zu überschreiben.
           throw new Error("Hof-Speicher meldet ein leeres Feldbuch – zur Sicherheit wird nichts überschrieben. Bitte später nochmal „Neu laden“.");
         }
         let daten = null;
-        if (j.daten){
+        if (j.unveraendert) daten = fbGeladen.daten;
+        else if (j.daten){
           try { daten = await hsEntschluesseln(j.daten); }
           catch(e) { throw new Error("Daten ließen sich nicht entschlüsseln – bitte einmal neu mit dem Hof-Passwort anmelden"); }
         }
@@ -3964,11 +3992,15 @@ function fbSync(){
       if (!fertig) throw new Error("Zu viele gleichzeitige Änderungen – bitte gleich nochmal");
       lsSchreiben(FB_DATEN_KEY, fbGeladen);
       fbStatus = {zustand: "ok", zeit: new Date(), leer: !fbGeladen.daten};
+      fbSync.fehler = 0; fbSync.zuletzt = Date.now();
     } catch(e) {
       fbStatus = {zustand: "fehler", text: e.message};
-      // Vorübergehender Fehler (Funkloch, Server hakt): von selbst nochmal versuchen
+      // Vorübergehender Fehler (Funkloch, Server hakt): von selbst nochmal versuchen – mit wachsender Pause
+      // (15 s, 30 s, 1 min … höchstens 5 min; bei gesperrtem Speicher 30 min) und nur, solange die App offen ist
+      fbSync.fehler = (fbSync.fehler || 0) + 1;
       clearTimeout(fbSync.nochmal);
-      if (hsZugang) fbSync.nochmal = setTimeout(() => { if (hsZugang && navigator.onLine !== false) fbSync(); }, 15000);
+      if (hsZugang) fbSync.nochmal = setTimeout(() => { if (hsZugang && navigator.onLine !== false && document.visibilityState !== "hidden") fbSync(); },
+        /gesperrt/.test(e.message) ? 1800000 : Math.min(15000 * 2 ** (fbSync.fehler - 1), 300000));
     } finally {
       lsSchreiben(FB_OPS_KEY, fbOps);
       fbSyncLaeuft = null;
@@ -4052,7 +4084,7 @@ function fbRenderVerbindung(){
   else stand.textContent = fbDaten ? `Gespeicherter Stand${warteschlange}` : "";
 
   if (fbStatus.zustand === "fehler"){
-    el.innerHTML = `<div class="bs-status warn">Hof-Speicher gerade nicht erreichbar (${esc(fbStatus.text.replace(/[.\s]+$/, ""))}). ${fbDaten ? "Es wird der zuletzt geladene Stand angezeigt." : ""} Neue Einträge werden auf diesem Gerät gesammelt und automatisch übertragen – ein neuer Versuch läuft von selbst.</div>`;
+    el.innerHTML = `<div class="bs-status warn">Hof-Speicher gerade nicht erreichbar (${esc(fbStatus.text.replace(/[.\s]+$/, ""))}). ${fbDaten ? "Es wird der zuletzt geladene Stand angezeigt." : ""} Neue Einträge werden auf diesem Gerät gesammelt und automatisch übertragen – ein neuer Versuch läuft von selbst. Es geht nichts verloren.</div>`;
   } else if (fbStatus.zustand === "ok" && fbStatus.leer && !fbOps.length){
     el.innerHTML = `<div class="bs-hof"><div class="bs-hof-titel">📦 Das Feldbuch ist noch leer</div>
       <div class="bs-help">Einmalig die Startdaten übernehmen: die bereinigte Liste 2026, die Mandanten mit Adressen und die Firmen.
@@ -5149,7 +5181,8 @@ function fbReMeldung(text, ok = false){
   m.hidden = !text; m.className = "bs-status " + (ok ? "ok" : "warn"); m.textContent = text || "";
   if (text) m.scrollIntoView({behavior: "smooth", block: "center"});
 }
-async function fbRechnungErstellen(){
+// format: "pdf" = normale Rechnung (PDF), "e-rechnung" = E-Rechnung (XML) + PDF zum Ansehen
+async function fbRechnungErstellen(format = "pdf"){
   fbReMeldung("");
   $fb("fbRePositionen").querySelectorAll(".fehlt").forEach(x => x.classList.remove("fehlt"));
   const info = {set textContent(t){ fbReMeldung(t, /^✓/.test(t)); }};
@@ -5169,7 +5202,7 @@ async function fbRechnungErstellen(){
       if (!(fbZahl(p.menge) > 0)) tr.querySelector('[data-k="menge"]').classList.add("fehlt");
       if (!(fbZahl(p.preis) > 0)) tr.querySelector('[data-k="preis"]').classList.add("fehlt");
     });
-    info.textContent = `Bei ${ohne.length === 1 ? "1 Position" : ohne.length + " Positionen"} fehlt noch Menge oder Preis – rot markiert. Bitte eintragen, dann nochmal „Rechnung erstellen“.`;
+    info.textContent = `Bei ${ohne.length === 1 ? "1 Position" : ohne.length + " Positionen"} fehlt noch Menge oder Preis – rot markiert. Bitte eintragen, dann nochmal auf den Knopf.`;
     return;
   }
   const firmaDs = ((fbDaten && fbDaten.firmen) || []).find(x => x.Firma === firma) || {};
@@ -5177,17 +5210,25 @@ async function fbRechnungErstellen(){
     info.textContent = `Eine Position hat 0 % MwSt. Dann muss auf der Rechnung stehen, warum (Pflicht). Bitte in Stammdaten → Firma „${firma}“ das Feld „Grund Steuerbefreiung“ ausfüllen – oder den MwSt-Satz korrigieren.`;
     return;
   }
+  // E-Rechnung: Pflichtangaben VOR dem Erstellen prüfen – sonst wäre die Nummer schon vergeben
+  if (format === "e-rechnung"){
+    const fehlt = fbERechnungFehlt(firmaDs, adr, auswahl.map(p => ({mwst: fbZahl(p.mwst)})));
+    if (fehlt.length){
+      fbReMeldung(`Für die E-Rechnung fehlt noch: ${fehlt.join(" · ")}. Bitte in Stammdaten ergänzen (Firma bzw. Mandant) – oder „📄 Rechnung als PDF“ nehmen. Es wurde noch nichts erstellt.`);
+      return;
+    }
+  }
   const nr = fbNaechsteNr(firma, datum);
   const schon = auswahl.map(p => fbArbeiten().find(a => a.ID === p.id)).filter(a => a && a.Rechnung);
   const warnung = schon.length ? `\n\n⚠ ACHTUNG: ${schon.length === 1 ? "1 Arbeit ist" : schon.length + " Arbeiten sind"} schon abgerechnet (${[...new Set(schon.map(a => a.Rechnung))].join(", ")}) und ${schon.length === 1 ? "kommt" : "kommen"} jetzt nochmal auf eine Rechnung. War die alte Rechnung falsch, sie danach unten unter „Bisherige Rechnungen“ stornieren.` : "";
-  if (!confirm(`Rechnung ${nr} an ${adr.Name} über ${auswahl.length} Position(en) erstellen?\n\nDie Arbeiten werden dabei im Feldbuch als abgerechnet markiert.${warnung}`)) return;
+  if (!confirm(`${format === "e-rechnung" ? "E-Rechnung" : "Rechnung (PDF)"} ${nr} an ${adr.Name} über ${auswahl.length} Position(en) erstellen?\n\nDie Arbeiten werden dabei im Feldbuch als abgerechnet markiert.${warnung}`)) return;
   fbReMeldung("Erstelle Rechnung …", true);
   try {
-    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, nochmal: schon.map(a => a.ID),
+    const rechnung = await fbSofort({typ: "rechnung", firma, mandant, datum, format, nochmal: schon.map(a => a.ID),
       positionen: auswahl.map(p => ({id: p.id, datum: p.datum, text: p.text, taetigkeit: p.taetigkeit, menge: fbZahl(p.menge), einheit: p.einheit, preis: fbZahl(p.preis), mwst: fbZahl(p.mwst) ?? 19}))});
     fbRe.positionen = {}; fbRe.vorauswahl = null; fbAuswahlMerken = null;
     $fb("fbReInfo").textContent = "";
-    fbReMeldung(`✓ Rechnung ${rechnung.nr} erstellt.`, true);
+    fbReMeldung(`✓ ${format === "e-rechnung" ? "E-Rechnung" : "Rechnung"} ${rechnung.nr} erstellt.`, true);
     fbRechnungZeigen(rechnung);
   } catch(err) { info.textContent = "Nicht erstellt: " + err.message; }
 }
@@ -5227,12 +5268,12 @@ function fbBelegAusSpeicher(r){
     mandant: fbErgaenzt(r["Mandant-Daten"], fbDaten.mandanten.find(m => m.Kurzname === r.Mandant) || {Kurzname: r.Mandant}),
     storniert: r.Status === "storniert", stornoDurch: r["Storniert durch"] || "",
     art: r.Art === "Storno" ? "storno" : "", bezug: r.Art === "Storno" ? {nr: r["Storno zu"], datum: r["Storno zu Datum"]} : null,
-    test: r.Test ?? !fbDaten.offiziellSeit});
+    test: r.Test ?? !fbDaten.offiziellSeit, format: r.Format || "pdf"});
 }
 function fbRenderReListe(){
   const liste = ((fbDaten && fbDaten.rechnungen) || []).slice().sort((a, b) => String(b["Rechnungs-Nr."]).localeCompare(String(a["Rechnungs-Nr."])));
   $fb("fbReListe").innerHTML = liste.length ? `<div class="table-scroll fb-re-scroll"><table class="fb-aw fb-re-tab"><thead><tr><th>Nr.</th><th>Datum</th><th>Mandant</th><th>Firma</th><th class="num">Brutto</th><th>Zahlung</th><th></th></tr></thead><tbody>
-    ${liste.map(r => { const st = fbZahlStatus(r); return `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? ` <small>(storniert${r["Storniert durch"] ? " durch " + esc(r["Storniert durch"]) : ""})</small>` : ""}${r.Art === "Storno" ? " <small>Stornorechnung</small>" : ""}${(r.Test ?? fbTestphase()) ? ' <small class="fb-test">TEST</small>' : ""}</td><td data-l="Datum">${esc(fbDatumAnzeige(r.Datum))}</td><td data-l="Mandant">${esc(r.Mandant)}</td><td data-l="Firma">${esc(r.Firma)}</td>
+    ${liste.map(r => { const st = fbZahlStatus(r); return `<tr class="${r.Status === "storniert" ? "storniert" : ""}"><td>${esc(r["Rechnungs-Nr."])}${r.Status === "storniert" ? ` <small>(storniert${r["Storniert durch"] ? " durch " + esc(r["Storniert durch"]) : ""})</small>` : ""}${r.Art === "Storno" ? " <small>Stornorechnung</small>" : ""}${r.Format === "e-rechnung" ? ' <small class="fb-e">E-Rechnung</small>' : ""}${(r.Test ?? fbTestphase()) ? ' <small class="fb-test">TEST</small>' : ""}</td><td data-l="Datum">${esc(fbDatumAnzeige(r.Datum))}</td><td data-l="Mandant">${esc(r.Mandant)}</td><td data-l="Firma">${esc(r.Firma)}</td>
       <td class="num" data-l="Brutto">${fbEuro(fbZahl(r.Brutto))}</td><td class="fb-re-zahl">${st.html}</td><td class="fb-re-knoepfe"><button class="btn small" type="button" data-nr="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Anzeigen</button>${r.Status === "storniert" || r.Art === "Storno" ? "" : r.Bezahlt
         ? `<button class="btn small ghost" type="button" data-bezahlt="" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">↩ doch offen</button>`
         : `<button class="btn small" type="button" data-bezahlt="${fbHeuteIso()}" data-re="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">✓ Bezahlt</button><button class="btn small ghost" type="button" data-storno="${esc(r["Rechnungs-Nr."])}" data-firma="${esc(r.Firma)}">Stornieren</button>`}</td></tr>`; }).join("")}
@@ -5255,7 +5296,10 @@ function fbRechnungZeigen(r){
   const storno = r.art === "storno", vz = storno ? -1 : 1;   // Stornorechnung: Positionen mit Minus
   const titel = storno ? "Stornorechnung" : "Rechnung";
   const el = $fb("rechnungDruck");
-  el.innerHTML = `<div class="re-werkzeug"><button class="btn primary" type="button" data-re-pdf>📄 PDF wird vorbereitet …</button><button class="btn primary" type="button" data-re-xml>🧾 E-Rechnung herunterladen</button><button class="btn" type="button" id="reDrucken">🖨 Drucken</button><button class="btn" type="button" id="reZu">Schließen</button></div>
+  const eR = r.format === "e-rechnung";
+  const kPdf = (t) => `<button class="btn ${eR ? "" : "primary"}" type="button" data-re-pdf>${t}</button>`, kXml = `<button class="btn ${eR ? "primary" : ""}" type="button" data-re-xml>🧾 E-Rechnung (XML) herunterladen</button>`;
+  el.innerHTML = `<div class="re-werkzeug">${eR ? kXml + kPdf("📄 PDF wird vorbereitet …") : kPdf("📄 PDF wird vorbereitet …") + kXml}<button class="btn" type="button" id="reDrucken">🖨 Drucken</button><button class="btn" type="button" id="reZu">Schließen</button></div>
+  ${eR && !r.storniert ? `<div class="re-art-hinweis">🧾 <b>E-Rechnung:</b> Die XML-Datei ist die eigentliche Rechnung – sie an den Kunden schicken (am besten mit der PDF zum Ansehen) und die Mail aufheben.</div>` : ""}
   <div class="re-pdf-hinweis" id="rePdfHinweis"></div>
   <div class="re-blatt">
     <div class="re-kopf"><div class="re-absender"><b>${esc(f.Firma || "")}</b><br>${esc(f.Inhaber || "")}<br>${esc(f["Straße"] || "")}<br>${esc(f["PLZ Ort"] || "")}</div><img src="img/logo.png" alt=""></div>
@@ -5275,7 +5319,7 @@ function fbRechnungZeigen(r){
     <p style="margin-top:${f["Hinweis auf Rechnung"] ? 8 : 24}px">${storno ? `Der Rechnungsbetrag der Rechnung ${esc(r.bezug ? r.bezug.nr : "")} ist damit nicht mehr zu zahlen. Ein bereits gezahlter Betrag wird erstattet.` : "Bitte überweisen Sie den Betrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer. Vielen Dank für den Auftrag!"}</p>
     <div class="re-fuss"><div>${f.Bank ? esc(f.Bank) + "<br>" : ""}IBAN ${esc(f.IBAN || "")}<br>BIC ${esc(f.BIC || "")}</div><div style="text-align:right">${esc(f.Telefon || "")}<br>${esc(f["E-Mail"] || "")}${f["USt-IdNr."] ? "<br>USt-IdNr. " + esc(f["USt-IdNr."]) : ""}</div></div>
   </div>
-  <div class="re-werkzeug re-unten"><button class="btn primary" type="button" data-re-pdf>📄 PDF herunterladen</button><button class="btn primary" type="button" data-re-xml>🧾 E-Rechnung herunterladen</button><button class="btn" type="button" data-re-zu>Schließen</button></div>
+  <div class="re-werkzeug re-unten">${eR ? kXml + kPdf("📄 PDF herunterladen") : kPdf("📄 PDF herunterladen") + kXml}<button class="btn" type="button" data-re-zu>Schließen</button></div>
   <div class="re-pdf-hinweis" id="reXmlHinweis"></div>`;
   el.hidden = false;
   if (!(history.state && history.state.modal)) history.pushState({...(history.state || {}), tiefe: verlaufTiefe() + 1, modal: "rechnung"}, "", location.hash);
@@ -6240,7 +6284,8 @@ $fb("fbListeBody").addEventListener("keydown", e => {
 $fb("fbAuswahlKnopf").addEventListener("click", () => { fbAuswahl = fbAuswahl ? null : new Set(); fbAuswahlMerken = null; fbRenderListe(); });
 $fb("fbReMandant").addEventListener("change", e => { fbRe.mandant = e.target.value; fbRe.vorauswahl = null; fbRe.positionen = {}; fbRenderRePositionen(); });
 ["fbReFirma", "fbReDatum"].forEach(id => $fb(id).addEventListener("input", fbRenderReSumme));
-$fb("fbReErstellen").addEventListener("click", fbRechnungErstellen);
+$fb("fbReErstellen").addEventListener("click", () => fbRechnungErstellen("pdf"));
+$fb("fbReErstellenE").addEventListener("click", () => fbRechnungErstellen("e-rechnung"));
 $fb("fbReZurueck").addEventListener("click", () => {
   if (history.state && history.state.von === "feld-liste") history.back();
   else { geheZu("feld-liste"); if (fbTab !== "liste") fbZeigeTab("liste"); }
@@ -6252,7 +6297,12 @@ $fb("fbExportJson").addEventListener("click", fbExportJson);
 $fb("fbDialog").addEventListener("click", e => { if (e.target.id === "fbDialog") e.target.close(); });
 // Netz wieder da: Wartendes übertragen bzw. nach einem Fehler neuesten Stand holen
 window.addEventListener("online", () => { if (hsZugang && (fbOps.length || fbStatus.zustand === "fehler")) fbSync(); });
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && hsZugang) fbSync(); });   // beim Zurückkommen neuesten Stand holen
+// Beim Zurückkommen neuesten Stand holen – aber nicht bei jedem kurzen App-Wechsel (höchstens jede Minute)
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible" || !hsZugang) return;
+  if (fbOps.length || fbStatus.zustand !== "ok" || !fbSync.zuletzt || Date.now() - fbSync.zuletzt > 60000) fbSync();
+  if (hsStatus.zustand === "fehler") hsAbgleichen();
+});
 
 $fb("fbForm").elements["Datum"].value = fbHeuteIso();
 fbZeigeTab((location.hash.match(/^#feld-(\w+)/) || [])[1] || fbTab);

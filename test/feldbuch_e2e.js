@@ -88,10 +88,31 @@
     await fbAendern({typ: "neu", eintrag: {ID: "A-1", Datum: fbHeuteIso(), Mandant: "Beispiel", "Tätigkeit": "Mulchen", Stunden: 2}});
     pruef("Gleichzeitig gespeichert: beide Einträge erhalten", fbArbeiten().some(a => a.ID === "B-1") && fbArbeiten().some(a => a.ID === "A-1"));
   });
+  await schritt("Sparsam", async () => {
+    const z = async () => (await (await fetch("http://127.0.0.1:8779/?zaehler=1")).json());
+    await fbSync();
+    const vor = await z();
+    for (let i = 0; i < 5; i++) await fbAendern({typ: "neu", eintrag: {ID: "SP-" + i, Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
+    const nach = await z();
+    pruef("5 Änderungen = 5 aufwendige Vorgänge (vorher ca. 30)", nach.aufwendig - vor.aufwendig === 5, JSON.stringify({a: nach.aufwendig - vor.aufwendig, e: nach.einfach - vor.einfach}));
+    const v2 = await z(); await fbSync(); const n2 = await z();
+    pruef("Neu laden ohne Änderung: 0 aufwendige Vorgänge", n2.aufwendig === v2.aufwendig, JSON.stringify([v2, n2].map(x => x.aufwendig)));
+    // Speicher gesperrt (Kontingent aufgebraucht): Einträge bleiben auf dem Gerät, klare Meldung, kein Dauerfeuer
+    await fetch("http://127.0.0.1:8779/?sperre=1");
+    const g0 = await z();
+    await fbAendern({typ: "neu", eintrag: {ID: "SP-G", Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
+    pruef("Gesperrt: Eintrag bleibt auf dem Gerät, Meldung „gesperrt“", fbOps.length === 1 && fbArbeiten().some(a => a.ID === "SP-G") && /gesperrt/.test(fbStatus.text) && /nichts verloren/.test($fb("fbVerbindung").innerText), fbStatus.text);
+    await warte(16000);
+    pruef("Gesperrt: kein neuer Versuch nach 15 s (wartet 30 min)", (await z()).aufwendig === g0.aufwendig);
+    await fetch("http://127.0.0.1:8779/?sperre=0");
+    await fbSync();
+    pruef("Nach Entsperren: Eintrag übertragen", !fbOps.length && fbStatus.zustand === "ok");
+  });
   await schritt("Sicherheitsbremse", async () => {
     const echt = hsAnfrage;
     hsAnfrage = async n => n.aktion === "laden" && n.fach === "feldbuch" ? {ok: true, daten: null, version: null} : echt(n);
     const vorher = fbArbeiten().length;
+    fbGeladen.version = "unbekannt";   // Gerät kennt den Stand nicht → muss erst laden (und bekommt "leer")
     await fbAendern({typ: "neu", eintrag: {ID: "BR-1", Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
     hsAnfrage = echt;
     const server = await hsEntschluesseln((await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth})).daten);
@@ -545,6 +566,29 @@
       let fehler = ""; try { await fbSofort({typ: "neustart", daten: fbNeustartDaten || {feldarbeiten: [{ID: "x"}]}}); } catch(e) { fehler = e.message; }
       pruef("Neustart nur einmal möglich", /schon beendet/.test(fehler), fehler);
     } finally { window.confirm = echtConfirm; window.alert = echtAlert; fbSichern = echtSichern; }
+  });
+  await schritt("PDF oder E-Rechnung", async () => {
+    const echtConfirm = window.confirm; window.confirm = () => true;
+    try {
+      await fbAendern({typ: "neu", eintrag: {ID: "ZK-1", Datum: fbHeuteIso(), Mandant: "Muster", "Tätigkeit": "Mähen", Menge: "2", Einheit: "ha", Rechnung: ""}});
+      const muster = fbDaten.mandanten.find(m => m.Kurzname === "Muster");
+      await fbAendern({typ: "mandant", mandant: {...muster, "E-Mail": ""}});
+      geheZu("feld-rechnung"); fbZeigeTab("rechnung"); fbRe.mandant = "Muster"; fbRe.positionen = {}; fbRe.vorauswahl = new Set(["ZK-1"]);
+      fbRenderRechnung(); await warte(200);
+      pruef("Zwei Knöpfe: PDF und E-Rechnung", /PDF/.test($fb("fbReErstellen").innerText) && /E-Rechnung/.test($fb("fbReErstellenE").innerText));
+      Object.values(fbRe.positionen).forEach(p => { p.preis = "50"; });
+      const vorher = fbDaten.rechnungen.length, nrVorher = fbNaechsteNr("Testhof", fbHeuteIso());
+      $fb("fbReErstellenE").click(); await warte(800);
+      pruef("E-Rechnung ohne Kunden-E-Mail: nichts erstellt, Nummer nicht verbraucht, klarer Hinweis", fbDaten.rechnungen.length === vorher && fbNaechsteNr("Testhof", fbHeuteIso()) === nrVorher && /E-Mail/.test($fb("fbReMeldung").innerText) && /noch nichts erstellt/.test($fb("fbReMeldung").innerText), $fb("fbReMeldung").innerText);
+      await fbAendern({typ: "mandant", mandant: {...muster, "E-Mail": "muster@example.com"}});
+      $fb("fbReErstellenE").click(); await warte(1500);
+      const r = fbDaten.rechnungen[fbDaten.rechnungen.length - 1];
+      pruef("E-Rechnung erstellt (Art gespeichert)", fbDaten.rechnungen.length === vorher + 1 && r.Format === "e-rechnung", JSON.stringify(r && r.Format));
+      const werkzeug = document.querySelector("#rechnungDruck .re-werkzeug");
+      pruef("E-Rechnung: XML-Knopf vorne + Hinweis", werkzeug && werkzeug.firstElementChild.hasAttribute("data-re-xml") && /eigentliche Rechnung/.test($fb("rechnungDruck").innerText));
+      $fb("reZu").click(); await warte(300);
+      pruef("Liste zeigt „E-Rechnung“", /E-Rechnung/.test([...document.querySelectorAll("#fbReListe tr")].find(t => t.innerText.includes(r["Rechnungs-Nr."])).innerText));
+    } finally { window.confirm = echtConfirm; }
   });
   await schritt("Passwort", async () => {
     await fbPasswortAendern("Test-Traktor-Wiese-17");
