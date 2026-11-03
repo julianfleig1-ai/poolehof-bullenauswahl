@@ -3,7 +3,7 @@ import sys, json, time, urllib.request, os, subprocess, re
 T = os.path.dirname(os.path.abspath(__file__))
 exec(open(T + "/cdp.py").read().split("seiten = json.load")[0])
 c = CDP([p for p in json.load(urllib.request.urlopen("http://127.0.0.1:9333/json")) if p["type"] == "page"][0]["webSocketDebuggerUrl"])
-c.rufe("Page.navigate", url="http://127.0.0.1:8777/index.html?hofspeicher=http://127.0.0.1:8779/#feld"); time.sleep(4)
+c.rufe("Page.navigate", url="http://127.0.0.1:8777/index.html?github=http://127.0.0.1:8781&githubzugang=http://127.0.0.1:8781/zugang.json#feld"); time.sleep(4)
 r = c.rufe("Runtime.evaluate", expression=open(T + "/erechnung_daten.js").read(), awaitPromise=True, returnByValue=True, timeout=120000)
 werte = r.get("result", {}).get("result", {}).get("value")
 if not werte: print("FEHLER:", json.dumps(r)[:800]); sys.exit(1)

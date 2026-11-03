@@ -72,7 +72,7 @@
   });
   await schritt("Funkloch", async () => {
     const echt = window.fetch;
-    window.fetch = (u, o) => String(u).includes("8779") ? Promise.reject(new TypeError("offline")) : echt(u, o);
+    window.fetch = (u, o) => String(u).includes("8781") ? Promise.reject(new TypeError("offline")) : echt(u, o);
     const ok = await fbAendern({typ: "neu", eintrag: {ID: "OFF-1", Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen", Menge: 4, Einheit: "ha"}});
     pruef("Ohne Netz: Eintrag bleibt auf dem Gerät", !ok && fbOps.length === 1 && fbArbeiten().some(a => a.ID === "OFF-1" && a.__wartet));
     pruef("Ohne Netz: verständlicher Hinweis", /nicht erreichbar/i.test($fb("fbVerbindung").innerText), $fb("fbVerbindung").innerText);
@@ -89,30 +89,46 @@
     pruef("Gleichzeitig gespeichert: beide Einträge erhalten", fbArbeiten().some(a => a.ID === "B-1") && fbArbeiten().some(a => a.ID === "A-1"));
   });
   await schritt("Sparsam", async () => {
-    const z = async () => (await (await fetch("http://127.0.0.1:8779/?zaehler=1")).json());
+    const z = async () => (await (await fetch("http://127.0.0.1:8781/?zaehler=1")).json());
     await fbSync();
     const vor = await z();
     for (let i = 0; i < 5; i++) await fbAendern({typ: "neu", eintrag: {ID: "SP-" + i, Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
     const nach = await z();
-    pruef("5 Änderungen = 5 aufwendige Vorgänge (vorher ca. 30)", nach.aufwendig - vor.aufwendig === 5, JSON.stringify({a: nach.aufwendig - vor.aufwendig, e: nach.einfach - vor.einfach}));
+    pruef("5 Änderungen = 5 Speichervorgänge, ohne extra Laden", nach.schreiben - vor.schreiben === 5 && nach.lesen === vor.lesen, JSON.stringify({s: nach.schreiben - vor.schreiben, l: nach.lesen - vor.lesen}));
     const v2 = await z(); await fbSync(); const n2 = await z();
-    pruef("Neu laden ohne Änderung: 0 aufwendige Vorgänge", n2.aufwendig === v2.aufwendig, JSON.stringify([v2, n2].map(x => x.aufwendig)));
-    // Speicher gesperrt (Kontingent aufgebraucht): Einträge bleiben auf dem Gerät, klare Meldung, kein Dauerfeuer
-    await fetch("http://127.0.0.1:8779/?sperre=1");
-    const g0 = await z();
+    pruef("Neu laden ohne Änderung: 1 Abfrage, nichts gespeichert", n2.lesen - v2.lesen === 1 && n2.schreiben === v2.schreiben, JSON.stringify([n2.lesen - v2.lesen, n2.schreiben - v2.schreiben]));
+    pruef("Gespeichert wird komprimiert + verschlüsselt", (await hsAnfrage({aktion: "laden", fach: "feldbuch"})).daten.z === "gz");
+    // GitHub bremst (zu viele Anfragen): Eintrag bleibt auf dem Gerät, klare Meldung, später übertragen
+    await fetch("http://127.0.0.1:8781/?sperre=1");
     await fbAendern({typ: "neu", eintrag: {ID: "SP-G", Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
-    pruef("Gesperrt: Eintrag bleibt auf dem Gerät, Meldung „gesperrt“", fbOps.length === 1 && fbArbeiten().some(a => a.ID === "SP-G") && /gesperrt/.test(fbStatus.text) && /nichts verloren/.test($fb("fbVerbindung").innerText), fbStatus.text);
-    await warte(16000);
-    pruef("Gesperrt: kein neuer Versuch nach 15 s (wartet 30 min)", (await z()).aufwendig === g0.aufwendig);
-    await fetch("http://127.0.0.1:8779/?sperre=0");
+    pruef("Gebremst: Eintrag bleibt, Meldung, angemeldet", hsZugang && fbOps.length === 1 && fbArbeiten().some(a => a.ID === "SP-G") && /zu viele Anfragen/.test(fbStatus.text) && /nichts verloren/.test($fb("fbVerbindung").innerText), fbStatus.text);
+    await fetch("http://127.0.0.1:8781/?sperre=0");
     await fbSync();
-    pruef("Nach Entsperren: Eintrag übertragen", !fbOps.length && fbStatus.zustand === "ok");
+    pruef("Danach: Eintrag übertragen", !fbOps.length && fbStatus.zustand === "ok");
+    // GitHub-Schlüssel abgelaufen: NICHT abmelden (Daten bleiben), klare Meldung
+    await fetch("http://127.0.0.1:8781/?schluesselweg=1");
+    await fbAendern({typ: "neu", eintrag: {ID: "SP-S", Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
+    pruef("Schlüssel abgelaufen: angemeldet bleiben, Hinweis „Claude Bescheid“", hsZugang && fbGeladen && fbOps.length === 1 && /Schlüssel/.test(fbStatus.text) && /Claude/.test(fbStatus.text), fbStatus.text);
+    await fetch("http://127.0.0.1:8781/?schluesselweg=0");
+    await fbSync();
+    pruef("Schlüssel wieder gültig: übertragen", !fbOps.length && fbStatus.zustand === "ok");
+    pruef("Ablaufdatum des Schlüssels bekannt", ghSchluesselAblauf() && ghSchluesselAblauf().getFullYear() === 2027);
+  });
+  await schritt("Umzug", async () => {
+    // Gerät aus der Vercel-Zeit: hat Feldbuch + Kuhliste, das neue Fach ist leer → wird mitgenommen
+    const vorher = fbArbeiten().length;
+    await fetch("http://127.0.0.1:8781/?leeren=1");
+    fbGeladen = {daten: fbKopie(fbGeladen.daten), version: "v2:feldbuch:17"}; lsSchreiben(FB_DATEN_KEY, fbGeladen);
+    await fbSync();
+    const fern = await hsAnfrage({aktion: "laden", fach: "feldbuch"});
+    pruef("Umzug: Feldbuch dieses Geräts ins neue Fach übernommen", fbStatus.zustand === "ok" && fern.daten && /^gh:/.test(fbGeladen.version) && fbArbeiten().length === vorher && (await hsEntschluesseln(fern.daten)).feldarbeiten.length === vorher, fbStatus.text);
+    if (herde){ await hsAbgleichen(); pruef("Umzug: Kuhliste übernommen", !!(await hsAnfrage({aktion: "laden", fach: "herde"})).daten, hsStatus.text); }
   });
   await schritt("Sicherheitsbremse", async () => {
     const echt = hsAnfrage;
     hsAnfrage = async n => n.aktion === "laden" && n.fach === "feldbuch" ? {ok: true, daten: null, version: null} : echt(n);
     const vorher = fbArbeiten().length;
-    fbGeladen.version = "unbekannt";   // Gerät kennt den Stand nicht → muss erst laden (und bekommt "leer")
+    fbGeladen.version = "gh:veraltet";   // Speichern scheitert (Konflikt) → Gerät lädt neu und bekommt "leer"
     await fbAendern({typ: "neu", eintrag: {ID: "BR-1", Datum: fbHeuteIso(), Mandant: "Eigen", "Tätigkeit": "Walzen"}});
     hsAnfrage = echt;
     const server = await hsEntschluesseln((await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: hsZugang.auth})).daten);
@@ -304,7 +320,7 @@
     pruef("Zwei schnelle Änderungen: beide sofort übertragen", u1 && u2 && !fbOps.length, JSON.stringify([u1, u2, fbOps.length]));
   });
   await schritt("Einstellungen", async () => {
-    const M = "http://127.0.0.1:8779/";
+    const M = "http://127.0.0.1:8781/";
     navigiere("einstellungen"); await warte(200);
     pruef("Einstellungen-Seite öffnet", !document.getElementById("viewEinstellungen").hidden && /Einstellungen/.test(document.title));
     pruef("Einstellungen zeigt angemeldet", /Angemeldet/.test(document.getElementById("einstZugang").innerText) && !$fb("fbPwAendernForm").closest(".einst-karte").hidden);
@@ -591,10 +607,11 @@
     } finally { window.confirm = echtConfirm; }
   });
   await schritt("Passwort", async () => {
-    await fbPasswortAendern("Test-Traktor-Wiese-17");
-    pruef("Passwort ändern", hsZugang.verfahren === "v2" && fbStatus.zustand === "ok");
-    const alt = await hsAnfrage({aktion: "laden", fach: "feldbuch", schluessel: (await hsZugangAusPasswort("test-4711", "v1")).auth});
-    pruef("Altes Passwort gesperrt", !alt.ok);
+    navigiere("einstellungen"); renderEinstellungen(); await warte(200);
+    pruef("GitHub: Passwort-Ändern-Formular aus, Hinweis da", $fb("fbPwAendernForm").hidden && !document.getElementById("einstPwGithub").hidden);
+    pruef("Einstellungen zeigen Ablauf des GitHub-Schlüssels", /gültig bis/.test(document.getElementById("einstZugang").innerText), document.getElementById("einstZugang").innerText);
+    let fehler = ""; try { await fbPasswortAendern("Test-Traktor-Wiese-17"); } catch(e) { fehler = e.message; }
+    pruef("Passwort ändern in der App: klare Meldung, nichts kaputt", /Claude/.test(fehler) && hsZugang && fbStatus.zustand === "ok", fehler);
   });
   return erg;
 })()
