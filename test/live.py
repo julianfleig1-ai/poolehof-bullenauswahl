@@ -13,7 +13,7 @@ c.rufe("Page.addScriptToEvaluateOnNewDocument", source="""window.__fehler = [];
 erg = []
 def pruef(name, ok, info=""):
     erg.append((name, bool(ok), "" if ok else str(info)[:200]))
-BEREICHE = [("start", "viewStart"), ("bullen", "viewZucht"), ("besamung", "viewZucht"), ("feld", "viewFeld"), ("einstellungen", "viewEinstellungen")]
+BEREICHE = [("start", "viewStart"), ("bullen", "viewZucht"), ("besamung", "viewZucht"), ("feld", "viewFeld"), ("anleitungen", "viewAnleitungen"), ("anleitungen-guelle", "viewAnleitungen"), ("einstellungen", "viewEinstellungen")]
 for geraet, breite, hoehe, mobil in [("PC", 1280, 900, False), ("Handy", 375, 812, True)]:
     c.rufe("Emulation.setDeviceMetricsOverride", width=breite, height=hoehe, deviceScaleFactor=1, mobile=mobil)
     c.rufe("Page.navigate", url=BASIS + "?t=" + str(int(time.time()))); time.sleep(6)
@@ -30,6 +30,7 @@ for geraet, breite, hoehe, mobil in [("PC", 1280, 900, False), ("Handy", 375, 81
 pruef("Bullendaten erreichbar", c.js("fetch('data/status.json',{cache:'no-store'}).then(r => r.ok)") is True)
 pruef("Bullen geladen", c.js("fetch('data/wws_bulls.json',{cache:'no-store'}).then(r => r.json()).then(d => (Array.isArray(d) ? d : (d.bulls || d.bullen || [])).length)") or 0)
 pruef("GitHub-Schlüsseldatei erreichbar (verschlüsselt)", c.js("fetch('github-zugang.json',{cache:'no-store'}).then(r => r.json()).then(d => d.art === 'poolehof-github-zugang' && !!d.daten && !('token' in d))") is True)
+pruef("Anleitungen-Daten erreichbar", c.js("fetch('anleitungen/daten.json',{cache:'no-store'}).then(r => r.json()).then(d => d.anleitungen.length)") or 0)
 pruef("Speicher-Art GitHub", c.js("HS_MODUS") == "github")
 pruef("Offline-Helfer aktiv", c.js("navigator.serviceWorker.getRegistration().then(r => !!r)") is True)
 fehl = [e for e in erg if not e[1]]
