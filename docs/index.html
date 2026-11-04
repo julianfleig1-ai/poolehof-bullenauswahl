@@ -415,6 +415,8 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .anl-bild img{width:100%;height:calc(100% - 64px);object-fit:contain;display:block}
 .anl-bild p{color:#fff;margin:0;padding:10px 16px;font-size:16px}
 .anl-bild-zu{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.9);font-size:22px;cursor:pointer;z-index:2}
+.anl-mehr{margin:18px 0 6px}
+.anl-mehr summary{cursor:pointer;font-weight:600;padding:10px 0;font-size:16px}
 .anl-erklaerung{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:15px;margin:0 0 14px}
 .home-hinweis{display:flex;gap:12px;align-items:center;padding:13px 15px;border-radius:12px;margin-bottom:10px;text-decoration:none;font-size:14px}
 .home-hinweis.warn{background:var(--warn-soft);color:var(--warn)}
@@ -1951,12 +1953,12 @@ function anlBereich(d, id, box){
   const teile = [...new Set(liste.flatMap(a => a.schritte.filter(s => s.teil).map(s => s.teil)))]
     .sort((x, y) => (isNaN(x) ? 1000 : Number(x)) - (isNaN(y) ? 1000 : Number(y)) || x.localeCompare(y));
   const kurzname = t => /^\d+$/.test(t) ? t : ({KF: "Kurbel Ferm.", KN: "Kurbel Nachg.", KE: "Kurbel E2", SE: "Schieber Endl.", PU: "Pumpe unten", PO: "Pumpe oben", PE: "Pumpe Endl."}[t] || d.teile[t].name);
-  const matrix = teile.length ? `<h2 class="fb-zwischen">Übersicht: was bei welchem Vorgang</h2>
+  const matrix = teile.length ? `<details class="anl-mehr"><summary>📊 Übersichtstabelle anzeigen (alle Vorgänge auf einen Blick)</summary>
     <p class="bs-help">● = auf / an · ✕ = muss ZU sein · leer = egal/zu lassen. Zeile antippen öffnet die Anleitung.</p>
     <div class="table-scroll"><table class="anl-matrix"><thead><tr><th>Vorgang</th>${teile.map(t => `<th>${anlEsc(kurzname(t))}</th>`).join("")}</tr></thead><tbody>
     ${liste.map(a => `<tr><td><a href="#anleitung-${a.id}">${anlEsc(a.titel)}</a></td>${teile.map(t => { const s = a.schritte.find(x => x.teil === t);
       return s ? `<td class="${s.stellung}">${s.stellung === "zu" ? "✕" : "●"}</td>` : "<td></td>"; }).join("")}</tr>`).join("")}
-    </tbody></table></div>` : "";
+    </tbody></table></div></details>` : "";
   const mitBild = teile.filter(t => d.teile[t] && d.teile[t].bild);
   box.innerHTML = `<p class="bs-help"><a href="#anleitungen">← Alle Bereiche</a></p>
     <h2 class="anl-titel">${b.icon} ${anlEsc(b.titel)}</h2>
