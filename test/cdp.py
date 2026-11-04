@@ -63,6 +63,8 @@ if befehl == "test":
       fbRechnungZeigen({nr:'2026-001',datum:fbHeuteIso(),positionen:[{datum:fbHeuteIso(),text:'Test',menge:1,einheit:'h',preis:10,betrag:10}],netto:10,mwstSatz:.19,mwst:1.9,brutto:11.9,firma:fbDaten.firmen[0],mandant:fbDaten.mandanten[1]});await w(300);
       out.push('Rechnungsansicht'+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));$fb('reZu').click();
       navigiere('einstellungen');await w(300);out.push('Einstellungen'+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));
-      navigiere('zucht');await w(300);out.push('Zuchtplanung'+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));navigiere('feld');
+      navigiere('zucht');await w(300);out.push('Zuchtplanung'+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));
+      for(const z of ['anleitungen','anleitungen-guelle','anleitung-guelle-fahren-nachgaerer']){navigiere(z);await w(900);out.push(z+(document.documentElement.scrollWidth>innerWidth?' ✗ steht über':' ok'));}
+      const nav=[...document.querySelectorAll('.appnav-item span')].filter(s=>s.scrollWidth>s.clientWidth+1).map(s=>s.textContent);out.push('Leiste'+(nav.length?' ✗ abgeschnitten: '+nav.join(','):' ok'));navigiere('feld');
       return out.join(' | ')})()"""))
     print("Versteckte Fehlermeldungen:", c.js("JSON.stringify(window.__fehler)"))

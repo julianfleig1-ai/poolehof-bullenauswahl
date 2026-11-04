@@ -606,6 +606,29 @@
       pruef("Liste zeigt „E-Rechnung“", /E-Rechnung/.test([...document.querySelectorAll("#fbReListe tr")].find(t => t.innerText.includes(r["Rechnungs-Nr."])).innerText));
     } finally { window.confirm = echtConfirm; }
   });
+  await schritt("Anleitungen", async () => {
+    geheZu("anleitungen"); await warte(1500);
+    pruef("Anleitungen: Übersicht mit Bereich Gülle", !document.getElementById("viewAnleitungen").hidden && /Gülle/.test(document.getElementById("anlInhalt").innerText));
+    geheZu("anleitungen-guelle"); await warte(600);
+    pruef("Gülle: 8 Anleitungen + Übersichtstabelle + Wo ist", document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length === 8 && !!document.querySelector(".anl-matrix") && document.querySelectorAll(".anl-teil").length >= 15);
+    geheZu("anleitung-guelle-fahren-nachgaerer"); await warte(600);
+    pruef("Anleitung: Warnung + 9 Schritte", /Schieber 15 muss ZU/.test(document.getElementById("anlInhalt").innerText) && document.querySelectorAll(".anl-schritt").length === 9);
+    document.querySelectorAll(".anl-schritt")[0].click(); await warte(100);
+    pruef("Abhaken zählt mit", /1 von 9/.test(document.getElementById("anlInhalt").innerText) && document.querySelectorAll(".anl-schritt.erledigt").length === 1);
+    document.querySelector(".anl-schritt img[data-bild]").click(); await warte(200);
+    pruef("Foto groß", document.getElementById("anlBild").open);
+    document.querySelector(".anl-bild-zu").click(); await warte(100);
+    document.getElementById("anlReset").click(); await warte(100);
+    pruef("Von vorn", /0 von 9/.test(document.getElementById("anlInhalt").innerText));
+    geheZu("anleitungen"); await warte(300);
+    const su = document.getElementById("anlSuche"); su.value = "Schieber 15"; su.dispatchEvent(new Event("input")); await warte(300);
+    pruef("Suche „Schieber 15“: Foto + nur passende Anleitungen", /Wo ist Schieber 15/.test(document.getElementById("anlInhalt").innerText) && document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length === 5, document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length);
+    su.value = ""; su.dispatchEvent(new Event("input")); await warte(200);
+    const fehlend = []; const d = await anlLaden();
+    await Promise.all([...new Set(d.anleitungen.flatMap(a => a.schritte.map(s => s.bild)).concat(Object.values(d.teile).map(t => t.bild)).filter(Boolean))].map(async b => { const r = await fetch("anleitungen/bilder/" + b); if (!r.ok) fehlend.push(b); }));
+    const teileFehlen = d.anleitungen.flatMap(a => a.schritte.filter(s => s.teil && !d.teile[s.teil]).map(s => a.id + ":" + s.teil));
+    pruef("Anleitungen: alle Fotos da, alle Teile bekannt", !fehlend.length && !teileFehlen.length, fehlend.concat(teileFehlen).join(", "));
+  });
   await schritt("Passwort", async () => {
     navigiere("einstellungen"); renderEinstellungen(); await warte(200);
     pruef("GitHub: Passwort-Ändern-Formular aus, Hinweis da", $fb("fbPwAendernForm").hidden && !document.getElementById("einstPwGithub").hidden);

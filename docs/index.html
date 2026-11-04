@@ -370,6 +370,52 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .home-card-text small{display:block;font-size:13px;color:var(--ink-dim);margin-top:2px}
 .home-card-pfeil{font-size:26px;color:var(--ink-dim);flex:none}
 .home-card.bald{opacity:.75}
+/* Anleitungen */
+.anl-suche{margin:4px 0 16px}
+.anl-suche input{width:100%;box-sizing:border-box;font-size:17px;padding:13px 14px;border:1px solid var(--border-strong);border-radius:12px;background:var(--surface);color:var(--ink)}
+.anl-bereiche{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:18px}
+.anl-liste{display:flex;flex-direction:column;gap:10px}
+.anl-karte{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--ink);text-decoration:none}
+.anl-karte:hover{border-color:var(--accent)}
+.anl-karte .i{font-size:28px;flex:none}
+.anl-karte b{display:block;font-size:17px}
+.anl-karte small{display:block;color:var(--ink-dim);font-size:14px;margin-top:2px}
+.anl-karte .pf{margin-left:auto;color:var(--ink-dim);font-size:22px}
+.anl-titel{font-family:"Newsreader",Georgia,serif;font-size:26px;margin:6px 0 4px;line-height:1.2}
+.anl-kurz{color:var(--ink-dim);margin:0 0 12px;font-size:16px}
+.anl-warnung{background:var(--oxblood-soft);color:var(--oxblood);border:2px solid var(--oxblood);border-radius:12px;padding:12px 14px;font-weight:700;font-size:18px;margin:0 0 12px}
+.anl-fortschritt{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-size:15px;color:var(--ink-dim)}
+.anl-fortschritt .balken{flex:1;height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.anl-fortschritt .balken i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.anl-schritte{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.anl-schritt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;user-select:none}
+.anl-schritt.wichtig{border:2px solid var(--oxblood)}
+.anl-schritt.erledigt{opacity:.55}
+.anl-schritt.erledigt .anl-was{text-decoration:line-through}
+.anl-haken{flex:none;width:34px;height:34px;border-radius:10px;border:2px solid var(--border-strong);display:grid;place-items:center;font-size:20px;font-weight:700;color:#fff}
+.anl-schritt.erledigt .anl-haken{background:var(--accent);border-color:var(--accent)}
+.anl-was{flex:1;min-width:0;font-size:17px;line-height:1.35}
+.anl-was small{display:block;color:var(--ink-dim);font-size:14px}
+.anl-marke{display:inline-block;font-weight:800;font-size:14px;letter-spacing:.03em;border-radius:7px;padding:3px 8px;margin-right:6px;vertical-align:1px;color:#fff}
+.anl-marke.auf{background:#2e7d4f}.anl-marke.zu{background:#b3261e}.anl-marke.an{background:#1f5fa8}.anl-marke.zeit{background:#8a5a00}.anl-marke.info{background:#5b6472}
+.anl-foto{flex:none;width:76px;height:76px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--surface-2)}
+.anl-knoepfe{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.anl-matrix{border-collapse:separate;border-spacing:0;font-size:14px;min-width:100%}
+.anl-matrix th,.anl-matrix td{border-bottom:1px solid var(--border);padding:7px 6px;text-align:center;white-space:nowrap}
+.anl-matrix th:first-child,.anl-matrix td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);white-space:normal;min-width:150px;max-width:190px;z-index:1}
+.anl-matrix td.auf{color:#2e7d4f;font-weight:800}.anl-matrix td.zu{color:#b3261e;font-weight:800}.anl-matrix td.an{color:#1f5fa8;font-weight:800}
+.anl-matrix a{color:var(--ink)}
+.anl-teile{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.anl-teil{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);cursor:pointer;text-align:left;padding:0;color:var(--ink);font:inherit}
+.anl-teil img{width:100%;height:110px;object-fit:cover;display:block}
+.anl-teil span{display:block;padding:8px 10px;font-size:14px}
+.anl-teil b{font-size:15px}
+.anl-bild{border:0;padding:0;background:#000;max-width:100vw;max-height:100vh;width:100vw;height:100vh;margin:0}
+.anl-bild::backdrop{background:rgba(0,0,0,.92)}
+.anl-bild img{width:100%;height:calc(100% - 64px);object-fit:contain;display:block}
+.anl-bild p{color:#fff;margin:0;padding:10px 16px;font-size:16px}
+.anl-bild-zu{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.9);font-size:22px;cursor:pointer;z-index:2}
+.anl-erklaerung{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:15px;margin:0 0 14px}
 .home-hinweis{display:flex;gap:12px;align-items:center;padding:13px 15px;border-radius:12px;margin-bottom:10px;text-decoration:none;font-size:14px}
 .home-hinweis.warn{background:var(--warn-soft);color:var(--warn)}
 .home-hinweis.info{background:var(--surface-2);color:var(--ink);border:1px dashed var(--border-strong)}
@@ -729,6 +775,7 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
   <a class="appnav-item" data-view="start" href="#start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-6h4v6"/></svg><span>Start</span></a>
   <a class="appnav-item" data-view="zucht" href="#zucht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3c0 5 8 5 8 9s-8 4-8 9"/><path d="M16 3c0 5-8 5-8 9s8 4 8 9"/><path d="M9 6.5h6M9 17.5h6M10.5 12h3"/></svg><span>Zuchtplanung</span><span class="appnav-punkt" id="navPunkt" hidden></span></a>
   <a class="appnav-item" data-view="feld" href="#feld"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12C12 7.5 9 5 4 5c0 4.5 3 7 8 7z"/><path d="M12 13c0-3.6 2.4-6 7-6 0 3.6-2.4 6-7 6z"/><path d="M5 21h14"/></svg><span>Feldbuch</span></a>
+  <a class="appnav-item" data-view="anleitungen" href="#anleitungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg><span>Anleitungen</span></a>
   <a class="appnav-item appnav-einst" data-view="einstellungen" href="#einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Einstellungen</span><span class="appnav-punkt" id="navPunktEinst" hidden></span></a>
 </nav>
 
@@ -763,9 +810,18 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 
     <h2 class="home-abschnitt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12C12 7.5 9 5 4 5c0 4.5 3 7 8 7z"/><path d="M12 13c0-3.6 2.4-6 7-6 0 3.6-2.4 6-7 6z"/><path d="M5 21h14"/></svg>Feldbuch</h2>
     <div class="home-grid">
-      <a class="home-card bald" href="#feld">
+      <a class="home-card" href="#feld">
         <span class="home-card-icon">🚜</span>
-        <span class="home-card-text"><b>Feldarbeiten &amp; Rechnungen</b><small>Kommt als Nächstes</small></span>
+        <span class="home-card-text"><b>Feldarbeiten &amp; Rechnungen</b><small>Eintragen, Liste, Rechnung, Doku</small></span>
+        <span class="home-card-pfeil">›</span>
+      </a>
+    </div>
+
+    <h2 class="home-abschnitt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg>Anleitungen</h2>
+    <div class="home-grid">
+      <a class="home-card" href="#anleitungen">
+        <span class="home-card-icon">📖</span>
+        <span class="home-card-text"><b>Anleitungen &amp; Checklisten</b><small>Gülle, Fütterung, Maschinen – Schritt für Schritt</small></span>
         <span class="home-card-pfeil">›</span>
       </a>
     </div>
@@ -957,6 +1013,21 @@ dialog#fbDialog::backdrop{background:rgba(20,24,18,.45)}
 <dialog id="fbDialog" aria-labelledby="fbDialogTitel"></dialog>
 
 <!-- ===================== Zuchtplanung ===================== -->
+<!-- ===================== Anleitungen ===================== -->
+<!-- Inhalte: anleitungen/daten.json + Fotos in anleitungen/bilder/ – ohne Anmeldung lesbar -->
+<section id="viewAnleitungen" class="view" hidden>
+  <div class="wrap">
+    <header class="top"><div class="brand"><div>
+      <div class="kicker">Poolehof</div>
+      <h1>Anleitungen</h1>
+      <p class="sub">Schritt für Schritt zum Abhaken – mit Fotos, wo was ist.</p>
+    </div></div></header>
+    <div class="anl-suche"><input type="search" id="anlSuche" placeholder="Suchen – z. B. „Schieber 15“, „Gülle fahren“, „Fermenter“" autocomplete="off" aria-label="Anleitungen durchsuchen"></div>
+    <div id="anlInhalt"><p class="bs-help">Lade Anleitungen …</p></div>
+  </div>
+</section>
+<dialog id="anlBild" class="anl-bild"><button type="button" class="anl-bild-zu" aria-label="Schließen">✕</button><img alt=""><p></p></dialog>
+
 <section id="viewEinstellungen" class="view" hidden>
   <div class="wrap">
     <header class="top"><div class="brand"><div>
@@ -1788,8 +1859,8 @@ function zeigeTab(name){
 // Poolehof-App: Start | Zuchtplanung (#bullen, #besamung) | Feldbuch.
 // Die Adresse (#…) bestimmt die Ansicht – so funktionieren Zurück-Taste,
 // Lesezeichen und alte Links wie ".../#besamung" weiter.
-const ANSICHTEN = {start: "viewStart", zucht: "viewZucht", feld: "viewFeld", einstellungen: "viewEinstellungen"};
-const TITEL = {start: "Poolehof", zucht: "Zuchtplanung – Poolehof", feld: "Feldbuch – Poolehof", einstellungen: "Einstellungen – Poolehof"};
+const ANSICHTEN = {start: "viewStart", zucht: "viewZucht", feld: "viewFeld", anleitungen: "viewAnleitungen", einstellungen: "viewEinstellungen"};
+const TITEL = {start: "Poolehof", zucht: "Zuchtplanung – Poolehof", feld: "Feldbuch – Poolehof", anleitungen: "Anleitungen – Poolehof", einstellungen: "Einstellungen – Poolehof"};
 function navigiere(ziel){
   let ansicht = "start", tab = null;
   if (ziel === "bullen" || ziel === "besamung"){ ansicht = "zucht"; tab = ziel; }
@@ -1800,16 +1871,160 @@ function navigiere(ziel){
   }
   else if (ziel === "feld" || /^feld-\w+$/.test(ziel)) ansicht = "feld";
   else if (ziel === "einstellungen") ansicht = "einstellungen";
+  else if (/^anleitung(en)?(-[\w-]+)?$/.test(ziel)) ansicht = "anleitungen";
   for (const [k, id] of Object.entries(ANSICHTEN)) document.getElementById(id).hidden = k !== ansicht;
   document.querySelectorAll(".appnav-item").forEach(a => {
     if (a.dataset.view === ansicht) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
   if (tab) zeigeTab(tab);
-  const hash = "#" + (tab || (ansicht === "feld" && /^feld-\w+$/.test(ziel) ? ziel : ansicht));
+  const hash = "#" + (tab || (ansicht === "feld" && /^feld-\w+$/.test(ziel) ? ziel : ansicht === "anleitungen" ? ziel : ansicht));
   if (location.hash !== hash) history.replaceState(history.state, "", hash);   // Verlaufs-Infos behalten
   document.title = TITEL[ansicht];
   if (ansicht === "einstellungen" && window.renderEinstellungen) renderEinstellungen();
+  if (ansicht === "anleitungen") anlZeigen(ziel);
 }
+// ======================================================================
+// Anleitungen & Checklisten (für alle Mitarbeiter, ohne Anmeldung)
+// Inhalte stehen in anleitungen/daten.json – neue Anleitungen dort eintragen.
+//   #anleitungen            Übersicht (Suche + Bereiche)
+//   #anleitungen-<bereich>  alle Anleitungen eines Bereichs (+ Übersichtstabelle, "Wo ist …?")
+//   #anleitung-<id>         eine Anleitung zum Abhaken
+// ======================================================================
+let anlDaten = null, anlLaedt = null, anlZiel = "anleitungen";
+const ANL_REIHE = ["auf", "zu", "an"];
+function anlLaden(){
+  if (anlDaten) return Promise.resolve(anlDaten);
+  return anlLaedt || (anlLaedt = fetch("anleitungen/daten.json", {cache: "no-cache"}).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(d => { anlDaten = d; anlVorladen(d); return d; })
+    .catch(e => { anlLaedt = null; throw e; }));
+}
+// Fotos einmal im Hintergrund holen – dann gehen die Anleitungen auch ohne Netz (Offline-Helfer speichert sie)
+function anlVorladen(d){
+  const bilder = new Set();
+  d.anleitungen.forEach(a => a.schritte.forEach(s => { if (s.bild) bilder.add(s.bild); }));
+  Object.values(d.teile || {}).forEach(t => { if (t.bild) bilder.add(t.bild); });
+  setTimeout(() => [...bilder].forEach(b => fetch("anleitungen/bilder/" + b).catch(() => {})), 1500);
+}
+const anlEsc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+function anlSchrittText(d, s){
+  const t = s.teil && d.teile[s.teil];
+  const art = s.stellung || s.art || "info";
+  const marke = {auf: "AUF", zu: "ZU", an: "AN", zeit: "ZEIT", info: "INFO"}[art] || art.toUpperCase();
+  const was = t ? anlEsc(t.name) : anlEsc(s.text || "");
+  const wo = t && t.ort ? `<small>${anlEsc(t.ort)}</small>` : (s.text && t ? `<small>${anlEsc(s.text)}</small>` : "");
+  return {art, html: `<span class="anl-marke ${art}">${marke}</span>${t && t.name.startsWith("Pumpe") ? was + " einschalten" : was}${wo}`};
+}
+function anlZustandKey(id){ return "poolehof-anleitung-" + id; }
+function anlZustand(id){ try { return new Set(JSON.parse(sessionStorage.getItem(anlZustandKey(id)) || "[]")); } catch(e) { return new Set(); } }
+function anlZustandSpeichern(id, set){ try { sessionStorage.setItem(anlZustandKey(id), JSON.stringify([...set])); } catch(e) {} }
+function anlBildZeigen(src, text){
+  const d = document.getElementById("anlBild");
+  d.querySelector("img").src = "anleitungen/bilder/" + src;
+  d.querySelector("p").textContent = text || "";
+  if (!d.open) d.showModal();
+}
+document.getElementById("anlBild").addEventListener("click", e => { if (e.target.closest(".anl-bild-zu") || e.target.id === "anlBild") document.getElementById("anlBild").close(); });
+
+async function anlZeigen(ziel){
+  anlZiel = ziel || "anleitungen";
+  const box = document.getElementById("anlInhalt");
+  let d;
+  try { d = await anlLaden(); }
+  catch(e) { box.innerHTML = `<div class="bs-status warn">Anleitungen konnten nicht geladen werden (${anlEsc(e.message)}). Mit Netz einmal öffnen – danach gehen sie auch offline.</div>`; return; }
+  if (anlZiel !== (ziel || "anleitungen")) return;   // inzwischen woanders hin
+  const suche = document.getElementById("anlSuche");
+  const m1 = /^anleitung-([\w-]+)$/.exec(anlZiel), m2 = /^anleitungen-([\w-]+)$/.exec(anlZiel);
+  suche.parentElement.hidden = !!m1;
+  if (m1) return anlEinzeln(d, m1[1], box);
+  if (suche.value.trim()) return anlSuchen(d, box);
+  if (m2) return anlBereich(d, m2[1], box);
+  box.innerHTML = `<div class="anl-bereiche">${d.bereiche.map(b => { const n = d.anleitungen.filter(a => a.bereich === b.id).length;
+      return `<a class="anl-karte" href="#anleitungen-${b.id}"><span class="i">${b.icon}</span><span><b>${anlEsc(b.titel)}</b><small>${n} Anleitung${n === 1 ? "" : "en"} · ${anlEsc(b.text)}</small></span><span class="pf">›</span></a>`; }).join("")}</div>
+    <p class="bs-help">Weitere Bereiche (Fütterung, Traktor …) kommen nach und nach dazu.</p>`;
+}
+function anlKarte(a){ return `<a class="anl-karte" href="#anleitung-${a.id}"><span><b>${anlEsc(a.titel)}</b><small>${anlEsc(a.kurz)}</small></span><span class="pf">›</span></a>`; }
+function anlBereich(d, id, box){
+  const b = d.bereiche.find(x => x.id === id);
+  if (!b){ box.innerHTML = `<p class="bs-help">Diesen Bereich gibt es nicht. <a href="#anleitungen">Zur Übersicht</a></p>`; return; }
+  const liste = d.anleitungen.filter(a => a.bereich === id);
+  // Übersichtstabelle: welches Teil bei welchem Vorgang auf/zu/an
+  const teile = [...new Set(liste.flatMap(a => a.schritte.filter(s => s.teil).map(s => s.teil)))]
+    .sort((x, y) => (isNaN(x) ? 1000 : Number(x)) - (isNaN(y) ? 1000 : Number(y)) || x.localeCompare(y));
+  const kurzname = t => /^\d+$/.test(t) ? t : ({KF: "Kurbel Ferm.", KN: "Kurbel Nachg.", KE: "Kurbel E2", SE: "Schieber Endl.", PU: "Pumpe unten", PO: "Pumpe oben", PE: "Pumpe Endl."}[t] || d.teile[t].name);
+  const matrix = teile.length ? `<h2 class="fb-zwischen">Übersicht: was bei welchem Vorgang</h2>
+    <p class="bs-help">● = auf / an · ✕ = muss ZU sein · leer = egal/zu lassen. Zeile antippen öffnet die Anleitung.</p>
+    <div class="table-scroll"><table class="anl-matrix"><thead><tr><th>Vorgang</th>${teile.map(t => `<th>${anlEsc(kurzname(t))}</th>`).join("")}</tr></thead><tbody>
+    ${liste.map(a => `<tr><td><a href="#anleitung-${a.id}">${anlEsc(a.titel)}</a></td>${teile.map(t => { const s = a.schritte.find(x => x.teil === t);
+      return s ? `<td class="${s.stellung}">${s.stellung === "zu" ? "✕" : "●"}</td>` : "<td></td>"; }).join("")}</tr>`).join("")}
+    </tbody></table></div>` : "";
+  const mitBild = teile.filter(t => d.teile[t] && d.teile[t].bild);
+  box.innerHTML = `<p class="bs-help"><a href="#anleitungen">← Alle Bereiche</a></p>
+    <h2 class="anl-titel">${b.icon} ${anlEsc(b.titel)}</h2>
+    <div class="anl-erklaerung"><b>So geht's:</b> Anleitung öffnen und jeden Schritt antippen, wenn er erledigt ist. Foto antippen = groß. <b>Schieber: Hebel hoch = AUF, runter = ZU.</b></div>
+    <div class="anl-liste">${liste.map(anlKarte).join("")}</div>
+    ${matrix}
+    ${mitBild.length ? `<h2 class="fb-zwischen">Wo ist …?</h2><div class="anl-teile">${mitBild.map(t => `<button type="button" class="anl-teil" data-bild="${anlEsc(d.teile[t].bild)}" data-text="${anlEsc(d.teile[t].name + " – " + d.teile[t].ort)}"><img loading="lazy" src="anleitungen/bilder/${anlEsc(d.teile[t].bild)}" alt=""><span><b>${anlEsc(d.teile[t].name)}</b><br>${anlEsc(d.teile[t].ort)}</span></button>`).join("")}</div>` : ""}`;
+  box.querySelectorAll("[data-bild]").forEach(k => k.addEventListener("click", () => anlBildZeigen(k.dataset.bild, k.dataset.text)));
+}
+function anlEinzeln(d, id, box){
+  const a = d.anleitungen.find(x => x.id === id);
+  if (!a){ box.innerHTML = `<p class="bs-help">Diese Anleitung gibt es nicht (mehr). <a href="#anleitungen">Zur Übersicht</a></p>`; return; }
+  const b = d.bereiche.find(x => x.id === a.bereich) || {titel: "", icon: ""};
+  const fertig = anlZustand(a.id);
+  const zeichnen = () => {
+    const n = a.schritte.length, k = a.schritte.filter((s, i) => fertig.has(i)).length;
+    box.innerHTML = `<p class="bs-help"><a href="#anleitungen-${a.bereich}">← ${b.icon} ${anlEsc(b.titel)}</a></p>
+      <h2 class="anl-titel">${anlEsc(a.titel)}</h2>
+      <p class="anl-kurz">${anlEsc(a.kurz)}</p>
+      ${a.warnung ? `<div class="anl-warnung">⚠ ${anlEsc(a.warnung)}</div>` : ""}
+      <div class="anl-fortschritt"><span>${k} von ${n} erledigt</span><span class="balken"><i style="width:${Math.round(k / n * 100)}%"></i></span></div>
+      <ol class="anl-schritte">${a.schritte.map((s, i) => { const t = anlSchrittText(d, s);
+        return `<li class="anl-schritt ${s.wichtig ? "wichtig" : ""} ${fertig.has(i) ? "erledigt" : ""}" data-i="${i}" role="checkbox" aria-checked="${fertig.has(i)}" tabindex="0">
+          <span class="anl-haken">${fertig.has(i) ? "✓" : ""}</span><span class="anl-was">${t.html}</span>
+          ${s.bild ? `<img class="anl-foto" loading="lazy" src="anleitungen/bilder/${anlEsc(s.bild)}" alt="Foto" data-bild="${anlEsc(s.bild)}">` : ""}</li>`; }).join("")}</ol>
+      ${k === n ? `<div class="bs-status" style="margin-top:12px">✓ Alles erledigt.</div>` : ""}
+      <div class="anl-knoepfe"><button class="btn" type="button" id="anlReset">↺ Von vorn</button><button class="btn ghost" type="button" id="anlLink">🔗 Link kopieren (für QR-Code)</button></div>`;
+    box.querySelectorAll(".anl-schritt").forEach(li => {
+      const umschalten = () => { const i = Number(li.dataset.i); if (fertig.has(i)) fertig.delete(i); else fertig.add(i); anlZustandSpeichern(a.id, fertig); zeichnen(); };
+      li.addEventListener("click", e => { if (e.target.closest("[data-bild]")) return; umschalten(); });
+      li.addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter"){ e.preventDefault(); umschalten(); } });
+    });
+    box.querySelectorAll("img[data-bild]").forEach(img => img.addEventListener("click", e => {
+      e.stopPropagation(); const s = a.schritte[Number(img.closest(".anl-schritt").dataset.i)];
+      anlBildZeigen(img.dataset.bild, s.teil && d.teile[s.teil] ? d.teile[s.teil].name + " – " + (s.stellung || "").toUpperCase() : s.text);
+    }));
+    document.getElementById("anlReset").addEventListener("click", () => { fertig.clear(); anlZustandSpeichern(a.id, fertig); zeichnen(); });
+    document.getElementById("anlLink").addEventListener("click", async e => {
+      const url = location.origin + location.pathname + "#anleitung-" + a.id;
+      try { await navigator.clipboard.writeText(url); e.target.textContent = "✓ Link kopiert"; } catch(err) { prompt("Link für den QR-Code:", url); }
+    });
+  };
+  zeichnen();
+}
+// Suche über alle Anleitungen: Titel, Kurztext, Schlagworte, Teile (z. B. „Schieber 15“)
+function anlSuchen(d, box){
+  const q = document.getElementById("anlSuche").value.trim().toLowerCase();
+  const woerter = q.split(/\s+/).filter(Boolean);
+  const nr = (q.match(/\b(\d{1,2})\b/) || [])[1];
+  const treffer = d.anleitungen.map(a => {
+    const teilNamen = a.schritte.map(s => s.teil && d.teile[s.teil] ? d.teile[s.teil].name : s.text || "").join(" ");
+    const text = [a.titel, a.kurz, a.schlagworte, teilNamen].join(" ").toLowerCase();
+    let punkte = woerter.every(w => text.includes(w)) ? 2 : woerter.some(w => w.length > 2 && text.includes(w)) ? 1 : 0;
+    if (nr && a.schritte.some(s => s.teil === nr)) punkte += 2;
+    if (a.titel.toLowerCase().includes(q)) punkte += 3;
+    return {a, punkte};
+  }).filter(t => t.punkte > 0 && !(nr && d.teile[nr] && !t.a.schritte.some(s => s.teil === nr)))   // „Schieber 15“: nur, wo 15 vorkommt
+    .sort((x, y) => y.punkte - x.punkte);
+  const teil = nr && d.teile[nr];
+  box.innerHTML = (teil && teil.bild ? `<h2 class="fb-zwischen">Wo ist ${anlEsc(teil.name)}?</h2><div class="anl-teile"><button type="button" class="anl-teil" data-bild="${anlEsc(teil.bild)}" data-text="${anlEsc(teil.name + " – " + teil.ort)}"><img src="anleitungen/bilder/${anlEsc(teil.bild)}" alt=""><span><b>${anlEsc(teil.name)}</b><br>${anlEsc(teil.ort)}</span></button></div>` : "")
+    + `<h2 class="fb-zwischen">${treffer.length ? treffer.length + " Anleitung" + (treffer.length === 1 ? "" : "en") : "Nichts gefunden"}</h2>`
+    + (treffer.length ? `<div class="anl-liste">${treffer.map(t => anlKarte(t.a)).join("")}</div>` : `<p class="bs-help">Anderes Wort probieren – oder <a href="#anleitungen">alle Bereiche ansehen</a>.</p>`);
+  box.querySelectorAll("[data-bild]").forEach(k => k.addEventListener("click", () => anlBildZeigen(k.dataset.bild, k.dataset.text)));
+}
+document.getElementById("anlSuche").addEventListener("input", () => {
+  if (!/^anleitungen(-[\w-]+)?$/.test(anlZiel)) return;
+  anlLaden().then(d => document.getElementById("anlSuche").value.trim() ? anlSuchen(d, document.getElementById("anlInhalt")) : anlZeigen(anlZiel)).catch(() => {});
+});
 // --- Verlauf: "← Zurück" (Knopf oben, Zurück-Taste von Handy und Browser) ---------------
 // Jeder Schritt in der App (Ansicht, Reiter) bekommt einen Eintrag im Verlauf; "Zurück" geht genau einen Schritt zurück.
 function verlaufTiefe(){ return (history.state && history.state.tiefe) || 0; }

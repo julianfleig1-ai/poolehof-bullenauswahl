@@ -1,0 +1,157 @@
+{
+  "stand": "2026-11-04",
+  "bereiche": [
+    {"id": "guelle", "titel": "Gülle & Biogas", "icon": "🛢️", "text": "Umpumpen, Kanal spülen, Gülle fahren – welche Schieber auf und zu"}
+  ],
+  "teile": {
+    "1":  {"name": "Schieber 1",  "ort": "Pumpenplatz unten, Bretterboden (rechts)", "bild": "guelle/s01-05.jpg"},
+    "5":  {"name": "Schieber 5",  "ort": "Pumpenplatz unten, Bretterboden (links)", "bild": "guelle/s05.jpg"},
+    "6":  {"name": "Schieber 6",  "ort": "Pumpenplatz unten, Bretterboden (vorne)", "bild": "guelle/s06.jpg"},
+    "7":  {"name": "Schieber 7",  "ort": "beim Kasten der Einbringtechnik (links)", "bild": "guelle/s07.jpg"},
+    "9":  {"name": "Schieber 9",  "ort": "beim Kasten der Einbringtechnik (rechts)", "bild": "guelle/s09.jpg"},
+    "10": {"name": "Schieber 10", "ort": "Gitterrost neben der Einbringtechnik (rechts)", "bild": "guelle/s10-11.jpg"},
+    "11": {"name": "Schieber 11", "ort": "Gitterrost neben der Einbringtechnik (links)", "bild": "guelle/s10-11.jpg"},
+    "12": {"name": "Schieber 12", "ort": "Gitterrost neben der Einbringtechnik (links)", "bild": "guelle/s12-13.jpg"},
+    "13": {"name": "Schieber 13", "ort": "Gitterrost neben der Einbringtechnik (rechts)", "bild": "guelle/s12-13.jpg"},
+    "15": {"name": "Schieber 15", "ort": "Fermenter oben, gelbes Schild 15", "bild": "guelle/s15-auf.jpg"},
+    "16": {"name": "Schieber 16", "ort": "Fermenter, Betonring mit Schild 16 (beim grünen Rohr)", "bild": "guelle/s16-auf.jpg"},
+    "18": {"name": "Schieber 18", "ort": "beim dicken Rohr, gelbes Schild 18", "bild": "guelle/s18.jpg"},
+    "19": {"name": "Schieber 19", "ort": "beim dicken Rohr, gelbes Schild 19 (Richtung Endlager II)", "bild": "guelle/s19.jpg"},
+    "KF": {"name": "Kurbel Fermenter",  "ort": "auf dem Fermenter-Rost, beschriftet „Fermenter auf ↑ / zu ↓“", "bild": "guelle/kurbel-fermenter-auf.jpg"},
+    "KN": {"name": "Kurbel Nachgärer",  "ort": "auf dem Rost neben Schieber 15, beschriftet „Nachgärer auf ↑ / zu ↓“", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
+    "KE": {"name": "Kurbel Endlager 2", "ort": "auf dem Rost, beschriftet „Endlager 2 auf ↑ / zu ↓“", "bild": "guelle/kurbel-endlager2-auf.jpg"},
+    "SE": {"name": "Schieber Endlager oben", "ort": "an der Güllegrube oben (gelber Hebel)", "bild": "guelle/schieber-endlager-oben.jpg"},
+    "PU": {"name": "Pumpe unten", "ort": "Pumpenplatz unten"},
+    "PO": {"name": "Pumpe oben",  "ort": "beim Fermenter"},
+    "PE": {"name": "Pumpe Endlager", "ort": "Schaltkasten am Endlager oben", "bild": "guelle/pumpe-endlager.jpg"}
+  },
+  "anleitungen": [
+    {
+      "id": "guelle-kanal", "bereich": "guelle",
+      "titel": "Gülle von unten in Kanal (Kanal spülen)",
+      "kurz": "Schieber 1, 5, 7, 10, 11 auf – Pumpe unten an",
+      "schlagworte": "kanal spülen stall unten",
+      "schritte": [
+        {"teil": "1", "stellung": "auf", "bild": "guelle/s01-05.jpg"},
+        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
+        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
+        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-11.jpg"},
+        {"teil": "11", "stellung": "auf", "bild": "guelle/s10-11.jpg"},
+        {"teil": "PU", "stellung": "an"}
+      ]
+    },
+    {
+      "id": "guelle-fermenter", "bereich": "guelle",
+      "titel": "Gülle von unten (Stall) in Fermenter",
+      "kurz": "Schieber 1, 5, 9 auf – Pumpe unten an – 3–5 Min.",
+      "schlagworte": "stall fermenter f1 robi kanal leer",
+      "schritte": [
+        {"teil": "1", "stellung": "auf", "bild": "guelle/s01-05.jpg"},
+        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
+        {"teil": "9", "stellung": "auf", "bild": "guelle/s09.jpg"},
+        {"teil": "PU", "stellung": "an"},
+        {"text": "Timer am Handy auf 3–5 Minuten stellen", "art": "zeit"},
+        {"text": "Beobachten, bis der Kanal bei Robi 3 leer ist", "art": "info"}
+      ]
+    },
+    {
+      "id": "guelle-fermenter-nachgaerer", "bereich": "guelle",
+      "titel": "Gülle von Fermenter in Nachgärer",
+      "kurz": "Schieber 15, 16 auf – Kurbel Fermenter auf, Nachgärer zu – Pumpe oben an",
+      "schlagworte": "fermenter f1 nachgärer zeitschaltuhr einbringtechnik",
+      "warnung": "Schieber 12 muss ZU sein!",
+      "schritte": [
+        {"teil": "12", "stellung": "zu", "bild": "guelle/s12-zu.jpg", "wichtig": true},
+        {"teil": "15", "stellung": "auf", "bild": "guelle/s15-auf.jpg"},
+        {"teil": "16", "stellung": "auf", "bild": "guelle/s16-auf.jpg"},
+        {"teil": "KF", "stellung": "auf", "bild": "guelle/kurbel-fermenter-auf.jpg"},
+        {"teil": "KN", "stellung": "zu", "bild": "guelle/kurbel-nachgaerer-zu.jpg"},
+        {"teil": "PO", "stellung": "an"},
+        {"text": "Zeitschaltuhr „Laufzeit Einbringtechnik“ auf 0,5 – 1,0 Stunden stellen", "art": "zeit", "bild": "guelle/zeitschaltuhr.jpg"}
+      ]
+    },
+    {
+      "id": "guelle-nachgaerer-endlager", "bereich": "guelle",
+      "titel": "Gülle von Nachgärer ins Endlager oben",
+      "kurz": "Schieber 15 auf, 16 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
+      "schlagworte": "nachgärer endlager oben güllegrube",
+      "warnung": "Schieber 16 muss ZU sein!",
+      "schritte": [
+        {"teil": "16", "stellung": "zu", "bild": "guelle/s16-zu.jpg", "wichtig": true},
+        {"teil": "15", "stellung": "auf", "bild": "guelle/s15-auf.jpg"},
+        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
+        {"teil": "KN", "stellung": "auf", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
+        {"teil": "PO", "stellung": "an"}
+      ]
+    },
+    {
+      "id": "guelle-nachgaerer-endlager2", "bereich": "guelle",
+      "titel": "Gülle von Nachgärer in Endlager 2 (hinten)",
+      "kurz": "Schieber 12, 13, 18 auf, 15 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
+      "schlagworte": "nachgärer endlager 2 e2 hinten",
+      "warnung": "Schieber 15 muss ZU sein!",
+      "schritte": [
+        {"teil": "15", "stellung": "zu", "bild": "guelle/s15-zu.jpg", "wichtig": true},
+        {"text": "Die Schieber am Pumpenplatz unten (beim Kasten) sind zu", "art": "zu", "bild": "guelle/unten-zu.jpg"},
+        {"teil": "12", "stellung": "auf", "bild": "guelle/s12-13.jpg"},
+        {"teil": "13", "stellung": "auf", "bild": "guelle/s12-13.jpg"},
+        {"teil": "18", "stellung": "auf", "bild": "guelle/s18.jpg"},
+        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
+        {"teil": "KN", "stellung": "auf", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
+        {"teil": "PO", "stellung": "an"}
+      ]
+    },
+    {
+      "id": "guelle-fahren-nachgaerer", "bereich": "guelle",
+      "titel": "Gülle fahren aus Nachgärer",
+      "kurz": "Schieber 5, 6, 7, 10, 12 auf, 15 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
+      "schlagworte": "fahren fass laden nachgärer ausbringen",
+      "warnung": "Schieber 15 muss ZU sein!",
+      "schritte": [
+        {"teil": "15", "stellung": "zu", "bild": "guelle/s15-zu.jpg", "wichtig": true},
+        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
+        {"teil": "6", "stellung": "auf", "bild": "guelle/s06.jpg"},
+        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
+        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
+        {"teil": "12", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
+        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
+        {"teil": "KN", "stellung": "auf", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
+        {"teil": "PO", "stellung": "an"}
+      ]
+    },
+    {
+      "id": "guelle-fahren-endlager", "bereich": "guelle",
+      "titel": "Gülle fahren aus Endlager oben",
+      "kurz": "Schieber 5, 6, 7, 10, 13, 19 + Schieber Endlager auf – Pumpe Endlager an",
+      "schlagworte": "fahren fass laden endlager oben güllegrube ausbringen",
+      "schritte": [
+        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
+        {"teil": "6", "stellung": "auf", "bild": "guelle/s06.jpg"},
+        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
+        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-11.jpg"},
+        {"teil": "13", "stellung": "auf", "bild": "guelle/s12-13.jpg"},
+        {"teil": "19", "stellung": "auf", "bild": "guelle/s19.jpg"},
+        {"teil": "SE", "stellung": "auf", "bild": "guelle/schieber-endlager-oben.jpg"},
+        {"teil": "PE", "stellung": "an", "bild": "guelle/pumpe-endlager.jpg"}
+      ]
+    },
+    {
+      "id": "guelle-fahren-endlager2", "bereich": "guelle",
+      "titel": "Gülle fahren aus Endlager 2 (hinten)",
+      "kurz": "Schieber 5, 6, 7, 10, 12 auf, 15 ZU – Kurbel Endlager 2 auf, Fermenter zu – Pumpe oben an",
+      "schlagworte": "fahren fass laden endlager 2 e2 hinten ausbringen",
+      "warnung": "Schieber 15 muss ZU sein!",
+      "schritte": [
+        {"teil": "15", "stellung": "zu", "bild": "guelle/s15-zu.jpg", "wichtig": true},
+        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
+        {"teil": "6", "stellung": "auf", "bild": "guelle/s06.jpg"},
+        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
+        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
+        {"teil": "12", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
+        {"teil": "KE", "stellung": "auf", "bild": "guelle/kurbel-endlager2-auf.jpg"},
+        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
+        {"teil": "PO", "stellung": "an"}
+      ]
+    }
+  ]
+}
