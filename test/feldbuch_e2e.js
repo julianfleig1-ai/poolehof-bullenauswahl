@@ -610,7 +610,7 @@
     geheZu("anleitungen"); await warte(1500);
     pruef("Anleitungen: Übersicht mit Bereich Gülle", !document.getElementById("viewAnleitungen").hidden && /Gülle/.test(document.getElementById("anlInhalt").innerText));
     geheZu("anleitungen-guelle"); await warte(600);
-    pruef("Gülle: 8 Anleitungen + Übersichtstabelle, kein „Wo ist“ mehr", document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length === 8 && !!document.querySelector(".anl-matrix") && document.querySelectorAll(".anl-teil").length === 0);
+    pruef("Gülle: 12 Anleitungen in 2 Unterordnern + Übersichtstabelle, kein „Wo ist“ mehr", document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length === 12 && document.querySelectorAll("#anlInhalt .anl-gruppe").length === 2 && document.querySelectorAll(".anl-matrix tbody tr").length === 8 && !!document.querySelector(".anl-matrix") && document.querySelectorAll(".anl-teil").length === 0);
     pruef("Übersichtstabelle: Legende mit grünem Punkt", (() => { const b = document.querySelector(".anl-legende b.auf"); return !!b && getComputedStyle(b).color === "rgb(46, 125, 79)"; })());
     geheZu("anleitung-guelle-fahren-nachgaerer"); await warte(600);
     pruef("Anleitung: Warnung + 8 Schritte (10 + 12 auf einem Foto = ein Schritt)", /Schieber 15 muss ZU/.test(document.getElementById("anlInhalt").innerText) && document.querySelectorAll(".anl-schritt").length === 8 && /Schieber 10\s\+\s12/.test(document.getElementById("anlInhalt").innerText));
@@ -621,14 +621,26 @@
     document.querySelector(".anl-bild-zu").click(); await warte(100);
     document.getElementById("anlReset").click(); await warte(100);
     pruef("Von vorn", /0 von 8/.test(document.getElementById("anlInhalt").innerText));
+    geheZu("anleitung-biogas-motor-vorwaermen"); await warte(400);
+    pruef("Video-Anleitung: Knopf, keine Abhak-Leiste", !!document.querySelector("#anlInhalt a.anl-video[href^='https://1drv.ms/']") && !document.querySelector(".anl-fortschritt") && !document.getElementById("anlReset"));
+    geheZu("anleitung-checkliste-morgens"); await warte(400);
+    pruef("Checkliste: 10 Punkte ohne Marke, Galerie, Link auf Kanal spülen", document.querySelectorAll(".anl-schritt").length === 10 && !document.querySelector(".anl-schritt .anl-marke") && !!document.querySelector(".anl-galerie img") && !!document.querySelector('.anl-schrittlink[href="#anleitung-guelle-kanal"]'));
+    document.querySelector(".anl-schrittlink").click(); await warte(400);
+    pruef("Link-Klick öffnet andere Anleitung (ohne abzuhaken)", location.hash === "#anleitung-guelle-kanal");
+    geheZu("anleitungen-milchvieh"); await warte(400);
+    pruef("Kühe & Robi: Unterordner, keine Schiebertabelle", document.querySelectorAll("#anlInhalt .anl-gruppe").length === 4 && !document.querySelector(".anl-matrix"));
     geheZu("anleitungen"); await warte(300);
+    pruef("Übersicht: 5 Bereiche", document.querySelectorAll("#anlInhalt .anl-bereiche .anl-karte").length === 5);
     const su = document.getElementById("anlSuche"); su.value = "Schieber 15"; su.dispatchEvent(new Event("input")); await warte(300);
     pruef("Suche „Schieber 15“: Foto + nur passende Anleitungen", /Wo ist Schieber 15/.test(document.getElementById("anlInhalt").innerText) && document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length === 5, document.querySelectorAll("#anlInhalt .anl-liste .anl-karte").length);
     su.value = ""; su.dispatchEvent(new Event("input")); await warte(200);
     const fehlend = []; const d = await anlLaden();
-    await Promise.all([...new Set(d.anleitungen.flatMap(a => a.schritte.map(s => s.bild)).concat(Object.values(d.teile).map(t => t.bild)).filter(Boolean))].map(async b => { const r = await fetch("anleitungen/bilder/" + b); if (!r.ok) fehlend.push(b); }));
+    await Promise.all([...new Set(d.anleitungen.flatMap(a => a.schritte.map(s => s.bild).concat((a.bilder || []).map(b => b.bild))).concat(Object.values(d.teile).map(t => t.bild)).filter(Boolean))].map(async b => { const r = await fetch("anleitungen/bilder/" + b); if (!r.ok) fehlend.push(b); }));
     const teileFehlen = d.anleitungen.flatMap(a => a.schritte.filter(s => s.teil && !d.teile[s.teil]).map(s => a.id + ":" + s.teil));
     pruef("Anleitungen: alle Fotos da, alle Teile bekannt", !fehlend.length && !teileFehlen.length, fehlend.concat(teileFehlen).join(", "));
+    const ids = new Set(d.anleitungen.map(a => a.id)), bereiche = new Set(d.bereiche.map(b => b.id));
+    const kaputt = d.anleitungen.flatMap(a => a.schritte.filter(s => s.link && !ids.has(s.link)).map(s => a.id + "→" + s.link)).concat(d.anleitungen.filter(a => !bereiche.has(a.bereich)).map(a => a.id + ": Bereich?"));
+    pruef("Anleitungen: Links und Bereiche gültig, IDs eindeutig", !kaputt.length && ids.size === d.anleitungen.length, kaputt.join(", "));
   });
   await schritt("Passwort", async () => {
     navigiere("einstellungen"); renderEinstellungen(); await warte(200);

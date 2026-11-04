@@ -1,157 +1,1053 @@
 {
-  "stand": "2026-11-04",
-  "bereiche": [
-    {"id": "guelle", "titel": "Gülle & Biogas", "icon": "🛢️", "text": "Umpumpen, Kanal spülen, Gülle fahren – welche Schieber auf und zu"}
-  ],
-  "teile": {
-    "1":  {"name": "Schieber 1",  "ort": "Pumpenplatz unten, Bretterboden (rechts)", "bild": "guelle/s01-05.jpg"},
-    "5":  {"name": "Schieber 5",  "ort": "Pumpenplatz unten, Bretterboden (links)", "bild": "guelle/s05.jpg"},
-    "6":  {"name": "Schieber 6",  "ort": "Pumpenplatz unten, Bretterboden (vorne)", "bild": "guelle/s06.jpg"},
-    "7":  {"name": "Schieber 7",  "ort": "beim Kasten der Einbringtechnik (links)", "bild": "guelle/s07.jpg"},
-    "9":  {"name": "Schieber 9",  "ort": "beim Kasten der Einbringtechnik (rechts)", "bild": "guelle/s09.jpg"},
-    "10": {"name": "Schieber 10", "ort": "Gitterrost neben der Einbringtechnik (rechts)", "bild": "guelle/s10.jpg"},
-    "11": {"name": "Schieber 11", "ort": "Gitterrost neben der Einbringtechnik (links)", "bild": "guelle/s10-11.jpg"},
-    "12": {"name": "Schieber 12", "ort": "Gitterrost neben der Einbringtechnik (links)", "bild": "guelle/s12-13.jpg"},
-    "13": {"name": "Schieber 13", "ort": "Gitterrost neben der Einbringtechnik (rechts)", "bild": "guelle/s13.jpg"},
-    "15": {"name": "Schieber 15", "ort": "Fermenter oben, gelbes Schild 15", "bild": "guelle/s15-auf.jpg"},
-    "16": {"name": "Schieber 16", "ort": "Fermenter, Betonring mit Schild 16 (beim grünen Rohr)", "bild": "guelle/s16-auf.jpg"},
-    "18": {"name": "Schieber 18", "ort": "beim dicken Rohr, gelbes Schild 18", "bild": "guelle/s18.jpg"},
-    "19": {"name": "Schieber 19", "ort": "beim dicken Rohr, gelbes Schild 19 (Richtung Endlager II)", "bild": "guelle/s19.jpg"},
-    "KF": {"name": "Kurbel Fermenter",  "ort": "auf dem Fermenter-Rost, beschriftet „Fermenter auf ↑ / zu ↓“", "bild": "guelle/kurbel-fermenter-auf.jpg"},
-    "KN": {"name": "Kurbel Nachgärer",  "ort": "auf dem Rost neben Schieber 15, beschriftet „Nachgärer auf ↑ / zu ↓“", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
-    "KE": {"name": "Kurbel Endlager 2", "ort": "auf dem Rost, beschriftet „Endlager 2 auf ↑ / zu ↓“", "bild": "guelle/kurbel-endlager2-auf.jpg"},
-    "SE": {"name": "Schieber Endlager oben", "ort": "an der Güllegrube oben (gelber Hebel)", "bild": "guelle/schieber-endlager-oben.jpg"},
-    "PU": {"name": "Pumpe unten", "ort": "an der Fernsteuerung (beschriftet)"},
-    "PO": {"name": "Pumpe oben",  "ort": "an der Fernsteuerung (beschriftet)"},
-    "PE": {"name": "Pumpe Endlager", "ort": "Schaltkasten am Endlager oben", "bild": "guelle/pumpe-endlager.jpg"}
+ "stand": "2026-11-04",
+ "bereiche": [
+  {
+   "id": "guelle",
+   "titel": "Gülle & Biogas",
+   "icon": "🛢️",
+   "text": "Umpumpen, Kanal spülen, Gülle fahren, Biogas-Motor"
   },
-  "anleitungen": [
+  {
+   "id": "checklisten",
+   "titel": "Checklisten",
+   "icon": "✅",
+   "text": "Morgens und täglich im Stall"
+  },
+  {
+   "id": "milchvieh",
+   "titel": "Kühe, Melkroboter & Vector",
+   "icon": "🐄",
+   "text": "Robi, Vector, Tränkeautomat, Tiergesundheit"
+  },
+  {
+   "id": "feld",
+   "titel": "Feld & Maschinen",
+   "icon": "🚜",
+   "text": "Spritze, Autotrac, Güllefass"
+  },
+  {
+   "id": "sonstiges",
+   "titel": "Sonstiges",
+   "icon": "🔧",
+   "text": "Stroh mahlen, Getreidelager"
+  }
+ ],
+ "teile": {
+  "1": {
+   "name": "Schieber 1",
+   "ort": "Pumpenplatz unten, Bretterboden (rechts)",
+   "bild": "guelle/s01-05.jpg"
+  },
+  "5": {
+   "name": "Schieber 5",
+   "ort": "Pumpenplatz unten, Bretterboden (links)",
+   "bild": "guelle/s05.jpg"
+  },
+  "6": {
+   "name": "Schieber 6",
+   "ort": "Pumpenplatz unten, Bretterboden (vorne)",
+   "bild": "guelle/s06.jpg"
+  },
+  "7": {
+   "name": "Schieber 7",
+   "ort": "beim Kasten der Einbringtechnik (links)",
+   "bild": "guelle/s07.jpg"
+  },
+  "9": {
+   "name": "Schieber 9",
+   "ort": "beim Kasten der Einbringtechnik (rechts)",
+   "bild": "guelle/s09.jpg"
+  },
+  "10": {
+   "name": "Schieber 10",
+   "ort": "Gitterrost neben der Einbringtechnik (rechts)",
+   "bild": "guelle/s10.jpg"
+  },
+  "11": {
+   "name": "Schieber 11",
+   "ort": "Gitterrost neben der Einbringtechnik (links)",
+   "bild": "guelle/s10-11.jpg"
+  },
+  "12": {
+   "name": "Schieber 12",
+   "ort": "Gitterrost neben der Einbringtechnik (links)",
+   "bild": "guelle/s12-13.jpg"
+  },
+  "13": {
+   "name": "Schieber 13",
+   "ort": "Gitterrost neben der Einbringtechnik (rechts)",
+   "bild": "guelle/s13.jpg"
+  },
+  "15": {
+   "name": "Schieber 15",
+   "ort": "Fermenter oben, gelbes Schild 15",
+   "bild": "guelle/s15-auf.jpg"
+  },
+  "16": {
+   "name": "Schieber 16",
+   "ort": "Fermenter, Betonring mit Schild 16 (beim grünen Rohr)",
+   "bild": "guelle/s16-auf.jpg"
+  },
+  "18": {
+   "name": "Schieber 18",
+   "ort": "beim dicken Rohr, gelbes Schild 18",
+   "bild": "guelle/s18.jpg"
+  },
+  "19": {
+   "name": "Schieber 19",
+   "ort": "beim dicken Rohr, gelbes Schild 19 (Richtung Endlager II)",
+   "bild": "guelle/s19.jpg"
+  },
+  "KF": {
+   "name": "Kurbel Fermenter",
+   "ort": "auf dem Fermenter-Rost, beschriftet „Fermenter auf ↑ / zu ↓“",
+   "bild": "guelle/kurbel-fermenter-auf.jpg"
+  },
+  "KN": {
+   "name": "Kurbel Nachgärer",
+   "ort": "auf dem Rost neben Schieber 15, beschriftet „Nachgärer auf ↑ / zu ↓“",
+   "bild": "guelle/kurbel-nachgaerer-auf.jpg"
+  },
+  "KE": {
+   "name": "Kurbel Endlager 2",
+   "ort": "auf dem Rost, beschriftet „Endlager 2 auf ↑ / zu ↓“",
+   "bild": "guelle/kurbel-endlager2-auf.jpg"
+  },
+  "SE": {
+   "name": "Schieber Endlager oben",
+   "ort": "an der Güllegrube oben (gelber Hebel)",
+   "bild": "guelle/schieber-endlager-oben.jpg"
+  },
+  "PU": {
+   "name": "Pumpe unten",
+   "ort": "an der Fernsteuerung (beschriftet)"
+  },
+  "PO": {
+   "name": "Pumpe oben",
+   "ort": "an der Fernsteuerung (beschriftet)"
+  },
+  "PE": {
+   "name": "Pumpe Endlager",
+   "ort": "Schaltkasten am Endlager oben",
+   "bild": "guelle/pumpe-endlager.jpg"
+  }
+ },
+ "anleitungen": [
+  {
+   "id": "guelle-kanal",
+   "bereich": "guelle",
+   "titel": "Gülle von unten in Kanal (Kanal spülen)",
+   "kurz": "Schieber 1, 5, 7, 10, 11 auf – Pumpe unten an",
+   "schlagworte": "kanal spülen stall unten",
+   "schritte": [
     {
-      "id": "guelle-kanal", "bereich": "guelle",
-      "titel": "Gülle von unten in Kanal (Kanal spülen)",
-      "kurz": "Schieber 1, 5, 7, 10, 11 auf – Pumpe unten an",
-      "schlagworte": "kanal spülen stall unten",
-      "schritte": [
-        {"teil": "1", "stellung": "auf", "bild": "guelle/s01-05.jpg"},
-        {"teil": "5", "stellung": "auf", "bild": "guelle/s01-05.jpg"},
-        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
-        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-11.jpg"},
-        {"teil": "11", "stellung": "auf", "bild": "guelle/s10-11.jpg"},
-        {"teil": "PU", "stellung": "an"}
-      ]
+     "teil": "1",
+     "stellung": "auf",
+     "bild": "guelle/s01-05.jpg"
     },
     {
-      "id": "guelle-fermenter", "bereich": "guelle",
-      "titel": "Gülle von unten (Stall) in Fermenter",
-      "kurz": "Schieber 1, 5, 9 auf – Pumpe unten an – 3–5 Min.",
-      "schlagworte": "stall fermenter f1 robi kanal leer",
-      "schritte": [
-        {"teil": "1", "stellung": "auf", "bild": "guelle/s01-05.jpg"},
-        {"teil": "5", "stellung": "auf", "bild": "guelle/s01-05.jpg"},
-        {"teil": "9", "stellung": "auf", "bild": "guelle/s09.jpg"},
-        {"teil": "PU", "stellung": "an"},
-        {"text": "Timer am Handy auf 3–5 Minuten stellen", "art": "zeit"},
-        {"text": "Beobachten, bis der Kanal bei Robi 3 leer ist", "art": "info"}
-      ]
+     "teil": "5",
+     "stellung": "auf",
+     "bild": "guelle/s01-05.jpg"
     },
     {
-      "id": "guelle-fermenter-nachgaerer", "bereich": "guelle",
-      "titel": "Gülle von Fermenter in Nachgärer",
-      "kurz": "Schieber 15, 16 auf – Kurbel Fermenter auf, Nachgärer zu – Pumpe oben an",
-      "schlagworte": "fermenter f1 nachgärer zeitschaltuhr einbringtechnik",
-      "warnung": "Schieber 12 muss ZU sein!",
-      "schritte": [
-        {"teil": "12", "stellung": "zu", "bild": "guelle/s12-zu.jpg", "wichtig": true},
-        {"teil": "15", "stellung": "auf", "bild": "guelle/s15-auf.jpg"},
-        {"teil": "16", "stellung": "auf", "bild": "guelle/s16-auf.jpg"},
-        {"teil": "KF", "stellung": "auf", "bild": "guelle/kurbel-fermenter-auf.jpg"},
-        {"teil": "KN", "stellung": "zu", "bild": "guelle/kurbel-nachgaerer-zu.jpg"},
-        {"teil": "PO", "stellung": "an"},
-        {"text": "Zeitschaltuhr „Laufzeit Einbringtechnik“ auf 0,5 – 1,0 Stunden stellen", "art": "zeit", "bild": "guelle/zeitschaltuhr.jpg"}
-      ]
+     "teil": "7",
+     "stellung": "auf",
+     "bild": "guelle/s07.jpg"
     },
     {
-      "id": "guelle-nachgaerer-endlager", "bereich": "guelle",
-      "titel": "Gülle von Nachgärer ins Endlager oben",
-      "kurz": "Schieber 15 auf, 16 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
-      "schlagworte": "nachgärer endlager oben güllegrube",
-      "warnung": "Schieber 16 muss ZU sein!",
-      "schritte": [
-        {"teil": "16", "stellung": "zu", "bild": "guelle/s16-zu.jpg", "wichtig": true},
-        {"teil": "15", "stellung": "auf", "bild": "guelle/s15-auf.jpg"},
-        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
-        {"teil": "KN", "stellung": "auf", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
-        {"teil": "PO", "stellung": "an"}
-      ]
+     "teil": "10",
+     "stellung": "auf",
+     "bild": "guelle/s10-11.jpg"
     },
     {
-      "id": "guelle-nachgaerer-endlager2", "bereich": "guelle",
-      "titel": "Gülle von Nachgärer in Endlager 2 (hinten)",
-      "kurz": "Schieber 12, 13, 18 auf, 15 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
-      "schlagworte": "nachgärer endlager 2 e2 hinten",
-      "warnung": "Schieber 15 muss ZU sein!",
-      "schritte": [
-        {"teil": "15", "stellung": "zu", "bild": "guelle/s15-zu.jpg", "wichtig": true},
-        {"text": "Alle Schieber beim Kasten der Einbringtechnik sind ZU (Pfeile nach unten)", "art": "zu", "bild": "guelle/unten-zu.jpg"},
-        {"teil": "12", "stellung": "auf", "bild": "guelle/s12-13.jpg"},
-        {"teil": "13", "stellung": "auf", "bild": "guelle/s12-13.jpg"},
-        {"teil": "18", "stellung": "auf", "bild": "guelle/s18.jpg"},
-        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
-        {"teil": "KN", "stellung": "auf", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
-        {"teil": "PO", "stellung": "an"}
-      ]
+     "teil": "11",
+     "stellung": "auf",
+     "bild": "guelle/s10-11.jpg"
     },
     {
-      "id": "guelle-fahren-nachgaerer", "bereich": "guelle",
-      "titel": "Gülle fahren aus Nachgärer",
-      "kurz": "Schieber 5, 6, 7, 10, 12 auf, 15 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
-      "schlagworte": "fahren fass laden nachgärer ausbringen",
-      "warnung": "Schieber 15 muss ZU sein!",
-      "schritte": [
-        {"teil": "15", "stellung": "zu", "bild": "guelle/s15-zu.jpg", "wichtig": true},
-        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
-        {"teil": "6", "stellung": "auf", "bild": "guelle/s06.jpg"},
-        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
-        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
-        {"teil": "12", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
-        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
-        {"teil": "KN", "stellung": "auf", "bild": "guelle/kurbel-nachgaerer-auf.jpg"},
-        {"teil": "PO", "stellung": "an"}
-      ]
-    },
-    {
-      "id": "guelle-fahren-endlager", "bereich": "guelle",
-      "titel": "Gülle fahren aus Endlager oben",
-      "kurz": "Schieber 5, 6, 7, 10, 13, 19 + Schieber Endlager auf – Pumpe Endlager an",
-      "schlagworte": "fahren fass laden endlager oben güllegrube ausbringen",
-      "schritte": [
-        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
-        {"teil": "6", "stellung": "auf", "bild": "guelle/s06.jpg"},
-        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
-        {"teil": "10", "stellung": "auf", "bild": "guelle/s10.jpg"},
-        {"teil": "13", "stellung": "auf", "bild": "guelle/s13.jpg"},
-        {"teil": "19", "stellung": "auf", "bild": "guelle/s19.jpg"},
-        {"teil": "SE", "stellung": "auf", "bild": "guelle/schieber-endlager-oben.jpg"},
-        {"teil": "PE", "stellung": "an", "bild": "guelle/pumpe-endlager.jpg"}
-      ]
-    },
-    {
-      "id": "guelle-fahren-endlager2", "bereich": "guelle",
-      "titel": "Gülle fahren aus Endlager 2 (hinten)",
-      "kurz": "Schieber 5, 6, 7, 10, 12 auf, 15 ZU – Kurbel Endlager 2 auf, Fermenter zu – Pumpe oben an",
-      "schlagworte": "fahren fass laden endlager 2 e2 hinten ausbringen",
-      "warnung": "Schieber 15 muss ZU sein!",
-      "schritte": [
-        {"teil": "15", "stellung": "zu", "bild": "guelle/s15-zu.jpg", "wichtig": true},
-        {"teil": "5", "stellung": "auf", "bild": "guelle/s05.jpg"},
-        {"teil": "6", "stellung": "auf", "bild": "guelle/s06.jpg"},
-        {"teil": "7", "stellung": "auf", "bild": "guelle/s07.jpg"},
-        {"teil": "10", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
-        {"teil": "12", "stellung": "auf", "bild": "guelle/s10-12.jpg"},
-        {"teil": "KE", "stellung": "auf", "bild": "guelle/kurbel-endlager2-auf.jpg"},
-        {"teil": "KF", "stellung": "zu", "bild": "guelle/kurbel-fermenter-zu.jpg"},
-        {"teil": "PO", "stellung": "an"}
-      ]
+     "teil": "PU",
+     "stellung": "an"
     }
-  ]
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-fermenter",
+   "bereich": "guelle",
+   "titel": "Gülle von unten (Stall) in Fermenter",
+   "kurz": "Schieber 1, 5, 9 auf – Pumpe unten an – 3–5 Min.",
+   "schlagworte": "stall fermenter f1 robi kanal leer",
+   "schritte": [
+    {
+     "teil": "1",
+     "stellung": "auf",
+     "bild": "guelle/s01-05.jpg"
+    },
+    {
+     "teil": "5",
+     "stellung": "auf",
+     "bild": "guelle/s01-05.jpg"
+    },
+    {
+     "teil": "9",
+     "stellung": "auf",
+     "bild": "guelle/s09.jpg"
+    },
+    {
+     "teil": "PU",
+     "stellung": "an"
+    },
+    {
+     "text": "Timer am Handy auf 3–5 Minuten stellen",
+     "art": "zeit"
+    },
+    {
+     "text": "Beobachten, bis der Kanal bei Robi 3 leer ist",
+     "art": "info"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-fermenter-nachgaerer",
+   "bereich": "guelle",
+   "titel": "Gülle von Fermenter in Nachgärer",
+   "kurz": "Schieber 15, 16 auf – Kurbel Fermenter auf, Nachgärer zu – Pumpe oben an",
+   "schlagworte": "fermenter f1 nachgärer zeitschaltuhr einbringtechnik",
+   "warnung": "Schieber 12 muss ZU sein!",
+   "schritte": [
+    {
+     "teil": "12",
+     "stellung": "zu",
+     "bild": "guelle/s12-zu.jpg",
+     "wichtig": true
+    },
+    {
+     "teil": "15",
+     "stellung": "auf",
+     "bild": "guelle/s15-auf.jpg"
+    },
+    {
+     "teil": "16",
+     "stellung": "auf",
+     "bild": "guelle/s16-auf.jpg"
+    },
+    {
+     "teil": "KF",
+     "stellung": "auf",
+     "bild": "guelle/kurbel-fermenter-auf.jpg"
+    },
+    {
+     "teil": "KN",
+     "stellung": "zu",
+     "bild": "guelle/kurbel-nachgaerer-zu.jpg"
+    },
+    {
+     "teil": "PO",
+     "stellung": "an"
+    },
+    {
+     "text": "Zeitschaltuhr „Laufzeit Einbringtechnik“ auf 0,5 – 1,0 Stunden stellen",
+     "art": "zeit",
+     "bild": "guelle/zeitschaltuhr.jpg"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-nachgaerer-endlager",
+   "bereich": "guelle",
+   "titel": "Gülle von Nachgärer ins Endlager oben",
+   "kurz": "Schieber 15 auf, 16 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
+   "schlagworte": "nachgärer endlager oben güllegrube",
+   "warnung": "Schieber 16 muss ZU sein!",
+   "schritte": [
+    {
+     "teil": "16",
+     "stellung": "zu",
+     "bild": "guelle/s16-zu.jpg",
+     "wichtig": true
+    },
+    {
+     "teil": "15",
+     "stellung": "auf",
+     "bild": "guelle/s15-auf.jpg"
+    },
+    {
+     "teil": "KF",
+     "stellung": "zu",
+     "bild": "guelle/kurbel-fermenter-zu.jpg"
+    },
+    {
+     "teil": "KN",
+     "stellung": "auf",
+     "bild": "guelle/kurbel-nachgaerer-auf.jpg"
+    },
+    {
+     "teil": "PO",
+     "stellung": "an"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-nachgaerer-endlager2",
+   "bereich": "guelle",
+   "titel": "Gülle von Nachgärer in Endlager 2 (hinten)",
+   "kurz": "Schieber 12, 13, 18 auf, 15 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
+   "schlagworte": "nachgärer endlager 2 e2 hinten",
+   "warnung": "Schieber 15 muss ZU sein!",
+   "schritte": [
+    {
+     "teil": "15",
+     "stellung": "zu",
+     "bild": "guelle/s15-zu.jpg",
+     "wichtig": true
+    },
+    {
+     "text": "Alle Schieber beim Kasten der Einbringtechnik sind ZU (Pfeile nach unten)",
+     "art": "zu",
+     "bild": "guelle/unten-zu.jpg"
+    },
+    {
+     "teil": "12",
+     "stellung": "auf",
+     "bild": "guelle/s12-13.jpg"
+    },
+    {
+     "teil": "13",
+     "stellung": "auf",
+     "bild": "guelle/s12-13.jpg"
+    },
+    {
+     "teil": "18",
+     "stellung": "auf",
+     "bild": "guelle/s18.jpg"
+    },
+    {
+     "teil": "KF",
+     "stellung": "zu",
+     "bild": "guelle/kurbel-fermenter-zu.jpg"
+    },
+    {
+     "teil": "KN",
+     "stellung": "auf",
+     "bild": "guelle/kurbel-nachgaerer-auf.jpg"
+    },
+    {
+     "teil": "PO",
+     "stellung": "an"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-fahren-nachgaerer",
+   "bereich": "guelle",
+   "titel": "Gülle fahren aus Nachgärer",
+   "kurz": "Schieber 5, 6, 7, 10, 12 auf, 15 ZU – Kurbel Fermenter zu, Nachgärer auf – Pumpe oben an",
+   "schlagworte": "fahren fass laden nachgärer ausbringen",
+   "warnung": "Schieber 15 muss ZU sein!",
+   "schritte": [
+    {
+     "teil": "15",
+     "stellung": "zu",
+     "bild": "guelle/s15-zu.jpg",
+     "wichtig": true
+    },
+    {
+     "teil": "5",
+     "stellung": "auf",
+     "bild": "guelle/s05.jpg"
+    },
+    {
+     "teil": "6",
+     "stellung": "auf",
+     "bild": "guelle/s06.jpg"
+    },
+    {
+     "teil": "7",
+     "stellung": "auf",
+     "bild": "guelle/s07.jpg"
+    },
+    {
+     "teil": "10",
+     "stellung": "auf",
+     "bild": "guelle/s10-12.jpg"
+    },
+    {
+     "teil": "12",
+     "stellung": "auf",
+     "bild": "guelle/s10-12.jpg"
+    },
+    {
+     "teil": "KF",
+     "stellung": "zu",
+     "bild": "guelle/kurbel-fermenter-zu.jpg"
+    },
+    {
+     "teil": "KN",
+     "stellung": "auf",
+     "bild": "guelle/kurbel-nachgaerer-auf.jpg"
+    },
+    {
+     "teil": "PO",
+     "stellung": "an"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-fahren-endlager",
+   "bereich": "guelle",
+   "titel": "Gülle fahren aus Endlager oben",
+   "kurz": "Schieber 5, 6, 7, 10, 13, 19 + Schieber Endlager auf – Pumpe Endlager an",
+   "schlagworte": "fahren fass laden endlager oben güllegrube ausbringen",
+   "schritte": [
+    {
+     "teil": "5",
+     "stellung": "auf",
+     "bild": "guelle/s05.jpg"
+    },
+    {
+     "teil": "6",
+     "stellung": "auf",
+     "bild": "guelle/s06.jpg"
+    },
+    {
+     "teil": "7",
+     "stellung": "auf",
+     "bild": "guelle/s07.jpg"
+    },
+    {
+     "teil": "10",
+     "stellung": "auf",
+     "bild": "guelle/s10.jpg"
+    },
+    {
+     "teil": "13",
+     "stellung": "auf",
+     "bild": "guelle/s13.jpg"
+    },
+    {
+     "teil": "19",
+     "stellung": "auf",
+     "bild": "guelle/s19.jpg"
+    },
+    {
+     "teil": "SE",
+     "stellung": "auf",
+     "bild": "guelle/schieber-endlager-oben.jpg"
+    },
+    {
+     "teil": "PE",
+     "stellung": "an",
+     "bild": "guelle/pumpe-endlager.jpg"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-fahren-endlager2",
+   "bereich": "guelle",
+   "titel": "Gülle fahren aus Endlager 2 (hinten)",
+   "kurz": "Schieber 5, 6, 7, 10, 12 auf, 15 ZU – Kurbel Endlager 2 auf, Fermenter zu – Pumpe oben an",
+   "schlagworte": "fahren fass laden endlager 2 e2 hinten ausbringen",
+   "warnung": "Schieber 15 muss ZU sein!",
+   "schritte": [
+    {
+     "teil": "15",
+     "stellung": "zu",
+     "bild": "guelle/s15-zu.jpg",
+     "wichtig": true
+    },
+    {
+     "teil": "5",
+     "stellung": "auf",
+     "bild": "guelle/s05.jpg"
+    },
+    {
+     "teil": "6",
+     "stellung": "auf",
+     "bild": "guelle/s06.jpg"
+    },
+    {
+     "teil": "7",
+     "stellung": "auf",
+     "bild": "guelle/s07.jpg"
+    },
+    {
+     "teil": "10",
+     "stellung": "auf",
+     "bild": "guelle/s10-12.jpg"
+    },
+    {
+     "teil": "12",
+     "stellung": "auf",
+     "bild": "guelle/s10-12.jpg"
+    },
+    {
+     "teil": "KE",
+     "stellung": "auf",
+     "bild": "guelle/kurbel-endlager2-auf.jpg"
+    },
+    {
+     "teil": "KF",
+     "stellung": "zu",
+     "bild": "guelle/kurbel-fermenter-zu.jpg"
+    },
+    {
+     "teil": "PO",
+     "stellung": "an"
+    }
+   ],
+   "gruppe": "Umpumpen & Gülle fahren"
+  },
+  {
+   "id": "guelle-kanalplan",
+   "bereich": "guelle",
+   "gruppe": "Umpumpen & Gülle fahren",
+   "titel": "Kanalplan (Zeichnung)",
+   "kurz": "Wie die Rohre zwischen Fermenter, Nachgärer, Endlager und Stall laufen",
+   "schlagworte": "kanalplan pumpenplan plan zeichnung rohre",
+   "bilder": [
+    {
+     "bild": "guelle/kanalplan.jpg",
+     "text": "Kanalplan"
+    }
+   ],
+   "schritte": []
+  },
+  {
+   "id": "biogas-druckschalter",
+   "bereich": "guelle",
+   "gruppe": "Biogas",
+   "titel": "Einbringtechnik Druckschalter prüfen",
+   "kurz": "Video",
+   "schlagworte": "einbringtechnik druckschalter",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EQBiHRN6yQxNkAtAUQXQyPIBTAk5swk-_KyTey9G7lWDXw",
+   "schritte": []
+  },
+  {
+   "id": "biogas-gasluftmischer",
+   "bereich": "guelle",
+   "gruppe": "Biogas",
+   "titel": "Gas/Luftmischer kontrollieren",
+   "kurz": "Video",
+   "schlagworte": "gas luft mischer motor bhkw",
+   "video": "https://1drv.ms/v/c/9f46c3e998876aa5/IQDYkPSzUSxOQY4VAjTr73HpAe_bRnEDSouAjiEdyCXFS-E",
+   "schritte": []
+  },
+  {
+   "id": "biogas-motor-vorwaermen",
+   "bereich": "guelle",
+   "gruppe": "Biogas",
+   "titel": "Motor vorwärmen",
+   "kurz": "Video",
+   "schlagworte": "motor vorwärmen bhkw",
+   "video": "https://1drv.ms/v/c/9f46c3e998876aa5/IQDVVDnKT9W6RbWkWKgtSJEDATHq4KgMGqGh9mya71V0f7M",
+   "schritte": []
+  },
+  {
+   "id": "checkliste-morgens",
+   "bereich": "checklisten",
+   "titel": "Checkliste morgens",
+   "kurz": "Kalb, Futtertisch, Futterküche, Biogas",
+   "schlagworte": "morgens checkliste kalb futtertisch biogas",
+   "schritte": [
+    {
+     "text": "Abkalbung, neues Kalb? → Kraftfutter Roboter?",
+     "art": "schritt"
+    },
+    {
+     "text": "Futtertisch: wo fast leer, 1 Schaufelbreite an der Barrenwand ausräumen",
+     "art": "schritt"
+    },
+    {
+     "text": "Futterküche: Ampel grün? Futtertisch voll?",
+     "art": "schritt"
+    },
+    {
+     "text": "Biogas: 330 kW läuft? Motoren kontrollieren – ruhiger Lauf, Leistung, NOx",
+     "art": "schritt"
+    },
+    {
+     "text": "Kanal spülen + Einbringtechnik füllen, ca. 7,2 t",
+     "art": "schritt",
+     "link": "guelle-kanal"
+    },
+    {
+     "text": "Gülle in Fermenter, bis Kanal unten leer ist",
+     "art": "schritt",
+     "link": "guelle-fermenter"
+    },
+    {
+     "text": "Füllstand Fermenter + Schwimmbollen?",
+     "art": "schritt"
+    },
+    {
+     "text": "Von Fermenter in Nachgärer pumpen – Achtung: Nachgärer genug Platz?",
+     "art": "schritt",
+     "link": "guelle-fermenter-nachgaerer"
+    },
+    {
+     "text": "Futterküche Checkliste",
+     "art": "schritt"
+    },
+    {
+     "text": "Checkliste täglich Stall",
+     "art": "schritt",
+     "link": "checkliste-stall"
+    }
+   ],
+   "bilder": [
+    {
+     "bild": "checklisten/morgens.jpg",
+     "text": "Checkliste morgens (Original)"
+    }
+   ]
+  },
+  {
+   "id": "checkliste-stall",
+   "bereich": "checklisten",
+   "titel": "Checkliste Stall täglich (Herdenmanagement)",
+   "kurz": "Kalbung, ECM, Wiederkauen, Nachgeburt, Frischkalber, Besamung",
+   "schlagworte": "stall täglich herdenmanagement kalbung ecm wiederkauen frischkalber besamung",
+   "schritte": [
+    {
+     "text": "Halsband neue Kalbinnen lockern",
+     "art": "schritt"
+    },
+    {
+     "text": "Kalbung? Futter Roboter?",
+     "art": "schritt"
+    },
+    {
+     "text": "ECM grün? Fett/Eiweiß grün?",
+     "art": "schritt"
+    },
+    {
+     "text": "Wiederkauen mind. 585 min",
+     "art": "schritt"
+    },
+    {
+     "text": "Nachgeburt bei Frischgekalbten ab? Sonst Nachgeb. morgens/abends + Ars D12",
+     "art": "schritt",
+     "link": "milch-nachgeburt"
+    },
+    {
+     "text": "Frischkalber ab 4. Laktationstag, wenn fit, auf Robi 1 bis 3 verteilen",
+     "art": "schritt"
+    },
+    {
+     "text": "Frischkalber kontrollieren, Tränkebecken reinigen",
+     "art": "schritt"
+    },
+    {
+     "text": "Besamung",
+     "art": "schritt"
+    },
+    {
+     "text": "Gesundheitscheck",
+     "art": "schritt"
+    },
+    {
+     "text": "Rundgang, Kälber anschauen",
+     "art": "schritt"
+    },
+    {
+     "text": "Humpelnde Kuh in Fresh Cow + Tierseparation eintragen",
+     "art": "schritt"
+    }
+   ],
+   "bilder": [
+    {
+     "bild": "checklisten/stall-taeglich.jpg",
+     "text": "Checkliste täglich (Original)"
+    }
+   ]
+  },
+  {
+   "id": "milch-nachgeburt",
+   "bereich": "milchvieh",
+   "gruppe": "Tiergesundheit (Kügele)",
+   "titel": "Nachgeburt (Verhalten)",
+   "kurz": "Sprühflaschen morgens / abends + Arsenicum D12",
+   "schlagworte": "nachgeburt kügele homöopathie globuli spray frischgekalbt",
+   "schritte": [
+    {
+     "text": "Morgens: Flasche „Nachgeburtsverhalten Morgens“ – Borax C200, Silicea C200, Sabina D6, Secale D6",
+     "art": "schritt"
+    },
+    {
+     "text": "Abends: Flasche „Nachgeb. Verh. Abends“ – Lachesis C200, Pyrogenium C200, Sabina D6, Secale D6",
+     "art": "schritt"
+    },
+    {
+     "text": "Dazu: Arsenicum album D12 (braune Flasche)",
+     "art": "schritt"
+    }
+   ],
+   "bilder": [
+    {
+     "bild": "milchvieh/nachgeburt.jpg",
+     "text": "Die drei Flaschen"
+    }
+   ]
+  },
+  {
+   "id": "milch-festliegen",
+   "bereich": "milchvieh",
+   "gruppe": "Tiergesundheit (Kügele)",
+   "titel": "Festliegen",
+   "kurz": "Drei Flaschen nacheinander, alle 15–30 Min., 2 Durchgänge",
+   "schlagworte": "festliegen kügele homöopathie milchfieber",
+   "text": "Alle 15 bis 30 Minuten, 2 Durchgänge. Reihenfolge wie die Pfeile auf dem Foto.",
+   "schritte": [
+    {
+     "text": "Flasche „Festliegen“ – Calc. carb. 200, Calc. phos. 200, Veratrum alb. 200",
+     "art": "schritt"
+    },
+    {
+     "text": "Nach ca. 15 Min.: Flasche Nux vomica C200, Lycopodium C200, Chelidonium C200",
+     "art": "zeit"
+    },
+    {
+     "text": "Nach ca. 15 Min.: Flasche Aconitum, Phosphor",
+     "art": "zeit"
+    }
+   ],
+   "bilder": [
+    {
+     "bild": "milchvieh/festliegen.jpg",
+     "text": "Festliegen – Reihenfolge der Flaschen"
+    }
+   ]
+  },
+  {
+   "id": "robi-durchfluss",
+   "bereich": "milchvieh",
+   "gruppe": "Melkroboter",
+   "titel": "Fehler: Durchfluss Wasserversorgung kaltes Wasser zu niedrig",
+   "kurz": "Video",
+   "schlagworte": "robi melkroboter fehler wasser durchfluss kalt",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EeSHn5FjcYFBgeIL2VncZtMBMZgA_imn6VAaHTYwXviolw",
+   "schritte": []
+  },
+  {
+   "id": "robi-neustart",
+   "bereich": "milchvieh",
+   "gruppe": "Melkroboter",
+   "titel": "Neustart Robi",
+   "kurz": "Video",
+   "schlagworte": "robi melkroboter neustart",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/ESgcSacGxPRFjzupfqBjtNQB9sbVcSs6U-5HNNOsKFMahg",
+   "schritte": []
+  },
+  {
+   "id": "robi-milchtank",
+   "bereich": "milchvieh",
+   "gruppe": "Melkroboter",
+   "titel": "Einstellungen im Milchtank ändern",
+   "kurz": "Video",
+   "schlagworte": "milchtank einstellungen robi",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EZnsX8hnl_1BqKS3vggvboQBWwH1U57NBpKFwSKMnpS_jQ",
+   "schritte": []
+  },
+  {
+   "id": "robi-system-neustart",
+   "bereich": "milchvieh",
+   "gruppe": "Melkroboter",
+   "titel": "Kompletter System-Neustart",
+   "kurz": "Roboter, Zentraleinheiten und CRS der Reihe nach",
+   "schlagworte": "robi melkroboter system neustart crs zentraleinheit reset",
+   "schritte": [
+    {
+     "text": "Alle Roboter aus",
+     "art": "schritt"
+    },
+    {
+     "text": "Alle Zentraleinheiten aus",
+     "art": "schritt"
+    },
+    {
+     "text": "CRS aus + Batterie ausstecken",
+     "art": "schritt"
+    },
+    {
+     "text": "Alle Zentraleinheiten an",
+     "art": "schritt"
+    },
+    {
+     "text": "Alle Roboter: nur Sicherungen rein",
+     "art": "schritt"
+    },
+    {
+     "text": "CRS Strom + Batterie ein",
+     "art": "schritt"
+    },
+    {
+     "text": "Im CRS am PC rechts bei Gruppenübersicht, bei Gruppe A und B: Reset, dann Ein",
+     "art": "schritt"
+    },
+    {
+     "text": "Beim aufploppenden Fenster ABBRECHEN drücken",
+     "art": "info",
+     "wichtig": true
+    },
+    {
+     "text": "Alle Roboter in Betrieb nehmen",
+     "art": "schritt"
+    }
+   ]
+  },
+  {
+   "id": "robi-crs-start",
+   "bereich": "milchvieh",
+   "gruppe": "Melkroboter",
+   "titel": "Roboter über Fernbedienung CRS starten",
+   "kurz": "CRS am PC – Gruppe A und B – Abbrechen drücken",
+   "schlagworte": "crs roboter starten pc fernbedienung gruppenspülung",
+   "schritte": [
+    {
+     "text": "Am PC im CRS anmelden",
+     "art": "schritt"
+    },
+    {
+     "text": "Betriebsübersicht öffnen",
+     "art": "schritt"
+    },
+    {
+     "text": "Rechts bei Gruppenübersicht: Gruppe A und B (wie beim System-Neustart: Reset, dann Ein)",
+     "art": "schritt"
+    },
+    {
+     "text": "Fenster „Gruppenspülung starten“ ploppt auf → ABBRECHEN drücken!",
+     "art": "info",
+     "wichtig": true
+    }
+   ]
+  },
+  {
+   "id": "vector-manuell-fuettern",
+   "bereich": "milchvieh",
+   "gruppe": "Vector",
+   "titel": "Vector: manuelle Fütterung",
+   "kurz": "Video",
+   "schlagworte": "vector manuell fütterung füttern lely",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EdOe4ie5LGtEsrSg7VrRuzoBIHu1whuShyvTpq0ITVSy3Q",
+   "schritte": []
+  },
+  {
+   "id": "vector-bluetooth",
+   "bereich": "milchvieh",
+   "gruppe": "Vector",
+   "titel": "Vector: Bluetooth-Platine im Schaltschrank zurücksetzen",
+   "kurz": "Video",
+   "schlagworte": "vector bluetooth platine schaltschrank reset lely",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EVzPPYxghX1IhW6FnSSTN10Bnwpt3kUdDlUHTxBuM-5khw",
+   "schritte": []
+  },
+  {
+   "id": "vector-abladen",
+   "bereich": "milchvieh",
+   "gruppe": "Vector",
+   "titel": "Vector manuell abladen",
+   "kurz": "Testmodus – Tür, Rolle, Rührwerk – vorwärts fahren",
+   "schlagworte": "vector manuell abladen testmodus lely",
+   "video": "https://1drv.ms/v/c/9f46c3e998876aa5/EWqXh5acc39HtnM4d3nxY14Bp16O0--ZRFSvNXux7s0CFw",
+   "schritte": [
+    {
+     "text": "In den Testmodus gehen (Code: Pfeil unten, Pfeil oben, Punkt oben)",
+     "art": "schritt"
+    },
+    {
+     "text": "Motoren testen",
+     "art": "schritt"
+    },
+    {
+     "text": "Türmotor auf → Rolle an → Rührwerk an",
+     "art": "schritt"
+    },
+    {
+     "text": "Mit den Antriebsmotoren vorwärts fahren",
+     "art": "schritt"
+    },
+    {
+     "text": "Zum Schluss Schritt 3 in umgekehrter Reihenfolge",
+     "art": "schritt"
+    }
+   ]
+  },
+  {
+   "id": "vector-ersatzteile",
+   "bereich": "milchvieh",
+   "gruppe": "Vector",
+   "titel": "Vector Ersatzteile: Batterie",
+   "kurz": "OPTIMA YELLOWTOP YTS 4.2 – 12 V, 55 Ah, 765 A",
+   "schlagworte": "vector ersatzteile batterie optima yellowtop",
+   "text": "Batterie: OPTIMA YELLOWTOP (Deep Cycle & Starting), Spiral Size YTS 4.2 · 12 V · 55 Ah (C20) · 765 A (CCA EN) · Model No. 8012-254 · Part No. 812 254 0008882",
+   "bilder": [
+    {
+     "bild": "milchvieh/vector-batterie.jpg",
+     "text": "Batterie-Aufkleber"
+    }
+   ],
+   "schritte": []
+  },
+  {
+   "id": "traenke-nuckel-wechsel",
+   "bereich": "milchvieh",
+   "gruppe": "Tränkeautomat",
+   "titel": "Nuckel wechseln (Tränkeautomat)",
+   "kurz": "Wartung → Verschleißteile → Nuckelüberwachung – nach Fotos",
+   "schlagworte": "nuckel wechsel tränkeautomat kälber holm laue",
+   "schritte": [
+    {
+     "text": "Hauptmenü → Wartung: „Verschleißteile“ drücken",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-1.jpg"
+    },
+    {
+     "text": "„Nuckelüberwachung“ drücken",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-2.jpg"
+    },
+    {
+     "text": "Liste: Nuckel/Station auswählen (Taste wie auf dem Foto)",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-3.jpg"
+    },
+    {
+     "text": "Taste am Tastenfeld drücken wie auf dem Foto",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-4.jpg"
+    },
+    {
+     "text": "Taste unten rechts (Nuckel-Symbol) drücken",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-5.jpg"
+    },
+    {
+     "text": "Nuckel auswählen (Holm & Laue, Nuckelöffnung) und mit ✓ bestätigen",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-6.jpg"
+    },
+    {
+     "text": "„Änderung des Nuckels bestätigen?“ → ✓",
+     "art": "schritt",
+     "bild": "milchvieh/nuckel-7.jpg"
+    },
+    {
+     "text": "Kontrolle: Startdatum = heute, Dauer 0 Tage",
+     "art": "info",
+     "bild": "milchvieh/nuckel-8.jpg"
+    }
+   ]
+  },
+  {
+   "id": "feld-spritze-befuellen",
+   "bereich": "feld",
+   "gruppe": "Spritze",
+   "titel": "Spritze befüllen",
+   "kurz": "Video",
+   "schlagworte": "spritze befüllen pflanzenschutz",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EViLuTEVw1FOmAtTd-QiRrUBoz4VxPjMKz0uotRNIMFO5A",
+   "schritte": []
+  },
+  {
+   "id": "feld-autotrac-menue",
+   "bereich": "feld",
+   "gruppe": "Autotrac (John Deere)",
+   "titel": "Autotrac-Menü öffnen",
+   "kurz": "Video",
+   "schlagworte": "autotrac menü john deere lenksystem",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EZvq0HXtU6xHhDHd2dfyH00Bd8Mrwxhuzd85DUqFKgT2SA",
+   "schritte": []
+  },
+  {
+   "id": "feld-feldgrenzenspur",
+   "bereich": "feld",
+   "gruppe": "Autotrac (John Deere)",
+   "titel": "Feldgrenzenspur erstellen",
+   "kurz": "Video",
+   "schlagworte": "feldgrenze spur autotrac john deere",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EVE_NGLVtJdFk2Vl16ERTusB9bHlLllpxxMgZ5bQNaIEqg",
+   "schritte": []
+  },
+  {
+   "id": "feld-mehrere-displays",
+   "bereich": "feld",
+   "gruppe": "Autotrac (John Deere)",
+   "titel": "Einstellung bei mehreren Displays",
+   "kurz": "Video",
+   "schlagworte": "display displays autotrac john deere",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/ETTMxpk5XBpOjUkxEyrFi7gB-gwp94LnVRybC6O4FFWR8Q",
+   "schritte": []
+  },
+  {
+   "id": "feld-kabinenfederung",
+   "bereich": "feld",
+   "gruppe": "Autotrac (John Deere)",
+   "titel": "Wartung Kabinenfederung",
+   "kurz": "Video",
+   "schlagworte": "kabinenfederung wartung kabine traktor",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/Ebk09ZZJsvNKv8DP9yff5qYBMlIOiqqC8tRwYL6rVBQldQ",
+   "schritte": []
+  },
+  {
+   "id": "feld-guellefass",
+   "bereich": "feld",
+   "gruppe": "Güllefass",
+   "titel": "Güllefass bedienen",
+   "kurz": "Video",
+   "schlagworte": "güllefass fass bedienen ausbringen",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/EdcfmP1pVztCvmHhGShFcCYB-oRzH44MVC8rHRX6E-NwuA",
+   "schritte": []
+  },
+  {
+   "id": "stroh-mahlen",
+   "bereich": "sonstiges",
+   "titel": "Stroh mahlen",
+   "kurz": "Motortemperatur überwachen – am Ende alles ausblasen",
+   "schlagworte": "stroh mahlen strohmühle radlader traktor zapfwelle",
+   "warnung": "Motortemperatur überwachen (Display: Motortemp.)!",
+   "schritte": [
+    {
+     "text": "Lüfter Kabine aus + Klimaanlage Radlader auf Umluft",
+     "art": "schritt"
+    },
+    {
+     "text": "Zapfwelle 1020 U/min, Öldruck ungefähr 1,4",
+     "art": "schritt"
+    },
+    {
+     "text": "Am Ende: Strohmühle ausblasen",
+     "art": "schritt"
+    },
+    {
+     "text": "Traktor abblasen",
+     "art": "schritt"
+    },
+    {
+     "text": "Kühler ausblasen",
+     "art": "schritt"
+    },
+    {
+     "text": "Kabinenluftfilter hinten außen links ausblasen",
+     "art": "schritt"
+    }
+   ]
+  },
+  {
+   "id": "getreidelager-luefter",
+   "bereich": "sonstiges",
+   "titel": "Getreidelager: Zeitschaltuhr Lüfter",
+   "kurz": "Video",
+   "schlagworte": "getreidelager zeitschaltuhr lüfter",
+   "video": "https://1drv.ms/v/c/ab27842461a2f50d/IQDPa6AjWhE9QY_JUwuOGE66AUtgC7RipZP3F1ykgIJSuug?e=ij0s7L",
+   "schritte": []
+  }
+ ]
 }

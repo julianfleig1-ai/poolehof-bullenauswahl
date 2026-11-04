@@ -421,6 +421,13 @@ dialog#bullDialog::backdrop{background:rgba(20,24,18,.45);backdrop-filter:blur(2
 .anl-bild-zu{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.9);font-size:22px;cursor:pointer;z-index:2}
 .anl-mehr{margin:18px 0 6px}
 .anl-mehr summary{cursor:pointer;font-weight:600;padding:10px 0;font-size:16px}
+.anl-gruppe{font-size:15px;font-weight:700;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.05em;margin:18px 0 8px}
+.anl-text{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:16px;line-height:1.45;margin:0 0 12px}
+.anl-video{display:flex;align-items:center;justify-content:center;gap:10px;font-size:18px;font-weight:700;padding:15px;border-radius:14px;background:var(--accent);color:var(--accent-ink);text-decoration:none;margin:0 0 14px}
+.anl-galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}
+.anl-galerie button{border:1px solid var(--border);border-radius:12px;overflow:hidden;padding:0;background:var(--surface);cursor:pointer}
+.anl-galerie img{width:100%;height:190px;object-fit:cover;display:block}
+.anl-schrittlink{display:inline-block;margin-top:4px;font-size:14px;font-weight:600;color:var(--accent)}
 .anl-erklaerung{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:15px;margin:0 0 14px}
 .home-hinweis{display:flex;gap:12px;align-items:center;padding:13px 15px;border-radius:12px;margin-bottom:10px;text-decoration:none;font-size:14px}
 .home-hinweis.warn{background:var(--warn-soft);color:var(--warn)}
@@ -1907,7 +1914,7 @@ function anlLaden(){
 // Fotos einmal im Hintergrund holen – dann gehen die Anleitungen auch ohne Netz (Offline-Helfer speichert sie)
 function anlVorladen(d){
   const bilder = new Set();
-  d.anleitungen.forEach(a => a.schritte.forEach(s => { if (s.bild) bilder.add(s.bild); }));
+  d.anleitungen.forEach(a => { (a.schritte || []).forEach(s => { if (s.bild) bilder.add(s.bild); }); (a.bilder || []).forEach(b => bilder.add(b.bild)); });
   Object.values(d.teile || {}).forEach(t => { if (t.bild) bilder.add(t.bild); });
   setTimeout(() => [...bilder].forEach(b => fetch("anleitungen/bilder/" + b).catch(() => {})), 1500);
 }
@@ -1918,7 +1925,8 @@ function anlSchrittText(d, s){
   const marke = {auf: "AUF", zu: "ZU", an: "AN", zeit: "ZEIT", info: "INFO"}[art] || art.toUpperCase();
   const was = t ? anlEsc(t.name) : anlEsc(s.text || "");
   const wo = t && t.ort ? `<small>${anlEsc(t.ort)}</small>` : (s.text && t ? `<small>${anlEsc(s.text)}</small>` : "");
-  return {art, html: `<span class="anl-marke ${art}">${marke}</span>${t && t.name.startsWith("Pumpe") ? was + " einschalten" : was}${wo}`};
+  const link = s.link && anlDaten && anlDaten.anleitungen.find(x => x.id === s.link);
+  return {art, html: `${art === "schritt" ? "" : `<span class="anl-marke ${art}">${marke}</span>`}${t && t.name.startsWith("Pumpe") ? was + " einschalten" : was}${wo}${link ? `<br><a class="anl-schrittlink" href="#anleitung-${anlEsc(link.id)}">→ Anleitung: ${anlEsc(link.titel)}</a>` : ""}`};
 }
 // Aufeinanderfolgende Schieber mit gleichem Foto und gleicher Stellung werden ein Schritt („Schieber 10 + 11 AUF“)
 function anlGruppen(a){
@@ -1960,28 +1968,33 @@ async function anlZeigen(ziel){
   if (m2) return anlBereich(d, m2[1], box);
   box.innerHTML = `<div class="anl-bereiche">${d.bereiche.map(b => { const n = d.anleitungen.filter(a => a.bereich === b.id).length;
       return `<a class="anl-karte" href="#anleitungen-${b.id}"><span class="i">${b.icon}</span><span><b>${anlEsc(b.titel)}</b><small>${n} Anleitung${n === 1 ? "" : "en"} · ${anlEsc(b.text)}</small></span><span class="pf">›</span></a>`; }).join("")}</div>
-    <p class="bs-help">Weitere Bereiche (Fütterung, Traktor …) kommen nach und nach dazu.</p>`;
+    <p class="bs-help">Weitere Anleitungen kommen nach und nach dazu.</p>`;
 }
-function anlKarte(a){ return `<a class="anl-karte" href="#anleitung-${a.id}"><span><b>${anlEsc(a.titel)}</b><small>${anlEsc(a.kurz)}</small></span><span class="pf">›</span></a>`; }
+function anlKarte(a){ return `<a class="anl-karte" href="#anleitung-${a.id}"><span><b>${a.video ? "▶ " : ""}${anlEsc(a.titel)}</b><small>${anlEsc(a.kurz || "")}</small></span><span class="pf">›</span></a>`; }
 function anlBereich(d, id, box){
   const b = d.bereiche.find(x => x.id === id);
   if (!b){ box.innerHTML = `<p class="bs-help">Diesen Bereich gibt es nicht. <a href="#anleitungen">Zur Übersicht</a></p>`; return; }
   const liste = d.anleitungen.filter(a => a.bereich === id);
+  const mitTeilen = liste.filter(a => a.schritte.some(s => s.teil));
+  const gruppen = [...new Set(liste.map(a => a.gruppe || ""))];
+  const karten = gruppen.length > 1 || gruppen[0]
+    ? gruppen.map(g => `${g ? `<h3 class="anl-gruppe">${anlEsc(g)}</h3>` : ""}<div class="anl-liste">${liste.filter(a => (a.gruppe || "") === g).map(anlKarte).join("")}</div>`).join("")
+    : `<div class="anl-liste">${liste.map(anlKarte).join("")}</div>`;
   // Übersichtstabelle: welches Teil bei welchem Vorgang auf/zu/an
-  const teile = [...new Set(liste.flatMap(a => a.schritte.filter(s => s.teil).map(s => s.teil)))]
+  const teile = [...new Set(mitTeilen.flatMap(a => a.schritte.filter(s => s.teil).map(s => s.teil)))]
     .sort((x, y) => (isNaN(x) ? 1000 : Number(x)) - (isNaN(y) ? 1000 : Number(y)) || x.localeCompare(y));
   const kurzname = t => /^\d+$/.test(t) ? t : ({KF: "Kurbel Ferm.", KN: "Kurbel Nachg.", KE: "Kurbel E2", SE: "Schieber Endl.", PU: "Pumpe unten", PO: "Pumpe oben", PE: "Pumpe Endl."}[t] || d.teile[t].name);
   const matrix = teile.length ? `<details class="anl-mehr"><summary>📊 Übersichtstabelle anzeigen (alle Vorgänge auf einen Blick)</summary>
     <div class="anl-legende"><span><b class="auf">●</b> auf / an</span><span><b class="zu">✕</b> muss ZU sein</span><span><i></i> leer = egal / zu lassen</span></div>
     <p class="bs-help">Zeile antippen öffnet die Anleitung.</p>
     <div class="table-scroll"><table class="anl-matrix"><thead><tr><th>Vorgang</th>${teile.map(t => `<th>${anlEsc(kurzname(t))}</th>`).join("")}</tr></thead><tbody>
-    ${liste.map(a => `<tr><td><a href="#anleitung-${a.id}">${anlEsc(a.titel)}</a></td>${teile.map(t => { const s = a.schritte.find(x => x.teil === t);
+    ${mitTeilen.map(a => `<tr><td><a href="#anleitung-${a.id}">${anlEsc(a.titel)}</a></td>${teile.map(t => { const s = a.schritte.find(x => x.teil === t);
       return s ? `<td class="${s.stellung}">${s.stellung === "zu" ? "✕" : "●"}</td>` : "<td></td>"; }).join("")}</tr>`).join("")}
     </tbody></table></div></details>` : "";
   box.innerHTML = `<p class="bs-help"><a href="#anleitungen">← Alle Bereiche</a></p>
     <h2 class="anl-titel">${b.icon} ${anlEsc(b.titel)}</h2>
-    <div class="anl-erklaerung"><b>So geht's:</b> Anleitung öffnen und jeden Schritt antippen, wenn er erledigt ist. Foto antippen = groß. <b>Schieber: Hebel hoch = AUF, runter = ZU.</b></div>
-    <div class="anl-liste">${liste.map(anlKarte).join("")}</div>
+    <div class="anl-erklaerung"><b>So geht's:</b> Anleitung öffnen und jeden Schritt antippen, wenn er erledigt ist. Foto antippen = groß. ▶ = mit Video.${teile.length ? " <b>Schieber: Hebel hoch = AUF, runter = ZU.</b>" : ""}</div>
+    ${karten}
     ${matrix}`;
 }
 function anlEinzeln(d, id, box){
@@ -1996,23 +2009,28 @@ function anlEinzeln(d, id, box){
       <h2 class="anl-titel">${anlEsc(a.titel)}</h2>
       <p class="anl-kurz">${anlEsc(a.kurz)}</p>
       ${a.warnung ? `<div class="anl-warnung">⚠ ${anlEsc(a.warnung)}</div>` : ""}
-      <div class="anl-fortschritt"><span>${k} von ${n} erledigt</span><span class="balken"><i style="width:${Math.round(k / n * 100)}%"></i></span></div>
+      ${a.text ? `<p class="anl-text">${anlEsc(a.text)}</p>` : ""}
+      ${a.video ? `<a class="anl-video" href="${anlEsc(a.video)}" target="_blank" rel="noopener">▶ Video ansehen</a>` : ""}
+      ${n ? `<div class="anl-fortschritt"><span>${k} von ${n} erledigt</span><span class="balken"><i style="width:${Math.round(k / n * 100)}%"></i></span></div>` : ""}
       <ol class="anl-schritte">${gruppen.map((g, i) => { const s = g[0], t = anlGruppeText(d, g);
         return `<li class="anl-schritt ${g.some(x => x.wichtig) ? "wichtig" : ""} ${fertig.has(i) ? "erledigt" : ""}" data-i="${i}" role="checkbox" aria-checked="${fertig.has(i)}" tabindex="0">
           <span class="anl-haken">${fertig.has(i) ? "✓" : ""}</span><span class="anl-was">${t.html}</span>
           ${s.bild ? `<img class="anl-foto" loading="lazy" src="anleitungen/bilder/${anlEsc(s.bild)}" alt="Foto" data-bild="${anlEsc(s.bild)}">` : ""}</li>`; }).join("")}</ol>
-      ${k === n ? `<div class="bs-status" style="margin-top:12px">✓ Alles erledigt.</div>` : ""}
-      <div class="anl-knoepfe"><button class="btn" type="button" id="anlReset">↺ Von vorn</button><button class="btn ghost" type="button" id="anlLink">🔗 Link kopieren (für QR-Code)</button></div>`;
+      ${n && k === n ? `<div class="bs-status" style="margin-top:12px">✓ Alles erledigt.</div>` : ""}
+      ${(a.bilder || []).length ? `<div class="anl-galerie">${a.bilder.map(g => `<button type="button" data-gbild="${anlEsc(g.bild)}" data-text="${anlEsc(g.text || "")}"><img loading="lazy" src="anleitungen/bilder/${anlEsc(g.bild)}" alt="${anlEsc(g.text || "Foto")}"></button>`).join("")}</div>` : ""}
+      <div class="anl-knoepfe">${n ? `<button class="btn" type="button" id="anlReset">↺ Von vorn</button>` : ""}<button class="btn ghost" type="button" id="anlLink">🔗 Link kopieren (für QR-Code)</button></div>`;
     box.querySelectorAll(".anl-schritt").forEach(li => {
       const umschalten = () => { const i = Number(li.dataset.i); if (fertig.has(i)) fertig.delete(i); else fertig.add(i); anlZustandSpeichern(a.id, fertig); zeichnen(); };
-      li.addEventListener("click", e => { if (e.target.closest("[data-bild]")) return; umschalten(); });
+      li.addEventListener("click", e => { if (e.target.closest("[data-bild], a")) return; umschalten(); });
       li.addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter"){ e.preventDefault(); umschalten(); } });
     });
     box.querySelectorAll("img[data-bild]").forEach(img => img.addEventListener("click", e => {
       e.stopPropagation(); const g = gruppen[Number(img.closest(".anl-schritt").dataset.i)], s = g[0];
       anlBildZeigen(img.dataset.bild, s.teil && d.teile[s.teil] ? (anlGruppeText(d, g).name || d.teile[s.teil].name) + " – " + (s.stellung || "").toUpperCase() : s.text);
     }));
-    document.getElementById("anlReset").addEventListener("click", () => { fertig.clear(); anlZustandSpeichern(a.id, fertig); zeichnen(); });
+    box.querySelectorAll("[data-gbild]").forEach(k => k.addEventListener("click", () => anlBildZeigen(k.dataset.gbild, k.dataset.text)));
+    const reset = document.getElementById("anlReset");
+    if (reset) reset.addEventListener("click", () => { fertig.clear(); anlZustandSpeichern(a.id, fertig); zeichnen(); });
     document.getElementById("anlLink").addEventListener("click", async e => {
       const url = location.origin + location.pathname + "#anleitung-" + a.id;
       try { await navigator.clipboard.writeText(url); e.target.textContent = "✓ Link kopiert"; } catch(err) { prompt("Link für den QR-Code:", url); }
@@ -2027,7 +2045,7 @@ function anlSuchen(d, box){
   const nr = (q.match(/\b(\d{1,2})\b/) || [])[1];
   const treffer = d.anleitungen.map(a => {
     const teilNamen = a.schritte.map(s => s.teil && d.teile[s.teil] ? d.teile[s.teil].name : s.text || "").join(" ");
-    const text = [a.titel, a.kurz, a.schlagworte, teilNamen].join(" ").toLowerCase();
+    const text = [a.titel, a.kurz, a.schlagworte, a.gruppe, a.text, teilNamen].join(" ").toLowerCase();
     let punkte = woerter.every(w => text.includes(w)) ? 2 : woerter.some(w => w.length > 2 && text.includes(w)) ? 1 : 0;
     if (nr && a.schritte.some(s => s.teil === nr)) punkte += 2;
     if (a.titel.toLowerCase().includes(q)) punkte += 3;
