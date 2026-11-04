@@ -628,7 +628,7 @@
     document.querySelector(".anl-schrittlink").click(); await warte(400);
     pruef("Link-Klick öffnet andere Anleitung (ohne abzuhaken)", location.hash === "#anleitung-guelle-kanal");
     geheZu("anleitungen-milchvieh"); await warte(400);
-    pruef("Kühe & Robi: Unterordner, keine Schiebertabelle", document.querySelectorAll("#anlInhalt .anl-gruppe").length === 4 && !document.querySelector(".anl-matrix"));
+    pruef("Kühe & Robi: Unterordner, keine Schiebertabelle", document.querySelectorAll("#anlInhalt .anl-gruppe").length === 5 && !document.querySelector(".anl-matrix"));
     geheZu("anleitungen"); await warte(300);
     pruef("Übersicht: 5 Bereiche", document.querySelectorAll("#anlInhalt .anl-bereiche .anl-karte").length === 5);
     const su = document.getElementById("anlSuche"); su.value = "Schieber 15"; su.dispatchEvent(new Event("input")); await warte(300);

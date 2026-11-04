@@ -726,6 +726,69 @@
    ]
   },
   {
+   "id": "tiere-pcr-test",
+   "bereich": "milchvieh",
+   "gruppe": "Allgemein / Tiere",
+   "titel": "PCR Test (Blutproben BHV1, Brucellose, Leukose, BVD)",
+   "kurz": "Untersuchungsantrag aus HI-Tier + Auftragsformular – was ankreuzen",
+   "schlagworte": "pcr test blutprobe blut bhv1 brucellose leukose bvd hi-tier untersuchungsantrag labor stua aulendorf tierarzt",
+   "text": "Auswahl in HI-Tier: Antrag Baden-Württemberg · nach Ohrmarkennummer · Manuelle Auswahl von Einzeltieren · ohne Impfung · Vir/Ag · nur untersuchungspflichtige Tiere anzeigen · nur zu untersuchende Tiere in Antrag ausgeben. – So wurde es am 20.10.2025 für 5 Tiere ausgefüllt; Betriebs-, Tierarzt- und Tierdaten auf den Fotos sind geschwärzt, die Kreuze sind wie im Original.",
+   "schritte": [
+    {
+     "text": "Untersuchungsantrag in HI-Tier erstellen und ausdrucken (Auswahl siehe oben / Foto)",
+     "art": "schritt",
+     "bild": "milchvieh/pcr-2.jpg"
+    },
+    {
+     "text": "Auftragsformular: Labor „STUA Aulendorf – Diagnostikzentrum“ ankreuzen",
+     "art": "schritt",
+     "bild": "milchvieh/pcr-1.jpg"
+    },
+    {
+     "text": "Betrieb und Tierarzt stehen vorgedruckt – kontrollieren",
+     "art": "schritt"
+    },
+    {
+     "text": "TSK-Nr. (Tierseuchenkasse) des Betriebs eintragen",
+     "art": "schritt"
+    },
+    {
+     "text": "Kostenträger: „Besitzer“ ankreuzen",
+     "art": "schritt"
+    },
+    {
+     "text": "Untersuchungsmaterial: „Blut (nicht differenziert)“",
+     "art": "schritt"
+    },
+    {
+     "text": "Untersuchungsgrund: „Erst-/Basisuntersuchung“ ankreuzen",
+     "art": "schritt"
+    },
+    {
+     "text": "Entnahmedatum eintragen",
+     "art": "schritt"
+    },
+    {
+     "text": "Anzahl der eingesandten Proben eintragen (Beispiel: 5)",
+     "art": "schritt"
+    },
+    {
+     "text": "Unterschrift Besitzer + Unterschrift Tierarzt",
+     "art": "schritt"
+    }
+   ],
+   "bilder": [
+    {
+     "bild": "milchvieh/pcr-1.jpg",
+     "text": "Auftragsformular (Daten geschwärzt)"
+    },
+    {
+     "bild": "milchvieh/pcr-2.jpg",
+     "text": "Untersuchungsantrag aus HI-Tier (Daten geschwärzt)"
+    }
+   ]
+  },
+  {
    "id": "robi-durchfluss",
    "bereich": "milchvieh",
    "gruppe": "Melkroboter",
